@@ -12,6 +12,11 @@
             --uranium-blue: #4A5D6B;
             --uranium-dark: #2C3A44;
             --uranium-darker: #1a2329;
+            --lightest: #F7F8FA;
+            --light: #D1D9E0;
+            --medium-light: #9BABC2;
+            --medium-dark: #354450;
+            --darkest: #1F2937;
             --warm-gold: #B8860B;
             --gold-light: #D4A84B;
             --gold-glow: rgba(184, 134, 11, 0.3);
@@ -49,16 +54,105 @@
             line-height: 1.2;
         }
 
-        /* Progress Bar */
-        .progress-bar {
+        /* Fixed Header */
+        .fixed-header {
             position: fixed;
             top: 0;
             left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(31, 41, 55, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            z-index: 1000;
+        }
+
+        .header-logo {
+            height: 35px;
+            opacity: 0.9;
+        }
+
+        .header-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--light);
+        }
+
+        .header-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-track {
+            width: 150px;
             height: 4px;
+            background: var(--medium-dark);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
             background: linear-gradient(90deg, var(--warm-gold), var(--gold-light));
             width: 0%;
-            z-index: 1000;
-            transition: width 0.2s ease;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--medium-light);
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--light);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Navigation Menu */
+        .nav-menu {
+            position: fixed;
+            top: 60px;
+            right: 0;
+            background: var(--medium-dark);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 999;
+            min-width: 250px;
+        }
+
+        .nav-menu.open {
+            transform: translateX(0);
+        }
+
+        .nav-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--light);
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(184, 134, 11, 0.2);
+            color: var(--warm-gold);
+        }
+
+        .nav-menu a.active {
+            background: var(--warm-gold);
+            color: var(--darkest);
         }
 
         /* Particle System */
@@ -110,7 +204,7 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 2rem;
+            padding: 6rem 2rem 4rem;
             overflow: hidden;
         }
 
@@ -1163,8 +1257,33 @@
     </style>
 </head>
 <body>
-    <!-- Progress Bar -->
-    <div class="progress-bar" id="progressBar"></div>
+    <!-- Fixed Header -->
+    <header class="fixed-header">
+        <img src="https://raw.githubusercontent.com/megtomazela-create/DfMDfADfO-Training/main/00_images/Logo_White_Nobackground.png" alt="The Nuclear House" class="header-logo">
+        <span class="header-title">Module 4.2: Lift Point Design</span>
+        <div class="header-progress">
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="progress-text" id="progressText">0%</span>
+            <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18M3 6h18M3 18h18"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-menu" id="navMenu">
+        <a href="#hero" class="active">Introduction</a>
+        <a href="#sectionA">Why Every Lift Needs a Plan</a>
+        <a href="#sectionB">What Goes Wrong</a>
+        <a href="#sectionC">Designer Duties</a>
+        <a href="#sectionD">Nuclear Requirements</a>
+        <a href="#interactive">Interactive Exercise</a>
+        <a href="#summary">Summary</a>
+    </nav>
 
     <!-- Particles -->
     <div class="particles" id="particles"></div>
@@ -1677,7 +1796,61 @@
         document.addEventListener('DOMContentLoaded', () => {
             createParticles();
             loadScenario(0);
-            updateProgressBar();
+        });
+
+        // ==================== SCROLL & NAVIGATION ====================
+        function updateProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = Math.round((scrollTop / docHeight) * 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = progress + '%';
+        }
+
+        window.addEventListener('scroll', updateProgress);
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            closeMenu();
+        }
+
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('open');
+        }
+
+        function closeMenu() {
+            document.getElementById('navMenu').classList.remove('open');
+        }
+
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-menu a');
+
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNav);
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('navMenu');
+            const toggle = document.querySelector('.menu-toggle');
+            if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+                closeMenu();
+            }
         });
 
         // Particle System
@@ -1694,21 +1867,6 @@
                 particle.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
                 container.appendChild(particle);
             }
-        }
-
-        // Progress Bar
-        function updateProgressBar() {
-            window.addEventListener('scroll', () => {
-                const scrollTop = window.scrollY;
-                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-                const progress = (scrollTop / docHeight) * 100;
-                document.getElementById('progressBar').style.width = progress + '%';
-            });
-        }
-
-        // Scroll to section
-        function scrollToSection(id) {
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
         }
 
         // Load Scenario
