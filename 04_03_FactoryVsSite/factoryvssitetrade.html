@@ -152,12 +152,12 @@
 
         /* Hero Section */
         .hero {
-            min-height: 100vh;
+            min-height: calc(100vh - 60px);
             position: relative;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 6rem 2rem 4rem;
+            padding: 2rem 2rem 4rem;
             overflow: hidden;
         }
 
@@ -269,9 +269,77 @@
             box-shadow: 0 8px 30px var(--gold-glow);
         }
 
+        /* Chapter-based Navigation */
+        body {
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .chapter {
+            display: none;
+            height: 100vh;
+            overflow-y: auto;
+            padding-top: 60px;
+        }
+
+        .chapter.active {
+            display: block;
+        }
+
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 1rem;
+        }
+
+        .chapter-nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: transparent;
+            border: 2px solid var(--warm-gold);
+            color: var(--warm-gold);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .chapter-nav-btn:hover {
+            background: var(--warm-gold);
+            color: var(--darkest);
+        }
+
+        .chapter-nav-btn.primary {
+            background: var(--warm-gold);
+            color: var(--darkest);
+        }
+
+        .chapter-nav-btn.primary:hover {
+            background: var(--gold-light);
+        }
+
+        .chapter-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .chapter-indicator {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            color: var(--medium-light);
+        }
+
         /* Sections */
         .section {
-            padding: 5rem 2rem;
+            padding: 2rem 2rem 4rem;
             position: relative;
         }
 
@@ -936,7 +1004,7 @@
                 <p>There is no single "right answer." Larger modules mean fewer site welds but harder transport. Smaller modules are easier to move but create more interfaces to manage. Your job is to understand these trade-offs and make informed decisions — not guess and hope for the best.</p>
             </div>
 
-            <button class="btn-primary" onclick="scrollToSection('section2')">
+            <button class="btn-primary" onclick="goToSection(1)">
                 Begin Module
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -2331,20 +2399,90 @@
     </style>
 
     <script>
-        // ==================== SCROLL & NAVIGATION ====================
-        function updateProgress() {
-            const scrollTop = window.scrollY;
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = Math.round((scrollTop / docHeight) * 100);
-            document.getElementById('progressFill').style.width = progress + '%';
-            document.getElementById('progressText').textContent = progress + '%';
+        // ==================== CHAPTER NAVIGATION ====================
+        let currentChapter = 0;
+        let chapters = [];
+
+        // Initialize chapters on DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            initChapters();
+        });
+
+        function initChapters() {
+            const sections = document.querySelectorAll('section');
+            sections.forEach((section, index) => {
+                // Create chapter wrapper
+                const chapter = document.createElement('div');
+                chapter.className = 'chapter' + (index === 0 ? ' active' : '');
+                chapter.id = 'chapter-' + index;
+
+                // Insert chapter wrapper
+                section.parentNode.insertBefore(chapter, section);
+                chapter.appendChild(section);
+
+                // Add navigation buttons (except for hero which has its own button)
+                if (index > 0) {
+                    const nav = document.createElement('div');
+                    nav.className = 'chapter-nav';
+                    nav.innerHTML = `
+                        <button class="chapter-nav-btn" onclick="goToSection(${index - 1})">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 12H5M12 19l-7-7 7-7"/>
+                            </svg>
+                            Previous
+                        </button>
+                        <span class="chapter-indicator">${index + 1} of ${sections.length}</span>
+                        ${index < sections.length - 1 ? `
+                        <button class="chapter-nav-btn primary" onclick="goToSection(${index + 1})">
+                            Next
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                        ` : '<span></span>'}
+                    `;
+                    section.appendChild(nav);
+                }
+
+                chapters.push(chapter);
+            });
+
+            updateProgress();
+            updateActiveNav();
+
+            // Update nav menu links to use goToSection
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            navLinks.forEach((link, index) => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    goToSection(index);
+                });
+            });
         }
 
-        window.addEventListener('scroll', updateProgress);
+        function goToSection(index) {
+            if (index < 0 || index >= chapters.length) return;
 
-        function scrollToSection(id) {
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            chapters[currentChapter].classList.remove('active');
+            currentChapter = index;
+            chapters[currentChapter].classList.add('active');
+
+            // Scroll to top of chapter
+            chapters[currentChapter].scrollTop = 0;
+
+            // Trigger fade-in animations for new chapter
+            handleFadeIn();
+
+            updateProgress();
+            updateActiveNav();
             closeMenu();
+        }
+
+        function updateProgress() {
+            if (chapters.length === 0) return;
+            const progress = Math.round(((currentChapter + 1) / chapters.length) * 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = progress + '%';
         }
 
         function toggleMenu() {
@@ -2356,41 +2494,24 @@
         }
 
         function updateActiveNav() {
-            const sections = document.querySelectorAll('section');
             const navLinks = document.querySelectorAll('.nav-menu a');
-            
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop - 100;
-                if (window.scrollY >= sectionTop) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            navLinks.forEach(link => {
+            navLinks.forEach((link, index) => {
                 link.classList.remove('active');
-                if (link.getAttribute('href') === '#' + current) {
+                if (index === currentChapter) {
                     link.classList.add('active');
                 }
             });
         }
 
-        window.addEventListener('scroll', updateActiveNav);
-
         // Fade in animations
         function handleFadeIn() {
             const elements = document.querySelectorAll('.fade-in');
             elements.forEach(el => {
-                const rect = el.getBoundingClientRect();
-                if (rect.top < window.innerHeight - 100) {
-                    el.classList.add('visible');
-                }
+                el.classList.add('visible');
             });
         }
 
-        window.addEventListener('scroll', handleFadeIn);
-        window.addEventListener('load', handleFadeIn);
-
+        // Close menu when clicking outside
         document.addEventListener('click', (e) => {
             const menu = document.getElementById('navMenu');
             const toggle = document.querySelector('.menu-toggle');
