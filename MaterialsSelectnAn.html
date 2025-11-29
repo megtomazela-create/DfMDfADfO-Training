@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Follow the Steel: Material Traceability Journey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #f7f8fa;
+            --bg-secondary: #ffffff;
+            --text-dark: #1f2937;
+            --text-medium: #364451;
+            --text-light: #6b7280;
+            --grey-medium: #9babc2;
+            --grey-light: #d0d9e0;
+            --grey-border: #e5e7eb;
+            --accent-orange: #cc5500;
+            --accent-orange-light: #ff6b1a;
+            --accent-green: #92d050;
+            --accent-green-dark: #6ba032;
+            --accent-blue: #00b0f0;
+            --accent-blue-dark: #0090c7;
+            --shadow-soft: 0 4px 20px rgba(31, 41, 55, 0.08);
+            --shadow-medium: 0 8px 30px rgba(31, 41, 55, 0.12);
+            --shadow-strong: 0 12px 40px rgba(31, 41, 55, 0.16);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--text-dark) 0%, var(--text-medium) 100%);
+            color: white;
+            padding: 2rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 100px,
+                    rgba(255,255,255,0.02) 100px,
+                    rgba(255,255,255,0.02) 101px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 100px,
+                    rgba(255,255,255,0.02) 100px,
+                    rgba(255,255,255,0.02) 101px
+                );
+            pointer-events: none;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .header h1 .highlight {
+            color: var(--accent-orange-light);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .progress-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .progress-dot.visited {
+            background: var(--accent-green);
+        }
+
+        .progress-dot.active {
+            background: var(--accent-orange-light);
+            box-shadow: 0 0 0 4px rgba(255, 107, 26, 0.3);
+        }
+
+        .progress-dot::after {
+            content: attr(data-stage);
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            font-family: 'Space Mono', monospace;
+            opacity: 0.7;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            min-height: calc(100vh - 180px);
+        }
+
+        /* Map Container */
+        .map-container {
+            position: relative;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            aspect-ratio: 16/10;
+            max-height: 600px;
+        }
+
+        .map-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        /* Hotspots */
+        .hotspot {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(204, 85, 0, 0.15);
+            border: 3px solid var(--accent-orange);
+            cursor: pointer;
+            transition: var(--transition-bounce);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translate(-50%, -50%);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .hotspot::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-orange);
+            opacity: 0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0; }
+            50% { transform: scale(1.15); opacity: 0.5; }
+        }
+
+        .hotspot-number {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent-orange);
+            z-index: 1;
+        }
+
+        .hotspot:hover {
+            transform: translate(-50%, -50%) scale(1.15);
+            background: rgba(204, 85, 0, 0.25);
+            box-shadow: 0 0 30px rgba(204, 85, 0, 0.4);
+        }
+
+        .hotspot.visited {
+            background: rgba(146, 208, 80, 0.2);
+            border-color: var(--accent-green);
+        }
+
+        .hotspot.visited::before {
+            border-color: var(--accent-green);
+        }
+
+        .hotspot.visited .hotspot-number {
+            color: var(--accent-green-dark);
+        }
+
+        .hotspot.visited .checkmark {
+            display: block;
+        }
+
+        .checkmark {
+            display: none;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 22px;
+            height: 22px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            color: white;
+            font-size: 0.7rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(146, 208, 80, 0.4);
+        }
+
+        .hotspot.visited .checkmark {
+            display: flex;
+        }
+
+        .hotspot.active {
+            transform: translate(-50%, -50%) scale(1.2);
+            background: var(--accent-orange);
+            box-shadow: 0 0 40px rgba(204, 85, 0, 0.5);
+        }
+
+        .hotspot.active .hotspot-number {
+            color: white;
+        }
+
+        .hotspot.active::before {
+            animation: none;
+            opacity: 0.8;
+            transform: scale(1.2);
+        }
+
+        /* Hotspot positions */
+        .hotspot[data-stage="1"] { left: 15%; top: 28%; }
+        .hotspot[data-stage="2"] { left: 42%; top: 18%; }
+        .hotspot[data-stage="3"] { left: 72%; top: 28%; }
+        .hotspot[data-stage="4"] { left: 78%; top: 68%; }
+        .hotspot[data-stage="5"] { left: 48%; top: 78%; }
+        .hotspot[data-stage="6"] { left: 18%; top: 68%; }
+
+        /* Info Panel */
+        .info-panel {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 600px;
+        }
+
+        .info-panel.empty {
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--grey-light) 0%, var(--grey-medium) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state-icon i {
+            font-size: 2rem;
+            color: var(--text-medium);
+        }
+
+        .empty-state h3 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* Stage Content */
+        .stage-content {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .stage-content.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stage-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 4px solid var(--accent-orange);
+        }
+
+        .stage-header {
+            padding: 1.25rem 1.5rem;
+            background: linear-gradient(135deg, var(--text-dark) 0%, var(--text-medium) 100%);
+            color: white;
+        }
+
+        .stage-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-orange-light);
+            margin-bottom: 0.25rem;
+        }
+
+        .stage-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stage-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        .stage-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .stage-description {
+            font-size: 0.95rem;
+            color: var(--text-medium);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        /* Collapsible Sections */
+        .collapsible-section {
+            margin-bottom: 1rem;
+            border: 1px solid var(--grey-border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.875rem 1rem;
+            background: var(--bg-primary);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            user-select: none;
+        }
+
+        .collapsible-header:hover {
+            background: var(--grey-light);
+        }
+
+        .collapsible-header h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .collapsible-header h4 i {
+            color: var(--accent-orange);
+            font-size: 0.9rem;
+        }
+
+        .collapsible-icon {
+            color: var(--grey-medium);
+            transition: var(--transition-smooth);
+            font-size: 0.8rem;
+        }
+
+        .collapsible-section.open .collapsible-icon {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .collapsible-section.open .collapsible-content {
+            max-height: 500px;
+        }
+
+        .collapsible-inner {
+            padding: 1rem;
+            border-top: 1px solid var(--grey-border);
+        }
+
+        /* Document Tags */
+        .doc-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+            color: white;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin: 0.25rem;
+            box-shadow: 0 2px 6px rgba(0, 176, 240, 0.25);
+        }
+
+        .doc-tag i {
+            font-size: 0.7rem;
+        }
+
+        .doc-details {
+            margin-top: 0.5rem;
+            padding: 0.75rem;
+            background: rgba(0, 176, 240, 0.05);
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .doc-details ul {
+            margin: 0;
+            padding-left: 1.25rem;
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+
+        .doc-details li {
+            margin-bottom: 0.35rem;
+        }
+
+        /* Info Items */
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--grey-border);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-item i {
+            color: var(--accent-green);
+            margin-top: 0.15rem;
+            font-size: 0.85rem;
+        }
+
+        .info-item span {
+            font-size: 0.875rem;
+            color: var(--text-medium);
+        }
+
+        /* Navigation Button */
+        .stage-footer {
+            padding: 1rem 1.5rem;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--grey-border);
+        }
+
+        .next-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-orange-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 15px rgba(204, 85, 0, 0.25);
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(204, 85, 0, 0.35);
+        }
+
+        .next-btn:active {
+            transform: translateY(0);
+        }
+
+        .next-btn i {
+            transition: var(--transition-smooth);
+        }
+
+        .next-btn:hover i {
+            transform: translateX(4px);
+        }
+
+        /* Summary Panel */
+        .summary-panel {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .summary-panel.active {
+            display: flex;
+        }
+
+        .summary-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-green-dark) 0%, var(--accent-green) 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .summary-header i {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .summary-header h2 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.2rem;
+        }
+
+        .summary-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .summary-text {
+            font-size: 0.95rem;
+            color: var(--text-medium);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .why-matters {
+            background: var(--bg-primary);
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .why-matters h4 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .comparison {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .comparison-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .comparison-item.good {
+            background: rgba(146, 208, 80, 0.15);
+            border: 1px solid var(--accent-green);
+        }
+
+        .comparison-item.bad {
+            background: rgba(204, 85, 0, 0.1);
+            border: 1px solid var(--accent-orange);
+        }
+
+        .comparison-item i {
+            font-size: 1rem;
+            margin-top: 0.1rem;
+        }
+
+        .comparison-item.good i {
+            color: var(--accent-green-dark);
+        }
+
+        .comparison-item.bad i {
+            color: var(--accent-orange);
+        }
+
+        /* Chain Visualisation */
+        .chain-visual {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: 10px;
+        }
+
+        .chain-item {
+            background: var(--text-dark);
+            color: white;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .chain-arrow {
+            color: var(--accent-orange);
+            font-size: 0.9rem;
+        }
+
+        .summary-footer {
+            padding: 1rem 1.5rem;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--grey-border);
+            text-align: center;
+        }
+
+        .summary-footer p {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+
+        /* Scrollbar Styling */
+        .stage-body::-webkit-scrollbar,
+        .summary-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .stage-body::-webkit-scrollbar-track,
+        .summary-body::-webkit-scrollbar-track {
+            background: var(--grey-light);
+            border-radius: 3px;
+        }
+
+        .stage-body::-webkit-scrollbar-thumb,
+        .summary-body::-webkit-scrollbar-thumb {
+            background: var(--grey-medium);
+            border-radius: 3px;
+        }
+
+        .stage-body::-webkit-scrollbar-thumb:hover,
+        .summary-body::-webkit-scrollbar-thumb:hover {
+            background: var(--text-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .map-container {
+                max-height: 450px;
+                aspect-ratio: 16/9;
+            }
+
+            .info-panel {
+                max-height: none;
+                min-height: 400px;
+            }
+
+            .hotspot {
+                width: 52px;
+                height: 52px;
+            }
+
+            .hotspot-number {
+                font-size: 1.1rem;
+            }
+
+            .checkmark {
+                width: 20px;
+                height: 20px;
+                font-size: 0.65rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.4rem;
+                line-height: 1.3;
+            }
+
+            .header p {
+                font-size: 0.95rem;
+            }
+
+            .progress-bar {
+                margin-top: 1.25rem;
+            }
+
+            .progress-dot {
+                width: 10px;
+                height: 10px;
+            }
+
+            .progress-dot::after {
+                display: none;
+            }
+
+            .main-content {
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .map-container {
+                max-height: 380px;
+                border-radius: 12px;
+            }
+
+            .hotspot {
+                width: 46px;
+                height: 46px;
+                border-width: 2.5px;
+            }
+
+            .hotspot-number {
+                font-size: 1rem;
+            }
+
+            .hotspot::before {
+                inset: -6px;
+            }
+
+            /* Improve touch feedback */
+            .hotspot:active {
+                transform: translate(-50%, -50%) scale(1.1);
+                background: rgba(204, 85, 0, 0.3);
+            }
+
+            .hotspot.visited:active {
+                background: rgba(146, 208, 80, 0.3);
+            }
+
+            .stage-image {
+                height: 160px;
+            }
+
+            .stage-header {
+                padding: 1rem 1.25rem;
+            }
+
+            .stage-title {
+                font-size: 1.2rem;
+            }
+
+            .stage-body {
+                padding: 1rem 1.25rem;
+            }
+
+            .stage-footer {
+                padding: 1rem 1.25rem;
+            }
+
+            .collapsible-header {
+                padding: 0.75rem 0.875rem;
+            }
+
+            .collapsible-header h4 {
+                font-size: 0.8rem;
+            }
+
+            .collapsible-inner {
+                padding: 0.875rem;
+            }
+
+            .doc-tag {
+                font-size: 0.75rem;
+                padding: 0.35rem 0.6rem;
+            }
+
+            .info-item {
+                padding: 0.5rem 0;
+            }
+
+            .info-item span {
+                font-size: 0.8rem;
+            }
+
+            /* Chain visual responsive wrapping */
+            .chain-visual {
+                gap: 0.4rem;
+                padding: 0.875rem;
+            }
+
+            .chain-item {
+                font-size: 0.7rem;
+                padding: 0.35rem 0.6rem;
+            }
+
+            .chain-arrow {
+                font-size: 0.75rem;
+            }
+
+            .summary-header {
+                padding: 1.25rem;
+            }
+
+            .summary-header i {
+                font-size: 2rem;
+            }
+
+            .summary-header h2 {
+                font-size: 1.1rem;
+            }
+
+            .summary-body {
+                padding: 1.25rem;
+            }
+
+            .why-matters {
+                padding: 1rem;
+            }
+
+            .comparison-item {
+                padding: 0.625rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 1.25rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.2rem;
+            }
+
+            .header p {
+                font-size: 0.875rem;
+            }
+
+            .main-content {
+                padding: 0.75rem;
+            }
+
+            .map-container {
+                max-height: 280px;
+                border-radius: 10px;
+                aspect-ratio: 4/3;
+            }
+
+            .hotspot {
+                width: 38px;
+                height: 38px;
+                border-width: 2px;
+            }
+
+            .hotspot-number {
+                font-size: 0.85rem;
+            }
+
+            .hotspot::before {
+                inset: -5px;
+                border-width: 1.5px;
+            }
+
+            .checkmark {
+                width: 16px;
+                height: 16px;
+                font-size: 0.55rem;
+                top: -3px;
+                right: -3px;
+            }
+
+            .info-panel {
+                border-radius: 12px;
+            }
+
+            .stage-image {
+                height: 130px;
+            }
+
+            .stage-header {
+                padding: 0.875rem 1rem;
+            }
+
+            .stage-label {
+                font-size: 0.7rem;
+            }
+
+            .stage-title {
+                font-size: 1.1rem;
+            }
+
+            .stage-subtitle {
+                font-size: 0.8rem;
+            }
+
+            .stage-body {
+                padding: 0.875rem 1rem;
+            }
+
+            .stage-description {
+                font-size: 0.875rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .collapsible-section {
+                margin-bottom: 0.75rem;
+                border-radius: 8px;
+            }
+
+            .doc-details {
+                padding: 0.625rem;
+            }
+
+            .doc-details ul {
+                padding-left: 1rem;
+                font-size: 0.8rem;
+            }
+
+            .next-btn {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.875rem;
+                border-radius: 6px;
+            }
+
+            /* Chain visual stacks vertically on very small screens */
+            .chain-visual {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .chain-arrow {
+                transform: rotate(90deg);
+                margin: 0.125rem 0;
+            }
+
+            .chain-item {
+                width: 100%;
+                text-align: center;
+            }
+
+            .summary-text {
+                font-size: 0.875rem;
+            }
+
+            .comparison-item {
+                font-size: 0.8rem;
+                gap: 0.5rem;
+            }
+
+            .comparison-item i {
+                font-size: 0.875rem;
+            }
+
+            .empty-state-icon {
+                width: 64px;
+                height: 64px;
+            }
+
+            .empty-state-icon i {
+                font-size: 1.5rem;
+            }
+
+            .empty-state h3 {
+                font-size: 1rem;
+            }
+
+            .empty-state p {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Touch device improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .hotspot:hover {
+                transform: translate(-50%, -50%);
+                background: rgba(204, 85, 0, 0.15);
+                box-shadow: none;
+            }
+
+            .hotspot:active {
+                transform: translate(-50%, -50%) scale(1.1);
+                background: rgba(204, 85, 0, 0.3);
+                box-shadow: 0 0 25px rgba(204, 85, 0, 0.4);
+            }
+
+            .hotspot.active {
+                transform: translate(-50%, -50%) scale(1.15);
+            }
+
+            .hotspot.visited:hover {
+                transform: translate(-50%, -50%);
+                background: rgba(146, 208, 80, 0.2);
+            }
+
+            .next-btn:hover {
+                transform: none;
+                box-shadow: 0 4px 15px rgba(204, 85, 0, 0.25);
+            }
+
+            .next-btn:active {
+                transform: scale(0.98);
+                box-shadow: 0 2px 10px rgba(204, 85, 0, 0.2);
+            }
+
+            .collapsible-header:hover {
+                background: var(--bg-primary);
+            }
+
+            .collapsible-header:active {
+                background: var(--grey-light);
+            }
+        }
+
+        /* Landscape mobile optimisation */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .header {
+                padding: 1rem 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.3rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .header p {
+                font-size: 0.875rem;
+            }
+
+            .progress-bar {
+                margin-top: 0.75rem;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+                min-height: auto;
+                padding: 1rem;
+            }
+
+            .map-container {
+                max-height: 300px;
+                aspect-ratio: auto;
+                height: 100%;
+            }
+
+            .info-panel {
+                max-height: 350px;
+                overflow: hidden;
+            }
+
+            .stage-image {
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1>Follow the <span class="highlight">Steel</span>: Material Traceability Journey</h1>
+            <p>Click each stage to explore the documentation chain</p>
+            <div class="progress-bar">
+                <div class="progress-dot" data-stage="1"></div>
+                <div class="progress-dot" data-stage="2"></div>
+                <div class="progress-dot" data-stage="3"></div>
+                <div class="progress-dot" data-stage="4"></div>
+                <div class="progress-dot" data-stage="5"></div>
+                <div class="progress-dot" data-stage="6"></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="map-container">
+            <img src="https://i.ibb.co/qMX54KNd/811dcc78-3fb4-45cd-adc9-ec4b0883f1a5.png" alt="Isometric map showing steel journey" class="map-image">
+            
+            <div class="hotspot" data-stage="1">
+                <span class="hotspot-number">1</span>
+                <span class="checkmark"><i class="fas fa-check"></i></span>
+            </div>
+            <div class="hotspot" data-stage="2">
+                <span class="hotspot-number">2</span>
+                <span class="checkmark"><i class="fas fa-check"></i></span>
+            </div>
+            <div class="hotspot" data-stage="3">
+                <span class="hotspot-number">3</span>
+                <span class="checkmark"><i class="fas fa-check"></i></span>
+            </div>
+            <div class="hotspot" data-stage="4">
+                <span class="hotspot-number">4</span>
+                <span class="checkmark"><i class="fas fa-check"></i></span>
+            </div>
+            <div class="hotspot" data-stage="5">
+                <span class="hotspot-number">5</span>
+                <span class="checkmark"><i class="fas fa-check"></i></span>
+            </div>
+            <div class="hotspot" data-stage="6">
+                <span class="hotspot-number">6</span>
+                <span class="checkmark"><i class="fas fa-check"></i></span>
+            </div>
+        </div>
+
+        <aside class="info-panel" id="infoPanel">
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState">
+                <div class="empty-state-icon">
+                    <i class="fas fa-mouse-pointer"></i>
+                </div>
+                <h3>Click Stage 1 to begin</h3>
+                <p>Explore how steel travels from mill to nuclear plant, with documentation generated at each stage.</p>
+            </div>
+
+            <!-- Stage 1 -->
+            <div class="stage-content" data-stage="1">
+                <img src="https://i.ibb.co/TfN5KDp/01-Foundry.png" alt="Steel foundry" class="stage-image">
+                <div class="stage-header">
+                    <div class="stage-label">Stage 1</div>
+                    <h2 class="stage-title">Steel Mill</h2>
+                    <p class="stage-subtitle">Where it all begins</p>
+                </div>
+                <div class="stage-body">
+                    <p class="stage-description">Every nuclear component starts here. Raw materials are melted in a furnace to create a specific 'heat' of steel. Each heat has a unique composition that will be tracked throughout the component's entire 60+ year lifecycle.</p>
+                    
+                    <div class="collapsible-section">
+                        <div class="collapsible-header">
+                            <h4><i class="fas fa-file-alt"></i> Documents Generated</h4>
+                            <i class="fas fa-chevron-down collapsible-icon"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="doc-tag"><i class="fas fa-certificate"></i> Mill Test Certificate (EN10204 3.1/3.2)</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Chemical composition (C, Mn, Si, P, S, Cr, Ni, Mo, etc.)</li>
+                                        <li>Mechanical properties (tensile strength, yield, elongation, impact)</li>
+                                        <li>Heat treatment condition</li>
+                                        <li>Test specimen results</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-hashtag"></i> Heat Number Assignment</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Unique identifier stamped on every plate/piece from this heat</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible-section">
+                        <div class="collapsible-header">
+                            <h4><i class="fas fa-database"></i> Key Information Captured</h4>
+                            <i class="fas fa-chevron-down collapsible-icon"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Heat number (unique identifier)</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Ladle analysis (chemical composition)</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Mechanical test results</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Date of production</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Steel specification/grade (e.g., 16MND5, SA-508)</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Independent inspector witness signature (for 3.2 certs)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage-footer">
+                    <button class="next-btn" data-next="2">Continue to Stage 2 <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Stage 2 -->
+            <div class="stage-content" data-stage="2">
+                <img src="https://i.ibb.co/yncQHphs/02-Truck.png" alt="Material transport" class="stage-image">
+                <div class="stage-header">
+                    <div class="stage-label">Stage 2</div>
+                    <h2 class="stage-title">Material Transport</h2>
+                    <p class="stage-subtitle">Maintaining the chain</p>
+                </div>
+                <div class="stage-body">
+                    <p class="stage-description">Steel plates leave the mill with their heat numbers physically stamped on the material. During transport, documentation must accompany the steel to maintain the traceability chain. Any break in this chain makes the material unusable for nuclear applications.</p>
+                    
+                    <div class="collapsible-section">
+                        <div class="collapsible-header">
+                            <h4><i class="fas fa-file-alt"></i> Documents Generated</h4>
+                            <i class="fas fa-chevron-down collapsible-icon"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="doc-tag"><i class="fas fa-truck"></i> Dispatch Note / Delivery Note</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Links material to transport</li>
+                                        <li>Confirms heat numbers being shipped</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-list"></i> Packing List</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Itemises each plate/piece with heat numbers</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-file-check"></i> Certificate of Conformance</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Confirms material matches order specification</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible-section">
+                        <div class="collapsible-header">
+                            <h4><i class="fas fa-database"></i> Key Information Captured</h4>
+                            <i class="fas fa-chevron-down collapsible-icon"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Heat numbers being transported</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Quantity and dimensions of each piece</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Destination details</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Transport conditions (if controlled)</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Chain of custody signatures</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage-footer">
+                    <button class="next-btn" data-next="3">Continue to Stage 3 <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Stage 3 -->
+            <div class="stage-content" data-stage="3">
+                <img src="https://i.ibb.co/3y1Qsms8/03-Checking.png" alt="Receiving inspection" class="stage-image">
+                <div class="stage-header">
+                    <div class="stage-label">Stage 3</div>
+                    <h2 class="stage-title">Receiving Inspection</h2>
+                    <p class="stage-subtitle">Verify before you accept</p>
+                </div>
+                <div class="stage-body">
+                    <p class="stage-description">When material arrives at the fabrication facility, QA inspectors verify that the physical markings on the steel match the accompanying certificates. This is a critical control point — if the heat number stamped on the plate doesn't match the Mill Test Certificate, the material must be rejected.</p>
+                    
+                    <div class="collapsible-section">
+                        <div class="collapsible-header">
+                            <h4><i class="fas fa-file-alt"></i> Documents Generated</h4>
+                            <i class="fas fa-chevron-down collapsible-icon"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="doc-tag"><i class="fas fa-clipboard-check"></i> Receiving Inspection Report</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Confirms physical verification completed</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-warehouse"></i> Material Storage Record</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Records where material is stored with traceability maintained</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-exclamation-triangle"></i> Non-Conformance Report (if applicable)</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Documents any discrepancies found</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible-section">
+                        <div class="collapsible-header">
+                            <h4><i class="fas fa-database"></i> Key Information Captured</h4>
+                            <i class="fas fa-chevron-down collapsible-icon"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Verification that stamped heat number matches MTR</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Visual condition of material</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Dimensional verification</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Certificate review and acceptance</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Storage location assignment</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Inspector signature and date</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage-footer">
+                    <button class="next-btn" data-next="4">Continue to Stage 4 <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Stage 4 -->
+            <div class="stage-content" data-stage="4">
+                <img src="https://i.ibb.co/p6V53Qqh/04-Weld.png" alt="Fabrication" class="stage-image">
+                <div class="stage-header">
+                    <div class="stage-label">Stage 4</div>
+                    <h2 class="stage-title">Fabrication</h2>
+                    <p class="stage-subtitle">Traceability through transformation</p>
+                </div>
+                <div class="stage-body">
+                    <p class="stage-description">During fabrication, material is cut, formed, and welded. This is where traceability gets complex — when you cut a plate into pieces, EACH piece must retain the original heat number. When you weld two pieces together, you must record BOTH parent material heat numbers PLUS the weld filler material heat number.</p>
+                    
+                    <div class="collapsible-section">
+                        <div class="collapsible-header">
+                            <h4><i class="fas fa-file-alt"></i> Documents Generated</h4>
+                            <i class="fas fa-chevron-down collapsible-icon"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="doc-tag"><i class="fas fa-cut"></i> Cutting Plan / Material Allocation Record</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Shows which heat numbers used for which components</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-exchange-alt"></i> Heat Number Transfer Record</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Documents transfer of marking when material is cut</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-fire"></i> Weld Procedure Specification (WPS)</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Qualified procedure for each weld type</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-map"></i> Weld Log / Weld Map</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Location, welder ID, date</li>
+                                        <li>Parent materials, filler material</li>
+                                        <li>Procedure used</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-user-check"></i> Welder Qualification Record</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Confirms welder is qualified for this procedure</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-certificate"></i> Filler Material Certificates</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Heat numbers and certs for welding consumables</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible-section">
+                        <div class="collapsible-header">
+                            <h4><i class="fas fa-database"></i> Key Information Captured</h4>
+                            <i class="fas fa-chevron-down collapsible-icon"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Parent material heat numbers (both sides of weld)</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Filler material heat number and batch</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Welder identification</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Welding procedure used</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Date and time of welding</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Preheat and interpass temperatures</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Visual inspection results</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage-footer">
+                    <button class="next-btn" data-next="5">Continue to Stage 5 <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Stage 5 -->
+            <div class="stage-content" data-stage="5">
+                <img src="https://i.ibb.co/7JWQJgxn/05-Weldtest.png" alt="Inspection and testing" class="stage-image">
+                <div class="stage-header">
+                    <div class="stage-label">Stage 5</div>
+                    <h2 class="stage-title">Inspection & Testing</h2>
+                    <p class="stage-subtitle">Proving quality through evidence</p>
+                </div>
+                <div class="stage-body">
+                    <p class="stage-description">Every weld and critical area undergoes Non-Destructive Testing (NDT). Test results must link back to the specific heat numbers and weld identifiers. For SC1 components, this means 100% volumetric testing — every single weld is examined using ultrasonic and/or radiographic methods.</p>
+                    
+                    <div class="collapsible-section">
+                        <div class="collapsible-header">
+                            <h4><i class="fas fa-file-alt"></i> Documents Generated</h4>
+                            <i class="fas fa-chevron-down collapsible-icon"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="doc-tag"><i class="fas fa-search"></i> NDT Reports</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Ultrasonic Testing (UT) report</li>
+                                        <li>Radiographic Testing (RT) report with film/digital images</li>
+                                        <li>Dye Penetrant Testing (PT) report</li>
+                                        <li>Magnetic Particle Testing (MT) report</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-ruler"></i> Dimensional Inspection Report</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Confirms component meets drawing tolerances</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-tint"></i> Hydrostatic/Pressure Test Certificate</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>For pressure-retaining components</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-thermometer-half"></i> Heat Treatment Records</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Time, temperature, and cooling rate documentation</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible-section">
+                        <div class="collapsible-header">
+                            <h4><i class="fas fa-database"></i> Key Information Captured</h4>
+                            <i class="fas fa-chevron-down collapsible-icon"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Component/weld identification (linked to heat numbers)</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Test method and procedure used</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Inspector/technician qualification level</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Equipment calibration records</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Test results and acceptance criteria</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Any indications found and disposition</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Reference to radiographic film storage location</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage-footer">
+                    <button class="next-btn" data-next="6">Continue to Stage 6 <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Stage 6 -->
+            <div class="stage-content" data-stage="6">
+                <img src="https://i.ibb.co/6cSJ7W7k/06-Assembly.png" alt="Installation at nuclear plant" class="stage-image">
+                <div class="stage-header">
+                    <div class="stage-label">Stage 6</div>
+                    <h2 class="stage-title">Installation at Nuclear Plant</h2>
+                    <p class="stage-subtitle">The journey's end — documentation lives on</p>
+                </div>
+                <div class="stage-body">
+                    <p class="stage-description">The component arrives at the nuclear plant with a complete documentation package tracing every piece of material back to its original heat. This 'as-built' documentation becomes part of the plant's permanent records and must be maintained for the entire operational life — typically 60+ years. If a defect is ever discovered in a heat of steel, operators can identify exactly which components are affected within hours.</p>
+                    
+                    <div class="collapsible-section">
+                        <div class="collapsible-header">
+                            <h4><i class="fas fa-file-alt"></i> Documents Generated</h4>
+                            <i class="fas fa-chevron-down collapsible-icon"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="doc-tag"><i class="fas fa-folder-open"></i> As-Built Documentation Package</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Complete compilation of all records</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-clipboard-check"></i> Final Inspection Report</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Confirms component ready for installation</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-map-marker-alt"></i> Installation Record</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Documents exact location in plant</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-tag"></i> Component Identification</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Permanent tag/marking with traceability reference</li>
+                                    </ul>
+                                </div>
+                                <div class="doc-tag"><i class="fas fa-stamp"></i> Quality Release Certificate</div>
+                                <div class="doc-details">
+                                    <ul>
+                                        <li>Formal sign-off that all requirements met</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible-section">
+                        <div class="collapsible-header">
+                            <h4><i class="fas fa-database"></i> Key Information Captured</h4>
+                            <i class="fas fa-chevron-down collapsible-icon"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Final component identification number</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Installation location (building, system, position)</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Complete material genealogy (all heat numbers)</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>All inspection and test records</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>All personnel involved (welders, inspectors, supervisors)</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Formal acceptance signatures</span></div>
+                                <div class="info-item"><i class="fas fa-check-circle"></i> <span>Cross-reference to plant configuration management system</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage-footer">
+                    <button class="next-btn" id="viewSummaryBtn">View Complete Journey <i class="fas fa-flag-checkered"></i></button>
+                </div>
+            </div>
+
+            <!-- Summary Panel -->
+            <div class="summary-panel" id="summaryPanel">
+                <div class="summary-header">
+                    <i class="fas fa-trophy"></i>
+                    <h2>The Complete Traceability Chain</h2>
+                </div>
+                <div class="summary-body">
+                    <p class="summary-text">You've just followed a piece of steel from molten metal to installed nuclear component. Every document you've seen serves one purpose: ensuring that 10, 20, or even 60 years from now, engineers can trace any component back to its exact origin.</p>
+                    
+                    <div class="why-matters">
+                        <h4>Why does this matter?</h4>
+                        <p style="font-size: 0.9rem; color: var(--text-medium); margin-bottom: 1rem;">If a defect is discovered in Heat Number 87432:</p>
+                        <div class="comparison">
+                            <div class="comparison-item good">
+                                <i class="fas fa-check-circle"></i>
+                                <span><strong>WITH traceability:</strong> Identify affected components within hours, take targeted action</span>
+                            </div>
+                            <div class="comparison-item bad">
+                                <i class="fas fa-times-circle"></i>
+                                <span><strong>WITHOUT traceability:</strong> Assume ALL components are suspect, potentially shut down entire plant</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="summary-text" style="font-weight: 500; color: var(--text-dark);">This is why nuclear material traceability isn't bureaucracy — it's essential safety infrastructure.</p>
+
+                    <div class="chain-visual">
+                        <span class="chain-item">Mill Certificate</span>
+                        <i class="fas fa-arrow-right chain-arrow"></i>
+                        <span class="chain-item">Transport Docs</span>
+                        <i class="fas fa-arrow-right chain-arrow"></i>
+                        <span class="chain-item">Receiving Report</span>
+                        <i class="fas fa-arrow-right chain-arrow"></i>
+                        <span class="chain-item">Fabrication Records</span>
+                        <i class="fas fa-arrow-right chain-arrow"></i>
+                        <span class="chain-item">NDT Reports</span>
+                        <i class="fas fa-arrow-right chain-arrow"></i>
+                        <span class="chain-item">As-Built Package</span>
+                    </div>
+                </div>
+                <div class="summary-footer">
+                    <p>Journey complete — 6 of 6 stages explored</p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hotspots = document.querySelectorAll('.hotspot');
+            const stageContents = document.querySelectorAll('.stage-content');
+            const progressDots = document.querySelectorAll('.progress-dot');
+            const emptyState = document.getElementById('emptyState');
+            const summaryPanel = document.getElementById('summaryPanel');
+            const nextButtons = document.querySelectorAll('.next-btn');
+            const viewSummaryBtn = document.getElementById('viewSummaryBtn');
+            
+            const visitedStages = new Set();
+            let currentStage = null;
+
+            function showStage(stageNum) {
+                // Hide empty state
+                emptyState.style.display = 'none';
+                
+                // Hide summary panel
+                summaryPanel.classList.remove('active');
+
+                // Hide all stages
+                stageContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Show selected stage
+                const targetStage = document.querySelector(`.stage-content[data-stage="${stageNum}"]`);
+                if (targetStage) {
+                    targetStage.classList.add('active');
+                }
+
+                // Update hotspots
+                hotspots.forEach(hotspot => {
+                    hotspot.classList.remove('active');
+                    if (hotspot.dataset.stage === stageNum.toString()) {
+                        hotspot.classList.add('active');
+                    }
+                });
+
+                // Mark as visited
+                visitedStages.add(stageNum);
+                document.querySelector(`.hotspot[data-stage="${stageNum}"]`).classList.add('visited');
+
+                // Update progress dots
+                progressDots.forEach(dot => {
+                    dot.classList.remove('active');
+                    const dotStage = parseInt(dot.dataset.stage);
+                    if (visitedStages.has(dotStage)) {
+                        dot.classList.add('visited');
+                    }
+                    if (dotStage === stageNum) {
+                        dot.classList.add('active');
+                    }
+                });
+
+                currentStage = stageNum;
+
+                // Check if all stages visited
+                if (visitedStages.size === 6) {
+                    viewSummaryBtn.innerHTML = 'View Complete Journey <i class="fas fa-flag-checkered"></i>';
+                }
+            }
+
+            function showSummary() {
+                stageContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                hotspots.forEach(hotspot => {
+                    hotspot.classList.remove('active');
+                });
+                progressDots.forEach(dot => {
+                    dot.classList.remove('active');
+                });
+                summaryPanel.classList.add('active');
+            }
+
+            // Hotspot click handlers
+            hotspots.forEach(hotspot => {
+                hotspot.addEventListener('click', function() {
+                    const stageNum = parseInt(this.dataset.stage);
+                    showStage(stageNum);
+                });
+            });
+
+            // Next button handlers
+            nextButtons.forEach(btn => {
+                if (btn.id !== 'viewSummaryBtn') {
+                    btn.addEventListener('click', function() {
+                        const nextStage = parseInt(this.dataset.next);
+                        showStage(nextStage);
+                    });
+                }
+            });
+
+            // View summary button
+            viewSummaryBtn.addEventListener('click', function() {
+                // Mark stage 6 as visited first
+                visitedStages.add(6);
+                document.querySelector('.hotspot[data-stage="6"]').classList.add('visited');
+                progressDots.forEach(dot => {
+                    if (parseInt(dot.dataset.stage) === 6) {
+                        dot.classList.add('visited');
+                    }
+                });
+                showSummary();
+            });
+
+            // Collapsible sections
+            document.querySelectorAll('.collapsible-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const section = this.parentElement;
+                    section.classList.toggle('open');
+                });
+            });
+
+            // Open all collapsibles by default
+            document.querySelectorAll('.collapsible-section').forEach(section => {
+                section.classList.add('open');
+            });
+        });
+    </script>
+</body>
+</html>

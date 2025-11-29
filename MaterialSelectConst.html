@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Selection Navigator | The Nuclear House</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #1a2332;
+            --primary-blue: #2d5a7b;
+            --primary-blue-light: #3a7ca5;
+            --accent-orange: #cc5500;
+            --accent-orange-light: #e86a10;
+            --success-green: #28a745;
+            --error-red: #dc3545;
+            --bg-light: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-dark: #1a2332;
+            --text-medium: #4a5568;
+            --text-light: #718096;
+            --border-light: #e2e8f0;
+            --shadow-sm: 0 2px 8px rgba(26, 35, 50, 0.08);
+            --shadow-md: 0 4px 20px rgba(26, 35, 50, 0.12);
+            --shadow-lg: 0 8px 40px rgba(26, 35, 50, 0.16);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Screen Container */
+        .screen {
+            display: none;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Background Styles */
+        .bg-blueprint {
+            background: 
+                linear-gradient(135deg, rgba(26, 35, 50, 0.85) 0%, rgba(45, 90, 123, 0.8) 100%),
+                url('https://i.ibb.co/SDBM3TXK/abstract-industrial-background-showing-f-v-Ea-BT1gl-SYm-Qt-ACw-ZUKJwg-d-HBYc-Ry9-RD6-Q9pgjaa-F-AQ.png') center center / cover no-repeat;
+        }
+
+        .bg-factory {
+            background: 
+                linear-gradient(135deg, rgba(26, 35, 50, 0.75) 0%, rgba(45, 90, 123, 0.7) 100%),
+                url('https://i.ibb.co/qLgjJLxQ/a-soft-focus-photograph-of-a-nuclear-man-Chi4-Btr0-TDWa3frv-Ufxkaw-Z0fe-Myzb-QCiq-GB2j5-GL2hg.png') center center / cover no-repeat;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-orange) 0%, var(--accent-orange-light) 100%);
+            transition: width 0.5s ease;
+        }
+
+        /* Progress Dots */
+        .progress-dots {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .progress-dot.active {
+            background: var(--accent-orange);
+            transform: scale(1.2);
+        }
+
+        .progress-dot.completed {
+            background: var(--success-green);
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Screen 1: Introduction */
+        .intro-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .intro-text {
+            color: white;
+        }
+
+        .intro-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .intro-badge i {
+            color: var(--accent-orange);
+        }
+
+        .intro-title {
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .intro-subtitle {
+            font-size: 1.25rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 32px;
+        }
+
+        .intro-description {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+        }
+
+        .intro-image {
+            position: relative;
+        }
+
+        .intro-image img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .intro-image::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            pointer-events: none;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-orange-light) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(204, 85, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(204, 85, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover i {
+            transform: translateX(4px);
+        }
+
+        /* Screen 2: Material Categories */
+        .categories-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .section-header {
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .section-intro {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.7;
+        }
+
+        .category-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .category-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .category-card.active {
+            box-shadow: 0 0 0 3px var(--accent-orange), var(--shadow-md);
+        }
+
+        .category-card-inner {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+        }
+
+        .category-thumb {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .category-info h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-dark);
+        }
+
+        .category-lead-time {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        .category-lead-time i {
+            font-size: 0.75rem;
+        }
+
+        /* Detail Panel */
+        .detail-panel {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            min-height: 500px;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .detail-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 400px;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .detail-empty i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .detail-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .lead-time-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .detail-section {
+            margin-bottom: 24px;
+        }
+
+        .detail-section h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-blue);
+            margin-bottom: 12px;
+        }
+
+        .grades-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .grade-tag {
+            background: var(--bg-light);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .applications-list,
+        .constraints-list {
+            list-style: none;
+        }
+
+        .applications-list li,
+        .constraints-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 0.95rem;
+            color: var(--text-medium);
+        }
+
+        .applications-list li i {
+            color: var(--success-green);
+            margin-top: 4px;
+        }
+
+        .constraints-list li i {
+            color: var(--accent-orange);
+            margin-top: 4px;
+        }
+
+        /* Screen 3: Lead Time */
+        .leadtime-content {
+            color: white;
+        }
+
+        .leadtime-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .leadtime-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .leadtime-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .timeline-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .timeline-column {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .timeline-column h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timeline-column.conventional h3 {
+            color: var(--success-green);
+        }
+
+        .timeline-column.nuclear h3 {
+            color: var(--accent-orange);
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 16px;
+            padding: 12px 0;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: timelineSlide 0.4s ease-out forwards;
+        }
+
+        @keyframes timelineSlide {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .timeline-marker {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .conventional .timeline-marker {
+            background: rgba(40, 167, 69, 0.2);
+            color: var(--success-green);
+        }
+
+        .nuclear .timeline-marker {
+            background: rgba(204, 85, 0, 0.2);
+            color: var(--accent-orange);
+        }
+
+        .timeline-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .timeline-total {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .conventional .timeline-total {
+            color: var(--success-green);
+        }
+
+        .nuclear .timeline-total {
+            color: var(--accent-orange);
+        }
+
+        /* Why Cards */
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .why-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .why-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-4px);
+        }
+
+        .why-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .why-card p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .callout-box {
+            background: linear-gradient(135deg, rgba(204, 85, 0, 0.2) 0%, rgba(204, 85, 0, 0.1) 100%);
+            border-left: 4px solid var(--accent-orange);
+            border-radius: 0 12px 12px 0;
+            padding: 24px;
+            margin-bottom: 40px;
+        }
+
+        .callout-box strong {
+            color: var(--accent-orange);
+        }
+
+        .callout-box p {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.7;
+        }
+
+        /* Screen 4: Equivalent Trap */
+        .scenario-layout {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .scenario-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .scenario-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .scenario-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .scenario-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 30px;
+        }
+
+        .scenario-image {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 12px;
+            margin: 0 auto 30px;
+            display: block;
+        }
+
+        .scenario-setup {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .scenario-setup strong {
+            color: var(--accent-orange);
+        }
+
+        .scenario-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--primary-dark);
+        }
+
+        .scenario-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .scenario-btn {
+            flex: 1;
+            max-width: 280px;
+            padding: 20px 30px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid var(--border-light);
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .scenario-btn:hover {
+            border-color: var(--primary-blue);
+            background: var(--bg-light);
+        }
+
+        .scenario-btn.accept {
+            border-color: var(--error-red);
+            color: var(--error-red);
+        }
+
+        .scenario-btn.accept:hover {
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .scenario-btn.reject {
+            border-color: var(--success-green);
+            color: var(--success-green);
+        }
+
+        .scenario-btn.reject:hover {
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        /* Feedback */
+        .feedback-panel {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .feedback-panel.active {
+            display: block;
+        }
+
+        .feedback-banner {
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .feedback-banner.wrong {
+            background: linear-gradient(135deg, var(--error-red) 0%, #c82333 100%);
+            color: white;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        .feedback-banner.correct {
+            background: linear-gradient(135deg, var(--success-green) 0%, #218838 100%);
+            color: white;
+            animation: pulse 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .feedback-banner i {
+            font-size: 1.5rem;
+        }
+
+        .feedback-banner span {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .feedback-content {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .feedback-reason {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .feedback-reason:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .feedback-reason h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-reason.wrong h4 i {
+            color: var(--error-red);
+        }
+
+        .feedback-reason.correct h4 i {
+            color: var(--success-green);
+        }
+
+        .feedback-reason p {
+            color: var(--text-medium);
+            line-height: 1.7;
+        }
+
+        /* Screen 5: Takeaways */
+        .takeaways-layout {
+            color: white;
+            text-align: center;
+        }
+
+        .takeaways-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 50px;
+        }
+
+        .takeaways-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 50px;
+        }
+
+        .takeaway-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .takeaway-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .takeaway-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .takeaway-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .takeaway-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .takeaway-card p {
+            font-size: 0.95rem;
+            color: var(--text-medium);
+            line-height: 1.6;
+        }
+
+        .final-message {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .final-message p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .completion-note {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.4);
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1rem;
+        }
+
+        .completion-note i {
+            color: var(--success-green);
+            font-size: 1.25rem;
+        }
+
+        .btn-complete {
+            background: linear-gradient(135deg, var(--success-green) 0%, #218838 100%);
+            color: white;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-complete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(40, 167, 69, 0.4);
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-buttons.light-border {
+            border-top-color: var(--border-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .intro-layout {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .intro-image {
+                order: -1;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+            .intro-title {
+                font-size: 2.25rem;
+            }
+
+            .categories-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .category-cards {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .category-card {
+                flex: 1;
+                min-width: 200px;
+            }
+
+            .timeline-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .content-container {
+                padding: 60px 20px;
+            }
+
+            .intro-title {
+                font-size: 1.75rem;
+            }
+
+            .section-title,
+            .leadtime-title,
+            .scenario-title,
+            .takeaways-title {
+                font-size: 1.75rem;
+            }
+
+            .scenario-buttons {
+                flex-direction: column;
+            }
+
+            .scenario-btn {
+                max-width: 100%;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav-buttons .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .progress-dots {
+                top: auto;
+                bottom: 20px;
+                right: 50%;
+                transform: translateX(50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 20%;"></div>
+    </div>
+
+    <!-- Progress Dots -->
+    <div class="progress-dots">
+        <div class="progress-dot active" data-screen="1"></div>
+        <div class="progress-dot" data-screen="2"></div>
+        <div class="progress-dot" data-screen="3"></div>
+        <div class="progress-dot" data-screen="4"></div>
+        <div class="progress-dot" data-screen="5"></div>
+    </div>
+
+    <!-- Screen 1: Introduction -->
+    <section class="screen bg-blueprint active" id="screen1">
+        <div class="content-container">
+            <div class="intro-layout">
+                <div class="intro-text">
+                    <div class="intro-badge">
+                        <i class="fas fa-atom"></i>
+                        <span>The Nuclear House Training</span>
+                    </div>
+                    <h1 class="intro-title">Material Selection Constraints</h1>
+                    <p class="intro-subtitle">Why you can't just specify any material in nuclear</p>
+                    <div class="intro-description">
+                        <p>In other industries, you might specify a material grade and source it from any qualified supplier within weeks. In nuclear, material selection is fundamentally different.</p>
+                        <p style="margin-top: 16px;">You must use code-approved materials. Your choices are limited. Lead times are measured in months, not weeks. And that 'equivalent' material your supplier is offering? It won't work here.</p>
+                        <p style="margin-top: 16px;">This module explains why—and what it means for your design decisions.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="goToScreen(2)">
+                        Explore Materials <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="intro-image">
+                    <img src="https://i.ibb.co/8Q26qQs/a-top-down-professional-industrial-photo-S-t2-Q0-R0-S3uh2-Le-OAEFk-Dg-TJ3-T69wm-Rd-WBzu-Jlw-ZV8-Qw.png" alt="Industrial materials">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screen 2: Material Categories -->
+    <section class="screen bg-blueprint" id="screen2">
+        <div class="content-container">
+            <div class="section-header">
+                <h2 class="section-title">Code-Approved Materials</h2>
+                <p class="section-intro">Nuclear components must use materials approved by design codes—primarily RCC-M (French/European) or ASME Section III (US). Click each category to explore.</p>
+            </div>
+            
+            <div class="categories-layout">
+                <div class="category-cards">
+                    <div class="category-card" data-category="carbon" onclick="showCategory('carbon')">
+                        <div class="category-card-inner">
+                            <img src="https://i.ibb.co/HLryBqhZ/close-up-photograph-of-thick-carbon-stee-2-SVBm0ey-S8-GIx-Wzee4-Ihgg-Qtxblnw-Soyn-E7-Gh-GTLx-Ug.png" alt="Carbon steel" class="category-thumb">
+                            <div class="category-info">
+                                <h3>Carbon & Low-Alloy Steels</h3>
+                                <span class="category-lead-time"><i class="fas fa-clock"></i> 6-12 months</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="category-card" data-category="stainless" onclick="showCategory('stainless')">
+                        <div class="category-card-inner">
+                            <img src="https://i.ibb.co/h1Y67RP6/photograph-of-polished-stainless-steel-p-1-E0-KWWERRea-Ryh-K1-U2h-Jxg-58-PECat-RS3mx4aq-Tw-I-8w-Q.png" alt="Stainless steel" class="category-thumb">
+                            <div class="category-info">
+                                <h3>Stainless Steels</h3>
+                                <span class="category-lead-time"><i class="fas fa-clock"></i> 4-8 months</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="category-card" data-category="nickel" onclick="showCategory('nickel')">
+                        <div class="category-card-inner">
+                            <img src="https://i.ibb.co/cXTb212B/a-close-up-square-format-photograph-of-p-PSz-Je-WBu-S9-WUv-TCEoy-KSuw-Xjlq-Lo4s-Rn25-QWURu-HD2-Jg.png" alt="Nickel alloy" class="category-thumb">
+                            <div class="category-info">
+                                <h3>Nickel Alloys</h3>
+                                <span class="category-lead-time"><i class="fas fa-clock"></i> 8-18 months</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="category-card" data-category="specialty" onclick="showCategory('specialty')">
+                        <div class="category-card-inner">
+                            <img src="https://i.ibb.co/8Q26qQs/a-top-down-professional-industrial-photo-S-t2-Q0-R0-S3uh2-Le-OAEFk-Dg-TJ3-T69wm-Rd-WBzu-Jlw-ZV8-Qw.png" alt="Specialty materials" class="category-thumb">
+                            <div class="category-info">
+                                <h3>Speciality & Other</h3>
+                                <span class="category-lead-time"><i class="fas fa-clock"></i> 12+ months</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-panel" id="detailPanel">
+                    <div class="detail-empty" id="detailEmpty">
+                        <i class="fas fa-hand-pointer"></i>
+                        <p>Select a material category to view details</p>
+                    </div>
+                    
+                    <!-- Carbon Steel Detail -->
+                    <div class="detail-content" id="detail-carbon" style="display: none;">
+                        <div class="detail-header">
+                            <h3 class="detail-title">Carbon & Low-Alloy Steels</h3>
+                            <span class="lead-time-badge"><i class="fas fa-clock"></i> 6-12 months typical</span>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Approved Grades (Examples)</h4>
+                            <div class="grades-list">
+                                <span class="grade-tag">SA-516 Gr.70</span>
+                                <span class="grade-tag">SA-508 Gr.3</span>
+                                <span class="grade-tag">16MND5</span>
+                                <span class="grade-tag">SA-533 Type B</span>
+                                <span class="grade-tag">P355</span>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Typical Applications</h4>
+                            <ul class="applications-list">
+                                <li><i class="fas fa-check"></i> Reactor pressure vessel</li>
+                                <li><i class="fas fa-check"></i> Steam generators (shell side)</li>
+                                <li><i class="fas fa-check"></i> Pressuriser</li>
+                                <li><i class="fas fa-check"></i> Primary circuit piping</li>
+                                <li><i class="fas fa-check"></i> Structural supports</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Key Constraints</h4>
+                            <ul class="constraints-list">
+                                <li><i class="fas fa-exclamation-triangle"></i> Must meet specific impact toughness requirements (Charpy testing)</li>
+                                <li><i class="fas fa-exclamation-triangle"></i> Elevated temperature tensile testing required for each heat</li>
+                                <li><i class="fas fa-exclamation-triangle"></i> Vacuum treatment mandatory for Class 1 components</li>
+                                <li><i class="fas fa-exclamation-triangle"></i> Maximum carbon content limits for weldability</li>
+                                <li><i class="fas fa-exclamation-triangle"></i> Full material traceability from melt to final product</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Stainless Steel Detail -->
+                    <div class="detail-content" id="detail-stainless" style="display: none;">
+                        <div class="detail-header">
+                            <h3 class="detail-title">Austenitic Stainless Steels</h3>
+                            <span class="lead-time-badge"><i class="fas fa-clock"></i> 4-8 months typical</span>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Approved Grades (Examples)</h4>
+                            <div class="grades-list">
+                                <span class="grade-tag">SA-240 304/304L</span>
+                                <span class="grade-tag">SA-240 316/316L</span>
+                                <span class="grade-tag">SA-312 304/316</span>
+                                <span class="grade-tag">SA-182 F304/F316</span>
+                                <span class="grade-tag">Z2CN18-10</span>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Typical Applications</h4>
+                            <ul class="applications-list">
+                                <li><i class="fas fa-check"></i> Reactor internals</li>
+                                <li><i class="fas fa-check"></i> Primary circuit cladding</li>
+                                <li><i class="fas fa-check"></i> Spent fuel pool liners</li>
+                                <li><i class="fas fa-check"></i> Auxiliary system piping</li>
+                                <li><i class="fas fa-check"></i> Control rod guide tubes</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Key Constraints</h4>
+                            <ul class="constraints-list">
+                                <li><i class="fas fa-exclamation-triangle"></i> Delta ferrite content controlled (RCC-M: 5-15%, ASME: 5FN minimum)</li>
+                                <li><i class="fas fa-exclamation-triangle"></i> Sensitisation testing for specific applications</li>
+                                <li><i class="fas fa-exclamation-triangle"></i> Intergranular corrosion resistance verification</li>
+                                <li><i class="fas fa-exclamation-triangle"></i> Low carbon grades (L) required for welded applications</li>
+                                <li><i class="fas fa-exclamation-triangle"></i> Solution annealing heat treatment requirements</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Nickel Alloy Detail -->
+                    <div class="detail-content" id="detail-nickel" style="display: none;">
+                        <div class="detail-header">
+                            <h3 class="detail-title">Nickel-Based Alloys</h3>
+                            <span class="lead-time-badge"><i class="fas fa-clock"></i> 8-18 months typical</span>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Approved Grades (Examples)</h4>
+                            <div class="grades-list">
+                                <span class="grade-tag">Alloy 600</span>
+                                <span class="grade-tag">Alloy 690</span>
+                                <span class="grade-tag">Alloy 625</span>
+                                <span class="grade-tag">Alloy 718</span>
+                                <span class="grade-tag">Alloy 800</span>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Typical Applications</h4>
+                            <ul class="applications-list">
+                                <li><i class="fas fa-check"></i> Steam generator tubes (Alloy 690)</li>
+                                <li><i class="fas fa-check"></i> Reactor vessel head penetrations</li>
+                                <li><i class="fas fa-check"></i> Control rod drive mechanism housings</li>
+                                <li><i class="fas fa-check"></i> Pressuriser heater sleeves</li>
+                                <li><i class="fas fa-check"></i> High-temperature components</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Key Constraints</h4>
+                            <ul class="constraints-list">
+                                <li><i class="fas fa-exclamation-triangle"></i> Low cobalt content required (reduces activation)</li>
+                                <li><i class="fas fa-exclamation-triangle"></i> Stress corrosion cracking resistance critical</li>
+                                <li><i class="fas fa-exclamation-triangle"></i> Specific heat treatment sequences mandatory</li>
+                                <li><i class="fas fa-exclamation-triangle"></i> Very limited approved suppliers globally</li>
+                                <li><i class="fas fa-exclamation-triangle"></i> Extensive qualification testing required</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Specialty Detail -->
+                    <div class="detail-content" id="detail-specialty" style="display: none;">
+                        <div class="detail-header">
+                            <h3 class="detail-title">Other Code-Approved Materials</h3>
+                            <span class="lead-time-badge"><i class="fas fa-clock"></i> 12+ months variable</span>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Includes</h4>
+                            <div class="grades-list">
+                                <span class="grade-tag">Zircaloy-2</span>
+                                <span class="grade-tag">Zircaloy-4</span>
+                                <span class="grade-tag">Aluminium alloys</span>
+                                <span class="grade-tag">Copper alloys</span>
+                                <span class="grade-tag">Titanium</span>
+                                <span class="grade-tag">Cast irons</span>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Typical Applications</h4>
+                            <ul class="applications-list">
+                                <li><i class="fas fa-check"></i> Fuel cladding (Zirconium alloys)</li>
+                                <li><i class="fas fa-check"></i> Research reactors (Aluminium)</li>
+                                <li><i class="fas fa-check"></i> Heat exchanger tubes (Copper alloys)</li>
+                                <li><i class="fas fa-check"></i> Specific corrosion applications (Titanium)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Key Point</h4>
+                            <p style="color: var(--text-medium); line-height: 1.7;">For most structural and pressure boundary applications in SMR, you'll be working with carbon steels, stainless steels, and nickel alloys. Speciality materials are used for specific components and require even longer lead times and more limited supplier options.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="goToScreen(1)">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-primary" onclick="goToScreen(3)">
+                    Next: Lead Time Reality <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screen 3: Lead Time Reality -->
+    <section class="screen bg-factory" id="screen3">
+        <div class="content-container">
+            <div class="leadtime-content">
+                <div class="leadtime-header">
+                    <h2 class="leadtime-title">Lead Time Reality Check</h2>
+                    <p class="leadtime-subtitle">Why nuclear materials take months, not weeks</p>
+                </div>
+                
+                <div class="timeline-comparison">
+                    <div class="timeline-column conventional">
+                        <h3><i class="fas fa-industry"></i> Conventional Industry</h3>
+                        <div class="timeline-item" style="animation-delay: 0.1s;">
+                            <div class="timeline-marker">W1</div>
+                            <div class="timeline-text">Specify material grade</div>
+                        </div>
+                        <div class="timeline-item" style="animation-delay: 0.2s;">
+                            <div class="timeline-marker">W2</div>
+                            <div class="timeline-text">Get quotes from suppliers</div>
+                        </div>
+                        <div class="timeline-item" style="animation-delay: 0.3s;">
+                            <div class="timeline-marker">W3</div>
+                            <div class="timeline-text">Place order</div>
+                        </div>
+                        <div class="timeline-item" style="animation-delay: 0.4s;">
+                            <div class="timeline-marker">W4</div>
+                            <div class="timeline-text">Material delivered</div>
+                        </div>
+                        <div class="timeline-total">TOTAL: 2-4 weeks</div>
+                    </div>
+                    
+                    <div class="timeline-column nuclear">
+                        <h3><i class="fas fa-atom"></i> Nuclear Industry</h3>
+                        <div class="timeline-item" style="animation-delay: 0.1s;">
+                            <div class="timeline-marker">M1-2</div>
+                            <div class="timeline-text">Specify material to code requirements, identify approved suppliers</div>
+                        </div>
+                        <div class="timeline-item" style="animation-delay: 0.2s;">
+                            <div class="timeline-marker">M3</div>
+                            <div class="timeline-text">Supplier audits and qualification verification</div>
+                        </div>
+                        <div class="timeline-item" style="animation-delay: 0.3s;">
+                            <div class="timeline-marker">M4-5</div>
+                            <div class="timeline-text">Order placed, material manufactured with witness hold points</div>
+                        </div>
+                        <div class="timeline-item" style="animation-delay: 0.4s;">
+                            <div class="timeline-marker">M6-8</div>
+                            <div class="timeline-text">Testing (mechanical, chemical, NDT) with third-party witness</div>
+                        </div>
+                        <div class="timeline-item" style="animation-delay: 0.5s;">
+                            <div class="timeline-marker">M9-10</div>
+                            <div class="timeline-text">Documentation review, certification package assembly</div>
+                        </div>
+                        <div class="timeline-item" style="animation-delay: 0.6s;">
+                            <div class="timeline-marker">M11-12</div>
+                            <div class="timeline-text">Delivery with full traceability package</div>
+                        </div>
+                        <div class="timeline-total">TOTAL: 6-12 months (or longer)</div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-bottom: 20px; font-size: 1.2rem;">Why the difference?</h3>
+                
+                <div class="why-grid">
+                    <div class="why-card">
+                        <h4><i class="fas fa-building"></i> Limited Approved Suppliers</h4>
+                        <p>Not every steel mill can produce nuclear-grade material. Suppliers must be qualified, audited, and maintain nuclear quality programmes.</p>
+                    </div>
+                    <div class="why-card">
+                        <h4><i class="fas fa-eye"></i> Witness Hold Points</h4>
+                        <p>Critical manufacturing and testing stages require independent witness—often a third-party inspector must be present.</p>
+                    </div>
+                    <div class="why-card">
+                        <h4><i class="fas fa-flask"></i> Enhanced Testing</h4>
+                        <p>Every heat requires full mechanical testing, chemical analysis, and often NDT. Tests must be witnessed and certified.</p>
+                    </div>
+                    <div class="why-card">
+                        <h4><i class="fas fa-file-alt"></i> Documentation Package</h4>
+                        <p>A nuclear material certificate isn't a single page. It's a complete package: heat certs, test reports, traceability records.</p>
+                    </div>
+                    <div class="why-card">
+                        <h4><i class="fas fa-ban"></i> No Substitutions</h4>
+                        <p>If a test fails or material is rejected, you can't just grab equivalent stock. You start again with a new heat.</p>
+                    </div>
+                </div>
+                
+                <div class="callout-box">
+                    <p><strong>Designer Impact:</strong> Your material choices must be finalised early. Late changes to material specifications can add 6-12 months to your programme. Design with procurement lead times in mind.</p>
+                </div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="goToScreen(2)">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button class="btn btn-primary" onclick="goToScreen(4)">
+                        Next: The Equivalent Trap <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screen 4: Equivalent Trap -->
+    <section class="screen bg-factory" id="screen4">
+        <div class="content-container">
+            <div class="scenario-layout">
+                <div class="scenario-header">
+                    <h2 class="scenario-title">The "Equivalent" Trap</h2>
+                    <p class="scenario-subtitle">Why equivalent materials don't work in nuclear</p>
+                </div>
+                
+                <div class="scenario-card" id="scenarioCard">
+                    <img src="https://i.ibb.co/pHLQ5TW/photograph-of-two-identical-looking-stee-cj-j-Nm1-YQRm-JPD3-R-Xc-Ud-A-3l5-Ggyk-KQ3yua-Nso-Lr-Oh-PA.png" alt="Two identical looking steel plates" class="scenario-image">
+                    
+                    <p class="scenario-setup">You've specified <strong>SA-516 Grade 70</strong> for a pressure vessel component. Your procurement team comes back with good news: a supplier has offered <strong>'SA-516 Grade 70 equivalent'</strong> at 40% less cost and 8 weeks faster delivery.</p>
+                    
+                    <p class="scenario-question">Do you accept?</p>
+                    
+                    <div class="scenario-buttons" id="scenarioButtons">
+                        <button class="scenario-btn accept" onclick="handleChoice('accept')">
+                            <i class="fas fa-check-circle"></i> Accept the equivalent
+                        </button>
+                        <button class="scenario-btn reject" onclick="handleChoice('reject')">
+                            <i class="fas fa-times-circle"></i> Reject and wait
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Wrong Answer Feedback -->
+                <div class="feedback-panel" id="feedbackWrong">
+                    <div class="feedback-banner wrong">
+                        <i class="fas fa-times-circle"></i>
+                        <span>REJECTED — Here's why this fails:</span>
+                    </div>
+                    <div class="feedback-content">
+                        <div class="feedback-reason wrong">
+                            <h4><i class="fas fa-stamp"></i> No Code Stamp</h4>
+                            <p>'Equivalent' materials are not manufactured under a nuclear quality programme. They don't carry the code certification (ASME N-stamp or RCC-M equivalent) required for nuclear pressure boundary applications.</p>
+                        </div>
+                        <div class="feedback-reason wrong">
+                            <h4><i class="fas fa-link-slash"></i> Incomplete Traceability</h4>
+                            <p>Nuclear materials require complete traceability from raw material through every manufacturing step. Equivalent materials typically have commercial-grade documentation—heat numbers and basic test certs—but not the witnessed, verified chain required for nuclear.</p>
+                        </div>
+                        <div class="feedback-reason wrong">
+                            <h4><i class="fas fa-flask"></i> Testing Gaps</h4>
+                            <p>The enhanced testing required for nuclear (specific impact testing, elevated temperature tensiles, witnessed NDT) hasn't been performed. The material properties are assumed, not proven.</p>
+                        </div>
+                        <div class="feedback-reason wrong">
+                            <h4><i class="fas fa-gavel"></i> No Regulatory Acceptance</h4>
+                            <p>When ONR or your Independent Nuclear Safety Assessment team reviews the safety case, 'equivalent' material will not be accepted. You'll have to remove it and start again.</p>
+                        </div>
+                        <div class="feedback-reason wrong">
+                            <h4><i class="fas fa-shield-halved"></i> Supply Chain Integrity</h4>
+                            <p>Using non-code materials opens the door to counterfeit and fraudulent items. The nuclear industry has strict controls precisely because the consequences of material failure are severe.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Correct Answer Feedback -->
+                <div class="feedback-panel" id="feedbackCorrect">
+                    <div class="feedback-banner correct">
+                        <i class="fas fa-check-circle"></i>
+                        <span>CORRECT — Good decision.</span>
+                    </div>
+                    <div class="feedback-content">
+                        <p style="margin-bottom: 20px; line-height: 1.8; color: var(--text-dark);">In nuclear, 'equivalent' is not acceptable for safety-classified components. The material must be:</p>
+                        <div class="feedback-reason correct">
+                            <h4><i class="fas fa-check"></i> Manufactured under a nuclear quality programme</h4>
+                        </div>
+                        <div class="feedback-reason correct">
+                            <h4><i class="fas fa-check"></i> Fully traceable from melt to delivery</h4>
+                        </div>
+                        <div class="feedback-reason correct">
+                            <h4><i class="fas fa-check"></i> Tested to code requirements with independent witness</h4>
+                        </div>
+                        <div class="feedback-reason correct">
+                            <h4><i class="fas fa-check"></i> Certified with complete documentation package</h4>
+                        </div>
+                        <div class="feedback-reason correct">
+                            <h4><i class="fas fa-check"></i> From an approved/audited supplier</h4>
+                        </div>
+                        <p style="margin-top: 20px; line-height: 1.8; color: var(--text-medium);">The 40% cost saving would become a 400% cost overrun when you have to rip it out and replace it. Plus months of schedule delay. Plus regulatory scrutiny of your entire supply chain.</p>
+                    </div>
+                </div>
+                
+                <div class="callout-box" id="designerImpact" style="display: none;">
+                    <p><strong>Designer Impact:</strong> When you specify a material, you're not just picking a grade—you're committing to the nuclear supply chain. Specify code-approved materials from the start. Don't create opportunities for procurement to find 'equivalent' shortcuts.</p>
+                </div>
+                
+                <div class="nav-buttons" id="screen4Nav" style="display: none;">
+                    <button class="btn btn-secondary" onclick="goToScreen(3)">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button class="btn btn-primary" onclick="goToScreen(5)">
+                        Next: Key Takeaways <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screen 5: Takeaways -->
+    <section class="screen bg-blueprint" id="screen5">
+        <div class="content-container">
+            <div class="takeaways-layout">
+                <h2 class="takeaways-title">Key Takeaways</h2>
+                
+                <div class="takeaways-grid">
+                    <div class="takeaway-card">
+                        <div class="takeaway-icon">
+                            <i class="fas fa-shield-check"></i>
+                        </div>
+                        <h3>Code-Approved Only</h3>
+                        <p>You must specify materials approved by RCC-M or ASME Section III. Your choices are limited compared to other industries—work within these constraints from the start.</p>
+                    </div>
+                    
+                    <div class="takeaway-card">
+                        <div class="takeaway-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h3>Plan for Lead Times</h3>
+                        <p>Nuclear materials take 6-12 months (sometimes longer). Finalise your material specifications early. Late changes can devastate your programme schedule.</p>
+                    </div>
+                    
+                    <div class="takeaway-card">
+                        <div class="takeaway-icon">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <h3>No Equivalents</h3>
+                        <p>'Equivalent' materials are not acceptable for safety-classified components. The nuclear supply chain exists for a reason—don't try to shortcut it.</p>
+                    </div>
+                    
+                    <div class="takeaway-card">
+                        <div class="takeaway-icon">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <h3>Traceability is Everything</h3>
+                        <p>Every piece of nuclear material must be fully traceable from melt to installation. Your material choice locks in documentation requirements for the entire supply chain.</p>
+                    </div>
+                </div>
+                
+                <div class="final-message">
+                    <p>Material selection in nuclear isn't just about mechanical properties—it's about the entire qualified supply chain that delivers assured quality to your component.</p>
+                </div>
+                
+                <div class="completion-note">
+                    <i class="fas fa-check-circle"></i>
+                    <span>You've completed the Material Selection Navigator. Use the course menu to continue to the next module.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let currentScreen = 1;
+        const totalScreens = 5;
+        let choiceMade = false;
+
+        function goToScreen(screenNum) {
+            // Hide current screen
+            document.getElementById(`screen${currentScreen}`).classList.remove('active');
+            
+            // Show new screen
+            document.getElementById(`screen${screenNum}`).classList.add('active');
+            
+            // Update current screen
+            currentScreen = screenNum;
+            
+            // Update progress
+            updateProgress();
+            
+            // Reset scenario if going to screen 4
+            if (screenNum === 4 && !choiceMade) {
+                resetScenario();
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function updateProgress() {
+            // Update progress bar
+            const progressPercent = (currentScreen / totalScreens) * 100;
+            document.getElementById('progressFill').style.width = `${progressPercent}%`;
+            
+            // Update progress dots
+            document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+                dot.classList.remove('active', 'completed');
+                if (index + 1 === currentScreen) {
+                    dot.classList.add('active');
+                } else if (index + 1 < currentScreen) {
+                    dot.classList.add('completed');
+                }
+            });
+        }
+
+        function showCategory(category) {
+            // Remove active state from all cards
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Add active state to clicked card
+            document.querySelector(`[data-category="${category}"]`).classList.add('active');
+            
+            // Hide empty state and all details
+            document.getElementById('detailEmpty').style.display = 'none';
+            document.querySelectorAll('.detail-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            // Show selected detail
+            const detailElement = document.getElementById(`detail-${category}`);
+            detailElement.style.display = 'block';
+            detailElement.style.animation = 'none';
+            detailElement.offsetHeight; // Trigger reflow
+            detailElement.style.animation = 'slideIn 0.4s ease-out';
+        }
+
+        function handleChoice(choice) {
+            choiceMade = true;
+            
+            // Hide scenario buttons
+            document.getElementById('scenarioButtons').style.display = 'none';
+            
+            // Show appropriate feedback
+            if (choice === 'accept') {
+                document.getElementById('feedbackWrong').classList.add('active');
+            } else {
+                document.getElementById('feedbackCorrect').classList.add('active');
+            }
+            
+            // Show designer impact and navigation
+            document.getElementById('designerImpact').style.display = 'block';
+            document.getElementById('screen4Nav').style.display = 'flex';
+            
+            // Scroll to feedback
+            setTimeout(() => {
+                document.querySelector('.feedback-panel.active').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }, 100);
+        }
+
+        function resetScenario() {
+            document.getElementById('scenarioButtons').style.display = 'flex';
+            document.getElementById('feedbackWrong').classList.remove('active');
+            document.getElementById('feedbackCorrect').classList.remove('active');
+            document.getElementById('designerImpact').style.display = 'none';
+            document.getElementById('screen4Nav').style.display = 'none';
+        }
+
+        // Progress dot click navigation
+        document.querySelectorAll('.progress-dot').forEach(dot => {
+            dot.addEventListener('click', () => {
+                const screenNum = parseInt(dot.dataset.screen);
+                goToScreen(screenNum);
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentScreen < totalScreens) {
+                goToScreen(currentScreen + 1);
+            } else if (e.key === 'ArrowLeft' && currentScreen > 1) {
+                goToScreen(currentScreen - 1);
+            }
+        });
+
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>

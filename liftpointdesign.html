@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4.2: Lift Point Design | The Nuclear House</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --uranium-blue: #4A5D6B;
+            --uranium-dark: #2C3A44;
+            --uranium-darker: #1a2329;
+            --warm-gold: #B8860B;
+            --gold-light: #D4A84B;
+            --gold-glow: rgba(184, 134, 11, 0.3);
+            --alert-red: #C41E3A;
+            --success-green: #2E7D32;
+            --warning-amber: #F57C00;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.85);
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --card-bg: rgba(44, 58, 68, 0.6);
+            --card-border: rgba(184, 134, 11, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--uranium-darker);
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--warm-gold), var(--gold-light));
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.2s ease;
+        }
+
+        /* Particle System */
+        .particles {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--warm-gold);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--warm-gold), 0 0 12px var(--gold-glow);
+            animation: rise linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(var(--drift));
+                opacity: 0;
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('https://i.ibb.co/zHGZHgbh/IMAGE1.png') center/cover no-repeat;
+            z-index: -2;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, 
+                rgba(26, 35, 41, 0.85) 0%, 
+                rgba(26, 35, 41, 0.9) 50%,
+                rgba(26, 35, 41, 0.95) 100%);
+            z-index: -1;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border: 1px solid var(--warm-gold);
+            color: var(--warm-gold);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        .hero-module {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 .gold {
+            color: var(--warm-gold);
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            max-width: 700px;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2.5rem;
+            background: var(--warm-gold);
+            color: var(--uranium-darker);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--gold-glow);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--warm-gold);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* Sections */
+        .section {
+            padding: 6rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(184, 134, 11, 0.15);
+            border-left: 3px solid var(--warm-gold);
+            color: var(--warm-gold);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1rem;
+        }
+
+        .section-intro {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin-bottom: 3rem;
+        }
+
+        /* Content Blocks */
+        .content-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+
+        .content-block.reverse {
+            direction: rtl;
+        }
+
+        .content-block.reverse > * {
+            direction: ltr;
+        }
+
+        .content-image {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .content-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .content-text h3 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: var(--gold-light);
+        }
+
+        .content-text p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .content-text ul {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .content-text ul li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .content-text ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--warm-gold);
+        }
+
+        /* Regulation Box */
+        .regulation-box {
+            background: var(--card-bg);
+            border-left: 4px solid var(--warm-gold);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .regulation-box strong {
+            display: block;
+            color: var(--warm-gold);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .regulation-box p {
+            font-style: italic;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Key Fact Box */
+        .key-fact {
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.15), rgba(46, 125, 50, 0.05));
+            border-left: 4px solid var(--success-green);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .key-fact p {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+
+        /* Consequence Cards */
+        .consequence-grid {
+            display: grid;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .consequence-card {
+            background: var(--card-bg);
+            border-left: 4px solid var(--alert-red);
+            border-radius: 0 8px 8px 0;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .consequence-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(196, 30, 58, 0.05));
+            pointer-events: none;
+        }
+
+        .consequence-card .case-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--alert-red);
+            margin-bottom: 0.5rem;
+        }
+
+        .consequence-card .case-what {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .consequence-card .failures {
+            margin: 1rem 0;
+        }
+
+        .consequence-card .failures h4 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hse-quote {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .hse-quote::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            font-size: 4rem;
+            color: var(--warm-gold);
+            opacity: 0.3;
+            font-family: Georgia, serif;
+        }
+
+        .hse-quote p {
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+
+        .hse-quote .attribution {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: linear-gradient(135deg, rgba(245, 124, 0, 0.15), rgba(245, 124, 0, 0.05));
+            border-left: 4px solid var(--warning-amber);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning-box p {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+
+        /* ERIC Framework */
+        .eric-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .eric-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border-top: 3px solid var(--warm-gold);
+        }
+
+        .eric-card .letter {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--warm-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .eric-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .eric-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .eric-card .example {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Full Width Banner */
+        .full-banner {
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 3rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .full-banner img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .full-banner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(26, 35, 41, 0.7), rgba(26, 35, 41, 0.9));
+            z-index: -1;
+        }
+
+        .full-banner-content {
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .full-banner h3 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .full-banner p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Spec Grid */
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .spec-grid .header {
+            background: var(--uranium-dark);
+            padding: 1rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            color: var(--warm-gold);
+            text-align: center;
+        }
+
+        .spec-grid .cell {
+            background: var(--card-bg);
+            padding: 1rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .spec-grid .label {
+            background: rgba(44, 58, 68, 0.8);
+            padding: 1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Interactive Section */
+        .interactive-section {
+            background: linear-gradient(180deg, var(--uranium-darker), rgba(26, 35, 41, 0.95));
+            position: relative;
+        }
+
+        .interactive-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('https://i.ibb.co/mVtvdJ89/IMAGE16.png') center/cover no-repeat;
+            opacity: 0.05;
+            z-index: 0;
+        }
+
+        .interactive-section .section-container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 3rem;
+        }
+
+        .step {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--uranium-dark);
+            border: 2px solid var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .step.active {
+            border-color: var(--warm-gold);
+            color: var(--warm-gold);
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        .step.correct {
+            border-color: var(--success-green);
+            background: var(--success-green);
+            color: white;
+        }
+
+        .step.incorrect {
+            border-color: var(--alert-red);
+            background: var(--alert-red);
+            color: white;
+        }
+
+        .step-line {
+            width: 60px;
+            height: 2px;
+            background: var(--text-muted);
+        }
+
+        /* Scenario Card */
+        .scenario-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .scenario-header {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scenario-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .scenario-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(transparent, var(--card-bg));
+        }
+
+        .scenario-content {
+            padding: 2rem;
+        }
+
+        .scenario-number {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            color: var(--warm-gold);
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .scenario-title {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .scenario-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .detail-item .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-item .value {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .detail-item .value.warning {
+            color: var(--warning-amber);
+        }
+
+        .detail-item .value.danger {
+            color: var(--alert-red);
+        }
+
+        .question-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--gold-light);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .option.selected {
+            border-color: var(--warm-gold);
+            background: rgba(184, 134, 11, 0.1);
+        }
+
+        .option.correct {
+            border-color: var(--success-green);
+            background: rgba(46, 125, 50, 0.2);
+        }
+
+        .option.incorrect {
+            border-color: var(--alert-red);
+            background: rgba(196, 30, 58, 0.2);
+        }
+
+        .option input {
+            display: none;
+        }
+
+        .option .radio {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .option.selected .radio {
+            border-color: var(--warm-gold);
+            background: var(--warm-gold);
+        }
+
+        .option.selected .radio::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--uranium-darker);
+            border-radius: 50%;
+        }
+
+        .option.correct .radio {
+            border-color: var(--success-green);
+            background: var(--success-green);
+        }
+
+        .option.correct .radio::after {
+            content: '✓';
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .option.incorrect .radio {
+            border-color: var(--alert-red);
+            background: var(--alert-red);
+        }
+
+        .option.incorrect .radio::after {
+            content: '✗';
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .option-text {
+            color: var(--text-secondary);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: var(--warm-gold);
+            color: var(--uranium-darker);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: var(--gold-light);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Feedback Panel */
+        .feedback-panel {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-panel.correct {
+            display: block;
+            background: rgba(46, 125, 50, 0.15);
+            border-left: 4px solid var(--success-green);
+        }
+
+        .feedback-panel.incorrect {
+            display: block;
+            background: rgba(196, 30, 58, 0.15);
+            border-left: 4px solid var(--alert-red);
+        }
+
+        .feedback-panel h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .feedback-panel.correct h4 {
+            color: var(--success-green);
+        }
+
+        .feedback-panel.incorrect h4 {
+            color: var(--alert-red);
+        }
+
+        .feedback-panel p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .feedback-panel .regulation-ref {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-next {
+            display: none;
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1rem;
+            background: transparent;
+            color: var(--warm-gold);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 2px solid var(--warm-gold);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-next.visible {
+            display: block;
+        }
+
+        .btn-next:hover {
+            background: var(--warm-gold);
+            color: var(--uranium-darker);
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 3rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+        }
+
+        .results-screen.visible {
+            display: block;
+        }
+
+        .results-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .results-icon.excellent {
+            background: var(--success-green);
+            box-shadow: 0 0 40px rgba(46, 125, 50, 0.4);
+        }
+
+        .results-icon.good {
+            background: var(--success-green);
+            box-shadow: 0 0 40px rgba(46, 125, 50, 0.4);
+        }
+
+        .results-icon.adequate {
+            background: var(--warning-amber);
+            box-shadow: 0 0 40px rgba(245, 124, 0, 0.4);
+        }
+
+        .results-icon.poor {
+            background: var(--alert-red);
+            box-shadow: 0 0 40px rgba(196, 30, 58, 0.4);
+        }
+
+        .results-score {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .results-message {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        /* Summary Section */
+        .summary-section {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('https://i.ibb.co/q3LFr8ZG/IMAGE17.png') center/cover no-repeat;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .summary-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border-top: 3px solid var(--warm-gold);
+        }
+
+        .summary-card .number {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--warm-gold);
+            margin-bottom: 0.75rem;
+        }
+
+        .summary-card h4 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .summary-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .final-image {
+            max-width: 800px;
+            margin: 3rem auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .final-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .closing-statement {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-left: 4px solid var(--warm-gold);
+            border-radius: 0 8px 8px 0;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--uranium-dark);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--warm-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-module {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-copyright {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-block {
+                grid-template-columns: 1fr;
+            }
+
+            .content-block.reverse {
+                direction: ltr;
+            }
+
+            .eric-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .spec-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 4rem 1.5rem;
+            }
+
+            .eric-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-steps {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .step-line {
+                display: none;
+            }
+        }
+
+        /* Hidden utility */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        
+        <div class="hero-badge">THE NUCLEAR HOUSE</div>
+        <div class="hero-module">MODULE 4.2</div>
+        <h1>Lift Point <span class="gold">Design</span></h1>
+        <p class="hero-subtitle">Every lift needs a plan. Learn the regulations, understand the consequences, and check lift plans like an Appointed Person.</p>
+        
+        <button class="btn-primary" onclick="scrollToSection('sectionA')">
+            Begin Module
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </button>
+
+        <div class="scroll-indicator">
+            <span>Scroll to begin</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12l7 7 7-7"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Section A: Why Every Lift Needs a Plan -->
+    <section class="section" id="sectionA">
+        <div class="section-container">
+            <div class="section-tag">SECTION A</div>
+            <h2 class="section-title">Why Every Lift Needs a Plan</h2>
+            <p class="section-intro">LOLER 1998 Regulation 8 is absolute: all lifting operations must be properly planned by a competent person, appropriately supervised, and carried out safely.</p>
+
+            <div class="content-block">
+                <div class="content-image">
+                    <img src="https://i.ibb.co/mCM3cXpr/IMAGE2.png" alt="Appointed Person reviewing lift plan">
+                </div>
+                <div class="content-text">
+                    <h3>The Appointed Person</h3>
+                    <p>Under BS 7121, the competent person responsible for planning lifting operations is called the <strong>Appointed Person</strong>. This is not a casual title — it carries legal weight.</p>
+                    <p>The Appointed Person must:</p>
+                    <ul>
+                        <li>Plan the lifting operation</li>
+                        <li>Select appropriate equipment and accessories</li>
+                        <li>Select competent persons for each role</li>
+                        <li>Ensure all equipment is certified and examined</li>
+                        <li>Produce the method of work</li>
+                    </ul>
+
+                    <div class="regulation-box">
+                        <strong>LOLER 1998 — Regulation 8(1)</strong>
+                        <p>"Every employer shall ensure that every lifting operation involving lifting equipment is properly planned by a competent person, appropriately supervised and carried out in a safe manner."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-block reverse">
+                <div class="content-image">
+                    <img src="https://i.ibb.co/gLwVYB9F/IMAGE3.png" alt="Lift planning meeting">
+                </div>
+                <div class="content-text">
+                    <h3>Planning Is Not Optional</h3>
+                    <p>A lifting operation is defined as <strong>"an operation concerned with the lifting or lowering of a load"</strong> (Regulation 8(2)). This includes:</p>
+                    <ul>
+                        <li>Every crane lift on site</li>
+                        <li>Module installation operations</li>
+                        <li>Equipment moves during outages</li>
+                        <li>Even simple hoist operations</li>
+                    </ul>
+                    <p>No lift is too small to plan. The regulation applies regardless of load weight.</p>
+
+                    <div class="key-fact">
+                        <p>Lifting accessories (slings, shackles, chains) require thorough examination every <strong>6 months</strong> under LOLER Regulation 9.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section B: What Goes Wrong -->
+    <section class="section" id="sectionB">
+        <div class="section-container">
+            <div class="section-tag">SECTION B</div>
+            <h2 class="section-title">What Goes Wrong</h2>
+            <p class="section-intro">When lifting operations fail, people die. These are not hypotheticals — they are prosecuted cases with real victims and real consequences.</p>
+
+            <div class="consequence-grid">
+                <div class="consequence-card">
+                    <div class="case-title">Brand Energy — £1.6 million fine (2024)</div>
+                    <p class="case-what">24-year-old Jack Phillips was crushed and killed when a lifting sling failed, dropping the load onto him.</p>
+                    <div class="failures">
+                        <h4>Failures identified:</h4>
+                        <ul>
+                            <li>No proper planning of the lifting operation</li>
+                            <li>No exclusion zones established</li>
+                            <li>Lifting accessories (slings) not properly inspected</li>
+                            <li>Out-of-date slings used</li>
+                        </ul>
+                    </div>
+                    <div class="hse-quote">
+                        <p>"This tragic death could have been prevented if the employer had fulfilled its statutory duty to plan and manage the risks associated with lifting operations."</p>
+                        <span class="attribution">— HSE Principal Inspector Ross Carter</span>
+                    </div>
+                </div>
+
+                <div class="consequence-card">
+                    <div class="case-title">Balfour Beatty — £285,000 fine (2024)</div>
+                    <p class="case-what">A crane pushed over a scissor lift during cladding installation. One worker (Igor Malka) fell 10 metres to his death. A second worker sustained spinal injuries, broken ribs, and required pins in his pelvis and thigh.</p>
+                    <div class="failures">
+                        <h4>Failures identified:</h4>
+                        <ul>
+                            <li>No lift supervisor present</li>
+                            <li>No communication between crane team and cladding team</li>
+                            <li>Principal contractor failed to coordinate activities</li>
+                        </ul>
+                    </div>
+                    <p style="margin-top: 1rem; color: var(--text-muted);"><strong>Regulation breached:</strong> LOLER Regulation 8(1)</p>
+                </div>
+
+                <div class="consequence-card">
+                    <div class="case-title">Aztech BA — Suspended prison sentence + £100,000 fine</div>
+                    <p class="case-what">Worker Ian Middlemiss was crushed and killed by a 2-tonne metal moulding box that fell from an overhead crane.</p>
+                    <div class="failures">
+                        <h4>Failures identified:</h4>
+                        <ul>
+                            <li>Crane had not been tested or examined as required by law</li>
+                            <li>No competency assessment, supervision, or training</li>
+                            <li>Company directors knew improvements were needed but did not act</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <p>These are not freak accidents. Every case involved failures that were <strong>known, preventable, and prosecuted</strong>. The HSE will investigate. Companies will be fined. Directors can face prison.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section C: Designer Duties -->
+    <section class="section" id="sectionC">
+        <div class="section-container">
+            <div class="section-tag">SECTION C</div>
+            <h2 class="section-title">Your Duties as a Designer</h2>
+            <p class="section-intro">Designers are not exempt from lifting safety. CDM 2015 Regulation 9 places direct duties on anyone who prepares or modifies a design.</p>
+
+            <div class="content-block">
+                <div class="content-image">
+                    <img src="https://i.ibb.co/n80bGX8g/IMAGE6.png" alt="Engineer at CAD workstation">
+                </div>
+                <div class="content-text">
+                    <h3>Designers Can Be Prosecuted</h3>
+                    <p>CDM 2015 Regulation 9 requires designers to:</p>
+                    <ul>
+                        <li><strong>Eliminate</strong> foreseeable risks so far as reasonably practicable</li>
+                        <li>If elimination is not possible, <strong>reduce</strong> or <strong>control</strong> the risks through design</li>
+                        <li><strong>Provide information</strong> about significant residual risks</li>
+                    </ul>
+                    <p>This applies to:</p>
+                    <ul>
+                        <li>Lift point locations and design</li>
+                        <li>Module weight and centre of gravity calculations</li>
+                        <li>Rigging interface specifications</li>
+                        <li>Access for lifting operations</li>
+                    </ul>
+
+                    <div class="regulation-box">
+                        <strong>Case Reference</strong>
+                        <p>In a 2017 prosecution, an architectural practice was fined alongside a construction company after a worker fell to his death. The HSE inspector stated: "While it is rare for designers to be charged with breaching health and safety legislation, they must be aware they can be held responsible where bad design is an important contributory factor to a workplace fatality."</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 1.5rem; color: var(--gold-light);">The ERIC Framework</h3>
+            <div class="eric-grid">
+                <div class="eric-card">
+                    <div class="letter">E</div>
+                    <h4>Eliminate</h4>
+                    <p>Remove the hazard entirely through design</p>
+                    <div class="example">Example: Design module to be lifted from ground level</div>
+                </div>
+                <div class="eric-card">
+                    <div class="letter">R</div>
+                    <h4>Reduce</h4>
+                    <p>Minimise risk through design choices</p>
+                    <div class="example">Example: Position lift points to keep CoG central</div>
+                </div>
+                <div class="eric-card">
+                    <div class="letter">I</div>
+                    <h4>Inform</h4>
+                    <p>Communicate residual risks to others</p>
+                    <div class="example">Example: Provide CoG data in design documentation</div>
+                </div>
+                <div class="eric-card">
+                    <div class="letter">C</div>
+                    <h4>Control</h4>
+                    <p>Design in control measures</p>
+                    <div class="example">Example: Include permanent lifting lugs</div>
+                </div>
+            </div>
+
+            <div class="content-block reverse" style="margin-top: 3rem;">
+                <div class="content-image">
+                    <img src="https://i.ibb.co/fYWvF7FR/IMAGE7.png" alt="Lifting lug and shackle close-up">
+                </div>
+                <div class="content-text">
+                    <h3>What Designers Must Provide</h3>
+                    <p>For any component that will be lifted, the designer must provide:</p>
+                    <ul>
+                        <li><strong>Verified weight</strong> (not estimated)</li>
+                        <li><strong>Centre of gravity location</strong> (calculated, not assumed central)</li>
+                        <li><strong>Lift point specifications</strong> — locations, capacities, orientation requirements</li>
+                        <li><strong>Rigging constraints</strong> — minimum sling angles, prohibited attachment points</li>
+                        <li><strong>Residual risk information</strong> — anything unusual about the lift</li>
+                    </ul>
+
+                    <div class="regulation-box">
+                        <strong>CDM 2015 — Regulation 9(4)</strong>
+                        <p>"A designer must take all reasonable steps to provide, with the design, sufficient information about the design, construction and maintenance of the structure to adequately assist the client, other designers and contractors to comply with their duties."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section D: Nuclear Requirements -->
+    <section class="section" id="sectionD">
+        <div class="section-container">
+            <div class="section-tag">SECTION D</div>
+            <h2 class="section-title">Nuclear Lifting Requirements</h2>
+            <p class="section-intro">Nuclear facilities have additional requirements beyond standard construction. Single-failure-proof cranes, seismic qualification, and heavy load handling programmes are mandatory.</p>
+
+            <div class="full-banner">
+                <img src="https://i.ibb.co/9m2GF6X1/IMAGE8.png" alt="Polar crane from below">
+                <div class="full-banner-content">
+                    <h3>The Polar Crane</h3>
+                    <p>Polar cranes are the primary heavy lift equipment inside reactor containment buildings. They operate on circular rails near the dome, enabling 360° rotation to reach any point in the reactor hall.</p>
+                </div>
+            </div>
+
+            <div class="spec-grid">
+                <div class="header">Specification</div>
+                <div class="header">AP1000</div>
+                <div class="header">EPR (HPC)</div>
+                
+                <div class="label">Main hoist capacity</div>
+                <div class="cell">300 tonnes</div>
+                <div class="cell">320 tonnes</div>
+                
+                <div class="label">Auxiliary hoist</div>
+                <div class="cell">25 tonnes</div>
+                <div class="cell">35 tonnes</div>
+                
+                <div class="label">Bridge span</div>
+                <div class="cell">~38 metres</div>
+                <div class="cell">~45 metres</div>
+                
+                <div class="label">Total crane weight</div>
+                <div class="cell">450+ tonnes</div>
+                <div class="cell">750 tonnes</div>
+                
+                <div class="label">Bridge capacity (construction)</div>
+                <div class="cell">800 tonnes</div>
+                <div class="cell">—</div>
+            </div>
+
+            <div class="content-block">
+                <div class="content-image">
+                    <img src="https://i.ibb.co/rKwrCTpd/IMAGE9.png" alt="Reactor vessel head lift">
+                </div>
+                <div class="content-text">
+                    <h3>Single-Failure-Proof Requirements</h3>
+                    <p>Under <strong>ASME NOG-1</strong>, cranes handling critical loads in nuclear facilities must be <strong>single-failure-proof (Type I)</strong>. This means:</p>
+                    <ul>
+                        <li>Any single failure in the hoisting system must <strong>not</strong> result in dropping the load</li>
+                        <li>Redundant braking systems</li>
+                        <li>Redundant load paths</li>
+                        <li>Enhanced inspection and testing requirements</li>
+                    </ul>
+                    <p><strong>NUREG-0612</strong> governs heavy load handling at nuclear facilities, requiring:</p>
+                    <ul>
+                        <li>Defined safe load paths</li>
+                        <li>Minimum elevation during lifts</li>
+                        <li>Exclusion of non-essential personnel</li>
+                        <li>Heavy load handling procedures</li>
+                    </ul>
+
+                    <div class="warning-box">
+                        <p>In a nuclear facility, a dropped load is not just a safety incident — it is a potential <strong>nuclear safety event</strong>. The consequences of damaging reactor components, fuel assemblies, or safety systems are catastrophic.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Section: Lift Plan Checker -->
+    <section class="section interactive-section" id="interactive">
+        <div class="section-container">
+            <div class="section-tag">INTERACTIVE EXERCISE</div>
+            <h2 class="section-title">Lift Plan Checker</h2>
+            <p class="section-intro">You're reviewing lift plans as part of The Nuclear House design review team. Your role: identify issues before they become incidents.</p>
+
+            <div class="progress-steps" id="progressSteps">
+                <div class="step active" data-step="1">1</div>
+                <div class="step-line"></div>
+                <div class="step" data-step="2">2</div>
+                <div class="step-line"></div>
+                <div class="step" data-step="3">3</div>
+                <div class="step-line"></div>
+                <div class="step" data-step="4">4</div>
+                <div class="step-line"></div>
+                <div class="step" data-step="5">5</div>
+            </div>
+
+            <div id="scenarioContainer">
+                <!-- Scenarios will be loaded here by JavaScript -->
+            </div>
+
+            <div class="results-screen" id="resultsScreen">
+                <div class="results-icon" id="resultsIcon">✓</div>
+                <h2 class="section-title">Assessment Complete</h2>
+                <div class="results-score" id="resultsScore">0 / 5 Correct</div>
+                <p class="results-message" id="resultsMessage"></p>
+                <button class="btn-primary" onclick="scrollToSection('summary')">Continue to Summary</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Summary Section -->
+    <section class="section summary-section" id="summary">
+        <div class="section-container">
+            <div class="section-tag">KEY MESSAGES</div>
+            <h2 class="section-title">What You Must Remember</h2>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="number">1</div>
+                    <h4>Every lift needs a plan</h4>
+                    <p>LOLER Regulation 8 — no exceptions, regardless of load weight</p>
+                </div>
+                <div class="summary-card">
+                    <div class="number">2</div>
+                    <h4>An Appointed Person must plan every lift</h4>
+                    <p>BS 7121 — named, competent, responsible</p>
+                </div>
+                <div class="summary-card">
+                    <div class="number">3</div>
+                    <h4>Lifting accessories: 6-month examination</h4>
+                    <p>LOLER Regulation 9 — thorough examination by competent person</p>
+                </div>
+                <div class="summary-card">
+                    <div class="number">4</div>
+                    <h4>Designers have duties too</h4>
+                    <p>CDM 2015 Regulation 9 — eliminate, reduce, inform, control</p>
+                </div>
+                <div class="summary-card">
+                    <div class="number">5</div>
+                    <h4>Consequences are real</h4>
+                    <p>Fines reach millions. Prison sentences are possible. People die.</p>
+                </div>
+            </div>
+
+            <div class="final-image">
+                <img src="https://i.ibb.co/RpmxgnrH/IMAGE15.png" alt="Successful lift completion">
+            </div>
+
+            <div class="closing-statement">
+                <p>"The regulations exist because the alternative is unacceptable. Every rule in LOLER, every duty in CDM, every requirement in BS 7121 exists because someone was killed when it wasn't followed. Design to make lifting safe. Plan every lift. Check every certificate. Define every exclusion zone. Because the cost of getting it wrong is not a fine — it's a life."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">THE NUCLEAR HOUSE</div>
+            <div class="footer-module">Module 4.2 — Lift Point Design</div>
+            <div class="footer-copyright">© 2025 The Nuclear House. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        // Scenario Data
+        const scenarios = [
+            {
+                number: 1,
+                title: "Module Transfer Lift",
+                image: "https://i.ibb.co/yn3st5SF/IMAGE12.png",
+                description: "A 45-tonne prefabricated module needs to be lifted from the transport trailer and placed on its foundation. The lift plan document has been submitted for review. It includes crane selection, rigging arrangement, and exclusion zone markings. However, you notice the \"Planned by\" field is blank.",
+                details: [
+                    { label: "Module weight", value: "45 tonnes" },
+                    { label: "Crane capacity", value: "100 tonnes (mobile crane)" },
+                    { label: "Lift plan status", value: "Submitted" },
+                    { label: "Appointed Person", value: "Not specified", class: "danger" }
+                ],
+                question: "What is the issue with this lift plan?",
+                options: [
+                    { id: "a", text: "The crane is over-specified for the load" },
+                    { id: "b", text: "No Appointed Person has been named as planning the lift" },
+                    { id: "c", text: "The module weight exceeds transport limits" },
+                    { id: "d", text: "Exclusion zones are unnecessary for this lift" }
+                ],
+                correct: "b",
+                feedbackCorrect: "LOLER Regulation 8 requires every lifting operation to be \"properly planned by a competent person.\" BS 7121 identifies this person as the Appointed Person. A lift plan without a named, competent planner is not compliant — and not valid.",
+                feedbackIncorrect: "The critical issue is that no Appointed Person has been named. Without a competent person taking responsibility for the plan, the lift cannot proceed. This is a fundamental LOLER Regulation 8 requirement.",
+                reference: "LOLER Regulation 8(1): \"Every employer shall ensure that every lifting operation involving lifting equipment is properly planned by a competent person...\""
+            },
+            {
+                number: 2,
+                title: "Steam Generator Support Lift",
+                image: "https://i.ibb.co/SXLFPdQn/IMAGE14.png",
+                description: "A routine lift using chain slings is planned for moving a 12-tonne support frame. The lift plan is complete with an Appointed Person named. During your review, you check the lifting accessory certificates. The chain slings show a last thorough examination date of 14 months ago.",
+                details: [
+                    { label: "Component weight", value: "12 tonnes" },
+                    { label: "Sling SWL", value: "15 tonnes (adequate)" },
+                    { label: "Last examination", value: "14 months ago", class: "danger" },
+                    { label: "Examination interval required", value: "6 months", class: "warning" }
+                ],
+                question: "What action is required?",
+                options: [
+                    { id: "a", text: "Proceed — the slings are rated above the load weight" },
+                    { id: "b", text: "Reject — the slings are overdue for thorough examination" },
+                    { id: "c", text: "Proceed — annual examination is sufficient for chain slings" },
+                    { id: "d", text: "Request a 10% derating of the sling capacity" }
+                ],
+                correct: "b",
+                feedbackCorrect: "LOLER Regulation 9 requires lifting accessories to undergo thorough examination at least every 6 months. These slings are 14 months since last examination — more than double the required interval. They cannot be used until re-examined by a competent person.",
+                feedbackIncorrect: "Lifting accessories require thorough examination every 6 months under LOLER Regulation 9. Capacity is irrelevant if the equipment hasn't been examined. The Brand Energy case (£1.6m fine) specifically cited use of out-of-date slings as a contributing factor to a fatality.",
+                reference: "LOLER Regulation 9(3)(a)(ii): Lifting accessories must be thoroughly examined \"at least every 6 months.\""
+            },
+            {
+                number: 3,
+                title: "Reactor Building Module Installation",
+                image: "https://i.ibb.co/N6mYMNHS/IMAGE13.png",
+                description: "A 65-tonne module is being lifted by the polar crane for installation in the reactor building. The lift path crosses a pedestrian route used by other trades. The lift plan shows the rigging arrangement and crane capacity but does not define an exclusion zone or show barriers.",
+                details: [
+                    { label: "Module weight", value: "65 tonnes" },
+                    { label: "Crane", value: "Polar crane (300t capacity)" },
+                    { label: "Lift path", value: "Crosses pedestrian route", class: "warning" },
+                    { label: "Exclusion zone", value: "Not defined", class: "danger" }
+                ],
+                question: "What must be addressed before this lift proceeds?",
+                options: [
+                    { id: "a", text: "The crane capacity should be increased" },
+                    { id: "b", text: "An exclusion zone must be defined and barriers installed" },
+                    { id: "c", text: "The pedestrian route should be made permanent" },
+                    { id: "d", text: "No action needed — polar crane lifts are inherently safe" }
+                ],
+                correct: "b",
+                feedbackCorrect: "Any person beneath a suspended load is at risk if that load falls. The Brand Energy fatality occurred precisely because no exclusion zones were established. The lift plan must define the exclusion zone, and physical barriers must prevent access during the lift.",
+                feedbackIncorrect: "The absence of an exclusion zone is a critical failure. Jack Phillips was killed when a load fell and no exclusion zone was in place. This is not a procedural nicety — it is a life-or-death control measure. NUREG-0612 specifically requires exclusion of non-essential personnel during heavy lifts in nuclear facilities.",
+                reference: "Brand Energy (2024): No exclusion zones established. Worker crushed when sling failed. £1.6 million fine."
+            },
+            {
+                number: 4,
+                title: "Asymmetric Equipment Module",
+                image: "https://i.ibb.co/Y4g7fMGF/IMAGE11.png",
+                description: "A module containing heavy pumps mounted off-centre is scheduled for lifting. The lift plan states the module weight as 28 tonnes. The rigging arrangement shows four equal-length slings attached to corner lift points. The design documentation does not include centre of gravity data.",
+                details: [
+                    { label: "Module weight", value: "28 tonnes (stated)" },
+                    { label: "CoG location", value: "Not provided", class: "danger" },
+                    { label: "Rigging", value: "4-point symmetric" },
+                    { label: "Pump location", value: "Off-centre (visible in drawings)", class: "warning" }
+                ],
+                question: "What is the design deficiency here?",
+                options: [
+                    { id: "a", text: "The module is too heavy for a 4-point lift" },
+                    { id: "b", text: "The rigging should use chains, not slings" },
+                    { id: "c", text: "Centre of gravity data has not been provided by the designer" },
+                    { id: "d", text: "The pumps should be removed before lifting" }
+                ],
+                correct: "c",
+                feedbackCorrect: "CDM 2015 Regulation 9(4) requires designers to provide sufficient information about the design to assist others in complying with their duties. For any lifted component, this must include verified centre of gravity location. Without CoG data, the riggers cannot assess whether symmetric rigging is appropriate — if the CoG is significantly off-centre, the load will tilt or swing when lifted.",
+                feedbackIncorrect: "The issue is that the designer has not provided centre of gravity information. With heavy equipment mounted off-centre, symmetric rigging will cause the load to tilt. This is a designer duty under CDM 2015 Regulation 9(4) — designers must provide sufficient information about the design, including CoG data for lifted components.",
+                reference: "CDM 2015 Regulation 9(4): Designers must provide \"sufficient information about the design, construction and maintenance of the structure\" to assist others."
+            },
+            {
+                number: 5,
+                title: "Turbine Hall Component Lift",
+                image: "https://i.ibb.co/4Z4PhRS2/IMAGE10.png",
+                description: "A 92-tonne component needs to be lifted using a mobile crane rated at 100 tonnes. The lift plan calculates the load as 92% of crane capacity at the required radius. The weather forecast shows 25 mph winds expected. No derating for environmental conditions has been applied.",
+                details: [
+                    { label: "Component weight", value: "92 tonnes" },
+                    { label: "Crane capacity at radius", value: "100 tonnes" },
+                    { label: "Utilisation", value: "92%", class: "danger" },
+                    { label: "Wind forecast", value: "25 mph — no derating applied", class: "warning" }
+                ],
+                question: "Why should this lift plan be questioned?",
+                options: [
+                    { id: "a", text: "92% utilisation is within safe limits" },
+                    { id: "b", text: "Wind conditions require derating, making capacity marginal or insufficient" },
+                    { id: "c", text: "Mobile cranes cannot lift turbine components" },
+                    { id: "d", text: "The lift should be done at night when winds are calmer" }
+                ],
+                correct: "b",
+                feedbackCorrect: "Operating at 92% of rated capacity leaves minimal margin. Wind loading on the load and crane structure will reduce effective capacity. Best practice is to operate at no more than 80% of rated capacity for planned lifts, and environmental derating must be applied. At 25 mph winds with a large component, this lift is likely over-capacity once properly derated.",
+                feedbackIncorrect: "The lift plan fails to apply environmental derating for wind conditions. A 92-tonne load at 92% capacity with 25 mph winds is unsafe. Wind increases both the load on the crane (due to wind loading on the suspended component) and reduces crane stability. The Appointed Person should either derate the crane capacity for conditions or postpone the lift.",
+                reference: "Typical industry practice limits planned lifts to 80% of rated capacity to allow margin for environmental factors, dynamic loading, and measurement tolerances."
+            }
+        ];
+
+        let currentScenario = 0;
+        let score = 0;
+        let answers = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            loadScenario(0);
+            updateProgressBar();
+        });
+
+        // Particle System
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (8 + Math.random() * 8) + 's';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
+                container.appendChild(particle);
+            }
+        }
+
+        // Progress Bar
+        function updateProgressBar() {
+            window.addEventListener('scroll', () => {
+                const scrollTop = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const progress = (scrollTop / docHeight) * 100;
+                document.getElementById('progressBar').style.width = progress + '%';
+            });
+        }
+
+        // Scroll to section
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Load Scenario
+        function loadScenario(index) {
+            if (index >= scenarios.length) {
+                showResults();
+                return;
+            }
+
+            const scenario = scenarios[index];
+            const container = document.getElementById('scenarioContainer');
+
+            container.innerHTML = `
+                <div class="scenario-card">
+                    <div class="scenario-header">
+                        <img src="${scenario.image}" alt="${scenario.title}">
+                    </div>
+                    <div class="scenario-content">
+                        <div class="scenario-number">SCENARIO ${scenario.number} OF 5</div>
+                        <h3 class="scenario-title">${scenario.title}</h3>
+                        <p class="scenario-description">${scenario.description}</p>
+                        
+                        <div class="details-grid">
+                            ${scenario.details.map(d => `
+                                <div class="detail-item">
+                                    <div class="label">${d.label}</div>
+                                    <div class="value ${d.class || ''}">${d.value}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="question-text">${scenario.question}</div>
+
+                        <div class="options" id="options">
+                            ${scenario.options.map(opt => `
+                                <label class="option" data-answer="${opt.id}">
+                                    <input type="radio" name="answer" value="${opt.id}">
+                                    <span class="radio"></span>
+                                    <span class="option-text">${opt.text}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+
+                        <button class="btn-submit" id="submitBtn" onclick="submitAnswer()" disabled>Submit Answer</button>
+
+                        <div class="feedback-panel" id="feedbackPanel">
+                            <h4 id="feedbackTitle"></h4>
+                            <p id="feedbackText"></p>
+                            <p class="regulation-ref" id="feedbackRef"></p>
+                        </div>
+
+                        <button class="btn-next" id="nextBtn" onclick="nextScenario()">
+                            ${index < scenarios.length - 1 ? 'Next Scenario →' : 'View Results →'}
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Add click handlers to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', () => selectOption(option));
+            });
+
+            updateSteps();
+        }
+
+        // Select Option
+        function selectOption(option) {
+            if (document.getElementById('feedbackPanel').classList.contains('correct') ||
+                document.getElementById('feedbackPanel').classList.contains('incorrect')) {
+                return; // Already answered
+            }
+
+            document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+            option.classList.add('selected');
+            option.querySelector('input').checked = true;
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        // Submit Answer
+        function submitAnswer() {
+            const selected = document.querySelector('.option.selected');
+            if (!selected) return;
+
+            const answer = selected.dataset.answer;
+            const scenario = scenarios[currentScenario];
+            const isCorrect = answer === scenario.correct;
+
+            if (isCorrect) {
+                score++;
+                selected.classList.add('correct');
+            } else {
+                selected.classList.add('incorrect');
+                document.querySelector(`.option[data-answer="${scenario.correct}"]`).classList.add('correct');
+            }
+
+            answers.push({ scenario: currentScenario, answer, correct: isCorrect });
+
+            // Show feedback
+            const feedbackPanel = document.getElementById('feedbackPanel');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackText = document.getElementById('feedbackText');
+            const feedbackRef = document.getElementById('feedbackRef');
+
+            feedbackPanel.classList.remove('correct', 'incorrect');
+            feedbackPanel.classList.add(isCorrect ? 'correct' : 'incorrect');
+            feedbackTitle.innerHTML = isCorrect ? '✓ Correct' : '✗ Not Quite Right';
+            feedbackText.textContent = isCorrect ? scenario.feedbackCorrect : scenario.feedbackIncorrect;
+            feedbackRef.textContent = scenario.reference;
+
+            // Update step indicator
+            const step = document.querySelector(`.step[data-step="${currentScenario + 1}"]`);
+            step.classList.remove('active');
+            step.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+            // Show next button, hide submit
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextBtn').classList.add('visible');
+
+            // Disable options
+            document.querySelectorAll('.option').forEach(o => {
+                o.style.pointerEvents = 'none';
+            });
+        }
+
+        // Next Scenario
+        function nextScenario() {
+            currentScenario++;
+            if (currentScenario < scenarios.length) {
+                loadScenario(currentScenario);
+            } else {
+                showResults();
+            }
+        }
+
+        // Update Step Indicators
+        function updateSteps() {
+            document.querySelectorAll('.step').forEach((step, i) => {
+                step.classList.remove('active');
+                if (i === currentScenario) {
+                    step.classList.add('active');
+                }
+            });
+        }
+
+        // Show Results
+        function showResults() {
+            document.getElementById('scenarioContainer').classList.add('hidden');
+            document.getElementById('progressSteps').classList.add('hidden');
+
+            const resultsScreen = document.getElementById('resultsScreen');
+            resultsScreen.classList.add('visible');
+
+            const icon = document.getElementById('resultsIcon');
+            const scoreDisplay = document.getElementById('resultsScore');
+            const message = document.getElementById('resultsMessage');
+
+            scoreDisplay.textContent = `${score} / 5 Correct`;
+
+            if (score === 5) {
+                icon.className = 'results-icon excellent';
+                icon.textContent = '✓';
+                message.textContent = "Excellent. You've demonstrated strong understanding of lifting operation requirements. You identified all critical issues that could lead to incidents, injuries, or prosecution.";
+            } else if (score === 4) {
+                icon.className = 'results-icon good';
+                icon.textContent = '✓';
+                message.textContent = "Good result. You identified most critical issues. Review the scenario you missed — in real operations, every gap matters.";
+            } else if (score === 3) {
+                icon.className = 'results-icon adequate';
+                icon.textContent = '!';
+                message.textContent = "Adequate, but improvement needed. Three issues identified, but two were missed. Each of these failures has led to real fatalities in the industry.";
+            } else {
+                icon.className = 'results-icon poor';
+                icon.textContent = '✗';
+                message.textContent = "Further study required. Multiple critical issues were missed. Review the LOLER and CDM requirements before continuing. These are not abstract regulations — they prevent deaths.";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1962 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Weld Workshop | The Nuclear House</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --workshop-orange: #e85a1c;
+            --workshop-orange-light: #ff7a3d;
+            --workshop-orange-glow: rgba(232, 90, 28, 0.4);
+            --industrial-blue: #2d5a7b;
+            --steel-grey: #4a5568;
+            --steel-grey-light: #718096;
+            --safety-yellow: #f6b93b;
+            --success-green: #27ae60;
+            --error-red: #dc3545;
+            --dark-bg: #1a1a2e;
+            --darker-bg: #12121f;
+            --card-bg: #f8f9fa;
+            --card-dark: rgba(255, 255, 255, 0.05);
+            --text-light: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --shadow-glow: 0 0 40px rgba(232, 90, 28, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Screen Container */
+        .screen {
+            display: none;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-small {
+            height: 30px;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            flex: 1;
+            max-width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin: 0 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--workshop-orange) 0%, var(--workshop-orange-light) 100%);
+            transition: width 0.5s ease;
+            border-radius: 2px;
+        }
+
+        .progress-text {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        /* Background Styles */
+        .bg-workshop {
+            background: 
+                linear-gradient(180deg, rgba(26, 26, 46, 0.7) 0%, rgba(26, 26, 46, 0.9) 100%),
+                url('https://i.ibb.co/PZ8F4sHb/IMAGE-1.png') center center / cover no-repeat;
+        }
+
+        .bg-workbench {
+            background: 
+                linear-gradient(180deg, rgba(26, 26, 46, 0.85) 0%, rgba(26, 26, 46, 0.95) 100%),
+                url('https://i.ibb.co/N6VcPPH5/IMAGE-9.png') center center / cover no-repeat;
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 100px 40px 60px;
+            min-height: 100vh;
+        }
+
+        /* Screen 1: Welcome */
+        .welcome-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: calc(100vh - 160px);
+            position: relative;
+        }
+
+        .welcome-logo {
+            height: 50px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .welcome-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-light) 0%, var(--workshop-orange-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.3rem;
+            font-weight: 300;
+            color: var(--text-muted);
+            margin-bottom: 50px;
+            letter-spacing: 2px;
+        }
+
+        .welcome-text {
+            max-width: 700px;
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: var(--text-muted);
+            margin-bottom: 50px;
+            text-align: left;
+        }
+
+        .welcome-text p {
+            margin-bottom: 20px;
+        }
+
+        .welcome-text strong {
+            color: var(--text-light);
+        }
+
+        /* Spark effect */
+        .spark-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .spark {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--workshop-orange);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--workshop-orange), 0 0 20px var(--workshop-orange-light);
+            animation: sparkFloat 3s ease-out infinite;
+        }
+
+        @keyframes sparkFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(0);
+            }
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--workshop-orange) 0%, var(--workshop-orange-light) 100%);
+            color: white;
+            box-shadow: 0 4px 20px var(--workshop-orange-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px var(--workshop-orange-glow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover i.fa-arrow-right {
+            transform: translateX(4px);
+        }
+
+        .btn:hover i.fa-arrow-left {
+            transform: translateX(-4px);
+        }
+
+        /* Section Headers */
+        .section-header {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            color: var(--text-light);
+        }
+
+        .section-title .highlight {
+            color: var(--workshop-orange);
+        }
+
+        .section-subtitle {
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        .section-intro {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 800px;
+        }
+
+        /* Screen 2: Cost Stack */
+        .cost-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        .cost-image {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .cost-image img {
+            width: 100%;
+            display: block;
+        }
+
+        .cost-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .cost-layer {
+            background: var(--card-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .cost-layer:hover {
+            border-color: var(--workshop-orange);
+            box-shadow: 0 0 20px rgba(232, 90, 28, 0.2);
+        }
+
+        .cost-layer.active {
+            border-color: var(--workshop-orange);
+            background: rgba(232, 90, 28, 0.1);
+        }
+
+        .cost-layer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+        }
+
+        .cost-layer-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .cost-layer-number {
+            width: 28px;
+            height: 28px;
+            background: var(--workshop-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .cost-layer-icon {
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+
+        .cost-layer.active .cost-layer-icon {
+            transform: rotate(180deg);
+        }
+
+        .cost-layer-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .cost-layer.active .cost-layer-content {
+            max-height: 400px;
+        }
+
+        .cost-layer-inner {
+            padding: 0 20px 20px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .cost-layer-inner ul {
+            margin: 12px 0 0 20px;
+        }
+
+        .cost-layer-inner li {
+            margin-bottom: 6px;
+        }
+
+        /* Comparison Box */
+        .comparison-box {
+            background: var(--card-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .comparison-item h4 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .comparison-item.conventional h4 {
+            color: var(--success-green);
+        }
+
+        .comparison-item.nuclear h4 {
+            color: var(--workshop-orange);
+        }
+
+        .comparison-item p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* Key Message Box */
+        .key-message {
+            background: linear-gradient(135deg, rgba(232, 90, 28, 0.15) 0%, rgba(232, 90, 28, 0.05) 100%);
+            border-left: 4px solid var(--workshop-orange);
+            border-radius: 0 12px 12px 0;
+            padding: 24px 30px;
+            margin: 40px 0;
+        }
+
+        .key-message p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-light);
+        }
+
+        .key-message strong {
+            color: var(--workshop-orange);
+        }
+
+        /* Screen 3: Minimise Welds */
+        .principle-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        .principle-content h3 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--workshop-orange);
+            margin: 30px 0 16px;
+        }
+
+        .principle-content h3:first-of-type {
+            margin-top: 0;
+        }
+
+        .principle-content p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+        }
+
+        .principle-image {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .principle-image img {
+            width: 100%;
+            display: block;
+        }
+
+        .technique-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .technique-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .technique-list li:last-child {
+            border-bottom: none;
+        }
+
+        .technique-list .num {
+            width: 28px;
+            height: 28px;
+            background: var(--industrial-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .technique-list .text strong {
+            display: block;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .technique-list .text span {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        /* Weld Counter Animation */
+        .weld-counter {
+            background: var(--card-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .weld-counter-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .weld-count {
+            text-align: center;
+        }
+
+        .weld-count .number {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .weld-count.original .number {
+            color: var(--error-red);
+        }
+
+        .weld-count.optimised .number {
+            color: var(--success-green);
+        }
+
+        .weld-count .label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .weld-arrow {
+            font-size: 2rem;
+            color: var(--workshop-orange);
+        }
+
+        .weld-counter p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Screen 4 & 5: Access Comparison */
+        .access-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .access-card {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .access-card.bad {
+            border-color: var(--error-red);
+        }
+
+        .access-card.good {
+            border-color: var(--success-green);
+        }
+
+        .access-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .access-card-content {
+            padding: 20px;
+        }
+
+        .access-card.bad .access-card-content {
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .access-card.good .access-card-content {
+            background: rgba(39, 174, 96, 0.1);
+        }
+
+        .access-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .access-card.bad h4 {
+            color: var(--error-red);
+        }
+
+        .access-card.good h4 {
+            color: var(--success-green);
+        }
+
+        .access-card ul {
+            list-style: none;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .access-card li {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .access-card.bad li i {
+            color: var(--error-red);
+        }
+
+        .access-card.good li i {
+            color: var(--success-green);
+        }
+
+        /* Checklist */
+        .checklist {
+            background: var(--card-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .checklist h4 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--workshop-orange);
+            margin-bottom: 20px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-item i {
+            color: var(--steel-grey-light);
+            font-size: 1.1rem;
+        }
+
+        /* NDT Methods Grid */
+        .ndt-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 30px 0;
+        }
+
+        .ndt-card {
+            background: var(--card-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .ndt-card:hover {
+            border-color: var(--workshop-orange);
+            transform: translateY(-4px);
+        }
+
+        .ndt-card h5 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: var(--workshop-orange);
+            margin-bottom: 10px;
+        }
+
+        .ndt-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Screen 6: Access Checker */
+        .checker-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .checker-image-container {
+            position: relative;
+            background: var(--card-dark);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .checker-image {
+            width: 100%;
+            display: block;
+        }
+
+        .weld-marker {
+            position: absolute;
+            width: 36px;
+            height: 36px;
+            background: var(--workshop-orange);
+            border: 3px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 0 15px var(--workshop-orange-glow);
+        }
+
+        .weld-marker:hover {
+            transform: scale(1.15);
+        }
+
+        .weld-marker.checked {
+            background: var(--success-green);
+            box-shadow: 0 0 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .weld-marker.problem {
+            background: var(--error-red);
+            box-shadow: 0 0 15px rgba(220, 53, 69, 0.4);
+        }
+
+        .weld-marker.warning {
+            background: var(--safety-yellow);
+            color: var(--dark-bg);
+            box-shadow: 0 0 15px rgba(246, 185, 59, 0.4);
+        }
+
+        /* Marker positions */
+        .weld-marker[data-weld="A"] { top: 38%; left: 34%; }
+        .weld-marker[data-weld="B"] { top: 48%; left: 28%; }
+        .weld-marker[data-weld="C"] { top: 22%; left: 48%; }
+        .weld-marker[data-weld="D"] { top: 48%; left: 58%; }
+        .weld-marker[data-weld="E"] { top: 46%; left: 68%; }
+
+        .checker-panel {
+            background: var(--card-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .checker-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .checker-tab {
+            flex: 1;
+            padding: 16px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .checker-tab.active {
+            background: rgba(232, 90, 28, 0.2);
+            color: var(--workshop-orange);
+        }
+
+        .checker-tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .checker-result {
+            padding: 24px;
+        }
+
+        .checker-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .checker-empty i {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .weld-result {
+            display: none;
+        }
+
+        .weld-result.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .weld-result h4 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-section {
+            margin-bottom: 20px;
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .result-section.good {
+            background: rgba(39, 174, 96, 0.1);
+            border-left: 3px solid var(--success-green);
+        }
+
+        .result-section.bad {
+            background: rgba(220, 53, 69, 0.1);
+            border-left: 3px solid var(--error-red);
+        }
+
+        .result-section.warning {
+            background: rgba(246, 185, 59, 0.1);
+            border-left: 3px solid var(--safety-yellow);
+        }
+
+        .result-section h5 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-section.good h5 { color: var(--success-green); }
+        .result-section.bad h5 { color: var(--error-red); }
+        .result-section.warning h5 { color: var(--safety-yellow); }
+
+        .result-section p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .checker-summary {
+            background: var(--workshop-orange);
+            padding: 16px 24px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Screen 7: Takeaways */
+        .takeaways-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin: 40px 0;
+        }
+
+        .takeaway-card {
+            background: var(--card-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            transition: var(--transition);
+        }
+
+        .takeaway-card:hover {
+            border-color: var(--workshop-orange);
+            transform: translateY(-4px);
+        }
+
+        .takeaway-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--workshop-orange);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .takeaway-icon i {
+            font-size: 1.4rem;
+            color: white;
+        }
+
+        .takeaway-card h3 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .takeaway-card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .final-questions {
+            background: var(--card-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .final-questions h3 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+            color: var(--workshop-orange);
+        }
+
+        .final-questions ol {
+            list-style: none;
+            counter-reset: questions;
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .final-questions li {
+            counter-increment: questions;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 12px 0;
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .final-questions li::before {
+            content: counter(questions);
+            width: 28px;
+            height: 28px;
+            background: var(--industrial-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        .completion-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: rgba(39, 174, 96, 0.15);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            padding: 20px 30px;
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-top: 30px;
+        }
+
+        .completion-note i {
+            color: var(--success-green);
+            font-size: 1.3rem;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .cost-layout,
+            .principle-layout,
+            .checker-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .takeaways-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content-container {
+                padding: 80px 20px 40px;
+            }
+
+            .welcome-title {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .access-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav-buttons .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .progress-container {
+                padding: 10px 16px;
+            }
+
+            .progress-bar {
+                max-width: 150px;
+            }
+
+            .logo-small {
+                height: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <img src="https://i.ibb.co/7tbxnN83/Logo-white.png" alt="The Nuclear House" class="logo-small">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 14.28%;"></div>
+        </div>
+        <span class="progress-text" id="progressText">1 of 7</span>
+    </div>
+
+    <!-- Screen 1: Welcome -->
+    <section class="screen bg-workshop active" id="screen1">
+        <div class="spark-container" id="sparkContainer"></div>
+        <div class="content-container">
+            <div class="welcome-layout">
+                <img src="https://i.ibb.co/7tbxnN83/Logo-white.png" alt="The Nuclear House" class="welcome-logo">
+                <h1 class="welcome-title">The Weld Workshop</h1>
+                <p class="welcome-subtitle">Master the principles of nuclear weld design</p>
+                
+                <div class="welcome-text">
+                    <p><strong>Welcome to the workshop, Engineer.</strong></p>
+                    <p>In nuclear, welding isn't just joining metal—it's one of the most heavily scrutinised activities in your entire project.</p>
+                    <p>Every weld you design will require qualified procedures, certified welders, multiple inspections, and documentation that follows the component for 60 years of plant life.</p>
+                    <p>Get it right in design, and manufacturing flows smoothly. Get it wrong, and you'll face costly redesigns, schedule delays, and difficult conversations with your Design Authority.</p>
+                    <p>Let's learn the principles that will make you a better weld designer.</p>
+                </div>
+                
+                <button class="btn btn-primary" onclick="goToScreen(2)">
+                    Enter the Workshop <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screen 2: Why Welds Cost -->
+    <section class="screen bg-workbench" id="screen2">
+        <div class="content-container">
+            <div class="section-header">
+                <h2 class="section-title">Why Every Weld Carries <span class="highlight">Significant Cost</span></h2>
+                <p class="section-subtitle">It's not the welding—it's everything around it</p>
+            </div>
+            
+            <p class="section-intro">In conventional fabrication, a weld might cost a few hours of labour. In nuclear, that same weld triggers a cascade of requirements that can multiply the true cost by 10x or more.</p>
+            
+            <div class="cost-layout">
+                <div class="cost-image">
+                    <img src="https://i.ibb.co/9HWGBWVZ/IMAGE-2.png" alt="Documentation stack">
+                </div>
+                
+                <div class="cost-stack">
+                    <div class="cost-layer" onclick="toggleLayer(this)">
+                        <div class="cost-layer-header">
+                            <span class="cost-layer-title">
+                                <span class="cost-layer-number">1</span>
+                                Procedure Qualification
+                            </span>
+                            <i class="fas fa-chevron-down cost-layer-icon"></i>
+                        </div>
+                        <div class="cost-layer-content">
+                            <div class="cost-layer-inner">
+                                Before anyone welds, the procedure itself must be qualified. A Welding Procedure Specification (WPS) defines exactly how the weld will be made. The Procedure Qualification Record (PQR) proves the procedure produces acceptable results.
+                                <ul>
+                                    <li>Requires test pieces and destructive testing</li>
+                                    <li>Third-party review required</li>
+                                    <li>Under ASME Section IX and RCC-M Section IV, every variable matters</li>
+                                    <li>You may need dozens of qualified procedures</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cost-layer" onclick="toggleLayer(this)">
+                        <div class="cost-layer-header">
+                            <span class="cost-layer-title">
+                                <span class="cost-layer-number">2</span>
+                                Welder Qualification
+                            </span>
+                            <i class="fas fa-chevron-down cost-layer-icon"></i>
+                        </div>
+                        <div class="cost-layer-content">
+                            <div class="cost-layer-inner">
+                                Only qualified welders can perform nuclear welds. Each welder must demonstrate competence for specific procedures, positions, and materials.
+                                <ul>
+                                    <li>Qualifications must be maintained through continuous work</li>
+                                    <li>Re-testing required if qualification lapses</li>
+                                    <li>Records must be kept and available for audit</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cost-layer" onclick="toggleLayer(this)">
+                        <div class="cost-layer-header">
+                            <span class="cost-layer-title">
+                                <span class="cost-layer-number">3</span>
+                                Pre-Weld Requirements
+                            </span>
+                            <i class="fas fa-chevron-down cost-layer-icon"></i>
+                        </div>
+                        <div class="cost-layer-content">
+                            <div class="cost-layer-inner">
+                                <ul>
+                                    <li>Fit-up inspection and approval before welding begins</li>
+                                    <li>Material verification (correct heat numbers, traceability)</li>
+                                    <li>Joint preparation check (geometry, cleanliness)</li>
+                                    <li>Preheat verification where required</li>
+                                    <li>All documented with hold points</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cost-layer" onclick="toggleLayer(this)">
+                        <div class="cost-layer-header">
+                            <span class="cost-layer-title">
+                                <span class="cost-layer-number">4</span>
+                                In-Process Controls
+                            </span>
+                            <i class="fas fa-chevron-down cost-layer-icon"></i>
+                        </div>
+                        <div class="cost-layer-content">
+                            <div class="cost-layer-inner">
+                                <ul>
+                                    <li>Interpass temperature monitoring</li>
+                                    <li>Weld sequence control</li>
+                                    <li>Witness hold points for critical welds</li>
+                                    <li>Real-time documentation of parameters</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cost-layer" onclick="toggleLayer(this)">
+                        <div class="cost-layer-header">
+                            <span class="cost-layer-title">
+                                <span class="cost-layer-number">5</span>
+                                Post-Weld Inspection
+                            </span>
+                            <i class="fas fa-chevron-down cost-layer-icon"></i>
+                        </div>
+                        <div class="cost-layer-content">
+                            <div class="cost-layer-inner">
+                                <ul>
+                                    <li>Visual Testing (VT) - 100% of all welds</li>
+                                    <li>Surface examination: PT or MT</li>
+                                    <li>Volumetric examination: RT or UT</li>
+                                    <li>For Class 1 components, expect multiple NDT methods</li>
+                                    <li>Each method requires qualified procedures and certified inspectors</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cost-layer" onclick="toggleLayer(this)">
+                        <div class="cost-layer-header">
+                            <span class="cost-layer-title">
+                                <span class="cost-layer-number">6</span>
+                                Post-Weld Heat Treatment
+                            </span>
+                            <i class="fas fa-chevron-down cost-layer-icon"></i>
+                        </div>
+                        <div class="cost-layer-content">
+                            <div class="cost-layer-inner">
+                                Where required:
+                                <ul>
+                                    <li>Controlled heating and cooling cycles</li>
+                                    <li>Thermocouple placement and monitoring</li>
+                                    <li>Documentation of time-temperature profiles</li>
+                                    <li>Often witnessed by third party</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cost-layer" onclick="toggleLayer(this)">
+                        <div class="cost-layer-header">
+                            <span class="cost-layer-title">
+                                <span class="cost-layer-number">7</span>
+                                Documentation Package
+                            </span>
+                            <i class="fas fa-chevron-down cost-layer-icon"></i>
+                        </div>
+                        <div class="cost-layer-content">
+                            <div class="cost-layer-inner">
+                                Every weld gets a complete record package:
+                                <ul>
+                                    <li>WPS used, welder ID, materials, consumables</li>
+                                    <li>All inspection results and any repairs</li>
+                                    <li>Package lives with the component forever</li>
+                                    <li>Required for in-service inspection planning</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="comparison-box">
+                <div class="comparison-grid">
+                    <div class="comparison-item conventional">
+                        <h4><i class="fas fa-industry"></i> Oil & Gas Pipe Weld</h4>
+                        <p>Specify, weld, basic inspection, done.</p>
+                    </div>
+                    <div class="comparison-item nuclear">
+                        <h4><i class="fas fa-atom"></i> Nuclear Class 1 Weld</h4>
+                        <p>Procedure qualification → welder qualification → fit-up inspection → pre-weld verification → welding with parameter control → VT → PT or MT → UT or RT → documentation package → Design Authority review.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="key-message">
+                <p><strong>This is why weld design matters.</strong> Every weld you add to your design triggers this entire cascade. Reduce welds, and you reduce cost and schedule proportionally.</p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="goToScreen(1)">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-primary" onclick="goToScreen(3)">
+                    Next: Minimise Welds <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screen 3: Minimise Welds -->
+    <section class="screen bg-workbench" id="screen3">
+        <div class="content-container">
+            <div class="section-header">
+                <h2 class="section-title">Principle 1: <span class="highlight">Minimise Welds</span></h2>
+                <p class="section-subtitle">The best weld is the one you don't need</p>
+            </div>
+            
+            <div class="principle-layout">
+                <div class="principle-content">
+                    <p>Every weld you eliminate removes:</p>
+                    <ul class="technique-list" style="margin-top: 16px;">
+                        <li><i class="fas fa-minus-circle" style="color: var(--success-green);"></i> A qualified procedure requirement</li>
+                        <li><i class="fas fa-minus-circle" style="color: var(--success-green);"></i> Welder time and qualification overhead</li>
+                        <li><i class="fas fa-minus-circle" style="color: var(--success-green);"></i> Multiple inspection activities</li>
+                        <li><i class="fas fa-minus-circle" style="color: var(--success-green);"></i> A potential defect location</li>
+                        <li><i class="fas fa-minus-circle" style="color: var(--success-green);"></i> Documentation burden</li>
+                        <li><i class="fas fa-minus-circle" style="color: var(--success-green);"></i> An in-service inspection point for 60 years</li>
+                    </ul>
+                    
+                    <h3>Techniques to reduce weld count</h3>
+                    <ul class="technique-list">
+                        <li>
+                            <span class="num">1</span>
+                            <span class="text">
+                                <strong>Combine parts through design</strong>
+                                <span>Instead of welding multiple plates together, can you specify a single larger plate?</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="num">2</span>
+                            <span class="text">
+                                <strong>Use forgings or formed components</strong>
+                                <span>A forged nozzle-to-shell connection eliminates welds. Yes, forgings cost more upfront—but total through-life cost may be lower.</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="num">3</span>
+                            <span class="text">
+                                <strong>Challenge every weld in design review</strong>
+                                <span>For each weld, ask: "Why is this joint here? Can we eliminate it?"</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="num">4</span>
+                            <span class="text">
+                                <strong>Consider modular assembly</strong>
+                                <span>If you must have welds, can they be made in controlled factory conditions?</span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <div class="principle-image">
+                        <img src="https://i.ibb.co/QFYdr8zk/IMAGE-8.png" alt="Before and after weld optimisation">
+                    </div>
+                    
+                    <div class="weld-counter">
+                        <div class="weld-counter-display">
+                            <div class="weld-count original">
+                                <div class="number">8</div>
+                                <div class="label">Original Welds</div>
+                            </div>
+                            <div class="weld-arrow"><i class="fas fa-arrow-right"></i></div>
+                            <div class="weld-count optimised">
+                                <div class="number">4</div>
+                                <div class="label">Optimised</div>
+                            </div>
+                        </div>
+                        <p>Result: Procedure qualifications reduced. Inspection time halved. Documentation simplified. Schedule compressed. Same function.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="key-message">
+                <p><strong>Designer challenge:</strong> Before finalising any assembly, count your welds. Then ask: can I reduce this number by 25%? Often, you can.</p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="goToScreen(2)">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-primary" onclick="goToScreen(4)">
+                    Next: Welder Access <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screen 4: Welder Access -->
+    <section class="screen bg-workbench" id="screen4">
+        <div class="content-container">
+            <div class="section-header">
+                <h2 class="section-title">Principle 2: <span class="highlight">Design for Welder Access</span></h2>
+                <p class="section-subtitle">If the welder can't reach it properly, quality suffers</p>
+            </div>
+            
+            <p class="section-intro">A weld can only be as good as the conditions allow. Confined spaces, awkward positions, and restricted visibility all degrade weld quality and increase the risk of defects.</p>
+            
+            <div class="access-comparison">
+                <div class="access-card bad">
+                    <img src="https://i.ibb.co/5XgKfYt4/IMAGE-3.png" alt="Poor welder access">
+                    <div class="access-card-content">
+                        <h4><i class="fas fa-times-circle"></i> Poor Access</h4>
+                        <ul>
+                            <li><i class="fas fa-times"></i> Welder must work overhead</li>
+                            <li><i class="fas fa-times"></i> Limited torch angle</li>
+                            <li><i class="fas fa-times"></i> Restricted visibility</li>
+                            <li><i class="fas fa-times"></i> Ventilation difficult</li>
+                            <li><i class="fas fa-times"></i> Higher defect probability</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="access-card good">
+                    <img src="https://i.ibb.co/qFsqYcr4/IMAGE-4.png" alt="Good welder access">
+                    <div class="access-card-content">
+                        <h4><i class="fas fa-check-circle"></i> Good Access</h4>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Flat or horizontal position</li>
+                            <li><i class="fas fa-check"></i> Full torch manipulation</li>
+                            <li><i class="fas fa-check"></i> Clear visibility</li>
+                            <li><i class="fas fa-check"></i> Good ventilation</li>
+                            <li><i class="fas fa-check"></i> Faster, higher quality, fewer repairs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="principle-layout">
+                <div class="principle-content">
+                    <h3>What welders need</h3>
+                    <ul class="technique-list">
+                        <li>
+                            <span class="num"><i class="fas fa-expand-arrows-alt"></i></span>
+                            <span class="text">
+                                <strong>Physical space</strong>
+                                <span>Room for the welding torch, correct torch angle (typically 15-45° from perpendicular), clearance for equipment</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="num"><i class="fas fa-user"></i></span>
+                            <span class="text">
+                                <strong>Body position</strong>
+                                <span>Welders produce best quality in comfortable, stable positions. Overhead and vertical-up are more difficult than flat.</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="num"><i class="fas fa-eye"></i></span>
+                            <span class="text">
+                                <strong>Visibility</strong>
+                                <span>The welder must see the weld pool clearly. Restricted sight lines lead to defects.</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="num"><i class="fas fa-wind"></i></span>
+                            <span class="text">
+                                <strong>Ventilation</strong>
+                                <span>Welding produces fumes that must be extracted. Confined spaces require mechanical ventilation.</span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="checklist">
+                    <h4><i class="fas fa-clipboard-check"></i> Designer Checklist</h4>
+                    <div class="checklist-item"><i class="far fa-square"></i> Can a welder physically reach this joint?</div>
+                    <div class="checklist-item"><i class="far fa-square"></i> What position will they weld in? (Flat is best)</div>
+                    <div class="checklist-item"><i class="far fa-square"></i> Is there room for torch manipulation?</div>
+                    <div class="checklist-item"><i class="far fa-square"></i> Can they see the weld pool?</div>
+                    <div class="checklist-item"><i class="far fa-square"></i> How will fumes be extracted?</div>
+                    <div class="checklist-item"><i class="far fa-square"></i> Have you consulted manufacturing early?</div>
+                </div>
+            </div>
+            
+            <div class="key-message">
+                <p><strong>Talk to your manufacturing team during design.</strong> They can tell you in minutes what will take months to discover if you wait until fabrication.</p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="goToScreen(3)">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-primary" onclick="goToScreen(5)">
+                    Next: Inspector Access <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screen 5: Inspector Access -->
+    <section class="screen bg-workbench" id="screen5">
+        <div class="content-container">
+            <div class="section-header">
+                <h2 class="section-title">Principle 3: <span class="highlight">Design for Inspector Access</span></h2>
+                <p class="section-subtitle">If you can't inspect it, you can't use it</p>
+            </div>
+            
+            <p class="section-intro">Every nuclear weld WILL be inspected—during manufacture and throughout the plant's 60-year operating life. In-service inspection (ISI) requirements under ASME Section XI or RSE-M mean your weld must remain accessible and inspectable for decades.</p>
+            
+            <div class="access-comparison">
+                <div class="access-card bad">
+                    <img src="https://i.ibb.co/60bmqvZx/IMAGE-6.png" alt="Difficult inspection access">
+                    <div class="access-card-content">
+                        <h4><i class="fas fa-times-circle"></i> Poor Inspection Access</h4>
+                        <ul>
+                            <li><i class="fas fa-times"></i> UT scanning surface blocked</li>
+                            <li><i class="fas fa-times"></i> RT single-wall access only</li>
+                            <li><i class="fas fa-times"></i> Limited probe manipulation</li>
+                            <li><i class="fas fa-times"></i> ISI will be problematic</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="access-card good">
+                    <img src="https://i.ibb.co/ycgvHn2W/IMAGE-5.png" alt="Good inspection access">
+                    <div class="access-card-content">
+                        <h4><i class="fas fa-check-circle"></i> Good Inspection Access</h4>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Full UT scanning surface</li>
+                            <li><i class="fas fa-check"></i> RT access both sides</li>
+                            <li><i class="fas fa-check"></i> Clear for VT and PT</li>
+                            <li><i class="fas fa-check"></i> ISI provisions included</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 style="margin: 30px 0 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; letter-spacing: 1px; color: var(--workshop-orange);">NDT Methods & Access Requirements</h3>
+            
+            <div class="ndt-grid">
+                <div class="ndt-card">
+                    <h5>Visual Testing (VT)</h5>
+                    <p>Direct line of sight to weld surface. Adequate lighting (min 500 lux). Both sides where possible.</p>
+                </div>
+                <div class="ndt-card">
+                    <h5>Penetrant Testing (PT)</h5>
+                    <p>Direct surface access for penetrant application, cleaning, and developer. Temperature control (10-52°C).</p>
+                </div>
+                <div class="ndt-card">
+                    <h5>Magnetic Particle (MT)</h5>
+                    <p>Access to apply magnetic field. Surface access for particles. Ferromagnetic materials only.</p>
+                </div>
+                <div class="ndt-card">
+                    <h5>Ultrasonic Testing (UT)</h5>
+                    <p>Smooth scanning surface adjacent to weld. 100-150mm clearance either side. Access from both sides preferred.</p>
+                </div>
+                <div class="ndt-card">
+                    <h5>Radiographic Testing (RT)</h5>
+                    <p>Access to BOTH sides—source one side, film other. Safety exclusion zone required during exposure.</p>
+                </div>
+            </div>
+            
+            <div class="checklist">
+                <h4><i class="fas fa-clipboard-check"></i> Designer Checklist</h4>
+                <div class="checklist-item"><i class="far fa-square"></i> Can VT access this weld from both sides?</div>
+                <div class="checklist-item"><i class="far fa-square"></i> Is there scanning surface for UT probes?</div>
+                <div class="checklist-item"><i class="far fa-square"></i> Can RT source and film be positioned correctly?</div>
+                <div class="checklist-item"><i class="far fa-square"></i> Will this access still exist after installation?</div>
+                <div class="checklist-item"><i class="far fa-square"></i> What about during plant operation?</div>
+                <div class="checklist-item"><i class="far fa-square"></i> Have you consulted your ISI team?</div>
+            </div>
+            
+            <div class="key-message">
+                <p><strong>The AFCEN inspectability guide states:</strong> the inspectability analysis must be positioned in the overall design process, particularly during the preparation of the hazard analysis. Don't leave this until manufacturing.</p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="goToScreen(4)">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-primary" onclick="goToScreen(6)">
+                    Next: Test Your Knowledge <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screen 6: Access Checker -->
+    <section class="screen bg-workshop" id="screen6">
+        <div class="content-container">
+            <div class="section-header">
+                <h2 class="section-title"><span class="highlight">Access Checker</span></h2>
+                <p class="section-subtitle">Can this component be welded AND inspected?</p>
+            </div>
+            
+            <p class="section-intro">Click on each weld marker to evaluate access. Toggle between Welder View and Inspector View to see the full picture.</p>
+            
+            <div class="checker-layout">
+                <div class="checker-image-container">
+                    <img src="https://i.ibb.co/dsJJ6qc7/IMAGE-7-2.png" alt="Component with weld locations" class="checker-image">
+                    <div class="weld-marker" data-weld="A" onclick="showWeldResult('A')">A</div>
+                    <div class="weld-marker" data-weld="B" onclick="showWeldResult('B')">B</div>
+                    <div class="weld-marker" data-weld="C" onclick="showWeldResult('C')">C</div>
+                    <div class="weld-marker" data-weld="D" onclick="showWeldResult('D')">D</div>
+                    <div class="weld-marker" data-weld="E" onclick="showWeldResult('E')">E</div>
+                </div>
+                
+                <div class="checker-panel">
+                    <div class="checker-tabs">
+                        <button class="checker-tab active" onclick="setView('welder', this)">
+                            <i class="fas fa-fire"></i> Welder View
+                        </button>
+                        <button class="checker-tab" onclick="setView('inspector', this)">
+                            <i class="fas fa-search"></i> Inspector View
+                        </button>
+                    </div>
+                    
+                    <div class="checker-result" id="checkerResult">
+                        <div class="checker-empty">
+                            <i class="fas fa-hand-pointer"></i>
+                            <p>Click a weld marker to evaluate</p>
+                        </div>
+                        
+                        <!-- Weld A Result -->
+                        <div class="weld-result" id="result-A">
+                            <h4>Weld A</h4>
+                            <div class="result-section good welder-view">
+                                <h5><i class="fas fa-check-circle"></i> Welder Access: Good</h5>
+                                <p>Flat position, good clearance, clear visibility</p>
+                            </div>
+                            <p class="welder-view" style="margin-top: 16px; padding: 12px; background: rgba(39,174,96,0.1); border-radius: 8px; font-size: 0.9rem;">
+                                <strong style="color: var(--success-green);">✓ Well-designed</strong> for welding — excellent access and position.
+                            </p>
+                            <div class="result-section good inspector-view">
+                                <h5><i class="fas fa-check-circle"></i> Inspector Access: Good</h5>
+                                <p>Full UT scanning surface, RT access both sides</p>
+                            </div>
+                            <p class="inspector-view" style="margin-top: 16px; padding: 12px; background: rgba(39,174,96,0.1); border-radius: 8px; font-size: 0.9rem;">
+                                <strong style="color: var(--success-green);">✓ Well-designed</strong> for inspection — all NDT methods accessible.
+                            </p>
+                        </div>
+                        
+                        <!-- Weld B Result -->
+                        <div class="weld-result" id="result-B">
+                            <h4>Weld B</h4>
+                            <div class="result-section bad welder-view">
+                                <h5><i class="fas fa-times-circle"></i> Welder Access: Problem</h5>
+                                <p>Overhead position in confined space, restricted torch angle</p>
+                            </div>
+                            <p class="welder-view" style="margin-top: 16px; padding: 12px; background: rgba(220,53,69,0.1); border-radius: 8px; font-size: 0.9rem;">
+                                <strong style="color: var(--error-red);">⚠ Welder problem:</strong> Difficult to weld with consistent quality. Consider repositioning or orbital welding.
+                            </p>
+                            <div class="result-section good inspector-view">
+                                <h5><i class="fas fa-check-circle"></i> Inspector Access: Good</h5>
+                                <p>Accessible after completion</p>
+                            </div>
+                            <p class="inspector-view" style="margin-top: 16px; padding: 12px; background: rgba(39,174,96,0.1); border-radius: 8px; font-size: 0.9rem;">
+                                <strong style="color: var(--success-green);">✓ Good inspector access</strong> — all NDT methods can be applied after welding.
+                            </p>
+                        </div>
+                        
+                        <!-- Weld C Result -->
+                        <div class="weld-result" id="result-C">
+                            <h4>Weld C</h4>
+                            <div class="result-section good welder-view">
+                                <h5><i class="fas fa-check-circle"></i> Welder Access: Good</h5>
+                                <p>Good welding position and clearance</p>
+                            </div>
+                            <p class="welder-view" style="margin-top: 16px; padding: 12px; background: rgba(39,174,96,0.1); border-radius: 8px; font-size: 0.9rem;">
+                                <strong style="color: var(--success-green);">✓ Good welder access</strong> — can be welded with consistent quality.
+                            </p>
+                            <div class="result-section bad inspector-view">
+                                <h5><i class="fas fa-times-circle"></i> Inspector Access: Problem</h5>
+                                <p>UT scanning surface blocked by adjacent nozzle, RT single-wall only</p>
+                            </div>
+                            <p class="inspector-view" style="margin-top: 16px; padding: 12px; background: rgba(220,53,69,0.1); border-radius: 8px; font-size: 0.9rem;">
+                                <strong style="color: var(--error-red);">⚠ Inspector problem:</strong> Can be made but will have inspection limitations. Consider moving the adjacent nozzle.
+                            </p>
+                        </div>
+                        
+                        <!-- Weld D Result -->
+                        <div class="weld-result" id="result-D">
+                            <h4>Weld D</h4>
+                            <div class="result-section bad welder-view">
+                                <h5><i class="fas fa-times-circle"></i> Welder Access: Problem</h5>
+                                <p>Tight access, vertical-up position</p>
+                            </div>
+                            <p class="welder-view" style="margin-top: 16px; padding: 12px; background: rgba(220,53,69,0.15); border-radius: 8px; font-size: 0.9rem;">
+                                <strong style="color: var(--error-red);">✗ Serious welder access problem:</strong> Tight access and difficult position will compromise weld quality. Redesign required.
+                            </p>
+                            <div class="result-section bad inspector-view">
+                                <h5><i class="fas fa-times-circle"></i> Inspector Access: Problem</h5>
+                                <p>No UT access, RT not possible due to geometry</p>
+                            </div>
+                            <p class="inspector-view" style="margin-top: 16px; padding: 12px; background: rgba(220,53,69,0.15); border-radius: 8px; font-size: 0.9rem;">
+                                <strong style="color: var(--error-red);">✗ Serious inspector access problem:</strong> Cannot perform required NDT. Redesign required before proceeding.
+                            </p>
+                        </div>
+                        
+                        <!-- Weld E Result -->
+                        <div class="weld-result" id="result-E">
+                            <h4>Weld E</h4>
+                            <div class="result-section good welder-view">
+                                <h5><i class="fas fa-check-circle"></i> Welder Access: Good</h5>
+                                <p>Good access during manufacture</p>
+                            </div>
+                            <p class="welder-view" style="margin-top: 16px; padding: 12px; background: rgba(39,174,96,0.1); border-radius: 8px; font-size: 0.9rem;">
+                                <strong style="color: var(--success-green);">✓ Good welder access</strong> — can be welded with consistent quality during manufacture.
+                            </p>
+                            <div class="result-section warning inspector-view">
+                                <h5><i class="fas fa-exclamation-triangle"></i> Inspector Access: ISI Warning</h5>
+                                <p>Accessible now, but will be blocked by insulation support during operation</p>
+                            </div>
+                            <p class="inspector-view" style="margin-top: 16px; padding: 12px; background: rgba(246,185,59,0.1); border-radius: 8px; font-size: 0.9rem;">
+                                <strong style="color: var(--safety-yellow);">⚠ ISI problem:</strong> Can be inspected initially, but in-service inspection will require modifications. Consider permanent access provisions.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="checker-summary" id="checkerSummary" style="display: none;">
+                        <span id="summaryText">3 of 5 welds need design attention</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="goToScreen(5)">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-primary" onclick="goToScreen(7)">
+                    Next: Key Takeaways <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screen 7: Takeaways -->
+    <section class="screen bg-workshop" id="screen7">
+        <div class="content-container">
+            <div class="section-header" style="text-align: center;">
+                <h2 class="section-title">Key <span class="highlight">Takeaways</span></h2>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 40px;">
+                <img src="https://i.ibb.co/mFPgJvJh/IMAGE-10.png" alt="Quality weld" style="max-width: 500px; width: 100%; border-radius: 12px; box-shadow: var(--shadow-glow);">
+            </div>
+            
+            <div class="takeaways-grid">
+                <div class="takeaway-card">
+                    <div class="takeaway-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h3>Every Weld Triggers a Cascade</h3>
+                    <p>In nuclear, every weld requires procedure qualification, welder qualification, multiple inspections, and documentation. The true cost is many times the physical welding.</p>
+                </div>
+                
+                <div class="takeaway-card">
+                    <div class="takeaway-icon">
+                        <i class="fas fa-minus-circle"></i>
+                    </div>
+                    <h3>Minimise Welds</h3>
+                    <p>The best weld is the one you don't need. Challenge every weld joint in your design. Combine parts, use forgings, eliminate unnecessary joints.</p>
+                </div>
+                
+                <div class="takeaway-card">
+                    <div class="takeaway-icon">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <h3>Design for Welder Access</h3>
+                    <p>Welders need physical space, comfortable positions, visibility, and ventilation. Poor access means poor quality and repairs. Consult manufacturing early.</p>
+                </div>
+                
+                <div class="takeaway-card">
+                    <div class="takeaway-icon">
+                        <i class="fas fa-search-plus"></i>
+                    </div>
+                    <h3>Design for Inspector Access</h3>
+                    <p>Every weld will be inspected during manufacture AND for 60 years of plant life. Different NDT methods need different access. If you can't inspect it, you can't use it.</p>
+                </div>
+            </div>
+            
+            <div class="final-questions">
+                <h3>Before you finalise any weld, ask yourself:</h3>
+                <ol>
+                    <li>Is this weld necessary?</li>
+                    <li>Can the welder reach it and produce quality work?</li>
+                    <li>Can inspectors examine it using required NDT methods?</li>
+                    <li>Will it still be inspectable after 30 years of operation?</li>
+                </ol>
+                <p style="margin-top: 20px; color: var(--text-muted);">If you can't answer yes to all four, redesign before you build.</p>
+            </div>
+            
+            <div class="completion-note">
+                <i class="fas fa-check-circle"></i>
+                <span>You've completed The Weld Workshop. Use the course menu to continue to the next module.</span>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let currentScreen = 1;
+        const totalScreens = 7;
+        let currentView = 'welder';
+        let checkedWelds = new Set();
+
+        function goToScreen(screenNum) {
+            document.getElementById(`screen${currentScreen}`).classList.remove('active');
+            document.getElementById(`screen${screenNum}`).classList.add('active');
+            currentScreen = screenNum;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function updateProgress() {
+            const progressPercent = (currentScreen / totalScreens) * 100;
+            document.getElementById('progressFill').style.width = `${progressPercent}%`;
+            document.getElementById('progressText').textContent = `${currentScreen} of ${totalScreens}`;
+        }
+
+        function toggleLayer(element) {
+            const wasActive = element.classList.contains('active');
+            document.querySelectorAll('.cost-layer').forEach(layer => {
+                layer.classList.remove('active');
+            });
+            if (!wasActive) {
+                element.classList.add('active');
+            }
+        }
+
+        function setView(view, tabElement) {
+            currentView = view;
+            document.querySelectorAll('.checker-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            tabElement.classList.add('active');
+            
+            // Show/hide relevant sections based on view
+            if (view === 'welder') {
+                document.querySelectorAll('.welder-view').forEach(el => {
+                    el.style.display = 'block';
+                });
+                document.querySelectorAll('.inspector-view').forEach(el => {
+                    el.style.display = 'none';
+                });
+            } else {
+                document.querySelectorAll('.welder-view').forEach(el => {
+                    el.style.display = 'none';
+                });
+                document.querySelectorAll('.inspector-view').forEach(el => {
+                    el.style.display = 'block';
+                });
+            }
+        }
+
+        function showWeldResult(weld) {
+            // Hide all results
+            document.querySelectorAll('.weld-result').forEach(result => {
+                result.classList.remove('active');
+            });
+            document.querySelector('.checker-empty').style.display = 'none';
+            
+            // Show selected result
+            document.getElementById(`result-${weld}`).classList.add('active');
+            
+            // Update marker appearance
+            const marker = document.querySelector(`[data-weld="${weld}"]`);
+            checkedWelds.add(weld);
+            
+            // Set marker color based on result
+            const weldStatus = {
+                'A': 'checked',
+                'B': 'problem',
+                'C': 'problem',
+                'D': 'problem',
+                'E': 'warning'
+            };
+            
+            marker.classList.add(weldStatus[weld]);
+            
+            // Show summary if all checked
+            if (checkedWelds.size >= 3) {
+                document.getElementById('checkerSummary').style.display = 'block';
+            }
+            
+            // Apply current view
+            setView(currentView, document.querySelector('.checker-tab.active'));
+        }
+
+        // Create spark particles for welcome screen
+        function createSparks() {
+            const container = document.getElementById('sparkContainer');
+            if (!container) return;
+            
+            for (let i = 0; i < 15; i++) {
+                const spark = document.createElement('div');
+                spark.className = 'spark';
+                spark.style.left = `${Math.random() * 100}%`;
+                spark.style.bottom = '0';
+                spark.style.animationDelay = `${Math.random() * 3}s`;
+                spark.style.animationDuration = `${2 + Math.random() * 2}s`;
+                container.appendChild(spark);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentScreen < totalScreens) {
+                goToScreen(currentScreen + 1);
+            } else if (e.key === 'ArrowLeft' && currentScreen > 1) {
+                goToScreen(currentScreen - 1);
+            }
+        });
+
+        // Initialize
+        updateProgress();
+        createSparks();
+        
+        // Set initial view for checker
+        document.querySelectorAll('.inspector-view').forEach(el => {
+            el.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

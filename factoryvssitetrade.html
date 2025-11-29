@@ -1,0 +1,2659 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4.3: Factory vs Site Trade-offs | The Nuclear House</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --uranium-blue: #4A5D6B;
+            --lightest: #F7F8FA;
+            --light: #D1D9E0;
+            --medium-light: #9BABC2;
+            --medium-dark: #354450;
+            --darkest: #1F2937;
+            --warm-gold: #B8860B;
+            --gold-light: #D4A84B;
+            --gold-glow: rgba(184, 134, 11, 0.3);
+            --radioactive-green: #7FFF00;
+            --factory-good: #2E7D32;
+            --site-caution: #F57C00;
+            --critical-red: #C62828;
+            --transport-blue: #1565C0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--darkest);
+            color: var(--lightest);
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        /* Fixed Header */
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(31, 41, 55, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            z-index: 1000;
+        }
+
+        .header-logo {
+            height: 35px;
+            opacity: 0.9;
+        }
+
+        .header-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--light);
+        }
+
+        .header-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-track {
+            width: 150px;
+            height: 4px;
+            background: var(--medium-dark);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--warm-gold), var(--gold-light));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--medium-light);
+        }
+
+        /* Navigation Menu */
+        .nav-menu {
+            position: fixed;
+            top: 60px;
+            right: 0;
+            background: var(--medium-dark);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 999;
+            min-width: 250px;
+        }
+
+        .nav-menu.open {
+            transform: translateX(0);
+        }
+
+        .nav-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--light);
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(184, 134, 11, 0.2);
+            color: var(--warm-gold);
+        }
+
+        .nav-menu a.active {
+            background: var(--warm-gold);
+            color: var(--darkest);
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--light);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 6rem 2rem 4rem;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('https://i.ibb.co/RTvNjVRs/IMAGE01.png') center/cover no-repeat;
+            z-index: -2;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, 
+                rgba(31, 41, 55, 0.92) 0%, 
+                rgba(31, 41, 55, 0.85) 50%,
+                rgba(31, 41, 55, 0.95) 100%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(184, 134, 11, 0.15);
+            border: 1px solid var(--warm-gold);
+            color: var(--warm-gold);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero h1 .gold {
+            color: var(--warm-gold);
+        }
+
+        .hero-intro {
+            font-size: 1.15rem;
+            color: var(--light);
+            margin-bottom: 2rem;
+            max-width: 750px;
+        }
+
+        .hero-points {
+            display: grid;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            color: var(--light);
+        }
+
+        .hero-point-icon {
+            color: var(--warm-gold);
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        .hero-message {
+            background: var(--medium-dark);
+            border-left: 4px solid var(--warm-gold);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .hero-message p {
+            color: var(--light);
+            font-size: 1.05rem;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: var(--warm-gold);
+            color: var(--darkest);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--gold-glow);
+        }
+
+        /* Sections */
+        .section {
+            padding: 5rem 2rem;
+            position: relative;
+        }
+
+        .section-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(184, 134, 11, 0.15);
+            border-left: 3px solid var(--warm-gold);
+            color: var(--warm-gold);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+            margin-bottom: 1rem;
+        }
+
+        .section-intro {
+            font-size: 1.1rem;
+            color: var(--light);
+            max-width: 800px;
+            margin-bottom: 3rem;
+        }
+
+        /* Content Blocks */
+        .content-block {
+            margin-bottom: 3rem;
+        }
+
+        .content-block h3 {
+            font-size: 1.5rem;
+            color: var(--gold-light);
+            margin-bottom: 1rem;
+        }
+
+        .content-block p {
+            color: var(--light);
+            margin-bottom: 1rem;
+        }
+
+        /* Image Grid */
+        .image-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .image-card {
+            background: var(--medium-dark);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .image-card-content {
+            padding: 1.25rem;
+        }
+
+        .image-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .image-card.factory {
+            border-top: 3px solid var(--factory-good);
+        }
+
+        .image-card.factory h4 {
+            color: var(--factory-good);
+        }
+
+        .image-card.site {
+            border-top: 3px solid var(--site-caution);
+        }
+
+        .image-card.site h4 {
+            color: var(--site-caution);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--medium-dark);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: var(--uranium-blue);
+            padding: 1rem;
+            text-align: left;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .comparison-table th:first-child {
+            width: 25%;
+        }
+
+        .comparison-table th.factory {
+            color: var(--factory-good);
+        }
+
+        .comparison-table th.site {
+            color: var(--site-caution);
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            font-size: 0.95rem;
+        }
+
+        .comparison-table td:first-child {
+            font-weight: 500;
+            color: var(--lightest);
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Stat Box */
+        .stat-box {
+            background: linear-gradient(135deg, rgba(184, 134, 11, 0.15), rgba(184, 134, 11, 0.05));
+            border: 1px solid var(--warm-gold);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .stat-box .stat-value {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--warm-gold);
+        }
+
+        .stat-box .stat-label {
+            font-size: 1rem;
+            color: var(--light);
+            margin-top: 0.5rem;
+        }
+
+        .stat-box .stat-source {
+            font-size: 0.8rem;
+            color: var(--medium-light);
+            margin-top: 0.75rem;
+            font-style: italic;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: var(--medium-dark);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--transport-blue);
+        }
+
+        .case-study-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .case-study-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--transport-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .case-study h4 {
+            font-size: 1.25rem;
+            color: var(--lightest);
+        }
+
+        .case-study p {
+            color: var(--light);
+            margin-bottom: 1rem;
+        }
+
+        .case-study.warning {
+            border-left-color: var(--critical-red);
+        }
+
+        .case-study.warning .case-study-icon {
+            background: var(--critical-red);
+        }
+
+        .case-study.success {
+            border-left-color: var(--factory-good);
+        }
+
+        .case-study.success .case-study-icon {
+            background: var(--factory-good);
+        }
+
+        /* Design Implication Box */
+        .design-box {
+            background: linear-gradient(135deg, rgba(184, 134, 11, 0.1), transparent);
+            border: 1px solid var(--warm-gold);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .design-box-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: var(--warm-gold);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .design-box p {
+            color: var(--light);
+        }
+
+        /* STGO Table */
+        .stgo-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--medium-dark);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .stgo-table th {
+            background: var(--transport-blue);
+            padding: 1rem;
+            text-align: left;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            color: white;
+        }
+
+        .stgo-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+        }
+
+        .stgo-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .stgo-table .category {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--lightest);
+        }
+
+        /* Dimension Limits */
+        .dimension-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .dimension-card {
+            background: var(--medium-dark);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+            border-top: 3px solid var(--site-caution);
+        }
+
+        .dimension-card .value {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--site-caution);
+        }
+
+        .dimension-card .label {
+            font-size: 0.9rem;
+            color: var(--light);
+            margin-top: 0.5rem;
+        }
+
+        .dimension-card .note {
+            font-size: 0.8rem;
+            color: var(--medium-light);
+            margin-top: 0.25rem;
+        }
+
+        /* Tolerance Visual */
+        .tolerance-visual {
+            background: var(--medium-dark);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .tolerance-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .tolerance-module {
+            background: var(--uranium-blue);
+            padding: 1rem;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tolerance-module .name {
+            font-weight: 500;
+        }
+
+        .tolerance-module .dim {
+            font-family: 'Inter', monospace;
+            color: var(--gold-light);
+        }
+
+        .tolerance-result {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .tolerance-result-card {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .tolerance-result-card.good {
+            border: 1px solid var(--factory-good);
+        }
+
+        .tolerance-result-card.bad {
+            border: 1px solid var(--critical-red);
+        }
+
+        .tolerance-result-card .label {
+            font-size: 0.85rem;
+            color: var(--medium-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .tolerance-result-card .value {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .tolerance-result-card.good .value {
+            color: var(--factory-good);
+        }
+
+        .tolerance-result-card.bad .value {
+            color: var(--critical-red);
+        }
+
+        /* Interface Types Table */
+        .interface-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--medium-dark);
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 0.9rem;
+        }
+
+        .interface-table th {
+            background: var(--uranium-blue);
+            padding: 1rem;
+            text-align: left;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+        }
+
+        .interface-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+        }
+
+        .interface-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .criticality-high {
+            color: var(--critical-red);
+            font-weight: 500;
+        }
+
+        .criticality-medium {
+            color: var(--site-caution);
+            font-weight: 500;
+        }
+
+        .criticality-low {
+            color: var(--factory-good);
+            font-weight: 500;
+        }
+
+        /* Quote Block */
+        .quote-block {
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--warm-gold);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .quote-block p {
+            font-style: italic;
+            color: var(--light);
+            margin-bottom: 0.75rem;
+        }
+
+        .quote-block .attribution {
+            font-size: 0.9rem;
+            color: var(--medium-light);
+        }
+
+        /* Three Options Visual */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .option-card {
+            background: var(--medium-dark);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 3px solid var(--critical-red);
+        }
+
+        .option-card .number {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--critical-red);
+            margin-bottom: 0.5rem;
+        }
+
+        .option-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .option-card p {
+            font-size: 0.85rem;
+            color: var(--medium-light);
+        }
+
+        /* Full Width Image */
+        .full-image {
+            margin: 2rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .full-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Section Navigation */
+        .section-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--medium-dark);
+            color: var(--light);
+            text-decoration: none;
+            border-radius: 4px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--warm-gold);
+            color: var(--warm-gold);
+        }
+
+        .nav-btn.primary {
+            background: var(--warm-gold);
+            color: var(--darkest);
+        }
+
+        .nav-btn.primary:hover {
+            background: var(--gold-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .image-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tolerance-result {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .fixed-header {
+                padding: 0 1rem;
+            }
+
+            .header-title {
+                display: none;
+            }
+
+            .section {
+                padding: 3rem 1rem;
+            }
+
+            .comparison-table {
+                font-size: 0.85rem;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.75rem;
+            }
+
+            .dimension-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Header -->
+    <header class="fixed-header">
+        <img src="https://i.ibb.co/7tbxnN83/Logo-white.png" alt="The Nuclear House" class="header-logo">
+        <span class="header-title">Module 4.3: Factory vs Site Trade-offs</span>
+        <div class="header-progress">
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="progress-text" id="progressText">0%</span>
+            <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18M3 6h18M3 18h18"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-menu" id="navMenu">
+        <a href="#hero" class="active">Introduction</a>
+        <a href="#section2">Factory Quality Advantage</a>
+        <a href="#section3">Transport Constraints</a>
+        <a href="#section4">The Interface Problem</a>
+        <a href="#section5">Interactive Exercise</a>
+        <a href="#section6">Industry Approaches</a>
+        <a href="#section7">Knowledge Check</a>
+        <a href="#section8">Summary</a>
+    </nav>
+
+    <!-- Section 1: Hero / Introduction -->
+    <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        
+        <div class="hero-content">
+            <div class="hero-badge">MODULE 4.3</div>
+            <h1>Factory vs Site <span class="gold">Trade-offs</span></h1>
+            
+            <p class="hero-intro">Every module boundary you draw on your design is a decision with consequences you cannot undo.</p>
+            
+            <div class="hero-points">
+                <div class="hero-point">
+                    <span class="hero-point-icon">▸</span>
+                    <span>Which welds happen in controlled factory conditions vs on site</span>
+                </div>
+                <div class="hero-point">
+                    <span class="hero-point-icon">▸</span>
+                    <span>How the module will be transported — road, rail, or sea</span>
+                </div>
+                <div class="hero-point">
+                    <span class="hero-point-icon">▸</span>
+                    <span>How many interfaces must align perfectly during installation</span>
+                </div>
+                <div class="hero-point">
+                    <span class="hero-point-icon">▸</span>
+                    <span>How much tolerance stack-up risk you're accepting</span>
+                </div>
+            </div>
+
+            <div class="hero-message">
+                <p>There is no single "right answer." Larger modules mean fewer site welds but harder transport. Smaller modules are easier to move but create more interfaces to manage. Your job is to understand these trade-offs and make informed decisions — not guess and hope for the best.</p>
+            </div>
+
+            <button class="btn-primary" onclick="scrollToSection('section2')">
+                Begin Module
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- Section 2: Factory Quality Advantage -->
+    <section class="section" id="section2">
+        <div class="section-container">
+            <div class="section-tag">SECTION 2</div>
+            <h2 class="section-title">The Factory Quality Advantage</h2>
+            <p class="section-intro">Factory welding isn't just "easier" — it's fundamentally more controlled. Understanding this difference is essential for making informed module boundary decisions.</p>
+
+            <div class="content-block fade-in">
+                <h3>Factory vs Site Conditions</h3>
+                
+                <div class="image-comparison">
+                    <div class="image-card factory">
+                        <img src="https://i.ibb.co/B57pWDzW/IMAGE02.png" alt="Factory welding in controlled environment" loading="lazy">
+                        <div class="image-card-content">
+                            <h4>Factory Environment</h4>
+                            <p>Climate controlled, optimal positioning, automated welding available</p>
+                        </div>
+                    </div>
+                    <div class="image-card site">
+                        <img src="https://i.ibb.co/zqjhyqV/IMAGE03.png" alt="Site welding in challenging conditions" loading="lazy">
+                        <div class="image-card-content">
+                            <h4>Site Environment</h4>
+                            <p>Weather exposed, fixed positions, typically manual welding only</p>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Factor</th>
+                            <th class="factory">Factory</th>
+                            <th class="site">Site</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Environment</td>
+                            <td>Climate controlled, consistent temperature and humidity</td>
+                            <td>Exposed to weather, temperature variation, wind</td>
+                        </tr>
+                        <tr>
+                            <td>Positioning</td>
+                            <td>Component can be rotated to optimal welding position</td>
+                            <td>Often fixed in place, awkward access angles</td>
+                        </tr>
+                        <tr>
+                            <td>Equipment</td>
+                            <td>Automated orbital welding available</td>
+                            <td>Typically manual welding only</td>
+                        </tr>
+                        <tr>
+                            <td>Lighting</td>
+                            <td>Optimal, consistent illumination</td>
+                            <td>Temporary lighting, shadows, confined spaces</td>
+                        </tr>
+                        <tr>
+                            <td>QC Access</td>
+                            <td>Full access for inspection at every stage</td>
+                            <td>May be restricted by surrounding structures</td>
+                        </tr>
+                        <tr>
+                            <td>Schedule</td>
+                            <td>Parallel fabrication paths possible</td>
+                            <td>Sequential, on critical path</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>The Defect Rate Reality</h3>
+                
+                <div class="stat-box">
+                    <div class="stat-value">3–5%</div>
+                    <div class="stat-label">Average defect rate for manual welding</div>
+                    <div class="stat-source">Source: Nuclear Power Plant Construction Welding Studies</div>
+                </div>
+
+                <div class="case-study warning">
+                    <div class="case-study-header">
+                        <div class="case-study-icon">⚠</div>
+                        <h4>Case Study: Vogtle AP1000</h4>
+                    </div>
+                    <p>At the Vogtle nuclear plant in Georgia, many welds done on factory-fabricated modules at the Lake Charles facility had to be completely redone on site. Poor weld quality occurred so frequently that the Vogtle plant established its own welding building specifically to reweld the factory welds.</p>
+                    <p>This wasn't a factory vs site issue — it was a quality control failure at the factory. But it illustrates a critical point: <strong>where a weld is done matters less than how it's done.</strong> Factory conditions enable better quality, but don't guarantee it.</p>
+                </div>
+
+                <div class="case-study warning">
+                    <div class="case-study-header">
+                        <div class="case-study-icon">⚠</div>
+                        <h4>Case Study: Flamanville EPR</h4>
+                    </div>
+                    <p>At the Flamanville EPR in France, workers were hampered by bad weather and site welds were deemed substandard. This caused significant delays and cost increases as welds were redone.</p>
+                    <p><strong>33 welds</strong> were found to have quality deficiencies requiring repair. A further <strong>20 welds</strong> were redone even though they had no defects — precautionary rework due to lost confidence in the welding programme.</p>
+                    <p>The cost impact: construction estimates rose from <strong>€10.5 billion to €10.9 billion</strong>, with weld issues as a contributing factor.</p>
+                </div>
+
+                <div class="case-study success">
+                    <div class="case-study-header">
+                        <div class="case-study-icon">✓</div>
+                        <h4>The HPC Learning</h4>
+                    </div>
+                    <p>At Hinkley Point C, EDF learned from Flamanville. The fuel handling pools — massive steel and concrete structures — are now prefabricated in weatherproof bunkers on site to improve quality and reduce schedule risk.</p>
+                    <p>Unit 2's pool was manufactured in <strong>nearly half the time</strong> of Unit 1, with a new welding technique (Synergic MAG) completing welds <strong>four times faster</strong>.</p>
+                    <p>Prefabrication now approaches <strong>60% of civil construction</strong>, effectively making HPC a "Large Modular Reactor."</p>
+                </div>
+
+                <div class="full-image">
+                    <img src="https://i.ibb.co/kVkzL6Zt/IMAGE06.png" alt="HPC prefabrication facility" loading="lazy">
+                </div>
+            </div>
+
+            <div class="design-box fade-in">
+                <div class="design-box-header">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    For the Designer
+                </div>
+                <p>Every weld you place on a site interface is a weld you're betting will be done right under field conditions. You choose where those interfaces go. Choose wisely.</p>
+            </div>
+
+            <div class="section-nav">
+                <a href="#hero" class="nav-btn">← Introduction</a>
+                <a href="#section3" class="nav-btn primary">Transport Constraints →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Transport Constraints -->
+    <section class="section" id="section3">
+        <div class="section-container">
+            <div class="section-tag">SECTION 3</div>
+            <h2 class="section-title">Transport Constraints — The Hard Limits</h2>
+            <p class="section-intro">Your transport route determines your maximum module size. These aren't guidelines — they're legal requirements that cannot be negotiated.</p>
+
+            <div class="content-block fade-in">
+                <h3>UK STGO Categories</h3>
+                <p>The Special Types General Order (STGO) 2003 defines what can move on UK roads:</p>
+
+                <table class="stgo-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Max Weight</th>
+                            <th>Min Axles</th>
+                            <th>Speed Limits (M-way/Dual/Other)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="category">Cat 1</td>
+                            <td>50,000 kg</td>
+                            <td>5-6 axles</td>
+                            <td>60 / 50 / 40 mph</td>
+                        </tr>
+                        <tr>
+                            <td class="category">Cat 2</td>
+                            <td>80,000 kg</td>
+                            <td>6+ axles</td>
+                            <td>40 / 35 / 30 mph</td>
+                        </tr>
+                        <tr>
+                            <td class="category">Cat 3</td>
+                            <td>150,000 kg</td>
+                            <td>6+ axles</td>
+                            <td>40 / 35 / 30 mph</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="stat-box">
+                    <div class="stat-value">&gt;150,000 kg</div>
+                    <div class="stat-label">Requires Special Order (BE16 form) from National Highways</div>
+                    <div class="stat-source">Typically 6-12 weeks lead time</div>
+                </div>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>Dimension Limits for "Abnormal Load" Classification</h3>
+                
+                <div class="dimension-grid">
+                    <div class="dimension-card">
+                        <div class="value">&gt;2.9m</div>
+                        <div class="label">Width (C&U)</div>
+                        <div class="note">or &gt;3.0m under STGO</div>
+                    </div>
+                    <div class="dimension-card">
+                        <div class="value">&gt;4.95m</div>
+                        <div class="label">Height</div>
+                        <div class="note">Requires pilot car</div>
+                    </div>
+                    <div class="dimension-card">
+                        <div class="value">&gt;18.65m</div>
+                        <div class="label">Rigid Length</div>
+                        <div class="note">Maximum for rigid vehicles</div>
+                    </div>
+                    <div class="dimension-card">
+                        <div class="value">&gt;16.5m</div>
+                        <div class="label">Articulated Length</div>
+                        <div class="note">Maximum for articulated</div>
+                    </div>
+                </div>
+
+                <div class="image-comparison">
+                    <div class="image-card site">
+                        <img src="https://i.ibb.co/prh0h2Hz/IMAGE19.png" alt="Wide load through village street" loading="lazy">
+                        <div class="image-card-content">
+                            <h4>Width Constraints</h4>
+                            <p>Village streets, parked cars, and road furniture limit practical widths</p>
+                        </div>
+                    </div>
+                    <div class="image-card site">
+                        <img src="https://i.ibb.co/GvV9MWcy/IMAGE05.png" alt="Low bridge height constraint" loading="lazy">
+                        <div class="image-card-content">
+                            <h4>Height Constraints</h4>
+                            <p>Bridges, power lines, and signals create hard clearance limits</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>The Route Survey Reality</h3>
+                <p>Before any abnormal load moves, a route survey must assess:</p>
+                
+                <ul style="margin: 1rem 0 1rem 1.5rem; color: var(--light);">
+                    <li><strong>Bridge clearances</strong> — height and weight capacity</li>
+                    <li><strong>Road widths</strong> — especially through villages and towns</li>
+                    <li><strong>Turning radii</strong> — can the trailer navigate roundabouts and junctions?</li>
+                    <li><strong>Overhead obstructions</strong> — power lines, signals, signage</li>
+                    <li><strong>Temporary obstacles</strong> — roadworks, scaffolding, parked vehicles</li>
+                </ul>
+
+                <div class="full-image">
+                    <img src="https://i.ibb.co/fGkfZ9kz/IMAGE13.png" alt="Route survey team with laser measurement" loading="lazy">
+                </div>
+
+                <div class="case-study">
+                    <div class="case-study-header">
+                        <div class="case-study-icon">🚂</div>
+                        <h4>Case Study: AP1000 Steam Generators</h4>
+                    </div>
+                    <p>Each AP1000 steam generator is over <strong>24 metres long</strong> and weighs over <strong>590,000 kg</strong> (590 tonnes). The reactor coolant pump casings are welded to the steam generators, adding another 68,000 kg and 2 metres length.</p>
+                    <p>Originally, the team planned to ship generators and pump casings separately, welding them together on site. But site welding of this critical joint would add significant cost, schedule, and quality risk.</p>
+                    <p>Instead, they modified the world's largest railcar (the Schnabel car) to transport the combined assembly — designing new compression assemblies, reinforcing car arms, and altering bridges along the rail route.</p>
+                    <p><strong>The lesson:</strong> Sometimes extreme transport complexity is worth it to avoid a critical site weld.</p>
+                </div>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>The Rolls-Royce SMR Approach</h3>
+                
+                <div class="case-study success">
+                    <div class="case-study-header">
+                        <div class="case-study-icon">✓</div>
+                        <h4>Designed for UK Roads from Day One</h4>
+                    </div>
+                    <p>Rolls-Royce SMR made a fundamental strategic decision: design modules to fit UK roads from day one.</p>
+                    <p><strong>The constraint they chose:</strong> 16 metres × 4 metres — transportable by road, rail, or sea to any site in Britain without special orders.</p>
+                    <p><strong>The result:</strong> 90% of the SMR is built in factory conditions. On-site activity is limited primarily to assembly of pre-fabricated, pre-tested modules.</p>
+                    <p>This is Design for Transport embedded at the architecture level — not retrofitted later.</p>
+                </div>
+
+                <div class="full-image">
+                    <img src="https://i.ibb.co/kV6GN1sq/IMAGE14.png" alt="Rolls-Royce SMR modular delivery concept" loading="lazy">
+                </div>
+            </div>
+
+            <div class="design-box fade-in">
+                <div class="design-box-header">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    For the Designer
+                </div>
+                <p>Your transport route determines your maximum module size. Know your route constraints before you finalise module boundaries — not after.</p>
+            </div>
+
+            <div class="section-nav">
+                <a href="#section2" class="nav-btn">← Factory Quality</a>
+                <a href="#section4" class="nav-btn primary">Interface Problem →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: The Interface Problem -->
+    <section class="section" id="section4">
+        <div class="section-container">
+            <div class="section-tag">SECTION 4</div>
+            <h2 class="section-title">The Interface Problem</h2>
+            <p class="section-intro">Every module boundary creates an interface. More modules means more interfaces means more opportunities for problems.</p>
+
+            <div class="content-block fade-in">
+                <h3>Every Boundary Creates an Interface</h3>
+                <p>When you split a system into modules, every split creates an interface that must:</p>
+                <ul style="margin: 1rem 0 1rem 1.5rem; color: var(--light);">
+                    <li>Align precisely during installation</li>
+                    <li>Be connected (welded, bolted, or flanged)</li>
+                    <li>Transfer loads, fluids, or signals across the boundary</li>
+                    <li>Maintain integrity for 60+ years of operation</li>
+                </ul>
+
+                <div class="full-image">
+                    <img src="https://i.ibb.co/ycvYFdp8/IMAGE07.png" alt="Module interface close-up showing flanges" loading="lazy">
+                </div>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>Tolerance Stack-Up Explained</h3>
+                
+                <div class="tolerance-visual">
+                    <p>Imagine three stacked modules, each manufactured to ±2mm tolerance on a critical dimension:</p>
+                    
+                    <div class="tolerance-stack">
+                        <div class="tolerance-module">
+                            <span class="name">Module A</span>
+                            <span class="dim">1000mm ± 2mm</span>
+                        </div>
+                        <div class="tolerance-module">
+                            <span class="name">Module B</span>
+                            <span class="dim">1000mm ± 2mm</span>
+                        </div>
+                        <div class="tolerance-module">
+                            <span class="name">Module C</span>
+                            <span class="dim">1000mm ± 2mm</span>
+                        </div>
+                    </div>
+
+                    <div class="tolerance-result">
+                        <div class="tolerance-result-card good">
+                            <div class="label">Best Case</div>
+                            <div class="value">3000mm ✓</div>
+                            <p style="font-size: 0.85rem; color: var(--medium-light); margin-top: 0.5rem;">All at nominal</p>
+                        </div>
+                        <div class="tolerance-result-card bad">
+                            <div class="label">Worst Case</div>
+                            <div class="value">±6mm</div>
+                            <p style="font-size: 0.85rem; color: var(--medium-light); margin-top: 0.5rem;">2994mm to 3006mm</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="full-image">
+                    <img src="https://i.ibb.co/cKrV41Mk/IMAGE08.png" alt="Tolerance stack-up diagram" loading="lazy">
+                </div>
+
+                <div class="quote-block">
+                    <p>"It did bring some issues because you introduce some quite tight tolerances around the connecting parts of the big slabs — where you're going to line couplers on the rebar up with other couplers."</p>
+                    <span class="attribution">— HPC Delivery Director, 2021</span>
+                </div>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>When Modules Don't Align</h3>
+                <p>When modules don't align, you have three options — all bad:</p>
+
+                <div class="options-grid">
+                    <div class="option-card">
+                        <div class="number">1</div>
+                        <h4>Force Fit</h4>
+                        <p>Induces stress, potentially compromising structural integrity</p>
+                    </div>
+                    <div class="option-card">
+                        <div class="number">2</div>
+                        <h4>Shim</h4>
+                        <p>Adds parts, complexity, and potential failure points</p>
+                    </div>
+                    <div class="option-card">
+                        <div class="number">3</div>
+                        <h4>Rework</h4>
+                        <p>Cut, adjust, reweld on site under schedule pressure</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>Interface Types and Risk</h3>
+                
+                <table class="interface-table">
+                    <thead>
+                        <tr>
+                            <th>Interface Type</th>
+                            <th>Alignment Criticality</th>
+                            <th>Typical Tolerance</th>
+                            <th>Connection Method</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Structural steel</td>
+                            <td class="criticality-medium">Medium</td>
+                            <td>±3-5mm</td>
+                            <td>Bolted with shimming</td>
+                        </tr>
+                        <tr>
+                            <td>Piping (large bore)</td>
+                            <td class="criticality-high">High</td>
+                            <td>±2-3mm</td>
+                            <td>Welded or flanged</td>
+                        </tr>
+                        <tr>
+                            <td>Piping (small bore)</td>
+                            <td class="criticality-high">Very High</td>
+                            <td>±1-2mm</td>
+                            <td>Welded</td>
+                        </tr>
+                        <tr>
+                            <td>Electrical penetrations</td>
+                            <td class="criticality-medium">Medium</td>
+                            <td>±5mm</td>
+                            <td>Sealed glands</td>
+                        </tr>
+                        <tr>
+                            <td>HVAC ductwork</td>
+                            <td class="criticality-low">Low-Medium</td>
+                            <td>±5-10mm</td>
+                            <td>Flanged with gaskets</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="full-image">
+                    <img src="https://i.ibb.co/ymdZdV5j/IMAGE12.png" alt="Module being craned into position" loading="lazy">
+                </div>
+            </div>
+
+            <div class="design-box fade-in">
+                <div class="design-box-header">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    For the Designer
+                </div>
+                <p>Every module boundary you create adds tolerance stack-up risk. The more critical the system, the more you should minimise interfaces — even if it means larger, harder-to-transport modules.</p>
+            </div>
+
+            <div class="section-nav">
+                <a href="#section3" class="nav-btn">← Transport Constraints</a>
+                <a href="#section5" class="nav-btn primary">Interactive Exercise →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Interactive Decision Exercise -->
+    <section class="section" id="section5" style="background: linear-gradient(180deg, var(--darkest), rgba(31, 41, 55, 0.95));">
+        <div class="section-container">
+            <div class="section-tag">SECTION 5 — INTERACTIVE EXERCISE</div>
+            <h2 class="section-title">Your Design Challenge</h2>
+            <p class="section-intro">You are designing a coolant pipework module for an SMR factory. The system runs 45 metres from the reactor building to the turbine hall. You must decide how to split it into modules. There is no single "right answer" — but your choices have consequences.</p>
+
+            <!-- Module Selector -->
+            <div class="decision-tool fade-in">
+                <div class="tool-header">
+                    <h3>How many modules?</h3>
+                    <p>Select how to divide the 45-metre pipework system</p>
+                </div>
+
+                <div class="module-selector">
+                    <button class="module-btn" data-modules="2" onclick="selectModules(2)">
+                        <span class="module-count">2</span>
+                        <span class="module-label">Large Modules</span>
+                        <span class="module-size">22.5m each</span>
+                    </button>
+                    <button class="module-btn" data-modules="3" onclick="selectModules(3)">
+                        <span class="module-count">3</span>
+                        <span class="module-label">Medium Modules</span>
+                        <span class="module-size">15m each</span>
+                    </button>
+                    <button class="module-btn" data-modules="5" onclick="selectModules(5)">
+                        <span class="module-count">5</span>
+                        <span class="module-label">Small Modules</span>
+                        <span class="module-size">9m each</span>
+                    </button>
+                </div>
+
+                <!-- Visual Pipeline -->
+                <div class="pipeline-visual">
+                    <div class="pipeline-track">
+                        <div class="pipeline-segment" id="seg1"></div>
+                        <div class="pipeline-segment" id="seg2"></div>
+                        <div class="pipeline-segment" id="seg3"></div>
+                        <div class="pipeline-segment" id="seg4"></div>
+                        <div class="pipeline-segment" id="seg5"></div>
+                    </div>
+                    <div class="pipeline-labels">
+                        <span>Reactor Building</span>
+                        <span>45 metres</span>
+                        <span>Turbine Hall</span>
+                    </div>
+                </div>
+
+                <!-- Consequence Dashboard -->
+                <div class="dashboard">
+                    <h3>Consequence Dashboard</h3>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-item">
+                            <div class="dash-label">Site Welds</div>
+                            <div class="dash-value" id="dashWelds">—</div>
+                            <div class="dash-bar"><div class="dash-fill" id="fillWelds"></div></div>
+                        </div>
+                        <div class="dashboard-item">
+                            <div class="dash-label">Transport Complexity</div>
+                            <div class="dash-indicator" id="dashTransport">
+                                <span class="indicator"></span>
+                            </div>
+                        </div>
+                        <div class="dashboard-item">
+                            <div class="dash-label">Tolerance Interfaces</div>
+                            <div class="dash-value" id="dashInterfaces">—</div>
+                            <div class="dash-bar"><div class="dash-fill" id="fillInterfaces"></div></div>
+                        </div>
+                        <div class="dashboard-item">
+                            <div class="dash-label">Site Programme Risk</div>
+                            <div class="dash-indicator" id="dashRisk">
+                                <span class="indicator"></span>
+                            </div>
+                        </div>
+                        <div class="dashboard-item">
+                            <div class="dash-label">Factory Completion</div>
+                            <div class="dash-value" id="dashFactory">—</div>
+                            <div class="dash-bar"><div class="dash-fill factory" id="fillFactory"></div></div>
+                        </div>
+                        <div class="dashboard-item">
+                            <div class="dash-label">Rework Risk</div>
+                            <div class="dash-indicator" id="dashRework">
+                                <span class="indicator"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary submit-btn" id="submitChoice" onclick="submitChoice()" disabled>
+                    Submit Your Decision
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Feedback Panel (hidden initially) -->
+            <div class="feedback-panel" id="feedbackPanel">
+                <div class="feedback-header" id="feedbackHeader">
+                    <h3 id="feedbackTitle"></h3>
+                </div>
+                <div class="feedback-content">
+                    <div class="feedback-section advantages">
+                        <h4>✅ Advantages</h4>
+                        <ul id="feedbackAdvantages"></ul>
+                    </div>
+                    <div class="feedback-section challenges">
+                        <h4>⚠️ Challenges</h4>
+                        <ul id="feedbackChallenges"></ul>
+                    </div>
+                    <div class="feedback-works">
+                        <p id="feedbackWorks"></p>
+                    </div>
+                    <div class="feedback-example">
+                        <p id="feedbackExample"></p>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="scrollToSection('section6')">
+                    Continue to Industry Approaches →
+                </button>
+            </div>
+
+            <div class="section-nav" id="section5Nav">
+                <a href="#section4" class="nav-btn">← Interface Problem</a>
+                <span></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: Industry Approaches -->
+    <section class="section" id="section6">
+        <div class="section-container">
+            <div class="section-tag">SECTION 6</div>
+            <h2 class="section-title">Industry Approaches Compared</h2>
+            <p class="section-intro">Three real-world strategies for modularisation — each with different trade-offs.</p>
+
+            <div class="approach-grid fade-in">
+                <div class="approach-card">
+                    <div class="approach-header hpc">
+                        <h3>Hinkley Point C</h3>
+                        <span class="approach-tag">"Large Modular Reactor"</span>
+                    </div>
+                    <img src="https://i.ibb.co/kVkzL6Zt/IMAGE06.png" alt="HPC prefabrication" loading="lazy">
+                    <div class="approach-content">
+                        <ul>
+                            <li>Prefabrication approaching <strong>60%</strong></li>
+                            <li>Mega-modules fabricated in on-site bunkers or off-site factories</li>
+                            <li>Sea transport via Bristol Channel for largest components</li>
+                            <li>1,305-tonne loading pit lifted by "Big Carl" (world's largest crane)</li>
+                            <li>Unit 2 built <strong>20-30% faster</strong> than Unit 1 through lessons learned</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="approach-card">
+                    <div class="approach-header ap1000">
+                        <h3>AP1000</h3>
+                        <span class="approach-tag">714 Sub-Modules</span>
+                    </div>
+                    <img src="https://i.ibb.co/PZc2n8B1/IMAGE10.png" alt="SPMT transport" loading="lazy">
+                    <div class="approach-content">
+                        <ul>
+                            <li>Highly modularised design from inception</li>
+                            <li><strong>714 sub-modules</strong> designed for truck, rail, or barge transport</li>
+                            <li>Parallel fabrication paths in multiple factories</li>
+                            <li>Challenge: Quality control across distributed supply chain</li>
+                            <li>Lesson learned: Factory conditions don't guarantee quality — oversight does</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="approach-card">
+                    <div class="approach-header rrsmr">
+                        <h3>Rolls-Royce SMR</h3>
+                        <span class="approach-tag">"Designed for UK Roads"</span>
+                    </div>
+                    <img src="https://i.ibb.co/kV6GN1sq/IMAGE14.png" alt="RR SMR concept" loading="lazy">
+                    <div class="approach-content">
+                        <ul>
+                            <li>Strategic constraint: <strong>16m × 4m</strong> modules</li>
+                            <li><strong>90%</strong> factory fabrication</li>
+                            <li>500-day modular build target</li>
+                            <li>Any UK site accessible by road</li>
+                            <li>Factory-tested before transport — "plug and play" installation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="design-box fade-in" style="margin-top: 3rem;">
+                <div class="design-box-header">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+                    </svg>
+                    Key Insight
+                </div>
+                <p>There is no single "right" answer. The optimal approach depends on: <strong>site location</strong> (coastal vs inland), <strong>crane capacity</strong>, <strong>factory capability</strong>, <strong>schedule priority</strong>, and <strong>risk appetite</strong>.</p>
+            </div>
+
+            <div class="section-nav">
+                <a href="#section5" class="nav-btn">← Interactive Exercise</a>
+                <a href="#section7" class="nav-btn primary">Knowledge Check →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: Knowledge Check -->
+    <section class="section" id="section7">
+        <div class="section-container">
+            <div class="section-tag">SECTION 7</div>
+            <h2 class="section-title">Knowledge Check</h2>
+            <p class="section-intro">Test your understanding with these scenario-based questions.</p>
+
+            <div class="quiz-container" id="quizContainer">
+                <!-- Question 1 -->
+                <div class="quiz-question active" data-question="1">
+                    <div class="question-number">Question 1 of 5</div>
+                    <div class="question-text">
+                        <p>Your design team is debating module boundaries for a primary coolant loop. One engineer argues for three 12m modules (road transportable). Another argues for two 18m modules (requiring STGO Cat 3 permits).</p>
+                        <p><strong>What is the most important factor to consider FIRST?</strong></p>
+                    </div>
+                    <div class="question-options">
+                        <label class="option"><input type="radio" name="q1" value="a"><span>A) The cost difference between road and special transport</span></label>
+                        <label class="option"><input type="radio" name="q1" value="b"><span>B) The number of site welds each option creates</span></label>
+                        <label class="option"><input type="radio" name="q1" value="c"><span>C) The transport route constraints to your specific site</span></label>
+                        <label class="option"><input type="radio" name="q1" value="d"><span>D) The factory's maximum module handling capacity</span></label>
+                    </div>
+                    <div class="question-feedback" id="feedback1"></div>
+                    <button class="btn-primary" onclick="checkAnswer(1, 'c')">Submit Answer</button>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="quiz-question" data-question="2">
+                    <div class="question-number">Question 2 of 5</div>
+                    <div class="question-text">
+                        <p>A site weld on a safety-critical pipe has failed NDT inspection. The weld was done in a confined space with limited access.</p>
+                        <p><strong>What is the MOST LIKELY root cause?</strong></p>
+                    </div>
+                    <div class="question-options">
+                        <label class="option"><input type="radio" name="q2" value="a"><span>A) The welder was unqualified</span></label>
+                        <label class="option"><input type="radio" name="q2" value="b"><span>B) The filler material was incorrect</span></label>
+                        <label class="option"><input type="radio" name="q2" value="c"><span>C) Site conditions compromised weld quality</span></label>
+                        <label class="option"><input type="radio" name="q2" value="d"><span>D) The inspection equipment malfunctioned</span></label>
+                    </div>
+                    <div class="question-feedback" id="feedback2"></div>
+                    <button class="btn-primary" onclick="checkAnswer(2, 'c')">Submit Answer</button>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="quiz-question" data-question="3">
+                    <div class="question-number">Question 3 of 5</div>
+                    <div class="question-text">
+                        <p>You're reviewing a modular design with five pipe interfaces. Each module is manufactured to ±3mm tolerance on the interface dimensions.</p>
+                        <p><strong>What is the WORST-CASE total tolerance stack-up at the final connection?</strong></p>
+                    </div>
+                    <div class="question-options">
+                        <label class="option"><input type="radio" name="q3" value="a"><span>A) ±3mm</span></label>
+                        <label class="option"><input type="radio" name="q3" value="b"><span>B) ±9mm</span></label>
+                        <label class="option"><input type="radio" name="q3" value="c"><span>C) ±15mm</span></label>
+                        <label class="option"><input type="radio" name="q3" value="d"><span>D) ±30mm</span></label>
+                    </div>
+                    <div class="question-feedback" id="feedback3"></div>
+                    <button class="btn-primary" onclick="checkAnswer(3, 'c')">Submit Answer</button>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="quiz-question" data-question="4">
+                    <div class="question-number">Question 4 of 5</div>
+                    <div class="question-text">
+                        <p>Rolls-Royce SMR chose to limit modules to 16m × 4m, making them road-transportable to any UK site. This decision means:</p>
+                    </div>
+                    <div class="question-options">
+                        <label class="option"><input type="radio" name="q4" value="a"><span>A) Their design will have more site welds than a mega-module approach</span></label>
+                        <label class="option"><input type="radio" name="q4" value="b"><span>B) They cannot use nuclear-grade welding techniques</span></label>
+                        <label class="option"><input type="radio" name="q4" value="c"><span>C) Their modules will be lower quality than factory-built alternatives</span></label>
+                        <label class="option"><input type="radio" name="q4" value="d"><span>D) They will need Special Order permits for every delivery</span></label>
+                    </div>
+                    <div class="question-feedback" id="feedback4"></div>
+                    <button class="btn-primary" onclick="checkAnswer(4, 'a')">Submit Answer</button>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="quiz-question" data-question="5">
+                    <div class="question-number">Question 5 of 5</div>
+                    <div class="question-text">
+                        <p>At Hinkley Point C, prefabrication of the fuel handling pools in weatherproof bunkers reduced manufacturing time by nearly 50% compared to Unit 1.</p>
+                        <p><strong>What was the PRIMARY driver of this improvement?</strong></p>
+                    </div>
+                    <div class="question-options">
+                        <label class="option"><input type="radio" name="q5" value="a"><span>A) Using cheaper materials</span></label>
+                        <label class="option"><input type="radio" name="q5" value="b"><span>B) Reducing the number of welds required</span></label>
+                        <label class="option"><input type="radio" name="q5" value="c"><span>C) Controlled factory-like conditions enabling consistent quality and productivity</span></label>
+                        <label class="option"><input type="radio" name="q5" value="d"><span>D) Eliminating all quality inspections</span></label>
+                    </div>
+                    <div class="question-feedback" id="feedback5"></div>
+                    <button class="btn-primary" onclick="checkAnswer(5, 'c')">Submit Answer</button>
+                </div>
+            </div>
+
+            <!-- Quiz Results -->
+            <div class="quiz-results" id="quizResults">
+                <div class="results-icon" id="resultsIcon">✓</div>
+                <h3>Knowledge Check Complete</h3>
+                <div class="results-score" id="resultsScore">0 / 5</div>
+                <p class="results-message" id="resultsMessage"></p>
+                <button class="btn-primary" onclick="scrollToSection('section8')">Continue to Summary →</button>
+            </div>
+
+            <div class="section-nav" id="section7Nav">
+                <a href="#section6" class="nav-btn">← Industry Approaches</a>
+                <span></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 8: Summary -->
+    <section class="section" id="section8">
+        <div class="section-container">
+            <div class="section-tag">SECTION 8</div>
+            <h2 class="section-title">What You've Learned</h2>
+            <p class="section-intro">The factory vs site decision isn't a single choice — it's a series of trade-offs that cascade through your entire design.</p>
+
+            <div class="summary-grid fade-in">
+                <div class="summary-card">
+                    <div class="summary-number">1</div>
+                    <h4>Factory conditions enable quality</h4>
+                    <p>Controlled environment, optimal positioning, automated welding, full QC access. But factory conditions don't guarantee quality; oversight and competence still matter.</p>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number">2</div>
+                    <h4>Transport constraints are hard limits</h4>
+                    <p>Know your route before you finalise module sizes. Width, height, weight, and length all have regulatory limits (STGO categories in UK).</p>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number">3</div>
+                    <h4>Every interface adds risk</h4>
+                    <p>More modules = more boundaries = more site welds = more tolerance stack-up = more potential for problems.</p>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number">4</div>
+                    <h4>There is no single "right" answer</h4>
+                    <p>Optimal modularisation depends on site access, crane capacity, factory capability, schedule priorities, and risk appetite.</p>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number">5</div>
+                    <h4>Design decisions lock in consequences</h4>
+                    <p>Where you draw module boundaries determines where welds happen, how transport occurs, and how many interfaces must align. Choose deliberately.</p>
+                </div>
+            </div>
+
+            <div class="final-message fade-in">
+                <img src="https://i.ibb.co/B2D1qWXX/IMAGE11.png" alt="Engineer at workstation" loading="lazy">
+                <div class="final-content">
+                    <h3>The Designer's Responsibility</h3>
+                    <p>You are not just designing components. You are designing the entire manufacturing and assembly sequence. Every line you draw on a module boundary is a commitment with 60-year consequences.</p>
+                    <p>Think it through. Consult transport specialists early. Involve manufacturing and site teams before you finalise boundaries.</p>
+                    <p class="highlight">And remember: the weld you avoid is the weld that never fails.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <img src="https://i.ibb.co/7tbxnN83/Logo-white.png" alt="The Nuclear House" class="footer-logo">
+            <div class="footer-text">
+                <p>Module 4.3 — Factory vs Site Trade-offs</p>
+                <p class="copyright">© 2025 The Nuclear House. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        /* Additional styles for Sections 5-8 */
+        
+        /* Decision Tool */
+        .decision-tool {
+            background: var(--medium-dark);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .tool-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .tool-header h3 {
+            font-size: 1.5rem;
+            color: var(--gold-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .module-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .module-btn {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            color: var(--light);
+        }
+
+        .module-btn:hover {
+            border-color: var(--warm-gold);
+        }
+
+        .module-btn.selected {
+            border-color: var(--warm-gold);
+            background: rgba(184, 134, 11, 0.2);
+        }
+
+        .module-btn .module-count {
+            display: block;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--warm-gold);
+        }
+
+        .module-btn .module-label {
+            display: block;
+            font-weight: 500;
+            margin: 0.5rem 0;
+        }
+
+        .module-btn .module-size {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--medium-light);
+        }
+
+        /* Pipeline Visual */
+        .pipeline-visual {
+            margin: 2rem 0;
+        }
+
+        .pipeline-track {
+            display: flex;
+            height: 40px;
+            background: var(--uranium-blue);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .pipeline-segment {
+            flex: 1;
+            background: var(--transport-blue);
+            border-right: 3px solid var(--darkest);
+            transition: all 0.3s ease;
+        }
+
+        .pipeline-segment:last-child {
+            border-right: none;
+        }
+
+        .pipeline-segment.hidden {
+            flex: 0;
+            opacity: 0;
+        }
+
+        .pipeline-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--medium-light);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            margin-top: 2rem;
+        }
+
+        .dashboard h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--lightest);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .dashboard-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .dash-label {
+            font-size: 0.8rem;
+            color: var(--medium-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .dash-value {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--lightest);
+        }
+
+        .dash-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .dash-fill {
+            height: 100%;
+            background: var(--site-caution);
+            width: 0%;
+            transition: all 0.5s ease;
+        }
+
+        .dash-fill.factory {
+            background: var(--factory-good);
+        }
+
+        .dash-indicator {
+            display: flex;
+            align-items: center;
+            height: 40px;
+        }
+
+        .dash-indicator .indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--medium-light);
+            transition: all 0.3s ease;
+        }
+
+        .dash-indicator .indicator.green { background: var(--factory-good); box-shadow: 0 0 10px var(--factory-good); }
+        .dash-indicator .indicator.amber { background: var(--site-caution); box-shadow: 0 0 10px var(--site-caution); }
+        .dash-indicator .indicator.red { background: var(--critical-red); box-shadow: 0 0 10px var(--critical-red); }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Feedback Panel */
+        .feedback-panel {
+            display: none;
+            background: var(--medium-dark);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            animation: slideIn 0.5s ease;
+        }
+
+        .feedback-panel.visible {
+            display: block;
+        }
+
+        .feedback-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .feedback-header h3 {
+            font-size: 1.5rem;
+            color: var(--gold-light);
+        }
+
+        .feedback-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .feedback-section h4 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .feedback-section ul {
+            list-style: none;
+            padding-left: 1rem;
+        }
+
+        .feedback-section ul li {
+            padding: 0.4rem 0;
+            color: var(--light);
+            position: relative;
+        }
+
+        .feedback-section.advantages h4 { color: var(--factory-good); }
+        .feedback-section.challenges h4 { color: var(--site-caution); }
+
+        .feedback-works, .feedback-example {
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .feedback-works p, .feedback-example p {
+            margin: 0;
+            color: var(--light);
+        }
+
+        /* Approach Cards */
+        .approach-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .approach-card {
+            background: var(--medium-dark);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .approach-header {
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .approach-header h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .approach-tag {
+            font-size: 0.8rem;
+            color: var(--medium-light);
+        }
+
+        .approach-header.hpc { background: linear-gradient(135deg, var(--transport-blue), #0d47a1); }
+        .approach-header.ap1000 { background: linear-gradient(135deg, var(--site-caution), #e65100); }
+        .approach-header.rrsmr { background: linear-gradient(135deg, var(--factory-good), #1b5e20); }
+
+        .approach-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .approach-content {
+            padding: 1.25rem;
+        }
+
+        .approach-content ul {
+            list-style: none;
+        }
+
+        .approach-content li {
+            padding: 0.4rem 0;
+            font-size: 0.9rem;
+            color: var(--light);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .approach-content li:last-child {
+            border-bottom: none;
+        }
+
+        /* Quiz */
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            display: none;
+            background: var(--medium-dark);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .quiz-question.active {
+            display: block;
+        }
+
+        .question-number {
+            font-family: 'Rajdhani', sans-serif;
+            color: var(--warm-gold);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .question-text {
+            margin-bottom: 1.5rem;
+        }
+
+        .question-text p {
+            color: var(--light);
+            margin-bottom: 0.75rem;
+        }
+
+        .question-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-options .option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .question-options .option:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .question-options .option input {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--warm-gold);
+        }
+
+        .question-options .option span {
+            color: var(--light);
+        }
+
+        .question-options .option.correct {
+            border-color: var(--factory-good);
+            background: rgba(46, 125, 50, 0.2);
+        }
+
+        .question-options .option.incorrect {
+            border-color: var(--critical-red);
+            background: rgba(198, 40, 40, 0.2);
+        }
+
+        .question-feedback {
+            display: none;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .question-feedback.visible {
+            display: block;
+        }
+
+        .question-feedback.correct {
+            background: rgba(46, 125, 50, 0.2);
+            border-left: 4px solid var(--factory-good);
+        }
+
+        .question-feedback.incorrect {
+            background: rgba(198, 40, 40, 0.2);
+            border-left: 4px solid var(--critical-red);
+        }
+
+        /* Quiz Results */
+        .quiz-results {
+            display: none;
+            text-align: center;
+            background: var(--medium-dark);
+            border-radius: 12px;
+            padding: 3rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .quiz-results.visible {
+            display: block;
+        }
+
+        .results-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--factory-good);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1.5rem;
+            color: white;
+        }
+
+        .results-score {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--warm-gold);
+            margin: 1rem 0;
+        }
+
+        .results-message {
+            color: var(--light);
+            margin-bottom: 2rem;
+        }
+
+        /* Summary Grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .summary-card {
+            background: var(--medium-dark);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-top: 3px solid var(--warm-gold);
+        }
+
+        .summary-number {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--warm-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            color: var(--lightest);
+        }
+
+        .summary-card p {
+            font-size: 0.95rem;
+            color: var(--light);
+        }
+
+        /* Final Message */
+        .final-message {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            align-items: center;
+            background: var(--medium-dark);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 3rem;
+        }
+
+        .final-message img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .final-content {
+            padding: 2rem;
+        }
+
+        .final-content h3 {
+            font-size: 1.5rem;
+            color: var(--gold-light);
+            margin-bottom: 1rem;
+        }
+
+        .final-content p {
+            color: var(--light);
+            margin-bottom: 1rem;
+        }
+
+        .final-content .highlight {
+            color: var(--warm-gold);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--uranium-blue);
+            padding: 2rem;
+        }
+
+        .footer-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .footer-logo {
+            height: 40px;
+        }
+
+        .footer-text p {
+            color: var(--light);
+            font-size: 0.9rem;
+        }
+
+        .footer-text .copyright {
+            color: var(--medium-light);
+            font-size: 0.8rem;
+        }
+
+        /* Responsive for new sections */
+        @media (max-width: 900px) {
+            .module-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .approach-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .final-message {
+                grid-template-columns: 1fr;
+            }
+
+            .final-message img {
+                height: 200px;
+            }
+        }
+    </style>
+
+    <script>
+        // ==================== SCROLL & NAVIGATION ====================
+        function updateProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = Math.round((scrollTop / docHeight) * 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = progress + '%';
+        }
+
+        window.addEventListener('scroll', updateProgress);
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            closeMenu();
+        }
+
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('open');
+        }
+
+        function closeMenu() {
+            document.getElementById('navMenu').classList.remove('open');
+        }
+
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNav);
+
+        // Fade in animations
+        function handleFadeIn() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    el.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', handleFadeIn);
+        window.addEventListener('load', handleFadeIn);
+
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('navMenu');
+            const toggle = document.querySelector('.menu-toggle');
+            if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+                closeMenu();
+            }
+        });
+
+        // ==================== DECISION TOOL ====================
+        let selectedModules = null;
+
+        const moduleData = {
+            2: {
+                welds: 1,
+                interfaces: 1,
+                factory: 95,
+                transport: 'red',
+                risk: 'green',
+                rework: 'green',
+                title: 'Your Choice: Maximum Factory, Minimum Site',
+                advantages: [
+                    'Only 1 site weld — highest quality confidence',
+                    'Only 1 interface to align — lowest tolerance risk',
+                    '95% factory completion'
+                ],
+                challenges: [
+                    'Requires sea transport or exceptional road movement',
+                    'Route survey essential — not all sites accessible',
+                    'Special Order permit (6-12 weeks lead time)',
+                    'Heavy lift crane required on site (400t+ capacity)'
+                ],
+                works: 'This approach works for: Coastal sites with port access, where transport route is secured early in project.',
+                example: 'Real-world example: Hinkley Point C mega-modules arrive by sea via Bristol Channel.'
+            },
+            3: {
+                welds: 2,
+                interfaces: 2,
+                factory: 85,
+                transport: 'amber',
+                risk: 'amber',
+                rework: 'amber',
+                title: 'Your Choice: Balanced Trade-off',
+                advantages: [
+                    'Road transportable within STGO limits',
+                    'Accessible to most UK sites',
+                    '2 site welds — manageable quality programme',
+                    'Good factory completion (~85%)'
+                ],
+                challenges: [
+                    '2 interfaces require careful tolerance management',
+                    'Route survey still needed for 15m loads',
+                    'Moderate site welding programme'
+                ],
+                works: 'This approach works for: Most UK sites with reasonable road access. The "sweet spot" for many projects.',
+                example: 'Real-world example: Rolls-Royce SMR designed for 16m × 4m modules — road transportable anywhere in Britain.'
+            },
+            5: {
+                welds: 4,
+                interfaces: 4,
+                factory: 70,
+                transport: 'green',
+                risk: 'red',
+                rework: 'red',
+                title: 'Your Choice: Maximum Flexibility, Maximum Site Work',
+                advantages: [
+                    'Standard road transport — no special permits',
+                    'Any site accessible',
+                    'Simple logistics'
+                ],
+                challenges: [
+                    '4 site welds — significant quality programme required',
+                    '4 interfaces — high tolerance stack-up risk',
+                    'Only 70% factory completion',
+                    'Longer site programme',
+                    'Higher rework probability'
+                ],
+                works: 'This approach works for: Constrained sites where transport is the dominant constraint, or where site welding capability is strong.',
+                example: 'Caution: This approach increases site risk. Flamanville and Vogtle both suffered from site welding quality issues.'
+            }
+        };
+
+        function selectModules(num) {
+            selectedModules = num;
+            
+            // Update button states
+            document.querySelectorAll('.module-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.querySelector(`.module-btn[data-modules="${num}"]`).classList.add('selected');
+            
+            // Update pipeline visual
+            const segments = document.querySelectorAll('.pipeline-segment');
+            segments.forEach((seg, i) => {
+                if (i < num) {
+                    seg.classList.remove('hidden');
+                } else {
+                    seg.classList.add('hidden');
+                }
+            });
+            
+            // Update dashboard
+            const data = moduleData[num];
+            
+            document.getElementById('dashWelds').textContent = data.welds + ' welds';
+            document.getElementById('fillWelds').style.width = (data.welds / 4 * 100) + '%';
+            
+            document.getElementById('dashInterfaces').textContent = data.interfaces + ' interfaces';
+            document.getElementById('fillInterfaces').style.width = (data.interfaces / 4 * 100) + '%';
+            
+            document.getElementById('dashFactory').textContent = data.factory + '%';
+            document.getElementById('fillFactory').style.width = data.factory + '%';
+            
+            // Update indicators
+            updateIndicator('dashTransport', data.transport);
+            updateIndicator('dashRisk', data.risk);
+            updateIndicator('dashRework', data.rework);
+            
+            // Enable submit button
+            document.getElementById('submitChoice').disabled = false;
+        }
+
+        function updateIndicator(id, color) {
+            const indicator = document.querySelector(`#${id} .indicator`);
+            indicator.className = 'indicator ' + color;
+        }
+
+        function submitChoice() {
+            if (!selectedModules) return;
+            
+            const data = moduleData[selectedModules];
+            
+            // Hide decision tool
+            document.querySelector('.decision-tool').style.display = 'none';
+            document.getElementById('section5Nav').style.display = 'none';
+            
+            // Show feedback
+            const panel = document.getElementById('feedbackPanel');
+            document.getElementById('feedbackTitle').textContent = data.title;
+            
+            const advList = document.getElementById('feedbackAdvantages');
+            advList.innerHTML = data.advantages.map(a => `<li>${a}</li>`).join('');
+            
+            const chalList = document.getElementById('feedbackChallenges');
+            chalList.innerHTML = data.challenges.map(c => `<li>${c}</li>`).join('');
+            
+            document.getElementById('feedbackWorks').textContent = data.works;
+            document.getElementById('feedbackExample').textContent = data.example;
+            
+            panel.classList.add('visible');
+            
+            // Scroll to feedback
+            panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ==================== QUIZ ====================
+        let currentQuestion = 1;
+        let score = 0;
+        let answered = [false, false, false, false, false];
+
+        const quizFeedback = {
+            1: {
+                correct: 'Correct! Before you can evaluate any trade-offs, you must know what\'s actually possible. If your site can\'t receive 18m modules (no suitable route), the debate is moot. Establish transport constraints first, then optimise within them.',
+                incorrect: 'Not quite. The most important factor to consider FIRST is the transport route constraints to your specific site. Before you can evaluate any trade-offs, you must know what\'s actually possible.'
+            },
+            2: {
+                correct: 'Correct! While any of these could cause a weld failure, confined space and limited access are classic site welding challenges. Poor positioning, inadequate lighting, weather exposure, and restricted purging all degrade weld quality.',
+                incorrect: 'Not quite. Site conditions (confined space, limited access) are the most likely root cause. Poor positioning, inadequate lighting, weather exposure, and restricted purging all degrade weld quality.'
+            },
+            3: {
+                correct: 'Correct! With 5 modules, there are effectively 5 tolerance contributions in the stack. Worst-case (linear) stack-up: 5 × ±3mm = ±15mm total. Designers must consider worst-case for critical interfaces.',
+                incorrect: 'Not quite. With 5 modules, worst-case stack-up is 5 × ±3mm = ±15mm. In practice, statistical methods give lower values, but designers must consider worst-case for critical interfaces.'
+            },
+            4: {
+                correct: 'Correct! The trade-off is explicit: road-transportable size means more, smaller modules, which means more module boundaries and therefore more site connections. However, RR SMR compensates by achieving 90% factory completion within each module.',
+                incorrect: 'Not quite. The key trade-off is that road-transportable modules mean more site connections. RR SMR accepts more interfaces in exchange for transport flexibility, compensating with 90% factory completion per module.'
+            },
+            5: {
+                correct: 'Correct! The bunkers created factory conditions on site — weather protection, controlled environment, optimal positioning. This enabled consistent productivity, reduced rework, and allowed new techniques that wouldn\'t work in exposed conditions.',
+                incorrect: 'Not quite. The primary driver was controlled factory-like conditions enabling consistent quality and productivity — weather protection, optimal positioning, and ability to use advanced welding techniques.'
+            }
+        };
+
+        function checkAnswer(qNum, correctAnswer) {
+            if (answered[qNum - 1]) return;
+            
+            const selected = document.querySelector(`input[name="q${qNum}"]:checked`);
+            if (!selected) {
+                alert('Please select an answer');
+                return;
+            }
+            
+            answered[qNum - 1] = true;
+            const isCorrect = selected.value === correctAnswer;
+            
+            if (isCorrect) score++;
+            
+            // Highlight options
+            const options = document.querySelectorAll(`.quiz-question[data-question="${qNum}"] .option`);
+            options.forEach(opt => {
+                const input = opt.querySelector('input');
+                if (input.value === correctAnswer) {
+                    opt.classList.add('correct');
+                } else if (input.checked && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            // Show feedback
+            const feedback = document.getElementById(`feedback${qNum}`);
+            feedback.textContent = isCorrect ? quizFeedback[qNum].correct : quizFeedback[qNum].incorrect;
+            feedback.className = `question-feedback visible ${isCorrect ? 'correct' : 'incorrect'}`;
+            
+            // Change button to "Next"
+            const btn = document.querySelector(`.quiz-question[data-question="${qNum}"] .btn-primary`);
+            if (qNum < 5) {
+                btn.textContent = 'Next Question →';
+                btn.onclick = () => goToQuestion(qNum + 1);
+            } else {
+                btn.textContent = 'See Results →';
+                btn.onclick = showQuizResults;
+            }
+        }
+
+        function goToQuestion(qNum) {
+            document.querySelectorAll('.quiz-question').forEach(q => q.classList.remove('active'));
+            document.querySelector(`.quiz-question[data-question="${qNum}"]`).classList.add('active');
+            currentQuestion = qNum;
+        }
+
+        function showQuizResults() {
+            document.getElementById('quizContainer').style.display = 'none';
+            document.getElementById('section7Nav').style.display = 'none';
+            
+            const results = document.getElementById('quizResults');
+            results.classList.add('visible');
+            
+            document.getElementById('resultsScore').textContent = `${score} / 5`;
+            
+            const icon = document.getElementById('resultsIcon');
+            const message = document.getElementById('resultsMessage');
+            
+            if (score === 5) {
+                icon.style.background = 'var(--factory-good)';
+                icon.textContent = '✓';
+                message.textContent = 'Excellent! You\'ve demonstrated strong understanding of factory vs site trade-offs.';
+            } else if (score >= 3) {
+                icon.style.background = 'var(--site-caution)';
+                icon.textContent = '✓';
+                message.textContent = 'Good result. Review the questions you missed to strengthen your understanding.';
+            } else {
+                icon.style.background = 'var(--critical-red)';
+                icon.textContent = '!';
+                message.textContent = 'Further study recommended. Review the module content before proceeding.';
+            }
+        }
+
+        // Initialize pipeline visual
+        document.addEventListener('DOMContentLoaded', () => {
+            const segments = document.querySelectorAll('.pipeline-segment');
+            segments.forEach((seg, i) => {
+                if (i >= 3) seg.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

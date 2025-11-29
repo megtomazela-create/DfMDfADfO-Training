@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuclear Component Classification | Interactive Learning Module</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f7f8fa;
+            --bg-white: #ffffff;
+            --text-dark: #1f2937;
+            --text-secondary: #36445a;
+            --text-muted: #6b7280;
+            --border-light: #d0d9e0;
+            --border-medium: #9babc2;
+            --accent-green: #92d050;
+            --accent-blue: #00b0f0;
+            --accent-orange: #cc5500;
+            
+            --sc1-color: #dc2626;
+            --sc1-bg: #fef2f2;
+            --sc1-border: #fecaca;
+            --sc2-color: #d97706;
+            --sc2-bg: #fffbeb;
+            --sc2-border: #fde68a;
+            --sc3-color: #059669;
+            --sc3-bg: #ecfdf5;
+            --sc3-border: #a7f3d0;
+            --non-safety-color: #6b7280;
+            --non-safety-bg: #f9fafb;
+            --non-safety-border: #e5e7eb;
+            
+            --success-color: #059669;
+            --success-bg: #ecfdf5;
+            --error-color: #dc2626;
+            --error-bg: #fef2f2;
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        /* Main wrapper - flexbox layout for proper footer positioning */
+        .module-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+        }
+        
+        /* Logo Bar */
+        .logo-bar {
+            background: var(--bg-white);
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+        }
+        
+        .logo-bar img {
+            height: 40px;
+            display: block;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--text-dark) 0%, var(--text-secondary) 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            background: var(--bg-white);
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+        }
+        
+        .progress-inner {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .progress-step {
+            flex: 1;
+            height: 4px;
+            background: var(--border-light);
+            border-radius: 2px;
+            transition: background 0.3s ease;
+        }
+        
+        .progress-step.completed { background: var(--accent-green); }
+        .progress-step.current { background: var(--accent-blue); }
+        
+        /* Scrollable Content Area */
+        .content-scroll {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 1.5rem;
+        }
+        
+        .content-inner {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Component Section */
+        .component-section {
+            display: none;
+        }
+        
+        .component-section.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .component-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-blue);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .component-label::before {
+            content: '';
+            width: 16px;
+            height: 2px;
+            background: var(--accent-blue);
+        }
+        
+        /* Context Card */
+        .context-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .component-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .context-content {
+            padding: 1.25rem;
+        }
+        
+        .context-card h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.75rem;
+        }
+        
+        .context-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            padding: 0.875rem;
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            border-left: 3px solid var(--accent-blue);
+        }
+        
+        /* Classification Question */
+        .question-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .question-text {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .question-text i { color: var(--accent-blue); }
+        
+        .classification-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.6rem;
+        }
+        
+        @media (max-width: 500px) {
+            .classification-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .class-btn {
+            padding: 0.75rem 0.5rem;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-md);
+            background: var(--bg-white);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-family: inherit;
+        }
+        
+        .class-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .class-btn.selected {
+            transform: translateY(0);
+        }
+        
+        .class-btn .class-code {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.1rem;
+        }
+        
+        .class-btn .class-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        
+        .class-btn.sc1 { border-color: var(--sc1-border); }
+        .class-btn.sc1 .class-code { color: var(--sc1-color); }
+        .class-btn.sc1:hover, .class-btn.sc1.selected { 
+            background: var(--sc1-bg); 
+            border-color: var(--sc1-color);
+        }
+        
+        .class-btn.sc2 { border-color: var(--sc2-border); }
+        .class-btn.sc2 .class-code { color: var(--sc2-color); }
+        .class-btn.sc2:hover, .class-btn.sc2.selected { 
+            background: var(--sc2-bg); 
+            border-color: var(--sc2-color);
+        }
+        
+        .class-btn.sc3 { border-color: var(--sc3-border); }
+        .class-btn.sc3 .class-code { color: var(--sc3-color); }
+        .class-btn.sc3:hover, .class-btn.sc3.selected { 
+            background: var(--sc3-bg); 
+            border-color: var(--sc3-color);
+        }
+        
+        .class-btn.non-safety { border-color: var(--non-safety-border); }
+        .class-btn.non-safety .class-code { color: var(--non-safety-color); }
+        .class-btn.non-safety:hover, .class-btn.non-safety.selected { 
+            background: var(--non-safety-bg); 
+            border-color: var(--non-safety-color);
+        }
+        
+        /* Feedback Card */
+        .feedback-card {
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            margin-bottom: 1.25rem;
+            display: none;
+        }
+        
+        .feedback-card.visible {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .feedback-card.correct {
+            background: var(--success-bg);
+            border: 1px solid var(--sc3-border);
+        }
+        
+        .feedback-card.incorrect {
+            background: var(--error-bg);
+            border: 1px solid var(--sc1-border);
+        }
+        
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+        }
+        
+        .feedback-card.correct .feedback-header { color: var(--success-color); }
+        .feedback-card.incorrect .feedback-header { color: var(--error-color); }
+        
+        .feedback-text {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        
+        .feedback-text strong { color: var(--text-dark); }
+        
+        .missed-list {
+            margin-top: 0.875rem;
+            padding-top: 0.875rem;
+            border-top: 1px solid rgba(220, 38, 38, 0.15);
+        }
+        
+        .missed-list h4 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--error-color);
+            margin-bottom: 0.4rem;
+        }
+        
+        .missed-list ul {
+            padding-left: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .missed-list li {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.2rem;
+        }
+        
+        .missed-list > p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Explore Prompt */
+        .explore-prompt {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #0284c7 100%);
+            color: white;
+            padding: 0.875rem 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.25rem;
+            display: none;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.85rem;
+        }
+        
+        .explore-prompt.visible { display: flex; }
+        .explore-prompt i { font-size: 1.1rem; opacity: 0.9; }
+        
+        /* Requirements Card */
+        .requirements-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-md);
+            display: none;
+        }
+        
+        .requirements-card.visible {
+            display: block;
+            animation: expandIn 0.3s ease;
+        }
+        
+        @keyframes expandIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .requirements-header {
+            padding: 0.875rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .requirements-header h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .requirements-card.sc1 .requirements-header { background: var(--sc1-bg); }
+        .requirements-card.sc1 .requirements-header h3 { color: var(--sc1-color); }
+        .requirements-card.sc2 .requirements-header { background: var(--sc2-bg); }
+        .requirements-card.sc2 .requirements-header h3 { color: var(--sc2-color); }
+        .requirements-card.sc3 .requirements-header { background: var(--sc3-bg); }
+        .requirements-card.sc3 .requirements-header h3 { color: var(--sc3-color); }
+        .requirements-card.non-safety .requirements-header { background: var(--non-safety-bg); }
+        .requirements-card.non-safety .requirements-header h3 { color: var(--non-safety-color); }
+        
+        .class-badge {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            text-transform: uppercase;
+            color: white;
+        }
+        
+        .requirements-card.sc1 .class-badge { background: var(--sc1-color); }
+        .requirements-card.sc2 .class-badge { background: var(--sc2-color); }
+        .requirements-card.sc3 .class-badge { background: var(--sc3-color); }
+        .requirements-card.non-safety .class-badge { background: var(--non-safety-color); }
+        
+        .requirements-content {
+            padding: 1rem;
+        }
+        
+        .requirement-item {
+            display: flex;
+            gap: 0.6rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .requirement-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .requirement-item:first-child { padding-top: 0; }
+        
+        .requirement-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.75rem;
+        }
+        
+        .requirements-card.sc1 .requirement-icon { background: var(--sc1-bg); color: var(--sc1-color); }
+        .requirements-card.sc2 .requirement-icon { background: var(--sc2-bg); color: var(--sc2-color); }
+        .requirements-card.sc3 .requirement-icon { background: var(--sc3-bg); color: var(--sc3-color); }
+        .requirements-card.non-safety .requirement-icon { background: var(--non-safety-bg); color: var(--non-safety-color); }
+        
+        .requirement-details h4 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.15rem;
+        }
+        
+        .requirement-details p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+        
+        /* Bottom Navigation - NOT fixed */
+        .bottom-nav {
+            background: var(--bg-white);
+            border-top: 1px solid var(--border-light);
+            padding: 1rem 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .nav-inner {
+            max-width: 700px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.6rem 1.25rem;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            background: var(--bg-white);
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background: var(--bg-primary);
+            border-color: var(--border-medium);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .nav-btn.primary {
+            background: var(--text-dark);
+            color: white;
+            border-color: var(--text-dark);
+        }
+        
+        .nav-btn.primary:hover:not(:disabled) {
+            background: var(--text-secondary);
+        }
+        
+        .nav-btn.primary:disabled {
+            background: var(--border-medium);
+            border-color: var(--border-medium);
+        }
+        
+        .nav-progress {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        /* Completion Screen */
+        .completion-screen {
+            display: none;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        
+        .completion-screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .completion-icon {
+            font-size: 3rem;
+            color: var(--success-color);
+            margin-bottom: 1.25rem;
+        }
+        
+        .completion-screen h2 {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .completion-screen > p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            max-width: 450px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .score-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--success-bg);
+            border: 1px solid var(--sc3-border);
+            padding: 0.875rem 1.5rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+        }
+        
+        .score-box i { font-size: 1.25rem; color: var(--success-color); }
+        
+        .score-box span {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--success-color);
+        }
+        
+        .restart-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--text-dark);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .restart-btn:hover {
+            background: var(--text-secondary);
+        }
+        
+        .key-learning {
+            margin-top: 2rem;
+            padding: 1.25rem;
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            text-align: left;
+        }
+        
+        .key-learning h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.4rem;
+        }
+        
+        .key-learning p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.55;
+        }
+    </style>
+</head>
+<body>
+    <div class="module-wrapper">
+        <div class="logo-bar">
+            <img src="https://i.ibb.co/VpSDg7Fj/LOGO2.png" alt="Company Logo">
+        </div>
+        
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-atom"></i> Nuclear Component Classification</h1>
+                <p>Learn how safety classification determines manufacturing requirements</p>
+            </div>
+        </header>
+        
+        <div class="progress-bar">
+            <div class="progress-inner">
+                <div class="progress-step" id="step-1"></div>
+                <div class="progress-step" id="step-2"></div>
+                <div class="progress-step" id="step-3"></div>
+                <div class="progress-step" id="step-4"></div>
+                <div class="progress-step" id="step-5"></div>
+            </div>
+        </div>
+        
+        <div class="content-scroll">
+            <div class="content-inner" id="mainContent"></div>
+        </div>
+        
+        <nav class="bottom-nav" id="bottomNav">
+            <div class="nav-inner">
+                <button class="nav-btn" id="prevBtn" onclick="goToPrev()">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <span class="nav-progress" id="navProgress">1 of 5</span>
+                <button class="nav-btn primary" id="nextBtn" onclick="goToNext()" disabled>
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        const components = [
+            {
+                id: 1,
+                name: "Reactor Pressure Vessel Weld",
+                image: "https://i.ibb.co/2Yq3d5qF/Weld.png",
+                context: "This weld joins two sections of the reactor pressure vessel. It contains primary coolant at 155 bar and 315°C, forming part of the reactor coolant pressure boundary — the critical second barrier in the defence-in-depth strategy after the fuel cladding. The weld must maintain integrity under normal operation, transients, and design basis accidents. Failure could result in a Loss of Coolant Accident (LOCA) with potential for core damage and radiological release.",
+                correct: "sc1",
+                explanations: {
+                    sc1: {
+                        correct: true,
+                        title: "Correct — SC1 Classification",
+                        text: "This component forms part of the <strong>reactor coolant pressure boundary</strong>, which is the second physical barrier in defence-in-depth (after fuel cladding). It performs a <strong>critical safety function</strong> by containing high-pressure primary coolant. Failure consequences include LOCA and potential core damage. SC1 is mandatory for primary pressure boundary components."
+                    },
+                    sc2: {
+                        correct: false,
+                        title: "Incorrect — This is SC1, not SC2",
+                        text: "You've underestimated the safety significance. SC2 applies to safety systems and components important to safety, but this component is part of the <strong>primary pressure boundary</strong> itself.",
+                        missed: ["Primary coolant pressure boundary — the second defence-in-depth barrier", "Direct containment of reactor coolant at 155 bar, 315°C", "LOCA consequences upon failure", "No redundancy possible for pressure boundary integrity"],
+                        consequences: "Manufacturing to SC2 requirements would lack the full nuclear code compliance (RCC-M/ASME III Class 1), 100% volumetric NDT, and lifetime traceability required for pressure boundary components. This would be rejected by the regulator."
+                    },
+                    sc3: {
+                        correct: false,
+                        title: "Incorrect — This is SC1, not SC3",
+                        text: "This significantly underestimates the component's safety role. SC3 is for components with lower safety significance that support plant operation.",
+                        missed: ["This is a pressure boundary component, not a support structure", "Contains primary coolant — the barrier between fuel and containment", "LOCA consequences are severe, not minor", "Defence-in-depth barrier, not a commercial-grade component"],
+                        consequences: "Commercial standards cannot assure pressure boundary integrity. The component would fail regulatory approval, require complete re-manufacture, and could introduce years of project delay."
+                    },
+                    "non-safety": {
+                        correct: false,
+                        title: "Incorrect — This is SC1, not Non-Safety",
+                        text: "This is fundamentally wrong. The reactor pressure vessel weld has direct and critical safety functions.",
+                        missed: ["Direct safety function — contains primary coolant", "Second barrier in defence-in-depth", "Failure = LOCA = potential core damage", "This is the most safety-critical classification possible"],
+                        consequences: "Non-safety classification would be immediately rejected. No qualified supplier would manufacture pressure boundary components to commercial standards. This represents a fundamental misunderstanding of nuclear safety classification."
+                    }
+                }
+            },
+            {
+                id: 2,
+                name: "Emergency Feedwater Pump",
+                image: "https://i.ibb.co/svw7tdtH/Water-Pump.png",
+                context: "This pump provides emergency cooling water to the steam generators when normal feedwater is unavailable. It forms part of the Auxiliary Feedwater System, a safety system that activates during accident conditions to remove decay heat from the reactor core via the secondary circuit. The pump must start reliably and operate for extended periods during design basis accidents, but it operates on the secondary (non-radioactive) side of the plant.",
+                correct: "sc2",
+                explanations: {
+                    sc1: {
+                        correct: false,
+                        title: "Incorrect — This is SC2, not SC1",
+                        text: "You've overestimated the classification. SC1 is reserved for primary pressure boundary components and containment. This pump is important to safety but operates on the <strong>secondary circuit</strong>.",
+                        missed: ["Secondary circuit component, not primary pressure boundary", "Active safety system, not a passive barrier", "Redundancy exists — multiple trains of emergency feedwater", "Does not contain radioactive fluid"],
+                        consequences: "Over-classification would significantly increase costs and lead times without proportionate safety benefit. SC1 requirements would be disproportionate to the actual safety function."
+                    },
+                    sc2: {
+                        correct: true,
+                        title: "Correct — SC2 Classification",
+                        text: "This is an <strong>active safety system component</strong> that performs an important safety function during design basis accidents. It removes decay heat via the secondary circuit when normal cooling is lost. SC2 applies because it's <strong>important to safety</strong> but is not part of the primary pressure boundary or containment. Multiple trains provide redundancy."
+                    },
+                    sc3: {
+                        correct: false,
+                        title: "Incorrect — This is SC2, not SC3",
+                        text: "You've underestimated the safety function. SC3 is for components with lower safety significance. This pump is part of a credited safety system.",
+                        missed: ["Part of Auxiliary Feedwater System — a safety system", "Required to function during design basis accidents", "Decay heat removal is a critical safety function", "Credited in safety case for accident mitigation"],
+                        consequences: "SC3 commercial standards would not provide adequate assurance of reliability for a credited safety system. Regulatory approval would require evidence of safety system qualification that SC3 cannot provide."
+                    },
+                    "non-safety": {
+                        correct: false,
+                        title: "Incorrect — This is SC2, not Non-Safety",
+                        text: "This significantly underestimates the component's role. The emergency feedwater pump is part of a credited safety system.",
+                        missed: ["Safety system component — Auxiliary Feedwater System", "Accident mitigation function", "Decay heat removal prevents core damage", "Required to start and run during loss of normal feedwater"],
+                        consequences: "Non-Safety classification for a safety system component would be rejected by the regulator. The safety case relies on this system functioning during accidents."
+                    }
+                }
+            },
+            {
+                id: 3,
+                name: "Cable Tray Support in Turbine Hall",
+                image: "https://i.ibb.co/vvJTp5Gx/Cables.png",
+                context: "This steel bracket supports electrical cable trays in the turbine hall. The cables provide power to conventional turbine and generator equipment — the steam turbine, generator excitation systems, and balance-of-plant auxiliaries. The turbine hall is outside containment and houses the conventional (non-nuclear) power generation systems. Failure would cause cable damage and potential generation loss, but has no impact on reactor safety systems or nuclear safety functions.",
+                correct: "sc3",
+                explanations: {
+                    sc1: {
+                        correct: false,
+                        title: "Incorrect — This is SC3, not SC1",
+                        text: "This significantly over-classifies the component. SC1 is for primary pressure boundary and containment. This support has no nuclear safety function.",
+                        missed: ["Located in turbine hall — conventional plant area", "Supports cables for non-safety equipment only", "No connection to reactor safety systems", "Failure affects generation, not nuclear safety"],
+                        consequences: "SC1 classification would require nuclear code compliance, 100% volumetric NDT, and lifetime documentation for a simple steel bracket. This would be grossly disproportionate and wasteful."
+                    },
+                    sc2: {
+                        correct: false,
+                        title: "Incorrect — This is SC3, not SC2",
+                        text: "This over-classifies the component. SC2 is for safety systems and components important to safety. This support serves only conventional plant equipment.",
+                        missed: ["Does not support any safety system cables", "Turbine hall is conventional plant area", "No credited safety function", "Failure has no nuclear safety consequences"],
+                        consequences: "SC2 would require safety system qualification levels inappropriate for a conventional plant support. Unnecessary cost and complexity without safety benefit."
+                    },
+                    sc3: {
+                        correct: true,
+                        title: "Correct — SC3 Classification",
+                        text: "This component is within the nuclear licensed site but has <strong>no direct safety function</strong>. SC3 applies because it's in an operational area (turbine hall) and requires appropriate quality oversight, but commercial standards with nuclear site controls are sufficient. The cables support only <strong>conventional generation equipment</strong>, not safety systems."
+                    },
+                    "non-safety": {
+                        correct: false,
+                        title: "Incorrect — This is SC3, not Non-Safety",
+                        text: "This slightly under-classifies the component. Although it has no safety function, it's located in the turbine hall — an operational area of the nuclear power station.",
+                        missed: ["Located within operational area of nuclear licensed site", "Turbine hall is part of main plant, not administrative area", "Structural failure could affect plant availability", "Requires appropriate oversight as part of nuclear facility"],
+                        consequences: "Non-Safety classification might be acceptable in some regulatory frameworks, but SC3 provides appropriate nuclear site quality oversight. The distinction here is relatively minor compared to other classification errors."
+                    }
+                }
+            },
+            {
+                id: 4,
+                name: "Office Building HVAC System",
+                image: "https://i.ibb.co/bMhLSKwZ/HVAC.png",
+                context: "This heating, ventilation, and air conditioning system serves the administrative office building located 200 metres from the reactor building. The offices house project management, commercial, HR, and administrative staff. The HVAC system has no physical connection to any nuclear buildings, safety systems, or radiological areas. System failure affects office comfort and potentially staff productivity, but has no conceivable pathway to affect nuclear safety.",
+                correct: "non-safety",
+                explanations: {
+                    sc1: {
+                        correct: false,
+                        title: "Incorrect — This is Non-Safety, not SC1",
+                        text: "This is entirely wrong. SC1 is for primary pressure boundary components. An office HVAC system has no safety function whatsoever.",
+                        missed: ["Administrative building, not nuclear facility", "No connection to any nuclear systems", "No radiological consequences possible", "200m from reactor building"],
+                        consequences: "This classification error suggests a fundamental misunderstanding. SC1 nuclear requirements for an office air conditioner would be absurd and impossible to justify."
+                    },
+                    sc2: {
+                        correct: false,
+                        title: "Incorrect — This is Non-Safety, not SC2",
+                        text: "This significantly over-classifies the component. SC2 is for safety systems. An office HVAC has no safety role.",
+                        missed: ["No safety function of any kind", "Administrative building only", "No pathway to affect nuclear safety", "Failure affects comfort, nothing more"],
+                        consequences: "SC2 safety system classification for office air conditioning would be rejected as grossly inappropriate. It would waste resources and create unjustified procurement complexity."
+                    },
+                    sc3: {
+                        correct: false,
+                        title: "Incorrect — This is Non-Safety, not SC3",
+                        text: "This over-classifies the component. SC3 applies to items within operational areas of the nuclear facility. The administrative building is not part of nuclear operations.",
+                        missed: ["Administrative building is outside operational boundary", "No nuclear site quality requirements needed", "Commercial office building, standard commercial HVAC", "No relationship to plant operations"],
+                        consequences: "SC3 would impose unnecessary nuclear oversight on a standard commercial HVAC system. While less severe than SC1/SC2 errors, it still represents inappropriate application of nuclear quality requirements."
+                    },
+                    "non-safety": {
+                        correct: true,
+                        title: "Correct — Non-Safety Classification",
+                        text: "This component has <strong>no nuclear safety function</strong> and is located in an <strong>administrative building</strong> remote from nuclear operations. Standard commercial quality management applies. There is no credible pathway by which this HVAC system could affect nuclear safety — it's simply office air conditioning."
+                    }
+                }
+            },
+            {
+                id: 5,
+                name: "Containment Spray Nozzle",
+                image: "https://i.ibb.co/sfJbHyV/Spray.png",
+                context: "This spray nozzle is part of the Containment Spray System, which activates during severe accidents to manage containment conditions. It sprays borated water into the containment atmosphere to reduce temperature and pressure following a breach of the primary circuit, and to scrub radioactive aerosols from the atmosphere. The system supports containment integrity by preventing over-pressurisation during beyond-design-basis events.",
+                correct: "sc2",
+                explanations: {
+                    sc1: {
+                        correct: false,
+                        title: "Incorrect — This is SC2, not SC1",
+                        text: "You've slightly over-classified this component. SC1 applies to <strong>primary pressure boundary</strong> components and the containment structure itself. The spray nozzle is part of an <strong>active safety system</strong> that supports containment, but is not part of the pressure boundary.",
+                        missed: ["Active system component, not pressure boundary", "Supports containment function but isn't containment itself", "Spray system has redundancy (multiple trains, many nozzles)", "Not part of reactor coolant pressure boundary"],
+                        consequences: "SC1 over-classification would impose primary pressure boundary requirements on an active system component. While conservative, this adds cost without proportionate safety benefit. SC2 provides appropriate rigour."
+                    },
+                    sc2: {
+                        correct: true,
+                        title: "Correct — SC2 Classification",
+                        text: "This is part of the <strong>Containment Spray System</strong>, an active safety system that performs important safety functions during severe accidents. It's classified SC2 because it's <strong>important to safety</strong> (severe accident management, containment support) but is not itself part of the pressure boundary. The system has built-in redundancy with multiple spray trains and numerous nozzles."
+                    },
+                    sc3: {
+                        correct: false,
+                        title: "Incorrect — This is SC2, not SC3",
+                        text: "You've under-classified this component. SC3 is for components with lower safety significance. The containment spray system is a credited safety system.",
+                        missed: ["Part of Containment Spray System — a safety system", "Severe accident management function", "Supports containment integrity", "Aerosol scrubbing reduces radiological consequences"],
+                        consequences: "SC3 commercial standards would not provide adequate qualification for a credited safety system component. The containment spray system is specifically credited for severe accident management."
+                    },
+                    "non-safety": {
+                        correct: false,
+                        title: "Incorrect — This is SC2, not Non-Safety",
+                        text: "This significantly under-classifies the component. The containment spray system is a safety system for severe accident management.",
+                        missed: ["Containment Spray System is a safety system", "Activates during severe accidents", "Reduces containment pressure and temperature", "Scrubs radioactive aerosols — reduces release consequences"],
+                        consequences: "Non-Safety classification for a containment spray component would be rejected. The safety case relies on this system functioning during beyond-design-basis events."
+                    }
+                }
+            }
+        ];
+
+        const requirements = {
+            sc1: {
+                title: "SC1 — Critical Safety",
+                items: [
+                    { icon: "fa-book", title: "Design Code", desc: "RCC-M or ASME Section III Class 1. Mandatory nuclear code compliance." },
+                    { icon: "fa-shield-halved", title: "QA Category", desc: "Category 1 — Nuclear Safety Related. Full QA with independent oversight." },
+                    { icon: "fa-cubes", title: "Materials", desc: "Code-approved materials only. EN10204 3.2 certification. Heat traceability from mill." },
+                    { icon: "fa-fire", title: "Welding", desc: "Nuclear-qualified procedures (ASME IX). Pre-approved WPS, qualified welders." },
+                    { icon: "fa-magnifying-glass", title: "NDT", desc: "100% volumetric — UT + RT + PT/MT on all welds and critical areas." },
+                    { icon: "fa-folder-open", title: "Documentation", desc: "Lifetime records (60+ years). Complete manufacturing and as-built records." }
+                ]
+            },
+            sc2: {
+                title: "SC2 — Important to Safety",
+                items: [
+                    { icon: "fa-book", title: "Design Code", desc: "RCC-M or ASME III Class 2/3. Some commercial codes acceptable with justification." },
+                    { icon: "fa-shield-halved", title: "QA Category", desc: "Category 2 — Important to Safety. Structured QA with regular oversight." },
+                    { icon: "fa-cubes", title: "Materials", desc: "High-quality materials. EN10204 3.1 acceptable. Full traceability required." },
+                    { icon: "fa-fire", title: "Welding", desc: "Approved procedures and qualified welders to recognised standards." },
+                    { icon: "fa-magnifying-glass", title: "NDT", desc: "UT or RT on critical joints. PT/MT on all welds. Sampling acceptable." },
+                    { icon: "fa-folder-open", title: "Documentation", desc: "Operational life records. Structured documentation for regulatory audits." }
+                ]
+            },
+            sc3: {
+                title: "SC3 — Lower Safety Significance",
+                items: [
+                    { icon: "fa-book", title: "Design Code", desc: "Commercial standards (EN, BS). Nuclear codes not required." },
+                    { icon: "fa-shield-halved", title: "QA Category", desc: "Category 3 — ISO 9001 with nuclear supplements acceptable." },
+                    { icon: "fa-cubes", title: "Materials", desc: "Commercial-grade with basic certification. EN10204 2.2 or 3.1." },
+                    { icon: "fa-fire", title: "Welding", desc: "Standard practices (BS EN ISO 9606). Commercial welder qualification." },
+                    { icon: "fa-magnifying-glass", title: "NDT", desc: "Visual mandatory. Surface inspection on sample welds." },
+                    { icon: "fa-folder-open", title: "Documentation", desc: "Warranty period records. Basic documentation for audits." }
+                ]
+            },
+            "non-safety": {
+                title: "Non-Safety",
+                items: [
+                    { icon: "fa-book", title: "Design Code", desc: "Standard commercial codes (BS EN, ISO). No nuclear requirements." },
+                    { icon: "fa-shield-halved", title: "QA Category", desc: "Standard commercial QM (ISO 9001 or equivalent)." },
+                    { icon: "fa-cubes", title: "Materials", desc: "Commercial off-the-shelf. Standard specifications." },
+                    { icon: "fa-fire", title: "Manufacturing", desc: "Standard commercial. No nuclear qualification required." },
+                    { icon: "fa-magnifying-glass", title: "Inspection", desc: "Commercial standards only. No nuclear-specific NDT." },
+                    { icon: "fa-folder-open", title: "Documentation", desc: "Standard commercial. Warranty records only." }
+                ]
+            }
+        };
+
+        let currentComponent = 0;
+        let componentState = {};
+        let correctCount = 0;
+
+        function init() {
+            const main = document.getElementById('mainContent');
+            main.innerHTML = '';
+            
+            components.forEach((comp, idx) => {
+                main.innerHTML += createComponentHTML(comp, idx);
+            });
+            
+            main.innerHTML += createCompletionHTML();
+            
+            showComponent(0);
+            updateNavigation();
+        }
+
+        function createComponentHTML(comp, idx) {
+            return `
+                <section class="component-section" id="section-${idx}">
+                    <div class="component-label">Component ${idx + 1} of 5</div>
+                    
+                    <div class="context-card">
+                        <img src="${comp.image}" alt="${comp.name}" class="component-image">
+                        <div class="context-content">
+                            <h2>${comp.name}</h2>
+                            <div class="context-description">${comp.context}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="question-card">
+                        <div class="question-text"><i class="fas fa-question-circle"></i> How would you classify this component?</div>
+                        <div class="classification-buttons" id="buttons-${idx}">
+                            <button class="class-btn sc1" onclick="selectClass(${idx}, 'sc1')">
+                                <span class="class-code">SC1</span>
+                                <span class="class-label">Critical</span>
+                            </button>
+                            <button class="class-btn sc2" onclick="selectClass(${idx}, 'sc2')">
+                                <span class="class-code">SC2</span>
+                                <span class="class-label">Important</span>
+                            </button>
+                            <button class="class-btn sc3" onclick="selectClass(${idx}, 'sc3')">
+                                <span class="class-code">SC3</span>
+                                <span class="class-label">Lower Significance</span>
+                            </button>
+                            <button class="class-btn non-safety" onclick="selectClass(${idx}, 'non-safety')">
+                                <span class="class-code">NON</span>
+                                <span class="class-label">Non-Safety</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="feedback-card" id="feedback-${idx}"></div>
+                    
+                    <div class="explore-prompt" id="explore-${idx}">
+                        <i class="fas fa-arrows-left-right"></i>
+                        <span>Click other classifications to compare requirements</span>
+                    </div>
+                    
+                    <div id="requirements-${idx}"></div>
+                </section>
+            `;
+        }
+
+        function createCompletionHTML() {
+            return `
+                <section class="component-section completion-screen" id="completion">
+                    <div class="completion-icon"><i class="fas fa-check-circle"></i></div>
+                    <h2>Module Complete</h2>
+                    <p>You've worked through all five components. Here's your score based on first attempts:</p>
+                    <div class="score-box">
+                        <i class="fas fa-trophy"></i>
+                        <span id="finalScore">0/5</span>
+                    </div>
+                    <button class="restart-btn" onclick="restart()">
+                        <i class="fas fa-redo"></i> Start Again
+                    </button>
+                    <div class="key-learning">
+                        <h3>Key Learning Point</h3>
+                        <p>Safety classification is not arbitrary — it directly determines the rigour of design codes, quality assurance, material certification, welding qualification, inspection methods, and documentation requirements. Getting the classification right is essential for both nuclear safety and cost-effective project delivery.</p>
+                    </div>
+                </section>
+            `;
+        }
+
+        function showComponent(idx) {
+            document.querySelectorAll('.component-section').forEach(s => s.classList.remove('active'));
+            
+            if (idx >= components.length) {
+                document.getElementById('completion').classList.add('active');
+                document.getElementById('finalScore').textContent = `${correctCount}/5`;
+                document.getElementById('bottomNav').style.display = 'none';
+            } else {
+                document.getElementById(`section-${idx}`).classList.add('active');
+                document.getElementById('bottomNav').style.display = 'block';
+            }
+            
+            for (let i = 0; i < 5; i++) {
+                const step = document.getElementById(`step-${i + 1}`);
+                step.classList.remove('completed', 'current');
+                if (componentState[i] && componentState[i].answered) {
+                    step.classList.add('completed');
+                } else if (i === idx) {
+                    step.classList.add('current');
+                }
+            }
+            
+            currentComponent = idx;
+            updateNavigation();
+            
+            // Scroll content area to top
+            document.querySelector('.content-scroll').scrollTop = 0;
+        }
+
+        function selectClass(compIdx, classification) {
+            const comp = components[compIdx];
+            const explanation = comp.explanations[classification];
+            
+            if (!componentState[compIdx]) {
+                componentState[compIdx] = { answered: false };
+            }
+            
+            const state = componentState[compIdx];
+            
+            if (!state.answered) {
+                state.answered = true;
+                state.firstAnswer = classification;
+                if (explanation.correct) correctCount++;
+                updateNavigation();
+                document.getElementById(`step-${compIdx + 1}`).classList.add('completed');
+                document.getElementById(`step-${compIdx + 1}`).classList.remove('current');
+            }
+            
+            document.querySelectorAll(`#buttons-${compIdx} .class-btn`).forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.querySelector(`#buttons-${compIdx} .class-btn.${classification}`).classList.add('selected');
+            
+            const feedbackCard = document.getElementById(`feedback-${compIdx}`);
+            let html = `
+                <div class="feedback-header">
+                    <i class="fas ${explanation.correct ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+                    ${explanation.title}
+                </div>
+                <div class="feedback-text">${explanation.text}</div>
+            `;
+            
+            if (!explanation.correct && explanation.missed) {
+                html += `
+                    <div class="missed-list">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Key indicators missed:</h4>
+                        <ul>${explanation.missed.map(m => `<li>${m}</li>`).join('')}</ul>
+                        <h4><i class="fas fa-hammer"></i> Project consequences:</h4>
+                        <p>${explanation.consequences}</p>
+                    </div>
+                `;
+            }
+            
+            feedbackCard.innerHTML = html;
+            feedbackCard.className = `feedback-card visible ${explanation.correct ? 'correct' : 'incorrect'}`;
+            
+            document.getElementById(`explore-${compIdx}`).classList.add('visible');
+            
+            showRequirements(compIdx, classification);
+        }
+
+        function showRequirements(compIdx, classification) {
+            const container = document.getElementById(`requirements-${compIdx}`);
+            const req = requirements[classification];
+            
+            container.innerHTML = `
+                <div class="requirements-card ${classification} visible">
+                    <div class="requirements-header">
+                        <h3><i class="fas fa-clipboard-list"></i> Manufacturing Requirements</h3>
+                        <span class="class-badge">${classification === 'non-safety' ? 'Non-Safety' : classification.toUpperCase()}</span>
+                    </div>
+                    <div class="requirements-content">
+                        ${req.items.map(item => `
+                            <div class="requirement-item">
+                                <div class="requirement-icon"><i class="fas ${item.icon}"></i></div>
+                                <div class="requirement-details">
+                                    <h4>${item.title}</h4>
+                                    <p>${item.desc}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const navProgress = document.getElementById('navProgress');
+            
+            prevBtn.disabled = currentComponent === 0;
+            
+            const currentAnswered = componentState[currentComponent] && componentState[currentComponent].answered;
+            nextBtn.disabled = !currentAnswered;
+            
+            if (currentComponent === components.length - 1 && currentAnswered) {
+                nextBtn.innerHTML = 'Finish <i class="fas fa-check"></i>';
+            } else {
+                nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
+            }
+            
+            navProgress.textContent = `${currentComponent + 1} of 5`;
+        }
+
+        function goToNext() {
+            if (currentComponent < components.length) {
+                showComponent(currentComponent + 1);
+            }
+        }
+
+        function goToPrev() {
+            if (currentComponent > 0) {
+                showComponent(currentComponent - 1);
+            }
+        }
+
+        function restart() {
+            currentComponent = 0;
+            componentState = {};
+            correctCount = 0;
+            init();
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

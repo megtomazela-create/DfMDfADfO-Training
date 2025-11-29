@@ -1,0 +1,4272 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape the Design Review | The Nuclear House</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --uranium-blue: #4A5D6B;
+            --lightest: #F7F8FA;
+            --light: #D1D9E0;
+            --medium-light: #9BABC2;
+            --medium-dark: #354450;
+            --darkest: #1F2937;
+            --warm-gold: #B8860B;
+            --radioactive-green: #7FFF00;
+            --error-red: #ff4444;
+            --success-green: #00ff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--darkest);
+            color: var(--lightest);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--darkest);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .atom-spinner {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            animation: atomSpin 2s linear infinite;
+        }
+
+        .atom-spinner::before,
+        .atom-spinner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 3px solid transparent;
+            border-top-color: var(--radioactive-green);
+            border-radius: 50%;
+        }
+
+        .atom-spinner::after {
+            transform: rotate(60deg);
+        }
+
+        .atom-spinner .nucleus {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            background: var(--radioactive-green);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--radioactive-green);
+        }
+
+        @keyframes atomSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 30px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--medium-light);
+            letter-spacing: 2px;
+        }
+
+        /* Screen Container */
+        .screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            min-height: 100vh;
+            min-height: 100dvh; /* Dynamic viewport height for mobile */
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .screen.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Vignette Overlay */
+        .vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%);
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.1) 2px,
+                rgba(0, 0, 0, 0.1) 4px
+            );
+            pointer-events: none;
+            z-index: 101;
+            opacity: 0.3;
+        }
+
+        /* Title Screen */
+        .title-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: var(--darkest);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://i.ibb.co/60ZcLGWg/IMAGE-01.png') center center / cover no-repeat;
+            filter: brightness(0.3);
+            animation: kenBurns 30s ease-in-out infinite alternate;
+        }
+
+        @keyframes kenBurns {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        .flicker-overlay {
+            position: absolute;
+            inset: 0;
+            background: transparent;
+            animation: flicker 4s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 95%, 100% { opacity: 0; }
+            96% { opacity: 0.1; background: var(--radioactive-green); }
+        }
+
+        .title-content {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            padding: 40px;
+        }
+
+        .title-logo {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            opacity: 0.7;
+            z-index: 10;
+        }
+
+        .title-logo img {
+            height: 40px;
+        }
+
+        .title-main {
+            font-size: 4rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--lightest) 0%, var(--radioactive-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 60px rgba(127, 255, 0, 0.3);
+        }
+
+        .title-sub {
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: var(--medium-light);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 50px;
+        }
+
+        .intro-text {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--light);
+            margin-bottom: 50px;
+            min-height: 80px;
+        }
+
+        .begin-btn {
+            background: transparent;
+            border: 2px solid var(--radioactive-green);
+            color: var(--radioactive-green);
+            padding: 18px 60px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(127, 255, 0, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(127, 255, 0, 0.6); }
+        }
+
+        .begin-btn:hover {
+            background: var(--radioactive-green);
+            color: var(--darkest);
+            transform: scale(1.05);
+        }
+
+        .begin-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Room Screen */
+        .room-screen {
+            background: var(--darkest);
+        }
+
+        .room-bg {
+            position: absolute;
+            inset: 0;
+            background: url('https://i.ibb.co/60ZcLGWg/IMAGE-01.png') center center / cover no-repeat;
+            filter: brightness(0.6);
+        }
+
+        .room-content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: linear-gradient(180deg, rgba(31, 41, 55, 0.95) 0%, transparent 100%);
+            z-index: 50;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .status-logo {
+            height: 28px;
+            opacity: 0.8;
+        }
+
+        .timer {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.4rem;
+            color: var(--radioactive-green);
+            text-shadow: 0 0 10px rgba(127, 255, 0, 0.5);
+        }
+
+        .lock-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .door-indicator {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--medium-dark);
+        }
+
+        .door-indicator img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .locks {
+            display: flex;
+            gap: 8px;
+        }
+
+        .lock {
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            background: var(--error-red);
+            transition: all 0.5s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: transparent;
+        }
+
+        .lock.unlocked {
+            background: var(--success-green);
+            animation: lockFlip 0.5s ease;
+            color: var(--darkest);
+        }
+
+        @keyframes lockFlip {
+            0% { transform: rotateY(0); }
+            50% { transform: rotateY(90deg); }
+            100% { transform: rotateY(0); }
+        }
+
+        /* Hotspots */
+        .hotspot {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 3px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hotspot::before {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border: 2px solid var(--radioactive-green);
+            border-radius: 16px;
+            opacity: 0.5;
+            animation: hotspotPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes hotspotPulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .hotspot:hover {
+            background: rgba(127, 255, 0, 0.2);
+            border-color: var(--radioactive-green);
+            box-shadow: 0 0 30px rgba(127, 255, 0, 0.4);
+        }
+
+        .hotspot.completed {
+            opacity: 0.7;
+        }
+
+        .hotspot.completed::before {
+            animation: none;
+            border-color: var(--success-green);
+        }
+
+        .hotspot.completed::after {
+            content: '✓';
+            position: absolute;
+            font-size: 2rem;
+            color: var(--success-green);
+            text-shadow: 0 0 10px var(--success-green);
+        }
+
+        .hotspot-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--light);
+            white-space: nowrap;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .hotspot:hover .hotspot-label {
+            opacity: 1;
+        }
+
+        /* Hotspot Positions - spread around room */
+        .hotspot-1 { top: 22%; left: 5%; }
+        .hotspot-2 { top: 52%; left: 8%; }
+        .hotspot-3 { top: 28%; left: 25%; }
+        .hotspot-4 { top: 22%; left: 68%; }
+        .hotspot-5 { top: 52%; left: 70%; }
+        .hotspot-6 { top: 72%; left: 42%; }
+
+        /* Door Hotspot - centre of screen */
+        .door-hotspot {
+            position: absolute;
+            top: 32%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 220px;
+            height: 320px;
+            border: 3px solid var(--warm-gold);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .door-hotspot:hover {
+            background: rgba(184, 134, 11, 0.2);
+            box-shadow: 0 0 30px rgba(184, 134, 11, 0.4);
+        }
+
+        .door-hotspot-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--warm-gold);
+            white-space: nowrap;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+
+        /* Reset Button */
+        .reset-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 68, 68, 0.2);
+            border: 2px solid var(--error-red);
+            color: var(--error-red);
+            padding: 10px 20px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            z-index: 50;
+        }
+
+        .reset-btn:hover {
+            background: rgba(255, 68, 68, 0.4);
+        }
+
+        /* Puzzle number badge */
+        .puzzle-number {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 36px;
+            height: 36px;
+            background: var(--warm-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--darkest);
+            box-shadow: 0 0 10px rgba(184, 134, 11, 0.5);
+            z-index: 10;
+        }
+
+        /* Puzzle Screen Base */
+        .puzzle-screen {
+            flex-direction: column;
+            background: var(--darkest);
+        }
+
+        .puzzle-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.4);
+        }
+
+        .puzzle-content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+        }
+
+        .puzzle-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .puzzle-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--radioactive-green);
+            margin-bottom: 10px;
+        }
+
+        .puzzle-intro {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            color: var(--light);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .puzzle-body {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--medium-light);
+            color: var(--light);
+            padding: 10px 20px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: var(--light);
+        }
+
+        /* Puzzle 1: Classification */
+        .classification-area {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .component-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            max-width: 700px;
+        }
+
+        .component-card {
+            background: var(--medium-dark);
+            border: 2px solid var(--medium-light);
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: grab;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .component-card:hover {
+            border-color: var(--radioactive-green);
+            box-shadow: 0 0 20px rgba(127, 255, 0, 0.3);
+        }
+
+        .component-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(127, 255, 0, 0.5);
+            z-index: 100;
+        }
+
+        .component-card.placed {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        /* Touch drag clone */
+        .touch-clone {
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Drag target highlighting */
+        .sequence-card.drag-over-target {
+            border-color: var(--radioactive-green) !important;
+            background: rgba(127, 255, 0, 0.2) !important;
+            box-shadow: 0 0 20px rgba(127, 255, 0, 0.4);
+        }
+        
+        /* Touch-friendly styles */
+        @media (hover: none) and (pointer: coarse) {
+            .component-card {
+                cursor: pointer;
+                -webkit-user-select: none;
+                user-select: none;
+                touch-action: none;
+            }
+            
+            .sequence-card {
+                cursor: pointer;
+                -webkit-user-select: none;
+                user-select: none;
+                touch-action: none;
+            }
+        }
+
+        .drop-zones {
+            display: flex;
+            gap: 20px;
+        }
+
+        .drop-zone {
+            width: 220px;
+            min-height: 280px;
+            border: 3px dashed var(--medium-light);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.sc1 { border-color: #ff6b6b; }
+        .drop-zone.sc2 { border-color: #ffd93d; }
+        .drop-zone.sc3 { border-color: #6bcb77; }
+
+        .drop-zone.drag-over {
+            background: rgba(127, 255, 0, 0.1);
+            border-color: var(--radioactive-green);
+        }
+
+        .drop-zone-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .drop-zone.sc1 .drop-zone-title { color: #ff6b6b; }
+        .drop-zone.sc2 .drop-zone-title { color: #ffd93d; }
+        .drop-zone.sc3 .drop-zone-title { color: #6bcb77; }
+
+        .dropped-card {
+            background: var(--medium-dark);
+            border: 2px solid var(--success-green);
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-top: 10px;
+            animation: dropIn 0.3s ease;
+        }
+
+        @keyframes dropIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Puzzle 2: Certificates */
+        .certificates-area {
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .certificate {
+            background: var(--lightest);
+            color: var(--darkest);
+            width: 280px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .cert-header {
+            text-align: center;
+            border-bottom: 2px solid var(--darkest);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .cert-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .cert-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--light);
+            font-size: 0.9rem;
+        }
+
+        .cert-label {
+            font-weight: 600;
+            color: var(--medium-dark);
+        }
+
+        .cert-value {
+            text-align: right;
+        }
+
+        .cert-clickable {
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .cert-clickable:hover {
+            background: rgba(100, 100, 100, 0.2);
+        }
+
+        .cert-clickable.found {
+            background: rgba(0, 255, 136, 0.3);
+            pointer-events: none;
+        }
+
+        .cert-clickable.found::after {
+            content: '✓';
+            position: absolute;
+            right: 10px;
+            color: var(--success-green);
+            font-weight: bold;
+        }
+
+        .cert-clickable.wrong-click {
+            background: rgba(255, 68, 68, 0.3);
+            animation: shake 0.3s ease;
+        }
+
+        .error-counter {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.2rem;
+            color: var(--radioactive-green);
+        }
+
+        /* Puzzle 3: Weld Access */
+        .weld-access-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .maze-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            background: rgba(0,0,0,0.5);
+            border: 3px solid var(--medium-dark);
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .maze-obstacle {
+            position: absolute;
+            background: var(--medium-dark);
+            border-radius: 4px;
+        }
+
+        .torch {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: var(--warm-gold);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--warm-gold);
+            transition: all 0.15s ease;
+            z-index: 10;
+        }
+
+        .weld-target {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: var(--radioactive-green);
+            border-radius: 50%;
+            box-shadow: 0 0 30px var(--radioactive-green);
+            animation: targetPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes targetPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .maze-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .maze-btn {
+            width: 50px;
+            height: 50px;
+            background: var(--medium-dark);
+            border: 2px solid var(--medium-light);
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .maze-btn:hover {
+            background: var(--uranium-blue);
+            border-color: var(--radioactive-green);
+        }
+
+        .maze-btn:active {
+            transform: scale(0.95);
+        }
+
+        .report-flaw-btn {
+            display: none;
+            margin-top: 20px;
+            background: var(--error-red);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 8px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .report-flaw-btn.visible {
+            display: block;
+        }
+
+        /* Weld Access Modal */
+        .weld-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .weld-modal-content {
+            background: var(--darkest);
+            border: 3px solid var(--success-green);
+            padding: 40px 50px;
+            border-radius: 12px;
+            max-width: 550px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(0, 255, 136, 0.3);
+        }
+
+        .weld-modal-btn {
+            background: var(--success-green);
+            border: none;
+            color: var(--darkest);
+            padding: 15px 40px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .weld-modal-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+        }
+
+        /* Confirmation Modal */
+        .confirm-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            animation: fadeIn 0.3s ease;
+            padding: 20px;
+        }
+
+        .confirm-modal-content {
+            background: var(--darkest);
+            border: 3px solid var(--error-red);
+            padding: 35px 45px;
+            border-radius: 12px;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(255, 68, 68, 0.3);
+        }
+
+        .confirm-modal-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .confirm-modal-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--error-red);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .confirm-modal-text {
+            color: var(--light);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .confirm-modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .confirm-modal-btn {
+            padding: 12px 30px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .confirm-modal-btn.cancel {
+            background: transparent;
+            border: 2px solid var(--medium-light);
+            color: var(--light);
+        }
+
+        .confirm-modal-btn.cancel:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--light);
+        }
+
+        .confirm-modal-btn.confirm {
+            background: var(--error-red);
+            border: 2px solid var(--error-red);
+            color: white;
+        }
+
+        .confirm-modal-btn.confirm:hover {
+            background: #ff6666;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+        }
+
+        /* Puzzle 4: Timeline */
+        .timeline-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .timeline-visual {
+            width: 100%;
+            height: 140px;
+            background: var(--medium-dark);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .component-visual {
+            font-size: 1rem;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .inspection-points {
+            display: flex;
+            gap: 25px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .inspection-point {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--success-green);
+            transition: all 0.3s ease;
+        }
+
+        .inspection-point.blocked {
+            background: var(--error-red);
+        }
+
+        .timeline-slider-container {
+            width: 100%;
+        }
+
+        .timeline-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: var(--medium-light);
+        }
+
+        .timeline-slider {
+            width: 100%;
+            height: 20px;
+            -webkit-appearance: none;
+            background: var(--medium-dark);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .timeline-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 30px;
+            height: 30px;
+            background: var(--radioactive-green);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--radioactive-green);
+        }
+
+        .year-display {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--radioactive-green);
+            margin-top: 15px;
+        }
+
+        .timeline-question {
+            display: none;
+            background: var(--medium-dark);
+            padding: 20px 25px;
+            border-radius: 10px;
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 10px;
+        }
+
+        .timeline-question.visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .timeline-question h3 {
+            margin-bottom: 15px;
+            color: var(--warm-gold);
+            font-size: 0.95rem;
+        }
+
+        .timeline-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .timeline-option {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid var(--medium-light);
+            color: var(--light);
+            padding: 10px 15px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: 6px;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-option:hover {
+            border-color: var(--radioactive-green);
+            background: rgba(127, 255, 0, 0.1);
+        }
+
+        .timeline-option.correct {
+            border-color: var(--success-green);
+            background: rgba(0, 255, 136, 0.2);
+        }
+
+        .timeline-option.wrong {
+            border-color: var(--error-red);
+            background: rgba(255, 68, 68, 0.2);
+        }
+
+        /* Puzzle 5: Assembly */
+        .assembly-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .part-counter {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .part-counter .current {
+            color: var(--radioactive-green);
+            font-size: 2rem;
+        }
+
+        .part-counter .target {
+            color: var(--warm-gold);
+        }
+
+        .parts-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            max-width: 700px;
+        }
+
+        .part-box {
+            background: var(--medium-dark);
+            border: 2px solid var(--medium-light);
+            padding: 15px 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .part-box:hover {
+            border-color: var(--radioactive-green);
+            background: rgba(127, 255, 0, 0.1);
+        }
+
+        .part-box.eliminated {
+            opacity: 0;
+            transform: scale(0);
+            pointer-events: none;
+        }
+
+        .part-box.essential {
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Puzzle 6: Sequence */
+        .sequence-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .sequence-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 350px;
+        }
+
+        .sequence-card {
+            background: var(--medium-dark);
+            border: 2px solid var(--medium-light);
+            padding: 20px 30px;
+            border-radius: 8px;
+            cursor: grab;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 350px;
+        }
+
+        .sequence-card:hover {
+            border-color: var(--radioactive-green);
+        }
+
+        .sequence-card.dragging {
+            opacity: 0.5;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(127, 255, 0, 0.5);
+            z-index: 100;
+        }
+
+        .sequence-card .icon {
+            font-size: 1.5rem;
+        }
+
+        .sequence-card .label {
+            font-weight: 600;
+        }
+
+        .sequence-slots {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sequence-slot {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slot-number {
+            width: 40px;
+            height: 40px;
+            background: var(--uranium-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .slot-area {
+            width: 300px;
+            height: 60px;
+            border: 2px dashed var(--medium-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .slot-area.drag-over {
+            border-color: var(--radioactive-green);
+            background: rgba(127, 255, 0, 0.1);
+        }
+
+        .slot-area.filled {
+            border-style: solid;
+            border-color: var(--success-green);
+        }
+
+        .submit-sequence-btn {
+            background: var(--radioactive-green);
+            border: none;
+            color: var(--darkest);
+            padding: 15px 40px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .submit-sequence-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(127, 255, 0, 0.5);
+        }
+
+        /* Door Screen */
+        .door-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .door-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.5);
+        }
+
+        .door-content {
+            position: relative;
+            z-index: 10;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 30px auto;
+            max-width: 250px;
+        }
+
+        .keypad-btn {
+            width: 70px;
+            height: 70px;
+            background: var(--medium-dark);
+            border: 2px solid var(--medium-light);
+            color: var(--light);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .keypad-btn:hover {
+            background: var(--uranium-blue);
+            border-color: var(--radioactive-green);
+        }
+
+        .keypad-btn:active {
+            transform: scale(0.95);
+        }
+
+        .keypad-btn.clear {
+            font-size: 1rem;
+        }
+
+        .code-display {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 2.5rem;
+            letter-spacing: 12px;
+            color: var(--radioactive-green);
+            text-shadow: 0 0 20px rgba(127, 255, 0, 0.5);
+            margin-bottom: 20px;
+            min-height: 60px;
+        }
+
+        .door-message {
+            font-size: 1.2rem;
+            color: var(--light);
+            margin-bottom: 20px;
+        }
+
+        .door-message.error {
+            color: var(--error-red);
+            animation: shake 0.3s ease;
+        }
+
+        /* Success Screen */
+        .success-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .success-bg {
+            position: absolute;
+            inset: 0;
+            background: url('https://i.ibb.co/S7MFmTC4/IMAGE-09.png') center center / cover no-repeat;
+            filter: brightness(0.6);
+        }
+
+        .light-rays {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(255,255,255,0.3) 0%, transparent 70%);
+            animation: lightPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes lightPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .success-content {
+            position: relative;
+            z-index: 10;
+            max-width: 700px;
+            padding: 40px;
+        }
+
+        .success-title {
+            font-size: 4rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            color: var(--radioactive-green);
+            text-shadow: 0 0 40px rgba(127, 255, 0, 0.5);
+            margin-bottom: 20px;
+            animation: successPop 0.5s ease;
+        }
+
+        @keyframes successPop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .success-subtitle {
+            font-size: 1.3rem;
+            color: var(--light);
+            margin-bottom: 40px;
+        }
+
+        .stats-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 2rem;
+            color: var(--radioactive-green);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--medium-light);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .lesson-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            border-left: 3px solid var(--radioactive-green);
+        }
+
+        .complete-btn {
+            background: var(--radioactive-green);
+            border: none;
+            color: var(--darkest);
+            padding: 18px 50px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .complete-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(127, 255, 0, 0.5);
+        }
+
+        /* Flash Messages */
+        .flash-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--darkest);
+            border: 3px solid var(--radioactive-green);
+            padding: 40px 60px;
+            border-radius: 12px;
+            text-align: center;
+            z-index: 1000;
+            animation: flashIn 0.3s ease;
+            box-shadow: 0 0 60px rgba(127, 255, 0, 0.4);
+        }
+
+        /* Completion Banner - shows when revisiting completed puzzle */
+        .completion-banner {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2) 0%, rgba(0, 255, 136, 0.1) 100%);
+            border: 2px solid var(--success-green);
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            z-index: 50;
+            font-size: 0.9rem;
+        }
+
+        .completion-banner.visible {
+            display: flex;
+        }
+
+        .completion-banner .checkmark {
+            font-size: 1.2rem;
+            color: var(--success-green);
+        }
+
+        .completion-banner .banner-text {
+            color: var(--light);
+            font-weight: 600;
+        }
+
+        .completion-banner .code-digit-reminder {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--warm-gold);
+            background: rgba(184, 134, 11, 0.2);
+            padding: 5px 12px;
+            border-radius: 4px;
+            border: 1px solid var(--warm-gold);
+        }
+
+        /* Feedback tooltip for wrong answers */
+        .feedback-tooltip {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--darkest);
+            border: 2px solid var(--error-red);
+            padding: 20px 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            text-align: center;
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+        }
+
+        .feedback-tooltip.success {
+            border-color: var(--success-green);
+        }
+
+        .feedback-tooltip h4 {
+            color: var(--error-red);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .feedback-tooltip.success h4 {
+            color: var(--success-green);
+        }
+
+        .feedback-tooltip p {
+            color: var(--light);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .feedback-tooltip .hint {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--medium-dark);
+            color: var(--warm-gold);
+            font-style: italic;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        @keyframes flashIn {
+            from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .flash-message h2 {
+            color: var(--radioactive-green);
+            margin-bottom: 10px;
+        }
+
+        .flash-message p {
+            color: var(--light);
+        }
+
+        .flash-message .code-reveal {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 3rem;
+            color: var(--warm-gold);
+            margin-top: 20px;
+            text-shadow: 0 0 20px rgba(184, 134, 11, 0.5);
+        }
+
+        /* Sound Toggle */
+        .sound-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--medium-light);
+            color: var(--light);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .sound-toggle:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Responsive - Tablet */
+        @media (max-width: 1024px) {
+            .title-main {
+                font-size: 2.5rem;
+                letter-spacing: 4px;
+            }
+
+            .title-sub {
+                font-size: 1.1rem;
+                letter-spacing: 2px;
+            }
+
+            .intro-text {
+                font-size: 1rem;
+            }
+
+            .classification-area {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .component-cards {
+                grid-template-columns: repeat(3, 1fr);
+                max-width: 100%;
+            }
+
+            .drop-zones {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .drop-zone {
+                width: 180px;
+                min-height: 240px;
+            }
+
+            .certificates-area {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .certificate {
+                width: 100%;
+                max-width: 340px;
+            }
+
+            .maze-container {
+                width: 320px;
+                height: 320px;
+            }
+
+            .parts-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .sequence-card {
+                min-width: 280px;
+                padding: 15px 20px;
+            }
+
+            .slot-area {
+                width: 240px;
+            }
+
+            .lessons-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .success-title {
+                font-size: 3rem;
+                letter-spacing: 6px;
+            }
+
+            /* Hotspot positions adjusted for tablet */
+            .hotspot {
+                width: 100px;
+                height: 100px;
+            }
+
+            .hotspot-1 { top: 20%; left: 3%; }
+            .hotspot-2 { top: 50%; left: 5%; }
+            .hotspot-3 { top: 25%; left: 22%; }
+            .hotspot-4 { top: 20%; left: 72%; }
+            .hotspot-5 { top: 50%; left: 75%; }
+            .hotspot-6 { top: 75%; left: 40%; }
+
+            .door-hotspot {
+                width: 180px;
+                height: 260px;
+            }
+        }
+
+        /* Responsive - Mobile */
+        @media (max-width: 768px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            /* Only puzzle screens should scroll, not title/room screens */
+            .puzzle-screen {
+                overflow-y: auto;
+            }
+
+            /* Title Screen */
+            .title-content {
+                padding: 20px;
+            }
+
+            .title-main {
+                font-size: 1.8rem;
+                letter-spacing: 3px;
+                line-height: 1.2;
+            }
+
+            .title-sub {
+                font-size: 0.95rem;
+                letter-spacing: 1px;
+                margin-bottom: 30px;
+            }
+
+            .intro-text {
+                font-size: 0.9rem;
+                margin-bottom: 30px;
+                min-height: 60px;
+            }
+
+            .begin-btn {
+                padding: 14px 40px;
+                font-size: 1.1rem;
+            }
+
+            .title-logo {
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .title-logo img {
+                height: 30px;
+            }
+
+            /* Status Bar */
+            .status-bar {
+                padding: 12px 15px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .status-left {
+                gap: 12px;
+            }
+
+            .status-logo {
+                height: 22px;
+            }
+
+            .timer {
+                font-size: 0.9rem;
+            }
+
+            .locks {
+                gap: 5px;
+            }
+
+            .lock {
+                width: 22px;
+                height: 22px;
+                font-size: 0.7rem;
+            }
+
+            .door-indicator {
+                width: 45px;
+                height: 45px;
+            }
+
+            /* Room Hotspots - repositioned for mobile viewing */
+            .hotspot {
+                width: 70px;
+                height: 70px;
+            }
+
+            .puzzle-number {
+                width: 28px;
+                height: 28px;
+                font-size: 0.9rem;
+                top: -10px;
+                right: -10px;
+            }
+
+            .hotspot::before {
+                inset: -3px;
+            }
+
+            .hotspot-label {
+                font-size: 0.65rem;
+                bottom: -22px;
+                opacity: 1;
+            }
+
+            .hotspot.completed::after {
+                font-size: 1.4rem;
+            }
+
+            /* Reposition hotspots for mobile portrait view */
+            .hotspot-1 { top: 15%; left: 5%; }
+            .hotspot-2 { top: 35%; left: 5%; }
+            .hotspot-3 { top: 15%; left: 30%; }
+            .hotspot-4 { top: 15%; left: 70%; }
+            .hotspot-5 { top: 35%; left: 75%; }
+            .hotspot-6 { top: 60%; left: 40%; }
+
+            .door-hotspot {
+                width: 140px;
+                height: 200px;
+                top: 35%;
+            }
+
+            .door-hotspot-label {
+                font-size: 0.85rem;
+                bottom: -25px;
+            }
+
+            .reset-btn {
+                bottom: 15px;
+                left: 15px;
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+
+            /* Puzzle Screens */
+            .puzzle-content {
+                padding: 15px;
+                padding-top: 60px;
+            }
+
+            .back-btn {
+                top: 15px;
+                left: 15px;
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+
+            .puzzle-header {
+                margin-bottom: 15px;
+            }
+
+            .puzzle-title {
+                font-size: 1.4rem;
+                letter-spacing: 2px;
+            }
+
+            .puzzle-intro {
+                font-size: 0.85rem;
+                line-height: 1.5;
+            }
+
+            /* Puzzle 1: Classification */
+            .component-cards {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .component-card {
+                padding: 10px 12px;
+                font-size: 0.75rem;
+            }
+
+            .drop-zones {
+                gap: 12px;
+                width: 100%;
+            }
+
+            .drop-zone {
+                width: 100%;
+                max-width: 150px;
+                min-height: 200px;
+                padding: 10px;
+            }
+
+            .drop-zone-title {
+                font-size: 0.9rem;
+                margin-bottom: 12px;
+            }
+
+            .dropped-card {
+                padding: 10px;
+                font-size: 0.75rem;
+            }
+
+            /* Puzzle 2: Certificates */
+            .certificate {
+                width: 100%;
+                max-width: 300px;
+                padding: 15px;
+            }
+
+            .cert-title {
+                font-size: 1rem;
+            }
+
+            .cert-row {
+                padding: 6px 0;
+                font-size: 0.8rem;
+            }
+
+            .error-counter {
+                font-size: 1rem;
+                margin-top: 20px;
+            }
+
+            /* Puzzle 3: Weld Access */
+            .maze-container {
+                width: 280px;
+                height: 280px;
+            }
+
+            .maze-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 1.2rem;
+            }
+
+            .report-flaw-btn {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+
+            /* Puzzle 4: Timeline */
+            .timeline-container {
+                padding: 15px;
+            }
+
+            .timeline-question {
+                padding: 15px;
+            }
+
+            .timeline-question h4 {
+                font-size: 0.95rem;
+            }
+
+            .timeline-option {
+                padding: 10px 15px;
+                font-size: 0.85rem;
+            }
+
+            /* Puzzle 5: Assembly */
+            .parts-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .part-item {
+                padding: 10px;
+                font-size: 0.75rem;
+            }
+
+            .part-icon {
+                font-size: 1.2rem;
+            }
+
+            /* Puzzle 6: Sequence */
+            .sequence-cards {
+                min-height: auto;
+                width: 100%;
+            }
+
+            .sequence-card {
+                min-width: auto;
+                width: 100%;
+                padding: 12px 15px;
+                font-size: 0.85rem;
+            }
+
+            .sequence-card .icon {
+                font-size: 1.2rem;
+            }
+
+            .sequence-slots {
+                width: 100%;
+            }
+
+            .sequence-slot {
+                gap: 10px;
+            }
+
+            .slot-number {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+
+            .slot-area {
+                width: 100%;
+                flex: 1;
+                height: 50px;
+            }
+
+            .submit-sequence-btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+
+            /* Door Screen */
+            .code-display {
+                font-size: 1.8rem;
+                letter-spacing: 8px;
+            }
+
+            .door-message {
+                font-size: 1rem;
+                padding: 0 15px;
+            }
+
+            .keypad {
+                max-width: 220px;
+                gap: 8px;
+            }
+
+            .keypad-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 1.3rem;
+            }
+
+            /* Success Screen */
+            .success-content {
+                padding: 20px;
+            }
+
+            .success-title {
+                font-size: 2rem;
+                letter-spacing: 4px;
+            }
+
+            .success-subtitle {
+                font-size: 1rem;
+                margin-bottom: 25px;
+            }
+
+            .stats-grid {
+                gap: 20px;
+                margin-bottom: 25px;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+            }
+
+            .lesson-item {
+                padding: 12px 15px;
+                font-size: 0.85rem;
+            }
+
+            .complete-btn {
+                padding: 14px 35px;
+                font-size: 1rem;
+            }
+
+            /* Feedback & Flash Messages */
+            .feedback-tooltip {
+                max-width: calc(100% - 30px);
+                padding: 15px 20px;
+                bottom: 20px;
+            }
+
+            .feedback-tooltip h4 {
+                font-size: 1rem;
+            }
+
+            .feedback-tooltip p {
+                font-size: 0.85rem;
+            }
+
+            .flash-message {
+                padding: 25px 35px;
+                max-width: calc(100% - 30px);
+            }
+
+            .flash-message .code-reveal {
+                font-size: 2.2rem;
+            }
+
+            .completion-banner {
+                top: 60px;
+                right: 10px;
+                left: 10px;
+                padding: 8px 12px;
+                font-size: 0.8rem;
+                gap: 10px;
+            }
+
+            .completion-banner .checkmark {
+                font-size: 1rem;
+            }
+
+            .completion-banner .code-digit-reminder {
+                font-size: 0.95rem;
+                padding: 4px 10px;
+            }
+
+            /* Sound Toggle */
+            .sound-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+                bottom: 15px;
+                right: 15px;
+            }
+
+            /* Vignette lighter on mobile */
+            .vignette {
+                background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%);
+            }
+        }
+
+        /* Responsive - Small Mobile */
+        @media (max-width: 400px) {
+            .title-main {
+                font-size: 1.5rem;
+            }
+
+            .title-sub {
+                font-size: 0.85rem;
+            }
+
+            .begin-btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+
+            .hotspot {
+                width: 55px;
+                height: 55px;
+            }
+
+            .puzzle-number {
+                width: 24px;
+                height: 24px;
+                font-size: 0.8rem;
+            }
+
+            .door-hotspot {
+                width: 110px;
+                height: 160px;
+            }
+
+            .puzzle-title {
+                font-size: 1.2rem;
+            }
+
+            .component-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .drop-zone {
+                max-width: 100px;
+                min-height: 160px;
+            }
+
+            .drop-zone-title {
+                font-size: 0.75rem;
+            }
+
+            .maze-container {
+                width: 240px;
+                height: 240px;
+            }
+
+            .maze-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .certificate {
+                padding: 12px;
+            }
+
+            .code-display {
+                font-size: 1.5rem;
+                letter-spacing: 6px;
+            }
+
+            .keypad-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.1rem;
+            }
+
+            .success-title {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* Touch device improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .hotspot:hover {
+                background: transparent;
+                border-color: transparent;
+                box-shadow: none;
+            }
+
+            .hotspot:active {
+                background: rgba(127, 255, 0, 0.2);
+                border-color: var(--radioactive-green);
+            }
+
+            .begin-btn:hover,
+            .back-btn:hover,
+            .reset-btn:hover,
+            .maze-btn:hover,
+            .keypad-btn:hover,
+            .complete-btn:hover,
+            .submit-sequence-btn:hover {
+                transform: none;
+            }
+
+            .begin-btn:active,
+            .back-btn:active,
+            .reset-btn:active,
+            .maze-btn:active,
+            .keypad-btn:active,
+            .complete-btn:active,
+            .submit-sequence-btn:active {
+                transform: scale(0.96);
+            }
+
+            .component-card:hover,
+            .sequence-card:hover {
+                border-color: var(--medium-light);
+                box-shadow: none;
+            }
+
+            .cert-clickable:hover {
+                background: transparent;
+            }
+
+            .cert-clickable:active {
+                background: rgba(100, 100, 100, 0.2);
+            }
+        }
+
+        /* Landscape mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .title-content {
+                padding: 15px;
+            }
+
+            .title-main {
+                font-size: 1.6rem;
+                margin-bottom: 5px;
+            }
+
+            .title-sub {
+                font-size: 0.85rem;
+                margin-bottom: 15px;
+            }
+
+            .intro-text {
+                font-size: 0.8rem;
+                margin-bottom: 15px;
+                min-height: auto;
+            }
+
+            .begin-btn {
+                padding: 10px 30px;
+                font-size: 1rem;
+            }
+
+            .puzzle-content {
+                padding: 10px 15px;
+                padding-top: 50px;
+            }
+
+            .puzzle-header {
+                margin-bottom: 10px;
+            }
+
+            .puzzle-title {
+                font-size: 1.2rem;
+                margin-bottom: 5px;
+            }
+
+            .puzzle-intro {
+                font-size: 0.8rem;
+            }
+
+            .success-content {
+                padding: 15px;
+            }
+
+            .success-title {
+                font-size: 1.8rem;
+                margin-bottom: 10px;
+            }
+
+            .success-subtitle {
+                margin-bottom: 15px;
+            }
+
+            .stats-grid {
+                margin-bottom: 15px;
+            }
+
+            .lessons-grid {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="atom-spinner">
+            <div class="nucleus"></div>
+        </div>
+        <p class="loading-text">INITIALISING SYSTEMS...</p>
+    </div>
+
+    <!-- Vignette & Scanlines -->
+    <div class="vignette"></div>
+    <div class="scanlines"></div>
+
+    <!-- Sound Toggle -->
+    <button class="sound-toggle" id="soundToggle" title="Toggle Sound">🔊</button>
+
+    <!-- Title Screen -->
+    <section class="screen title-screen active" id="titleScreen">
+        <div class="title-bg"></div>
+        <div class="flicker-overlay"></div>
+        <div class="title-content">
+            <h1 class="title-main">Escape the Design Review</h1>
+            <p class="title-sub">A Design for Manufacture Challenge<br><span style="font-size: 0.85em; opacity: 0.8;">Hosted by The Nuclear House</span></p>
+            <p class="intro-text" id="introText"></p>
+            <button class="begin-btn" id="beginBtn">BEGIN</button>
+        </div>
+        <div class="title-logo">
+            <img src="https://i.ibb.co/7tbxnN83/Logo-white.png" alt="The Nuclear House">
+        </div>
+    </section>
+
+    <!-- Room Screen -->
+    <section class="screen room-screen" id="roomScreen">
+        <div class="room-bg"></div>
+        <div class="room-content">
+            <div class="status-bar">
+                <div class="status-left">
+                    <img src="https://i.ibb.co/7tbxnN83/Logo-white.png" alt="The Nuclear House" class="status-logo">
+                    <div class="timer">TIME IN ROOM: <span id="timerDisplay">00:00</span></div>
+                </div>
+                <div class="lock-status">
+                    <div class="locks">
+                        <div class="lock" data-lock="1"></div>
+                        <div class="lock" data-lock="2"></div>
+                        <div class="lock" data-lock="3"></div>
+                        <div class="lock" data-lock="4"></div>
+                        <div class="lock" data-lock="5"></div>
+                        <div class="lock" data-lock="6"></div>
+                    </div>
+                    <div class="door-indicator">
+                        <img src="https://i.ibb.co/zhwNLmCt/IMAGE-02.png" alt="Door" id="doorIndicatorImg">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hotspots -->
+            <div class="hotspot hotspot-1" data-puzzle="1">
+                <span class="puzzle-number">1</span>
+                <span class="hotspot-label">Classification Board</span>
+            </div>
+            <div class="hotspot hotspot-2" data-puzzle="2">
+                <span class="puzzle-number">2</span>
+                <span class="hotspot-label">Material Certificates</span>
+            </div>
+            <div class="hotspot hotspot-3" data-puzzle="3">
+                <span class="puzzle-number">3</span>
+                <span class="hotspot-label">Weld Access Hatch</span>
+            </div>
+            <div class="hotspot hotspot-4" data-puzzle="4">
+                <span class="puzzle-number">4</span>
+                <span class="hotspot-label">Inspection Timeline</span>
+            </div>
+            <div class="hotspot hotspot-5" data-puzzle="5">
+                <span class="puzzle-number">5</span>
+                <span class="hotspot-label">Assembly Diagram</span>
+            </div>
+            <div class="hotspot hotspot-6" data-puzzle="6">
+                <span class="puzzle-number">6</span>
+                <span class="hotspot-label">Manufacturing Sequence</span>
+            </div>
+
+            <div class="door-hotspot" id="doorHotspot">
+                <span class="door-hotspot-label">EXIT DOOR</span>
+            </div>
+
+            <button class="reset-btn" onclick="resetGame()">↺ RESTART GAME</button>
+        </div>
+    </section>
+
+    <!-- Puzzle 1: Classification -->
+    <section class="screen puzzle-screen" id="puzzle1Screen">
+        <div class="puzzle-bg" style="background-image: url('https://i.ibb.co/4nFBQCZ4/IMAGE-03.png');"></div>
+        <div class="puzzle-content">
+            <button class="back-btn" onclick="goToRoom()">← BACK TO ROOM</button>
+            <div class="completion-banner" id="puzzle1Banner">
+                <span class="checkmark">✓</span>
+                <span class="banner-text">PUZZLE #1 COMPLETE</span>
+                <span class="code-digit-reminder">DIGIT #1: 7</span>
+            </div>
+            <div class="puzzle-header">
+                <h2 class="puzzle-title">Safety Classification</h2>
+                <p class="puzzle-intro">Nine components. Three safety classifications. A single mistake means months of rework. Drag each component to its correct classification.</p>
+            </div>
+            <div class="puzzle-body">
+                <div class="classification-area">
+                    <div class="component-cards" id="componentCards">
+                        <div class="component-card" draggable="true" data-component="pump">Reactor Coolant Pump Casing</div>
+                        <div class="component-card" draggable="true" data-component="hvac">HVAC Ductwork (Non-Nuclear Building)</div>
+                        <div class="component-card" draggable="true" data-component="penetration">Containment Penetration Sleeve</div>
+                        <div class="component-card" draggable="true" data-component="steamgen">Steam Generator Tubing</div>
+                        <div class="component-card" draggable="true" data-component="firewater">Fire Water Storage Tank</div>
+                        <div class="component-card" draggable="true" data-component="pressurizer">Pressuriser Relief Valve</div>
+                        <div class="component-card" draggable="true" data-component="lighting">Office Building Lighting</div>
+                        <div class="component-card" draggable="true" data-component="spentfuel">Spent Fuel Pool Liner</div>
+                        <div class="component-card" draggable="true" data-component="controlrod">Control Rod Drive Mechanism</div>
+                    </div>
+                    <div class="drop-zones">
+                        <div class="drop-zone sc1" data-class="sc1">
+                            <div class="drop-zone-title">Safety Class 1<br>(SC1)</div>
+                        </div>
+                        <div class="drop-zone sc2" data-class="sc2">
+                            <div class="drop-zone-title">Safety Class 2<br>(SC2)</div>
+                        </div>
+                        <div class="drop-zone sc3" data-class="sc3">
+                            <div class="drop-zone-title">Safety Class 3<br>(SC3)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Puzzle 2: Certificates -->
+    <section class="screen puzzle-screen" id="puzzle2Screen">
+        <div class="puzzle-bg" style="background-image: url('https://i.ibb.co/wNyxqJKX/IMAGE-04.png');"></div>
+        <div class="puzzle-content">
+            <button class="back-btn" onclick="goToRoom()">← BACK TO ROOM</button>
+            <div class="completion-banner" id="puzzle2Banner">
+                <span class="checkmark">✓</span>
+                <span class="banner-text">PUZZLE #2 COMPLETE</span>
+                <span class="code-digit-reminder">DIGIT #2: 3</span>
+            </div>
+            <div class="puzzle-header">
+                <h2 class="puzzle-title">Material Certificates</h2>
+                <p class="puzzle-intro">Three material certificates from different suppliers. Find ALL SIX errors across the non-compliant certificates. Click on any row you think contains an error.</p>
+            </div>
+            <div class="puzzle-body">
+                <div class="certificates-area">
+                    <div class="certificate">
+                        <div class="cert-header">
+                            <div class="cert-title">CERTIFICATE A</div>
+                        </div>
+                        <div class="cert-row cert-clickable" data-error="0" data-cert="a"><span class="cert-label">Material Spec:</span><span class="cert-value">ASTM A516 Gr.70</span></div>
+                        <div class="cert-row cert-clickable" data-error="0" data-cert="a"><span class="cert-label">Heat Number:</span><span class="cert-value">H-2024-7832</span></div>
+                        <div class="cert-row cert-clickable" data-error="0" data-cert="a"><span class="cert-label">Supplier:</span><span class="cert-value">Nuclear Steel Ltd</span></div>
+                        <div class="cert-row cert-clickable" data-error="0" data-cert="a"><span class="cert-label">Test Date:</span><span class="cert-value">15-Mar-2024</span></div>
+                        <div class="cert-row cert-clickable" data-error="0" data-cert="a"><span class="cert-label">QA Inspector:</span><span class="cert-value">J. Morrison ✓</span></div>
+                    </div>
+                    <div class="certificate">
+                        <div class="cert-header">
+                            <div class="cert-title">CERTIFICATE B</div>
+                        </div>
+                        <div class="cert-row cert-clickable cert-error" data-error="1" data-cert="b"><span class="cert-label">Material Spec:</span><span class="cert-value">ASTM A516 Gr.70 <em>or equivalent</em></span></div>
+                        <div class="cert-row cert-clickable cert-error" data-error="2" data-cert="b"><span class="cert-label">Heat Number:</span><span class="cert-value">H-2024-XX (UNVERIFIED)</span></div>
+                        <div class="cert-row cert-clickable" data-error="0" data-cert="b"><span class="cert-label">Supplier:</span><span class="cert-value">Generic Metals Inc</span></div>
+                        <div class="cert-row cert-clickable" data-error="0" data-cert="b"><span class="cert-label">Test Date:</span><span class="cert-value">20-Mar-2024</span></div>
+                        <div class="cert-row cert-clickable cert-error" data-error="3" data-cert="b"><span class="cert-label">QA Inspector:</span><span class="cert-value">(unsigned)</span></div>
+                    </div>
+                    <div class="certificate">
+                        <div class="cert-header">
+                            <div class="cert-title">CERTIFICATE C</div>
+                        </div>
+                        <div class="cert-row cert-clickable" data-error="0" data-cert="c"><span class="cert-label">Material Spec:</span><span class="cert-value">SA-508 Class 3</span></div>
+                        <div class="cert-row cert-clickable cert-error" data-error="4" data-cert="c"><span class="cert-label">Heat Number:</span><span class="cert-value">H-2024-9921</span></div>
+                        <div class="cert-row cert-clickable" data-error="0" data-cert="c"><span class="cert-label">Supplier:</span><span class="cert-value">Precision Forgings Ltd</span></div>
+                        <div class="cert-row cert-clickable cert-error" data-error="5" data-cert="c"><span class="cert-label">Test Date:</span><span class="cert-value">30-Feb-2024</span></div>
+                        <div class="cert-row cert-clickable cert-error" data-error="6" data-cert="c"><span class="cert-label">QA Inspector:</span><span class="cert-value">See attached</span></div>
+                    </div>
+                </div>
+                <div class="error-counter">Errors Found: <span id="errorCount">0</span>/6</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Puzzle 3: Weld Access -->
+    <section class="screen puzzle-screen" id="puzzle3Screen">
+        <div class="puzzle-bg" style="background-image: url('https://i.ibb.co/7dQYH3S8/IMAGE-05.png');"></div>
+        <div class="puzzle-content">
+            <button class="back-btn" onclick="goToRoom()">← BACK TO ROOM</button>
+            <div class="completion-banner" id="puzzle3Banner">
+                <span class="checkmark">✓</span>
+                <span class="banner-text">PUZZLE #3 COMPLETE</span>
+                <span class="code-digit-reminder">DIGIT #3: 9</span>
+            </div>
+            <div class="puzzle-header">
+                <h2 class="puzzle-title">Weld Access Check</h2>
+                <p class="puzzle-intro">The weld location is deep inside the vessel. Can a welder physically reach it? Navigate the torch to the weld point. If you can't reach it — neither can they.</p>
+            </div>
+            <div class="puzzle-body">
+                <div class="weld-access-area">
+                    <div class="maze-container" id="mazeContainer">
+                        <div class="torch" id="torch"></div>
+                        <div class="weld-target" id="weldTarget"></div>
+                        <!-- Obstacles will be added by JS -->
+                    </div>
+                    <div class="maze-controls">
+                        <button class="maze-btn" onclick="moveTorch('up')">↑</button>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="maze-btn" onclick="moveTorch('left')">←</button>
+                            <button class="maze-btn" onclick="moveTorch('down')">↓</button>
+                            <button class="maze-btn" onclick="moveTorch('right')">→</button>
+                        </div>
+                    </div>
+                    <p style="color: var(--medium-light); font-size: 0.9rem;">Use arrow keys or buttons to navigate</p>
+                    <button class="report-flaw-btn" id="reportFlawBtn" onclick="reportDesignFlaw()">⚠ REPORT DESIGN FLAW</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Puzzle 4: Timeline -->
+    <section class="screen puzzle-screen" id="puzzle4Screen">
+        <div class="puzzle-bg" style="background-image: url('https://i.ibb.co/XfzkPkZJ/IMAGE-06.png');"></div>
+        <div class="puzzle-content">
+            <button class="back-btn" onclick="goToRoom()">← BACK TO ROOM</button>
+            <div class="completion-banner" id="puzzle4Banner">
+                <span class="checkmark">✓</span>
+                <span class="banner-text">PUZZLE #4 COMPLETE</span>
+                <span class="code-digit-reminder">DIGIT #4: 2</span>
+            </div>
+            <div class="puzzle-header" style="margin-bottom: 10px;">
+                <h2 class="puzzle-title">60-Year Inspection</h2>
+                <p class="puzzle-intro">This component must remain inspectable for 60 years. Drag through time and answer questions at key milestones.</p>
+            </div>
+            <div class="puzzle-body" style="padding-top: 0;">
+                <div class="timeline-area">
+                    <div class="timeline-visual" style="margin-bottom: 15px;">
+                        <div class="component-visual">
+                            <div style="margin-bottom: 8px; font-size: 0.95rem;"><strong>Status:</strong> <span id="componentStatus">Year 0 — Newly installed</span></div>
+                            <div id="timelineExplanation" style="font-size: 0.85rem; color: var(--medium-light); margin-bottom: 10px; min-height: 40px;"></div>
+                            <div class="inspection-points">
+                                <div class="inspection-point" data-point="1" title="Point 1"></div>
+                                <div class="inspection-point" data-point="2" title="Point 2"></div>
+                                <div class="inspection-point" data-point="3" id="point3" title="Point 3"></div>
+                                <div class="inspection-point" data-point="4" title="Point 4"></div>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--medium-light); margin-top: 8px;">
+                                <span style="color: var(--success-green);">●</span> Accessible &nbsp;
+                                <span style="color: var(--error-red);">●</span> Blocked
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-slider-container" style="margin-bottom: 15px;">
+                        <div class="timeline-labels">
+                            <span>Year 0</span>
+                            <span>Year 60</span>
+                        </div>
+                        <input type="range" class="timeline-slider" id="timelineSlider" min="0" max="60" value="0">
+                        <div class="year-display" style="font-size: 1.5rem;">Year <span id="yearDisplay">0</span></div>
+                    </div>
+                    <div class="timeline-progress" style="margin-bottom: 10px; font-size: 0.9rem; color: var(--warm-gold);">
+                        Questions Answered: <span id="questionsAnswered">0</span>/3
+                    </div>
+                    <div class="timeline-question" id="timelineQuestion1">
+                        <h3 style="font-size: 1rem; margin-bottom: 12px;">Year 15: First major inspection. The inspector notes weld root accessibility is marginal. What action is required?</h3>
+                        <div class="timeline-options">
+                            <button class="timeline-option" data-answer="a" data-question="1" onclick="checkTimelineAnswer(1, 'a')">A) Accept the inspection results as adequate</button>
+                            <button class="timeline-option" data-answer="b" data-question="1" onclick="checkTimelineAnswer(1, 'b')">B) Document the limitation and plan for enhanced access during next outage</button>
+                            <button class="timeline-option" data-answer="c" data-question="1" onclick="checkTimelineAnswer(1, 'c')">C) Skip the marginal welds — they're probably fine</button>
+                            <button class="timeline-option" data-answer="d" data-question="1" onclick="checkTimelineAnswer(1, 'd')">D) Wait until there's a visible defect before acting</button>
+                        </div>
+                    </div>
+                    <div class="timeline-question" id="timelineQuestion2">
+                        <h3 style="font-size: 1rem; margin-bottom: 12px;">Year 35: Auxiliary cooling system installed 5 years ago now blocks Inspection Point 3. How should this have been prevented?</h3>
+                        <div class="timeline-options">
+                            <button class="timeline-option" data-answer="a" data-question="2" onclick="checkTimelineAnswer(2, 'a')">A) Accept reduced inspection scope going forward</button>
+                            <button class="timeline-option" data-answer="b" data-question="2" onclick="checkTimelineAnswer(2, 'b')">B) The original design should have included permanent access provisions</button>
+                            <button class="timeline-option" data-answer="c" data-question="2" onclick="checkTimelineAnswer(2, 'c')">C) Remove the cooling system during each inspection outage</button>
+                            <button class="timeline-option" data-answer="d" data-question="2" onclick="checkTimelineAnswer(2, 'd')">D) Use robots — they can get anywhere</button>
+                        </div>
+                    </div>
+                    <div class="timeline-question" id="timelineQuestion3">
+                        <h3 style="font-size: 1rem; margin-bottom: 12px;">Year 55: Planning life extension to Year 80. What design consideration is most critical for the next 25 years?</h3>
+                        <div class="timeline-options">
+                            <button class="timeline-option" data-answer="a" data-question="3" onclick="checkTimelineAnswer(3, 'a')">A) Cosmetic appearance of the component</button>
+                            <button class="timeline-option" data-answer="b" data-question="3" onclick="checkTimelineAnswer(3, 'b')">B) Continued inspectability and maintainability access</button>
+                            <button class="timeline-option" data-answer="c" data-question="3" onclick="checkTimelineAnswer(3, 'c')">C) Reducing documentation requirements</button>
+                            <button class="timeline-option" data-answer="d" data-question="3" onclick="checkTimelineAnswer(3, 'd')">D) Planning the retirement party</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Puzzle 5: Assembly -->
+    <section class="screen puzzle-screen" id="puzzle5Screen">
+        <div class="puzzle-bg" style="background-image: url('https://i.ibb.co/vvRq7Fh4/IMAGE-07.png');"></div>
+        <div class="puzzle-content">
+            <button class="back-btn" onclick="goToRoom()">← BACK TO ROOM</button>
+            <div class="completion-banner" id="puzzle5Banner">
+                <span class="checkmark">✓</span>
+                <span class="banner-text">PUZZLE #5 COMPLETE</span>
+                <span class="code-digit-reminder">DIGIT #5: 5</span>
+            </div>
+            <div class="puzzle-header">
+                <h2 class="puzzle-title">Assembly Simplification</h2>
+                <p class="puzzle-intro">This assembly has 15 parts. Your DfM target is under 9. Click on parts that can be eliminated or combined. But be careful — some parts are structurally essential.</p>
+            </div>
+            <div class="puzzle-body">
+                <div class="assembly-area">
+                    <div class="part-counter">
+                        PARTS: <span class="current" id="partCount">15</span>/15 | <span class="target">TARGET: &lt; 9</span>
+                    </div>
+                    <div class="parts-grid" id="partsGrid">
+                        <!-- Parts will be added by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Puzzle 6: Sequence -->
+    <section class="screen puzzle-screen" id="puzzle6Screen">
+        <div class="puzzle-bg" style="background-image: url('https://i.ibb.co/xK6cKNNd/IMAGE-08.png');"></div>
+        <div class="puzzle-content">
+            <button class="back-btn" onclick="goToRoom()">← BACK TO ROOM</button>
+            <div class="completion-banner" id="puzzle6Banner">
+                <span class="checkmark">✓</span>
+                <span class="banner-text">PUZZLE #6 COMPLETE</span>
+                <span class="code-digit-reminder">DIGIT #6: 1</span>
+            </div>
+            <div class="puzzle-header">
+                <h2 class="puzzle-title">Manufacturing Sequence</h2>
+                <p class="puzzle-intro">These five manufacturing steps are in the wrong order. Drag them into the correct sequence.</p>
+            </div>
+            <div class="puzzle-body">
+                <div class="sequence-area">
+                    <div class="sequence-cards" id="sequenceCards">
+                        <!-- Cards will be added by JS -->
+                    </div>
+                    <button class="submit-sequence-btn" onclick="checkSequence()">VERIFY SEQUENCE</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Door Screen -->
+    <section class="screen door-screen" id="doorScreen">
+        <div class="door-bg" id="doorBg" style="background-image: url('https://i.ibb.co/BKzbrwvM/IMAGE-10.png');"></div>
+        <div class="door-content">
+            <h2 style="font-size: 2rem; margin-bottom: 10px;">EXIT DOOR</h2>
+            <p class="door-message" id="doorMessage">Enter the 6-digit code to unlock (puzzles 1-6 in order)</p>
+            <div class="code-display" id="codeDisplay">_ _ _ _ _ _</div>
+            <div class="keypad">
+                <button class="keypad-btn" onclick="enterDigit('1')">1</button>
+                <button class="keypad-btn" onclick="enterDigit('2')">2</button>
+                <button class="keypad-btn" onclick="enterDigit('3')">3</button>
+                <button class="keypad-btn" onclick="enterDigit('4')">4</button>
+                <button class="keypad-btn" onclick="enterDigit('5')">5</button>
+                <button class="keypad-btn" onclick="enterDigit('6')">6</button>
+                <button class="keypad-btn" onclick="enterDigit('7')">7</button>
+                <button class="keypad-btn" onclick="enterDigit('8')">8</button>
+                <button class="keypad-btn" onclick="enterDigit('9')">9</button>
+                <button class="keypad-btn clear" onclick="clearCode()">CLR</button>
+                <button class="keypad-btn" onclick="enterDigit('0')">0</button>
+                <button class="keypad-btn" onclick="submitCode()">ENT</button>
+            </div>
+            <button class="back-btn" onclick="goToRoom()" style="position: relative; margin-top: 20px;">← BACK TO ROOM</button>
+        </div>
+    </section>
+
+    <!-- Success Screen -->
+    <section class="screen success-screen" id="successScreen">
+        <div class="success-bg"></div>
+        <div class="light-rays"></div>
+        <div class="success-content">
+            <h1 class="success-title">YOU ESCAPED</h1>
+            <p class="success-subtitle">Design package cleared for Manufacturing Release</p>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="finalTime">00:00</div>
+                    <div class="stat-label">Time in Room</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">6/6</div>
+                    <div class="stat-label">Puzzles Completed</div>
+                </div>
+            </div>
+            <div class="lessons-grid">
+                <div class="lesson-item">Classification drives everything</div>
+                <div class="lesson-item">No equivalent materials in nuclear</div>
+                <div class="lesson-item">Design for welder AND inspector access</div>
+                <div class="lesson-item">Think 60 years, not just construction</div>
+                <div class="lesson-item">Fewer parts = fewer problems</div>
+                <div class="lesson-item">Sequence matters</div>
+            </div>
+            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                <button class="complete-btn" onclick="completeTraining()">COMPLETE TRAINING</button>
+                <button class="complete-btn" style="background: var(--uranium-blue);" onclick="playAgain()">PLAY AGAIN</button>
+            </div>
+            <div style="margin-top: 40px; opacity: 0.7;">
+                <img src="https://i.ibb.co/7tbxnN83/Logo-white.png" alt="The Nuclear House" style="height: 35px;">
+                <p style="font-size: 0.85rem; color: var(--medium-light); margin-top: 10px;">A Training Module by The Nuclear House</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Game State
+        const gameState = {
+            puzzlesCompleted: [false, false, false, false, false, false],
+            codeDigits: ['_', '_', '_', '_', '_', '_'],
+            collectedDigits: [],
+            timerStarted: false,
+            timerSeconds: 0,
+            timerInterval: null,
+            soundEnabled: true,
+            puzzle3Initialized: false
+        };
+
+        // Correct code: 739251 (from puzzles 1-6 in order)
+        const CORRECT_CODE = '739251';
+
+        // Show feedback tooltip
+        function showFeedback(title, message, hint, isSuccess = false) {
+            // Remove any existing tooltip
+            const existing = document.querySelector('.feedback-tooltip');
+            if (existing) existing.remove();
+            
+            const tooltip = document.createElement('div');
+            tooltip.className = `feedback-tooltip ${isSuccess ? 'success' : ''}`;
+            tooltip.innerHTML = `
+                <h4>${isSuccess ? '✓ ' : '✗ '}${title}</h4>
+                <p>${message}</p>
+                ${hint ? `<p class="hint">💡 Hint: ${hint}</p>` : ''}
+            `;
+            document.body.appendChild(tooltip);
+            
+            setTimeout(() => {
+                tooltip.remove();
+            }, isSuccess ? 3000 : 5000);
+        }
+
+        // Audio Context
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (!gameState.soundEnabled || !audioCtx) return;
+            
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            switch(type) {
+                case 'click':
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                    gainNode.gain.value = 0.1;
+                    oscillator.start();
+                    oscillator.stop(audioCtx.currentTime + 0.05);
+                    break;
+                case 'success':
+                    oscillator.frequency.value = 523;
+                    oscillator.type = 'sine';
+                    gainNode.gain.value = 0.15;
+                    oscillator.start();
+                    oscillator.frequency.setValueAtTime(659, audioCtx.currentTime + 0.1);
+                    oscillator.frequency.setValueAtTime(784, audioCtx.currentTime + 0.2);
+                    oscillator.stop(audioCtx.currentTime + 0.3);
+                    break;
+                case 'error':
+                    oscillator.frequency.value = 200;
+                    oscillator.type = 'sawtooth';
+                    gainNode.gain.value = 0.1;
+                    oscillator.start();
+                    oscillator.stop(audioCtx.currentTime + 0.15);
+                    break;
+                case 'unlock':
+                    oscillator.frequency.value = 300;
+                    oscillator.type = 'square';
+                    gainNode.gain.value = 0.1;
+                    oscillator.start();
+                    oscillator.frequency.setValueAtTime(400, audioCtx.currentTime + 0.1);
+                    oscillator.stop(audioCtx.currentTime + 0.2);
+                    break;
+                case 'door':
+                    oscillator.frequency.value = 150;
+                    oscillator.type = 'sawtooth';
+                    gainNode.gain.value = 0.15;
+                    oscillator.start();
+                    oscillator.frequency.setValueAtTime(100, audioCtx.currentTime + 0.3);
+                    oscillator.stop(audioCtx.currentTime + 0.5);
+                    break;
+            }
+        }
+
+        // Sound toggle
+        document.getElementById('soundToggle').addEventListener('click', () => {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            document.getElementById('soundToggle').textContent = gameState.soundEnabled ? '🔊' : '🔇';
+        });
+
+        // Image Preloading
+        const images = [
+            'https://i.ibb.co/60ZcLGWg/IMAGE-01.png',
+            'https://i.ibb.co/zhwNLmCt/IMAGE-02.png',
+            'https://i.ibb.co/4nFBQCZ4/IMAGE-03.png',
+            'https://i.ibb.co/wNyxqJKX/IMAGE-04.png',
+            'https://i.ibb.co/7dQYH3S8/IMAGE-05.png',
+            'https://i.ibb.co/XfzkPkZJ/IMAGE-06.png',
+            'https://i.ibb.co/vvRq7Fh4/IMAGE-07.png',
+            'https://i.ibb.co/xK6cKNNd/IMAGE-08.png',
+            'https://i.ibb.co/S7MFmTC4/IMAGE-09.png',
+            'https://i.ibb.co/BKzbrwvM/IMAGE-10.png'
+        ];
+
+        let loadedImages = 0;
+
+        function preloadImages() {
+            images.forEach(src => {
+                const img = new Image();
+                img.onload = () => {
+                    loadedImages++;
+                    if (loadedImages >= images.length) {
+                        setTimeout(() => {
+                            document.getElementById('loadingScreen').classList.add('hidden');
+                        }, 500);
+                    }
+                };
+                img.onerror = () => {
+                    loadedImages++;
+                    if (loadedImages >= images.length) {
+                        document.getElementById('loadingScreen').classList.add('hidden');
+                    }
+                };
+                img.src = src;
+            });
+        }
+
+        // Typewriter effect
+        function typeWriter(element, text, speed = 30) {
+            let i = 0;
+            element.textContent = '';
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // Screen Navigation
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function goToRoom() {
+            showScreen('roomScreen');
+            playSound('click');
+        }
+
+        // Timer
+        function startTimer() {
+            if (gameState.timerStarted) return;
+            gameState.timerStarted = true;
+            gameState.timerInterval = setInterval(() => {
+                gameState.timerSeconds++;
+                const mins = Math.floor(gameState.timerSeconds / 60).toString().padStart(2, '0');
+                const secs = (gameState.timerSeconds % 60).toString().padStart(2, '0');
+                document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(gameState.timerInterval);
+        }
+
+        // Flash Message
+        function showFlash(title, message, codeDigit) {
+            const flash = document.createElement('div');
+            flash.className = 'flash-message';
+            flash.innerHTML = `
+                <h2>${title}</h2>
+                <p>${message}</p>
+                ${codeDigit ? `<div class="code-reveal">CODE DIGIT: ${codeDigit}</div>` : ''}
+            `;
+            document.body.appendChild(flash);
+            
+            setTimeout(() => {
+                flash.remove();
+                goToRoom();
+            }, 3000);
+        }
+
+        // Update lock status
+        function unlockPuzzle(puzzleNum, codeDigit) {
+            gameState.puzzlesCompleted[puzzleNum - 1] = true;
+            if (codeDigit) {
+                gameState.collectedDigits.push(codeDigit);
+            }
+            
+            // Update lock indicator with the digit
+            const lock = document.querySelector(`.lock[data-lock="${puzzleNum}"]`);
+            if (lock) {
+                lock.classList.add('unlocked');
+                lock.textContent = codeDigit;
+            }
+            
+            // Update hotspot
+            const hotspot = document.querySelector(`.hotspot[data-puzzle="${puzzleNum}"]`);
+            if (hotspot) {
+                hotspot.classList.add('completed');
+            }
+            
+            playSound('unlock');
+            
+            // Check if all complete
+            if (gameState.puzzlesCompleted.every(p => p)) {
+                document.getElementById('doorIndicatorImg').src = 'https://i.ibb.co/S7MFmTC4/IMAGE-09.png';
+            }
+        }
+
+        // ==================== PUZZLE 1: Classification ====================
+        let classificationComplete = 0;
+        let draggedCard = null;
+        let draggedComponent = null;
+        let touchClone = null;
+        
+        const correctClassification = {
+            'pump': 'sc1',           // SC1 - primary pressure boundary
+            'steamgen': 'sc1',       // SC1 - primary pressure boundary
+            'pressurizer': 'sc1',    // SC1 - primary pressure boundary
+            'controlrod': 'sc1',     // SC1 - reactor control/shutdown
+            'penetration': 'sc2',    // SC2 - containment
+            'spentfuel': 'sc2',      // SC2 - spent fuel storage
+            'firewater': 'sc2',      // SC2 - safety-related support
+            'hvac': 'sc3',           // SC3 - non-nuclear building
+            'lighting': 'sc3'        // SC3 - non-safety
+        };
+
+        function initPuzzle1() {
+            const cards = document.querySelectorAll('.component-card');
+            const zones = document.querySelectorAll('.drop-zone');
+            
+            cards.forEach(card => {
+                // Mouse drag events
+                card.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', card.dataset.component);
+                    card.classList.add('dragging');
+                });
+                
+                card.addEventListener('dragend', () => {
+                    card.classList.remove('dragging');
+                });
+                
+                // Touch events for mobile
+                card.addEventListener('touchstart', (e) => {
+                    if (card.classList.contains('placed')) return;
+                    
+                    draggedCard = card;
+                    draggedComponent = card.dataset.component;
+                    card.classList.add('dragging');
+                    
+                    // Create visual clone that follows finger
+                    const touch = e.touches[0];
+                    const rect = card.getBoundingClientRect();
+                    
+                    touchClone = card.cloneNode(true);
+                    touchClone.classList.add('touch-clone');
+                    touchClone.style.cssText = `
+                        position: fixed;
+                        top: ${touch.clientY - rect.height/2}px;
+                        left: ${touch.clientX - rect.width/2}px;
+                        width: ${rect.width}px;
+                        height: ${rect.height}px;
+                        z-index: 9999;
+                        pointer-events: none;
+                        opacity: 0.9;
+                        transform: scale(1.1);
+                        box-shadow: 0 10px 30px rgba(127, 255, 0, 0.5);
+                        border-color: var(--radioactive-green);
+                    `;
+                    document.body.appendChild(touchClone);
+                    
+                    e.preventDefault();
+                }, { passive: false });
+                
+                card.addEventListener('touchmove', (e) => {
+                    if (!touchClone) return;
+                    
+                    const touch = e.touches[0];
+                    const rect = draggedCard.getBoundingClientRect();
+                    
+                    touchClone.style.top = (touch.clientY - rect.height/2) + 'px';
+                    touchClone.style.left = (touch.clientX - rect.width/2) + 'px';
+                    
+                    // Highlight drop zone under finger
+                    const elementUnder = document.elementFromPoint(touch.clientX, touch.clientY);
+                    const zoneUnder = elementUnder?.closest('.drop-zone');
+                    
+                    zones.forEach(z => z.classList.remove('drag-over'));
+                    if (zoneUnder) {
+                        zoneUnder.classList.add('drag-over');
+                    }
+                    
+                    e.preventDefault();
+                }, { passive: false });
+                
+                card.addEventListener('touchend', (e) => {
+                    if (!draggedCard) return;
+                    
+                    // Remove clone
+                    if (touchClone) {
+                        touchClone.remove();
+                        touchClone = null;
+                    }
+                    
+                    // Clear all drag-over states
+                    zones.forEach(z => z.classList.remove('drag-over'));
+                    
+                    const touch = e.changedTouches[0];
+                    const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+                    const zone = dropTarget?.closest('.drop-zone');
+                    
+                    if (zone) {
+                        handleDrop(zone, draggedComponent);
+                    }
+                    
+                    draggedCard.classList.remove('dragging');
+                    draggedCard = null;
+                    draggedComponent = null;
+                });
+            });
+            
+            zones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+                
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drag-over');
+                });
+                
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    const component = e.dataTransfer.getData('text/plain');
+                    handleDrop(zone, component);
+                });
+            });
+        }
+        
+        function handleDrop(zone, component) {
+            const correctZone = correctClassification[component];
+                    
+            if (zone.dataset.class === correctZone) {
+                // Correct
+                playSound('success');
+                const card = document.querySelector(`[data-component="${component}"]`);
+                card.classList.add('placed');
+                
+                const droppedCard = document.createElement('div');
+                droppedCard.className = 'dropped-card';
+                droppedCard.textContent = card.textContent;
+                zone.appendChild(droppedCard);
+                
+                classificationComplete++;
+                
+                if (classificationComplete === 9) {
+                    setTimeout(() => {
+                        unlockPuzzle(1, '7');
+                        showFlash('Classification Verified', '1/6 locks released', '7 (Puzzle #1)');
+                    }, 500);
+                }
+            } else {
+                // Wrong - give helpful feedback
+                playSound('error');
+                const card = document.querySelector(`[data-component="${component}"]`);
+                card.style.animation = 'shake 0.3s ease';
+                setTimeout(() => {
+                    card.style.animation = '';
+                }, 300);
+                
+                // Provide specific feedback
+                const componentNames = {
+                    'pump': 'Reactor Coolant Pump Casing',
+                    'hvac': 'HVAC Ductwork',
+                    'penetration': 'Containment Penetration Sleeve',
+                    'steamgen': 'Steam Generator Tubing',
+                    'firewater': 'Fire Water Storage Tank',
+                    'pressurizer': 'Pressuriser Relief Valve',
+                    'lighting': 'Office Building Lighting',
+                    'spentfuel': 'Spent Fuel Pool Liner',
+                    'controlrod': 'Control Rod Drive Mechanism'
+                };
+                const hints = {
+                    'pump': 'This is part of the primary pressure boundary. SC1 handles the most safety-critical components.',
+                    'hvac': 'This is in a non-nuclear building with no safety function. SC3 is for conventional items.',
+                    'penetration': 'This penetrates containment but isn\'t part of the primary circuit. SC2 is for containment-related items.',
+                    'steamgen': 'Steam generator tubing is part of the primary pressure boundary. Think about which class handles the primary circuit.',
+                    'firewater': 'Fire protection is safety-related but not part of the primary pressure boundary. It supports safe shutdown.',
+                    'pressurizer': 'The pressuriser is directly connected to the primary circuit and maintains system pressure.',
+                    'lighting': 'Office building lighting has no nuclear safety function whatsoever.',
+                    'spentfuel': 'The spent fuel pool contains irradiated fuel and requires containment-level integrity.',
+                    'controlrod': 'Control rod mechanisms are essential for reactor shutdown — a critical safety function.'
+                };
+                showFeedback(
+                    'Incorrect Classification',
+                    `${componentNames[component]} doesn't belong in ${zone.querySelector('.drop-zone-title').textContent.split('(')[0].trim()}.`,
+                    hints[component]
+                );
+            }
+        }
+
+        // ==================== PUZZLE 2: Certificates ====================
+        let errorsFound = 0;
+        
+        const errorExplanations = {
+            1: { title: 'Error: "Or Equivalent"', message: 'Nuclear codes do not accept "or equivalent" materials. The exact specification must be met — no substitutions allowed without full re-qualification.' },
+            2: { title: 'Error: Unverified Heat Number', message: 'Heat numbers must be fully traceable. "UNVERIFIED" or incomplete heat numbers break the material traceability chain required by nuclear QA.' },
+            3: { title: 'Error: Missing Signature', message: 'All QA documents must be signed by an authorised inspector. An unsigned certificate has no validity.' },
+            4: { title: 'Error: Heat Number Without CMTRs', message: 'This heat number exists but there are no Certified Material Test Reports (CMTRs) on file. The certificate is incomplete without supporting test data.' },
+            5: { title: 'Error: Invalid Date', message: '30th February does not exist! This certificate has a fabricated or erroneous test date, indicating poor quality control.' },
+            6: { title: 'Error: "See Attached"', message: 'QA signatures must be on the certificate itself, not referenced elsewhere. "See attached" is not acceptable for nuclear documentation.' }
+        };
+
+        function initPuzzle2() {
+            const rows = document.querySelectorAll('.cert-clickable');
+            rows.forEach(row => {
+                row.addEventListener('click', () => {
+                    if (row.classList.contains('found')) return;
+                    
+                    const errorNum = parseInt(row.dataset.error);
+                    
+                    if (errorNum > 0) {
+                        // Correct - this is an error
+                        row.classList.add('found');
+                        errorsFound++;
+                        document.getElementById('errorCount').textContent = errorsFound;
+                        playSound('success');
+                        
+                        showFeedback(
+                            errorExplanations[errorNum].title,
+                            errorExplanations[errorNum].message,
+                            null,
+                            true
+                        );
+                        
+                        if (errorsFound === 6) {
+                            setTimeout(() => {
+                                unlockPuzzle(2, '3');
+                                showFlash('Material Compliance Verified', '2/6 locks released', '3 (Puzzle #2)');
+                            }, 2000);
+                        }
+                    } else {
+                        // Wrong - this row is correct
+                        playSound('error');
+                        row.classList.add('wrong-click');
+                        setTimeout(() => {
+                            row.classList.remove('wrong-click');
+                        }, 500);
+                        
+                        showFeedback(
+                            'Not an Error',
+                            'This row is compliant. Look for issues like: missing signatures, unverified data, impossible dates, vague references, or non-specific material specs.',
+                            'Check each certificate carefully — some errors are subtle.'
+                        );
+                    }
+                });
+            });
+        }
+
+        // ==================== PUZZLE 3: Weld Access ====================
+        let torchX = 50;
+        let torchY = 200;
+        let moveAttempts = 0;
+        let puzzle3Timer = null;
+        let mazeScale = 1;
+
+        const obstacles = [
+            // Outer ring obstacles blocking paths
+            { x: 60, y: 20, w: 100, h: 35 },
+            { x: 200, y: 20, w: 80, h: 45 },
+            { x: 300, y: 60, w: 45, h: 100 },
+            { x: 280, y: 250, w: 60, h: 80 },
+            { x: 140, y: 310, w: 100, h: 45 },
+            { x: 20, y: 270, w: 55, h: 70 },
+            { x: 10, y: 90, w: 35, h: 90 },
+            // Inner obstacles
+            { x: 90, y: 80, w: 70, h: 45 },
+            { x: 180, y: 100, w: 60, h: 70 },
+            { x: 100, y: 150, w: 80, h: 35 },
+            { x: 160, y: 210, w: 70, h: 45 },
+            { x: 70, y: 270, w: 45, h: 35 },
+            // Critical blockers - wall around target (but not covering it)
+            { x: 260, y: 120, w: 30, h: 50 },
+            { x: 260, y: 200, w: 30, h: 50 },
+            { x: 230, y: 100, w: 60, h: 25 },
+            { x: 230, y: 245, w: 60, h: 25 }
+        ];
+
+        const targetX = 290;
+        const targetY = 165;
+
+        function initPuzzle3() {
+            const container = document.getElementById('mazeContainer');
+            
+            // Calculate scale based on container size
+            const containerWidth = container.offsetWidth;
+            mazeScale = containerWidth / 400; // 400 is the base size
+            
+            // Clear existing obstacles
+            container.querySelectorAll('.maze-obstacle').forEach(el => el.remove());
+            
+            // Add obstacles with scaling
+            obstacles.forEach(obs => {
+                const div = document.createElement('div');
+                div.className = 'maze-obstacle';
+                div.style.left = (obs.x * mazeScale) + 'px';
+                div.style.top = (obs.y * mazeScale) + 'px';
+                div.style.width = (obs.w * mazeScale) + 'px';
+                div.style.height = (obs.h * mazeScale) + 'px';
+                container.appendChild(div);
+            });
+            
+            // Reset and position torch
+            torchX = 50 * mazeScale;
+            torchY = 200 * mazeScale;
+            updateTorchPosition();
+            
+            // Position target with scaling
+            const target = document.getElementById('weldTarget');
+            target.style.left = (targetX * mazeScale) + 'px';
+            target.style.top = (targetY * mazeScale) + 'px';
+            target.style.width = (40 * mazeScale) + 'px';
+            target.style.height = (40 * mazeScale) + 'px';
+            
+            // Scale torch size
+            const torch = document.getElementById('torch');
+            torch.style.width = (30 * mazeScale) + 'px';
+            torch.style.height = (30 * mazeScale) + 'px';
+            
+            // Start timer for report button
+            puzzle3Timer = setTimeout(() => {
+                document.getElementById('reportFlawBtn').classList.add('visible');
+            }, 30000);
+        }
+
+        function updateTorchPosition() {
+            const torch = document.getElementById('torch');
+            torch.style.left = torchX + 'px';
+            torch.style.top = torchY + 'px';
+        }
+
+        function checkCollision(newX, newY) {
+            const torchSize = 30 * mazeScale;
+            
+            // Check container bounds (circular)
+            const centerX = 200 * mazeScale;
+            const centerY = 200 * mazeScale;
+            const radius = 185 * mazeScale;
+            const dist = Math.sqrt(Math.pow(newX + torchSize/2 - centerX, 2) + Math.pow(newY + torchSize/2 - centerY, 2));
+            if (dist > radius) return true;
+            
+            // Check obstacles (scaled)
+            for (let obs of obstacles) {
+                const scaledObs = {
+                    x: obs.x * mazeScale,
+                    y: obs.y * mazeScale,
+                    w: obs.w * mazeScale,
+                    h: obs.h * mazeScale
+                };
+                if (newX < scaledObs.x + scaledObs.w && newX + torchSize > scaledObs.x &&
+                    newY < scaledObs.y + scaledObs.h && newY + torchSize > scaledObs.y) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function moveTorch(direction) {
+            const step = 20 * mazeScale;
+            let newX = torchX;
+            let newY = torchY;
+            
+            switch(direction) {
+                case 'up': newY -= step; break;
+                case 'down': newY += step; break;
+                case 'left': newX -= step; break;
+                case 'right': newX += step; break;
+            }
+            
+            if (!checkCollision(newX, newY)) {
+                torchX = newX;
+                torchY = newY;
+                updateTorchPosition();
+                playSound('click');
+            } else {
+                playSound('error');
+                moveAttempts++;
+                if (moveAttempts >= 10) {
+                    document.getElementById('reportFlawBtn').classList.add('visible');
+                }
+            }
+        }
+
+        function reportDesignFlaw() {
+            clearTimeout(puzzle3Timer);
+            playSound('success');
+            
+            // Show modal with explanation and button
+            showWeldAccessModal();
+        }
+        
+        function showWeldAccessModal() {
+            const modal = document.createElement('div');
+            modal.className = 'weld-modal';
+            modal.innerHTML = `
+                <div class="weld-modal-content">
+                    <h2 style="color: var(--success-green); margin-bottom: 20px;">✓ Correct Decision!</h2>
+                    <p style="margin-bottom: 15px; line-height: 1.6;">You correctly identified that the weld location is <strong>physically inaccessible</strong>.</p>
+                    <p style="margin-bottom: 15px; line-height: 1.6;">A welder cannot reach this spot with proper torch angle and visibility. The surrounding structure blocks all viable access paths.</p>
+                    <p style="margin-bottom: 20px; line-height: 1.6; color: var(--warm-gold);"><em>This design would fail in manufacturing and must be modified before release to the shop floor.</em></p>
+                    <p style="margin-bottom: 25px; font-size: 0.9rem; color: var(--medium-light);">💡 Always verify welder access during design review — if you can't navigate to it in a simulation, a real welder certainly can't reach it!</p>
+                    <button class="weld-modal-btn" onclick="closeWeldModalAndUnlock()">I UNDERSTAND — CONTINUE</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        function closeWeldModalAndUnlock() {
+            const modal = document.querySelector('.weld-modal');
+            if (modal) modal.remove();
+            
+            unlockPuzzle(3, '9');
+            showFlash('Access Issue Identified', 'Design flaw reported correctly. 3/6 locks released', '9 (Puzzle #3)');
+        }
+
+        // Keyboard controls for maze
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('puzzle3Screen').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowUp': moveTorch('up'); e.preventDefault(); break;
+                    case 'ArrowDown': moveTorch('down'); e.preventDefault(); break;
+                    case 'ArrowLeft': moveTorch('left'); e.preventDefault(); break;
+                    case 'ArrowRight': moveTorch('right'); e.preventDefault(); break;
+                }
+            }
+        });
+
+        // ==================== PUZZLE 4: Timeline ====================
+        let timelineQuestionsAnswered = [false, false, false];
+        let timelineQuestionsCorrect = 0;
+
+        function initPuzzle4() {
+            const slider = document.getElementById('timelineSlider');
+            slider.addEventListener('input', (e) => {
+                const year = parseInt(e.target.value);
+                document.getElementById('yearDisplay').textContent = year;
+                
+                const point3 = document.getElementById('point3');
+                const status = document.getElementById('componentStatus');
+                const explanation = document.getElementById('timelineExplanation');
+                
+                // Hide all questions first
+                document.getElementById('timelineQuestion1').classList.remove('visible');
+                document.getElementById('timelineQuestion2').classList.remove('visible');
+                document.getElementById('timelineQuestion3').classList.remove('visible');
+                
+                if (year < 10) {
+                    point3.classList.remove('blocked');
+                    status.textContent = 'Year ' + year + ' — Newly installed';
+                    explanation.textContent = 'Component is new. Full access to all NDT inspection points.';
+                } else if (year < 20) {
+                    point3.classList.remove('blocked');
+                    status.textContent = 'Year ' + year + ' — First in-service inspection period';
+                    explanation.textContent = 'First major inspection outage. Inspector notes some access limitations.';
+                    // Show question 1 in year 10-19 range
+                    if (!timelineQuestionsAnswered[0]) {
+                        document.getElementById('timelineQuestion1').classList.add('visible');
+                    }
+                } else if (year < 30) {
+                    point3.classList.remove('blocked');
+                    status.textContent = 'Year ' + year + ' — Normal operation';
+                    explanation.textContent = 'Routine inspections ongoing. Plant upgrade project announced at Year 25.';
+                } else if (year < 40) {
+                    point3.classList.add('blocked');
+                    status.textContent = 'Year ' + year + ' — Point 3 blocked!';
+                    explanation.innerHTML = '<span style="color: var(--error-red);">⚠</span> Auxiliary cooling system installed at Year 25 now blocks inspection access.';
+                    // Show question 2 in year 30-39 range
+                    if (!timelineQuestionsAnswered[1]) {
+                        document.getElementById('timelineQuestion2').classList.add('visible');
+                    }
+                } else if (year < 50) {
+                    point3.classList.add('blocked');
+                    status.textContent = 'Year ' + year + ' — Continued operation';
+                    explanation.innerHTML = 'Access issue persists. Workarounds becoming increasingly difficult.';
+                } else {
+                    point3.classList.add('blocked');
+                    status.textContent = 'Year ' + year + ' — Life extension planning';
+                    explanation.innerHTML = 'Evaluating extended operation to Year 80. Critical decisions ahead.';
+                    // Show question 3 in year 50-60 range
+                    if (!timelineQuestionsAnswered[2]) {
+                        document.getElementById('timelineQuestion3').classList.add('visible');
+                    }
+                }
+            });
+        }
+
+        function checkTimelineAnswer(questionNum, answer) {
+            if (timelineQuestionsAnswered[questionNum - 1]) return;
+            
+            const correctAnswers = { 1: 'b', 2: 'b', 3: 'b' };
+            const questionEl = document.getElementById('timelineQuestion' + questionNum);
+            const buttons = questionEl.querySelectorAll('.timeline-option');
+            
+            if (answer === correctAnswers[questionNum]) {
+                // Correct
+                timelineQuestionsAnswered[questionNum - 1] = true;
+                timelineQuestionsCorrect++;
+                document.getElementById('questionsAnswered').textContent = timelineQuestionsCorrect;
+                
+                buttons.forEach(btn => {
+                    if (btn.dataset.answer === answer) {
+                        btn.classList.add('correct');
+                    }
+                    btn.disabled = true;
+                });
+                
+                playSound('success');
+                
+                const explanations = {
+                    1: 'Correct! Documenting limitations and planning improvements is the proper approach — never accept degraded inspection coverage.',
+                    2: 'Correct! Permanent access provisions should have been designed in from day one, anticipating future plant modifications.',
+                    3: 'Correct! Continued inspectability and maintainability are critical for safe extended operation.'
+                };
+                showFeedback('Correct!', explanations[questionNum], null, true);
+                
+                // Hide question after correct answer and brief delay
+                setTimeout(() => {
+                    questionEl.classList.remove('visible');
+                }, 2000);
+                
+                if (timelineQuestionsCorrect === 3) {
+                    setTimeout(() => {
+                        unlockPuzzle(4, '2');
+                        showFlash('Lifecycle Requirements Understood', '4/6 locks released', '2 (Puzzle #4)');
+                    }, 2500);
+                }
+            } else {
+                // Wrong - allow retry
+                playSound('error');
+                const clickedBtn = questionEl.querySelector(`.timeline-option[data-answer="${answer}"]`);
+                clickedBtn.classList.add('wrong');
+                setTimeout(() => clickedBtn.classList.remove('wrong'), 1500);
+                
+                const wrongExplanations = {
+                    1: {
+                        'a': 'Accepting marginal inspection results without action is not acceptable. Issues must be addressed.',
+                        'c': 'Skipping inspections is never acceptable in nuclear — all required welds must be examined.',
+                        'd': 'Waiting for visible defects defeats the purpose of preventive inspection.'
+                    },
+                    2: {
+                        'a': 'Reduced inspection scope is not acceptable for nuclear safety components.',
+                        'c': 'Removing installed systems is extremely costly and introduces new risks.',
+                        'd': 'Robots are not a universal solution — proper access must be designed in.'
+                    },
+                    3: {
+                        'a': 'Cosmetic appearance has no bearing on safe operation.',
+                        'c': 'Documentation requirements exist for good reason — they ensure traceability.',
+                        'd': 'This is not a serious answer for a safety-critical industry.'
+                    }
+                };
+                
+                showFeedback(
+                    'Not Quite Right — Try Again',
+                    wrongExplanations[questionNum][answer],
+                    'Think about what ensures safe operation over the full plant lifetime.'
+                );
+            }
+        }
+        // ==================== PUZZLE 5: Assembly ====================
+        const parts = [
+            { name: 'Main Body', essential: true },
+            { name: 'Primary Flange', essential: true },
+            { name: 'Bracket A', essential: true },
+            { name: 'Bracket B', essential: false },
+            { name: 'Bolt Set 1', essential: true },
+            { name: 'Bolt Set 2', essential: false },
+            { name: 'Gasket', essential: true },
+            { name: 'Secondary Gasket', essential: false },
+            { name: 'Reinforcement Plate', essential: false },
+            { name: 'Adapter Ring', essential: false },
+            { name: 'Spacer', essential: false },
+            { name: 'Cover Plate', essential: false },
+            { name: 'Pressure Boundary', essential: true },
+            { name: 'Seal Ring', essential: true },
+            { name: 'Connection Port', essential: true }
+        ];
+
+        let partCount = 15;
+
+        function initPuzzle5() {
+            const grid = document.getElementById('partsGrid');
+            grid.innerHTML = '';
+            
+            parts.forEach((part, index) => {
+                const box = document.createElement('div');
+                box.className = 'part-box';
+                box.textContent = part.name;
+                box.dataset.index = index;
+                box.dataset.essential = part.essential;
+                
+                box.addEventListener('click', () => {
+                    if (box.classList.contains('eliminated')) return;
+                    
+                    if (part.essential) {
+                        playSound('error');
+                        box.classList.add('essential');
+                        setTimeout(() => box.classList.remove('essential'), 300);
+                        
+                        // Give specific feedback about why this part is essential
+                        const essentialReasons = {
+                            'Main Body': 'The main body is the primary structural element. Without it, there\'s nothing to assemble!',
+                            'Primary Flange': 'The primary flange provides the main pressure boundary connection. It cannot be eliminated.',
+                            'Bracket A': 'Bracket A provides essential structural support. Consider combining brackets rather than eliminating.',
+                            'Bolt Set 1': 'The primary bolt set is required to secure the assembly. You need at least one fastening method.',
+                            'Gasket': 'The gasket provides the primary seal. Without it, you\'ll have leakage.',
+                            'Pressure Boundary': 'The pressure boundary plate is a safety-critical component. It must remain.',
+                            'Seal Ring': 'The seal ring provides secondary containment. Required for nuclear applications.',
+                            'Connection Port': 'The connection port is functional — it\'s how the component interfaces with the system.'
+                        };
+                        showFeedback(
+                            'Essential Component',
+                            essentialReasons[part.name] || 'This part is structurally or functionally essential.',
+                            'Look for redundant parts, secondary features, or items that can be combined with others.'
+                        );
+                    } else {
+                        playSound('success');
+                        box.classList.add('eliminated');
+                        partCount--;
+                        document.getElementById('partCount').textContent = partCount;
+                        
+                        // Show what was done
+                        const eliminationReasons = {
+                            'Bracket B': 'Combined with Bracket A into single forged bracket.',
+                            'Bolt Set 2': 'Eliminated — single bolt pattern now sufficient.',
+                            'Secondary Gasket': 'Eliminated — single gasket design with improved material.',
+                            'Reinforcement Plate': 'Integrated into main body casting.',
+                            'Adapter Ring': 'Eliminated — flange redesigned to connect directly.',
+                            'Spacer': 'Eliminated — tolerances adjusted to remove need.',
+                            'Cover Plate': 'Integrated into main housing design.'
+                        };
+                        showFeedback(
+                            'Part Eliminated',
+                            eliminationReasons[part.name] || 'Part successfully removed from design.',
+                            null,
+                            true
+                        );
+                        
+                        if (partCount <= 8) {
+                            setTimeout(() => {
+                                unlockPuzzle(5, '5');
+                                showFlash('Part Count Optimised', '5/6 locks released', '5 (Puzzle #5)');
+                            }, 1500);
+                        }
+                    }
+                });
+                
+                grid.appendChild(box);
+            });
+        }
+
+        // ==================== PUZZLE 6: Sequence ====================
+        const sequenceSteps = [
+            { id: 'fitup', icon: '🔧', label: 'FIT-UP', order: 1 },
+            { id: 'welding', icon: '🔥', label: 'WELDING', order: 2 },
+            { id: 'ndt', icon: '🔍', label: 'NDT INSPECTION', order: 3 },
+            { id: 'docs', icon: '📋', label: 'DOCUMENTATION', order: 4 },
+            { id: 'qa', icon: '✅', label: 'QA RELEASE', order: 5 }
+        ];
+
+        let currentSequence = [];
+
+        function initPuzzle6() {
+            const container = document.getElementById('sequenceCards');
+            container.innerHTML = '';
+            
+            // Scrambled order
+            const scrambled = [
+                sequenceSteps[2], // NDT
+                sequenceSteps[4], // QA
+                sequenceSteps[1], // Welding
+                sequenceSteps[3], // Docs
+                sequenceSteps[0]  // Fit-up
+            ];
+            
+            currentSequence = [...scrambled];
+            
+            scrambled.forEach((step, index) => {
+                const card = document.createElement('div');
+                card.className = 'sequence-card';
+                card.draggable = true;
+                card.dataset.id = step.id;
+                card.innerHTML = `
+                    <span class="icon">${step.icon}</span>
+                    <span class="label">${step.label}</span>
+                `;
+                
+                card.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', index.toString());
+                    card.classList.add('dragging');
+                });
+                
+                card.addEventListener('dragend', () => {
+                    card.classList.remove('dragging');
+                });
+                
+                card.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+                
+                card.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                    const toIndex = index;
+                    
+                    // Swap
+                    const cards = container.querySelectorAll('.sequence-card');
+                    const fromCard = cards[fromIndex];
+                    const toCard = cards[toIndex];
+                    
+                    // Swap in array
+                    [currentSequence[fromIndex], currentSequence[toIndex]] = 
+                    [currentSequence[toIndex], currentSequence[fromIndex]];
+                    
+                    // Re-render
+                    renderSequence();
+                    playSound('click');
+                });
+                
+                container.appendChild(card);
+            });
+        }
+
+        let sequenceTouchClone = null;
+        let sequenceDraggedCard = null;
+        let sequenceDraggedIndex = null;
+
+        function renderSequence() {
+            const container = document.getElementById('sequenceCards');
+            container.innerHTML = '';
+            
+            currentSequence.forEach((step, index) => {
+                const card = document.createElement('div');
+                card.className = 'sequence-card';
+                card.draggable = true;
+                card.dataset.id = step.id;
+                card.dataset.index = index;
+                card.innerHTML = `
+                    <span class="icon">${step.icon}</span>
+                    <span class="label">${step.label}</span>
+                `;
+                
+                // Mouse drag events
+                card.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', index.toString());
+                    card.classList.add('dragging');
+                });
+                
+                card.addEventListener('dragend', () => {
+                    card.classList.remove('dragging');
+                });
+                
+                card.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+                
+                card.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                    const toIndex = index;
+                    
+                    [currentSequence[fromIndex], currentSequence[toIndex]] = 
+                    [currentSequence[toIndex], currentSequence[fromIndex]];
+                    
+                    renderSequence();
+                    playSound('click');
+                });
+                
+                // Touch events for mobile
+                card.addEventListener('touchstart', (e) => {
+                    sequenceDraggedCard = card;
+                    sequenceDraggedIndex = index;
+                    card.classList.add('dragging');
+                    
+                    // Create visual clone
+                    const touch = e.touches[0];
+                    const rect = card.getBoundingClientRect();
+                    
+                    sequenceTouchClone = card.cloneNode(true);
+                    sequenceTouchClone.classList.add('touch-clone');
+                    sequenceTouchClone.style.cssText = `
+                        position: fixed;
+                        top: ${touch.clientY - rect.height/2}px;
+                        left: ${touch.clientX - rect.width/2}px;
+                        width: ${rect.width}px;
+                        height: ${rect.height}px;
+                        z-index: 9999;
+                        pointer-events: none;
+                        opacity: 0.9;
+                        transform: scale(1.05);
+                        box-shadow: 0 10px 30px rgba(127, 255, 0, 0.5);
+                        border-color: var(--radioactive-green);
+                        background: var(--medium-dark);
+                    `;
+                    document.body.appendChild(sequenceTouchClone);
+                    
+                    e.preventDefault();
+                }, { passive: false });
+                
+                card.addEventListener('touchmove', (e) => {
+                    if (!sequenceTouchClone) return;
+                    
+                    const touch = e.touches[0];
+                    const rect = sequenceDraggedCard.getBoundingClientRect();
+                    
+                    sequenceTouchClone.style.top = (touch.clientY - rect.height/2) + 'px';
+                    sequenceTouchClone.style.left = (touch.clientX - rect.width/2) + 'px';
+                    
+                    // Highlight card under finger
+                    const elementUnder = document.elementFromPoint(touch.clientX, touch.clientY);
+                    const cardUnder = elementUnder?.closest('.sequence-card');
+                    
+                    document.querySelectorAll('.sequence-card').forEach(c => {
+                        c.classList.remove('drag-over-target');
+                    });
+                    if (cardUnder && cardUnder !== sequenceDraggedCard) {
+                        cardUnder.classList.add('drag-over-target');
+                    }
+                    
+                    e.preventDefault();
+                }, { passive: false });
+                
+                card.addEventListener('touchend', (e) => {
+                    if (!sequenceDraggedCard) return;
+                    
+                    // Remove clone
+                    if (sequenceTouchClone) {
+                        sequenceTouchClone.remove();
+                        sequenceTouchClone = null;
+                    }
+                    
+                    // Clear all drag states
+                    document.querySelectorAll('.sequence-card').forEach(c => {
+                        c.classList.remove('drag-over-target');
+                    });
+                    
+                    const touch = e.changedTouches[0];
+                    const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+                    const targetCard = dropTarget?.closest('.sequence-card');
+                    
+                    if (targetCard && targetCard !== sequenceDraggedCard) {
+                        const toIndex = parseInt(targetCard.dataset.index);
+                        
+                        [currentSequence[sequenceDraggedIndex], currentSequence[toIndex]] = 
+                        [currentSequence[toIndex], currentSequence[sequenceDraggedIndex]];
+                        
+                        renderSequence();
+                        playSound('click');
+                    } else {
+                        sequenceDraggedCard.classList.remove('dragging');
+                    }
+                    
+                    sequenceDraggedCard = null;
+                    sequenceDraggedIndex = null;
+                });
+                
+                container.appendChild(card);
+            });
+        }
+
+        function checkSequence() {
+            const isCorrect = currentSequence.every((step, index) => step.order === index + 1);
+            
+            if (isCorrect) {
+                playSound('success');
+                const cards = document.querySelectorAll('.sequence-card');
+                cards.forEach((card, i) => {
+                    setTimeout(() => {
+                        card.style.borderColor = 'var(--success-green)';
+                        card.style.boxShadow = '0 0 20px rgba(0, 255, 136, 0.5)';
+                    }, i * 200);
+                });
+                
+                setTimeout(() => {
+                    unlockPuzzle(6, '1');
+                    showFlash('Manufacturing Sequence Verified', 'ALL LOCKS RELEASED!', '1 (Puzzle #6)');
+                }, 1500);
+            } else {
+                playSound('error');
+                const cards = document.querySelectorAll('.sequence-card');
+                cards.forEach(card => {
+                    card.style.animation = 'shake 0.3s ease';
+                    setTimeout(() => {
+                        card.style.animation = '';
+                    }, 300);
+                });
+                
+                // Find what's wrong and give specific feedback
+                let feedback = 'The sequence has errors. Remember the logical order:\n';
+                const issues = [];
+                
+                // Check specific issues
+                const fitupIndex = currentSequence.findIndex(s => s.id === 'fitup');
+                const weldIndex = currentSequence.findIndex(s => s.id === 'welding');
+                const ndtIndex = currentSequence.findIndex(s => s.id === 'ndt');
+                const docsIndex = currentSequence.findIndex(s => s.id === 'docs');
+                const qaIndex = currentSequence.findIndex(s => s.id === 'qa');
+                
+                if (fitupIndex > weldIndex) {
+                    issues.push('You can\'t weld components that haven\'t been positioned yet.');
+                }
+                if (weldIndex > ndtIndex) {
+                    issues.push('You can\'t inspect welds that don\'t exist yet.');
+                }
+                if (ndtIndex > docsIndex) {
+                    issues.push('You need inspection results before you can document them.');
+                }
+                if (docsIndex > qaIndex) {
+                    issues.push('QA needs documentation to review before releasing.');
+                }
+                if (qaIndex < 4) {
+                    issues.push('QA Release should be the final step — it\'s the approval to proceed.');
+                }
+                if (fitupIndex !== 0) {
+                    issues.push('Everything starts with positioning the components (Fit-up).');
+                }
+                
+                const feedbackMsg = issues.length > 0 ? issues[0] : 'Check the logical dependencies between steps.';
+                
+                showFeedback(
+                    'Sequence Error',
+                    feedbackMsg,
+                    'Think about it: what must exist before each step can happen? You can\'t inspect a weld that hasn\'t been made!'
+                );
+            }
+        }
+
+        // ==================== DOOR / KEYPAD ====================
+        let enteredCode = '';
+
+        function enterDigit(digit) {
+            if (enteredCode.length < 6) {
+                enteredCode += digit;
+                updateCodeDisplay();
+                playSound('click');
+            }
+        }
+
+        function clearCode() {
+            enteredCode = '';
+            updateCodeDisplay();
+            playSound('click');
+        }
+
+        function updateCodeDisplay() {
+            const display = enteredCode.padEnd(6, '_').split('').join(' ');
+            document.getElementById('codeDisplay').textContent = display;
+        }
+
+        function submitCode() {
+            if (enteredCode.length !== 6) return;
+            
+            if (enteredCode === CORRECT_CODE) {
+                playSound('door');
+                document.getElementById('doorMessage').textContent = 'ACCESS GRANTED';
+                document.getElementById('doorMessage').style.color = 'var(--success-green)';
+                
+                // Capture timer value immediately
+                stopTimer();
+                const finalTimeValue = document.getElementById('timerDisplay').textContent;
+                
+                setTimeout(() => {
+                    document.getElementById('finalTime').textContent = finalTimeValue;
+                    showScreen('successScreen');
+                    playSound('success');
+                }, 1500);
+            } else {
+                playSound('error');
+                document.getElementById('doorMessage').textContent = 'ACCESS DENIED';
+                document.getElementById('doorMessage').classList.add('error');
+                enteredCode = '';
+                updateCodeDisplay();
+                
+                setTimeout(() => {
+                    document.getElementById('doorMessage').textContent = 'Enter the 6-digit code to unlock';
+                    document.getElementById('doorMessage').classList.remove('error');
+                }, 1500);
+            }
+        }
+
+        function completeTraining() {
+            showSuccessModal(
+                'Training Complete!',
+                'Congratulations! You\'ve successfully completed the Design for Manufacture challenge. You may now close this window or proceed to the next module.',
+                'GOT IT'
+            );
+        }
+
+        function showSuccessModal(title, message, buttonText) {
+            const modal = document.createElement('div');
+            modal.className = 'confirm-modal';
+            modal.innerHTML = `
+                <div class="confirm-modal-content" style="border-color: var(--success-green); box-shadow: 0 0 60px rgba(0, 255, 136, 0.3);">
+                    <div class="confirm-modal-icon">🎉</div>
+                    <h2 class="confirm-modal-title" style="color: var(--success-green);">${title}</h2>
+                    <p class="confirm-modal-text">${message}</p>
+                    <div class="confirm-modal-buttons">
+                        <button class="confirm-modal-btn confirm" style="background: var(--success-green); border-color: var(--success-green);">${buttonText}</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Handle confirm
+            modal.querySelector('.confirm').addEventListener('click', () => {
+                playSound('click');
+                modal.remove();
+            });
+            
+            // Close on background click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    playSound('click');
+                    modal.remove();
+                }
+            });
+        }
+
+        function playAgain() {
+            // Reset game and go back to title screen
+            resetGameState();
+            showScreen('titleScreen');
+        }
+
+        function resetGameState() {
+            // Reset state
+            gameState.puzzlesCompleted = [false, false, false, false, false, false];
+            gameState.codeDigits = ['_', '_', '_', '_', '_', '_'];
+            gameState.collectedDigits = [];
+            gameState.timerSeconds = 0;
+            gameState.timerStarted = false;
+            gameState.puzzle3Initialized = false;
+            
+            // Stop timer
+            clearInterval(gameState.timerInterval);
+            
+            // Reset timer display
+            document.getElementById('timerDisplay').textContent = '00:00';
+            
+            // Reset locks
+            document.querySelectorAll('.lock').forEach(lock => {
+                lock.classList.remove('unlocked');
+                lock.textContent = '';
+            });
+            
+            // Reset hotspots
+            document.querySelectorAll('.hotspot').forEach(hotspot => {
+                hotspot.classList.remove('completed');
+            });
+            
+            // Reset door indicator
+            document.getElementById('doorIndicatorImg').src = 'https://i.ibb.co/zhwNLmCt/IMAGE-02.png';
+            
+            // Reset completion banners
+            document.querySelectorAll('.completion-banner').forEach(banner => {
+                banner.classList.remove('visible');
+            });
+            
+            // Reset puzzle 1
+            classificationComplete = 0;
+            document.querySelectorAll('.component-card').forEach(card => {
+                card.classList.remove('placed');
+            });
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                const dropped = zone.querySelectorAll('.dropped-card');
+                dropped.forEach(d => d.remove());
+            });
+            
+            // Reset puzzle 2
+            errorsFound = 0;
+            document.getElementById('errorCount').textContent = '0';
+            document.querySelectorAll('.cert-clickable').forEach(row => {
+                row.classList.remove('found', 'wrong-click');
+            });
+            
+            // Reset puzzle 3
+            moveAttempts = 0;
+            document.getElementById('reportFlawBtn').classList.remove('visible');
+            const weldModal = document.querySelector('.weld-modal');
+            if (weldModal) weldModal.remove();
+            // Clear existing obstacles for re-initialization
+            document.querySelectorAll('.maze-obstacle').forEach(el => el.remove());
+            gameState.puzzle3Initialized = false;
+            
+            // Reset puzzle 4
+            timelineQuestionsAnswered = [false, false, false];
+            timelineQuestionsCorrect = 0;
+            document.getElementById('questionsAnswered').textContent = '0';
+            document.getElementById('timelineSlider').value = 0;
+            document.getElementById('yearDisplay').textContent = '0';
+            document.getElementById('point3').classList.remove('blocked');
+            document.getElementById('componentStatus').textContent = 'Year 0 — Newly installed';
+            document.getElementById('timelineExplanation').textContent = '';
+            document.getElementById('timelineQuestion1').classList.remove('visible');
+            document.getElementById('timelineQuestion2').classList.remove('visible');
+            document.getElementById('timelineQuestion3').classList.remove('visible');
+            document.querySelectorAll('.timeline-option').forEach(opt => {
+                opt.classList.remove('correct', 'wrong');
+                opt.disabled = false;
+            });
+            
+            // Reset puzzle 5
+            partCount = 15;
+            document.getElementById('partCount').textContent = '15';
+            initPuzzle5();
+            
+            // Reset puzzle 6
+            initPuzzle6();
+            
+            // Reset code entry
+            enteredCode = '';
+            updateCodeDisplay();
+        }
+
+        // Reset game function
+        function resetGame() {
+            showConfirmModal(
+                'Restart Game?',
+                'All your progress will be lost and the timer will reset. Are you sure you want to start over?',
+                () => {
+                    resetGameState();
+                    playSound('click');
+                }
+            );
+        }
+
+        function showConfirmModal(title, message, onConfirm) {
+            const modal = document.createElement('div');
+            modal.className = 'confirm-modal';
+            modal.innerHTML = `
+                <div class="confirm-modal-content">
+                    <div class="confirm-modal-icon">⚠️</div>
+                    <h2 class="confirm-modal-title">${title}</h2>
+                    <p class="confirm-modal-text">${message}</p>
+                    <div class="confirm-modal-buttons">
+                        <button class="confirm-modal-btn cancel">Cancel</button>
+                        <button class="confirm-modal-btn confirm">Restart</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Handle cancel
+            modal.querySelector('.cancel').addEventListener('click', () => {
+                playSound('click');
+                modal.remove();
+            });
+            
+            // Handle confirm
+            modal.querySelector('.confirm').addEventListener('click', () => {
+                playSound('click');
+                modal.remove();
+                if (onConfirm) onConfirm();
+            });
+            
+            // Close on background click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    playSound('click');
+                    modal.remove();
+                }
+            });
+        }
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            preloadImages();
+            
+            // Intro typewriter
+            const introText = "The door is locked. Six critical DfM issues are hiding in this design package. Find them all. Escape the room.";
+            setTimeout(() => {
+                typeWriter(document.getElementById('introText'), introText, 40);
+            }, 1000);
+            
+            // Begin button
+            document.getElementById('beginBtn').addEventListener('click', () => {
+                initAudio();
+                playSound('click');
+                showScreen('roomScreen');
+                startTimer();
+            });
+            
+            // Hotspot clicks
+            document.querySelectorAll('.hotspot').forEach(hotspot => {
+                hotspot.addEventListener('click', () => {
+                    const puzzleNum = hotspot.dataset.puzzle;
+                    playSound('click');
+                    showScreen(`puzzle${puzzleNum}Screen`);
+                    
+                    // Show completion banner if puzzle already completed
+                    if (gameState.puzzlesCompleted[puzzleNum - 1]) {
+                        document.getElementById(`puzzle${puzzleNum}Banner`).classList.add('visible');
+                    }
+                    
+                    // Initialize puzzle if needed
+                    if (puzzleNum === '3' && !gameState.puzzle3Initialized) {
+                        initPuzzle3();
+                        gameState.puzzle3Initialized = true;
+                    }
+                });
+            });
+            
+            // Door hotspot
+            document.getElementById('doorHotspot').addEventListener('click', () => {
+                playSound('click');
+                
+                const completedCount = gameState.puzzlesCompleted.filter(p => p).length;
+                if (completedCount < 6) {
+                    document.getElementById('doorMessage').textContent = `${6 - completedCount} locks remaining. Complete all puzzles first.`;
+                } else {
+                    document.getElementById('doorMessage').textContent = 'Enter the 6-digit code to unlock (puzzles 1-6 in order)';
+                }
+                
+                showScreen('doorScreen');
+            });
+            
+            // Initialize puzzles
+            initPuzzle1();
+            initPuzzle2();
+            initPuzzle4();
+            initPuzzle5();
+            initPuzzle6();
+        });
+    </script>
+</body>
+</html>
