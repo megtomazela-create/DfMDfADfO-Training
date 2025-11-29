@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Day Zero — The Investigation | Act 4 Assessment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================
+           CSS VARIABLES (BRAND)
+           ========================================== */
+        :root {
+            /* Core palette */
+            --darkest: #1F2937;
+            --dark: #2C3A44;
+            --medium-dark: #354450;
+            --medium-light: #9BABC2;
+            --light: #D1D9E0;
+            --lightest: #F7F8FA;
+
+            /* Accent */
+            --warm-gold: #B8860B;
+            --gold-light: #D4A84B;
+            --gold-glow: rgba(184, 134, 11, 0.3);
+
+            /* Status colours */
+            --money-red: #DC2626;
+            --danger-red: #C62828;
+            --warning-amber: #F57C00;
+            --success-green: #2E7D32;
+
+            /* Game specific */
+            --evidence-blue: #1565C0;
+            --highlight-yellow: #FFC107;
+
+            /* Typography */
+            --font-heading: 'Rajdhani', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+        }
+
+        /* ==========================================
+           RESET & BASE STYLES
+           ========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--darkest);
+            color: var(--lightest);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        button {
+            font-family: var(--font-body);
+            cursor: pointer;
+        }
+
+        /* ==========================================
+           SCREEN MANAGEMENT
+           ========================================== */
+        .screen {
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ==========================================
+           INTRO SCREEN
+           ========================================== */
+        #intro-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--darkest) 0%, var(--dark) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #intro-screen::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('images/IMAGE_SCENE_01.png') center/cover no-repeat;
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        .intro-container {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .intro-logo {
+            height: 60px;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        #intro-screen h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--lightest);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(184, 134, 11, 0.3);
+        }
+
+        #intro-screen h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--warm-gold);
+            margin-bottom: 2.5rem;
+            letter-spacing: 2px;
+        }
+
+        .intro-narrative {
+            text-align: left;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--warm-gold);
+            padding: 2rem;
+            border-radius: 4px;
+            margin-bottom: 2.5rem;
+        }
+
+        .intro-narrative p {
+            margin-bottom: 1rem;
+            color: var(--light);
+            font-size: 1.05rem;
+        }
+
+        .intro-narrative p:last-child {
+            margin-bottom: 0;
+        }
+
+        .intro-narrative .radio-call {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            color: var(--highlight-yellow);
+            background: rgba(255, 193, 7, 0.1);
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .intro-narrative strong {
+            color: var(--money-red);
+        }
+
+        /* ==========================================
+           BUTTONS
+           ========================================== */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--warm-gold) 0%, var(--gold-light) 100%);
+            color: var(--darkest);
+            border: none;
+            padding: 1rem 2.5rem;
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--gold-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px var(--gold-glow);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-large {
+            padding: 1.25rem 3rem;
+            font-size: 1.2rem;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--light);
+            border: 2px solid var(--medium-light);
+            padding: 0.875rem 2rem;
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--warm-gold);
+            color: var(--warm-gold);
+            background: rgba(184, 134, 11, 0.1);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--money-red) 0%, var(--danger-red) 100%);
+            color: var(--lightest);
+            border: none;
+            padding: 1rem 2rem;
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(220, 38, 38, 0.4);
+        }
+
+        /* ==========================================
+           GAME SCREEN
+           ========================================== */
+        #game-screen {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: var(--darkest);
+        }
+
+        /* Game Header */
+        .game-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-logo {
+            height: 40px;
+            opacity: 0.9;
+        }
+
+        /* Money Counter */
+        #money-counter {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            min-width: 280px;
+        }
+
+        .counter-header {
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--medium-light);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .counter-total {
+            font-family: var(--font-mono);
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--money-red);
+            text-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+            margin-bottom: 0.75rem;
+            transition: text-shadow 0.1s ease;
+        }
+
+        .counter-total.pulse {
+            text-shadow: 0 0 30px rgba(220, 38, 38, 0.8);
+        }
+
+        .counter-breakdown {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 0.75rem;
+        }
+
+        .cost-line {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--medium-light);
+            margin-bottom: 0.25rem;
+        }
+
+        .cost-line .cost-label {
+            opacity: 0.8;
+        }
+
+        .cost-line .cost-rate {
+            font-family: var(--font-mono);
+            color: var(--light);
+        }
+
+        .cost-line.total-line {
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+            color: var(--money-red);
+        }
+
+        .cost-line.total-line .cost-rate {
+            color: var(--money-red);
+        }
+
+        /* Main Scene Area */
+        .game-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scene-area {
+            flex: 1;
+            position: relative;
+            background: url('images/IMAGE_SCENE_02.png') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scene-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(31, 41, 55, 0.7);
+        }
+
+        /* Evidence Locations */
+        #evidence-locations {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        .evidence-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.5rem 1rem;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: var(--light);
+            transition: all 0.3s ease;
+            min-width: 160px;
+        }
+
+        .evidence-btn:hover {
+            border-color: var(--warm-gold);
+            background: rgba(184, 134, 11, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(184, 134, 11, 0.2);
+        }
+
+        .evidence-btn.examined {
+            border-color: var(--success-green);
+            background: rgba(46, 125, 50, 0.15);
+        }
+
+        .evidence-btn.examined::after {
+            content: '\2713';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            color: var(--success-green);
+            font-weight: bold;
+        }
+
+        .evidence-icon {
+            font-size: 2.5rem;
+        }
+
+        .evidence-label {
+            font-family: var(--font-heading);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 10;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            font-family: var(--font-heading);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .phone-btn {
+            background: var(--evidence-blue);
+            color: var(--lightest);
+            border: none;
+        }
+
+        .phone-btn:hover {
+            background: #1976D2;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn {
+            background: var(--danger-red);
+            color: var(--lightest);
+            border: none;
+        }
+
+        .submit-btn:hover {
+            background: #D32F2F;
+            transform: translateY(-2px);
+        }
+
+        /* Evidence Cards Bar */
+        #evidence-cards-bar {
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            min-height: 120px;
+        }
+
+        #evidence-cards-bar:empty::before {
+            content: 'Evidence cards will appear here as you examine locations...';
+            color: var(--medium-light);
+            font-style: italic;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .evidence-card {
+            flex-shrink: 0;
+            width: 280px;
+            background: rgba(21, 101, 192, 0.15);
+            border: 1px solid rgba(21, 101, 192, 0.4);
+            border-radius: 6px;
+            padding: 1rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .evidence-card h5 {
+            font-size: 0.8rem;
+            color: var(--evidence-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .evidence-card p {
+            font-size: 0.8rem;
+            color: var(--light);
+            line-height: 1.5;
+        }
+
+        /* ==========================================
+           MODALS
+           ========================================== */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--medium-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .modal-close:hover {
+            color: var(--lightest);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Evidence Modal */
+        .evidence-viewer {
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .evidence-viewer h2 {
+            color: var(--warm-gold);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-right: 3rem;
+        }
+
+        #evidence-image-container {
+            position: relative;
+            background: var(--darkest);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        #evidence-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Hotspots */
+        .hotspot {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 193, 7, 0.2);
+            border: 2px solid var(--highlight-yellow);
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        .hotspot:hover {
+            background: rgba(255, 193, 7, 0.4);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .hotspot.discovered {
+            background: rgba(46, 125, 50, 0.3);
+            border-color: var(--success-green);
+        }
+
+        .hotspot-pulse {
+            position: absolute;
+            inset: -5px;
+            border: 2px solid var(--highlight-yellow);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .hotspot.discovered .hotspot-pulse {
+            display: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        .hotspot-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.75rem;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            color: var(--highlight-yellow);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        /* Evidence Findings Panel */
+        #evidence-findings {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 150px;
+            margin-bottom: 1.5rem;
+        }
+
+        .findings-hint {
+            color: var(--medium-light);
+            font-style: italic;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .finding-card {
+            background: rgba(21, 101, 192, 0.1);
+            border-left: 4px solid var(--evidence-blue);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+            animation: slideIn 0.3s ease;
+        }
+
+        .finding-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .finding-card.critical {
+            background: rgba(220, 38, 38, 0.1);
+            border-left-color: var(--money-red);
+        }
+
+        .finding-card.red-herring {
+            background: rgba(155, 171, 194, 0.1);
+            border-left-color: var(--medium-light);
+        }
+
+        .finding-card h4 {
+            font-size: 0.9rem;
+            color: var(--warm-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .finding-card p {
+            font-size: 0.85rem;
+            color: var(--light);
+            margin-bottom: 0.5rem;
+        }
+
+        .finding-card .clue-value {
+            font-size: 0.8rem;
+            color: var(--highlight-yellow);
+            padding: 0.5rem;
+            background: rgba(255, 193, 7, 0.1);
+            border-radius: 4px;
+        }
+
+        .finding-card.critical .clue-value {
+            background: rgba(220, 38, 38, 0.15);
+            color: var(--money-red);
+        }
+
+        /* Phone Modal */
+        .phone-interface {
+            max-width: 500px;
+        }
+
+        .phone-interface h2 {
+            color: var(--evidence-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .phone-warning {
+            color: var(--warning-amber);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            padding: 0.75rem;
+            background: rgba(245, 124, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        #phone-contacts {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .phone-contact {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--light);
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .phone-contact:hover:not(.called) {
+            border-color: var(--evidence-blue);
+            background: rgba(21, 101, 192, 0.15);
+        }
+
+        .phone-contact.called {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .contact-name {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .contact-duration {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--medium-light);
+        }
+
+        .called-badge {
+            color: var(--success-green);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        #phone-call-active {
+            text-align: center;
+        }
+
+        #phone-call-active h3 {
+            color: var(--evidence-blue);
+            margin-bottom: 1rem;
+        }
+
+        #call-timer {
+            font-family: var(--font-mono);
+            font-size: 2rem;
+            color: var(--warm-gold);
+            margin-bottom: 1.5rem;
+        }
+
+        #call-dialogue {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: left;
+            font-style: italic;
+            color: var(--light);
+            min-height: 100px;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* Submit Modal */
+        .submit-form {
+            max-width: 600px;
+        }
+
+        .submit-form h2 {
+            color: var(--danger-red);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--warm-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: var(--lightest);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--warm-gold);
+        }
+
+        .form-group select option {
+            background: var(--dark);
+            color: var(--lightest);
+        }
+
+        .current-cost-display {
+            font-family: var(--font-mono);
+            font-size: 1.5rem;
+            color: var(--money-red);
+            text-align: center;
+            padding: 1rem;
+            background: rgba(220, 38, 38, 0.1);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .submit-warning {
+            color: var(--warning-amber);
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 0.75rem;
+            background: rgba(245, 124, 0, 0.1);
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+
+        .submit-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        /* Fix Modal */
+        .fix-form {
+            max-width: 600px;
+        }
+
+        .fix-form h2 {
+            color: var(--warm-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .fix-form > p {
+            color: var(--medium-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .fix-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .fix-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .fix-option:hover {
+            border-color: var(--warm-gold);
+            background: rgba(184, 134, 11, 0.1);
+        }
+
+        .fix-option input[type="radio"] {
+            margin-top: 0.2rem;
+            accent-color: var(--warm-gold);
+            width: 18px;
+            height: 18px;
+        }
+
+        .fix-details {
+            flex: 1;
+        }
+
+        .fix-details strong {
+            display: block;
+            color: var(--lightest);
+            margin-bottom: 0.25rem;
+        }
+
+        .fix-details span {
+            font-size: 0.85rem;
+            color: var(--medium-light);
+        }
+
+        /* ==========================================
+           RESULTS SCREEN
+           ========================================== */
+        #results-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--darkest) 0%, var(--dark) 100%);
+            padding: 2rem;
+        }
+
+        .results-container {
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .results-container h1 {
+            color: var(--warm-gold);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            letter-spacing: 3px;
+        }
+
+        #epilogue-section {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        #epilogue-section h2 {
+            color: var(--warm-gold);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        #epilogue-section p {
+            color: var(--light);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        #epilogue-section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .score-breakdown {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .score-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            font-size: 0.95rem;
+        }
+
+        .score-line:last-child {
+            border-bottom: none;
+        }
+
+        .score-line.total {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--lightest);
+            border-top: 2px solid var(--warm-gold);
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+        }
+
+        .benchmark {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            background: rgba(46, 125, 50, 0.15);
+            border: 1px solid rgba(46, 125, 50, 0.3);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            color: var(--success-green);
+            font-size: 0.9rem;
+        }
+
+        #rank-display {
+            margin-bottom: 2rem;
+        }
+
+        #rank-stars {
+            font-size: 3rem;
+            color: var(--warm-gold);
+            letter-spacing: 0.5rem;
+            margin-bottom: 0.5rem;
+            animation: starsReveal 1s ease;
+        }
+
+        @keyframes starsReveal {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        #rank-title {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--lightest);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .results-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        /* ==========================================
+           RESPONSIVE ADJUSTMENTS
+           ========================================== */
+        @media (max-width: 1024px) {
+            #evidence-locations {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .modal-content {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (min-width: 1920px) {
+            .intro-container {
+                max-width: 800px;
+            }
+
+            #evidence-locations {
+                max-width: 1100px;
+                gap: 2rem;
+            }
+
+            .evidence-btn {
+                padding: 2rem 1.5rem;
+                min-width: 200px;
+            }
+
+            .evidence-icon {
+                font-size: 3rem;
+            }
+        }
+
+        /* ==========================================
+           SCROLLBAR STYLING
+           ========================================== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--darkest);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--medium-dark);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--medium-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- ==========================================
+         INTRO SCREEN
+         ========================================== -->
+    <div id="intro-screen" class="screen">
+        <div class="intro-container">
+            <img src="https://raw.githubusercontent.com/megtomazela-create/DfMDfADfO-Training/main/00_images/Logo_White_Nobackground.png" alt="The Nuclear House" class="intro-logo">
+            <h1>SITE DAY ZERO</h1>
+            <h2>The Investigation</h2>
+
+            <div class="intro-narrative">
+                <p>It's 06:47 on a grey November morning.</p>
+                <p>The first major reactor coolant system module — 85 tonnes, manufactured 200 miles away — has just been craned into position.</p>
+                <p>The rigging crew steps back. The fit-up team moves in.</p>
+                <p>Then the call comes over the radio:</p>
+                <p class="radio-call">"STOP. HOLD ALL WORK. We have a problem."</p>
+                <p>The module's mating flange is <strong>15mm out of alignment</strong>. The bolt holes don't line up. The seals can't seat.</p>
+                <p><strong>The clock starts now.</strong></p>
+            </div>
+
+            <button id="start-btn" class="btn-primary btn-large">Begin Investigation</button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         GAME SCREEN
+         ========================================== -->
+    <div id="game-screen" class="screen hidden">
+        <!-- Game Header -->
+        <div class="game-header">
+            <img src="https://raw.githubusercontent.com/megtomazela-create/DfMDfADfO-Training/main/00_images/Logo_White_Nobackground.png" alt="The Nuclear House" class="game-logo">
+
+            <!-- Money Counter -->
+            <div id="money-counter">
+                <div class="counter-header">PROJECT DELAY COST</div>
+                <div class="counter-total">£<span id="total-cost">0</span></div>
+                <div class="counter-breakdown">
+                    <div class="cost-line">
+                        <span class="cost-label">Crane standing time</span>
+                        <span class="cost-rate">£2,400/hr</span>
+                    </div>
+                    <div class="cost-line">
+                        <span class="cost-label">Rigging crew (8)</span>
+                        <span class="cost-rate">£640/hr</span>
+                    </div>
+                    <div class="cost-line">
+                        <span class="cost-label">Fit-up team (6)</span>
+                        <span class="cost-rate">£480/hr</span>
+                    </div>
+                    <div class="cost-line">
+                        <span class="cost-label">Concrete crew idle</span>
+                        <span class="cost-rate">£1,200/hr</span>
+                    </div>
+                    <div class="cost-line">
+                        <span class="cost-label">Supervision/QA</span>
+                        <span class="cost-rate">£320/hr</span>
+                    </div>
+                    <div class="cost-line">
+                        <span class="cost-label">Schedule knock-on</span>
+                        <span class="cost-rate">£15,000/hr</span>
+                    </div>
+                    <div class="cost-line total-line">
+                        <span class="cost-label">BURN RATE</span>
+                        <span class="cost-rate">£5.50/sec</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Scene Area -->
+        <div class="game-main">
+            <div class="scene-area">
+                <div class="scene-overlay"></div>
+
+                <!-- Evidence Location Buttons -->
+                <div id="evidence-locations">
+                    <button class="evidence-btn" data-location="module">
+                        <span class="evidence-icon">📋</span>
+                        <span class="evidence-label">The Module</span>
+                    </button>
+                    <button class="evidence-btn" data-location="transport">
+                        <span class="evidence-icon">🚚</span>
+                        <span class="evidence-label">Transport Records</span>
+                    </button>
+                    <button class="evidence-btn" data-location="lift">
+                        <span class="evidence-icon">🏗️</span>
+                        <span class="evidence-label">Lift Plan</span>
+                    </button>
+                    <button class="evidence-btn" data-location="factory">
+                        <span class="evidence-icon">🏭</span>
+                        <span class="evidence-label">Factory QC</span>
+                    </button>
+                    <button class="evidence-btn" data-location="drawings">
+                        <span class="evidence-icon">📐</span>
+                        <span class="evidence-label">Interface Drawings</span>
+                    </button>
+                    <button class="evidence-btn" data-location="weather">
+                        <span class="evidence-icon">🌧️</span>
+                        <span class="evidence-label">Weather Log</span>
+                    </button>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="phone-btn" class="action-btn phone-btn">
+                        📞 Make Call
+                    </button>
+                    <button id="submit-btn" class="action-btn submit-btn">
+                        🎯 Submit Answer
+                    </button>
+                </div>
+            </div>
+
+            <!-- Evidence Cards Bar -->
+            <div id="evidence-cards-bar">
+                <!-- Evidence cards will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         EVIDENCE MODAL
+         ========================================== -->
+    <div id="evidence-modal" class="modal hidden">
+        <div class="modal-content evidence-viewer">
+            <button class="modal-close">&times;</button>
+            <h2 id="evidence-title">Evidence Title</h2>
+            <div id="evidence-image-container">
+                <img id="evidence-image" src="" alt="Evidence">
+                <!-- Hotspots will be dynamically added here -->
+            </div>
+            <div id="evidence-findings">
+                <p class="findings-hint">Click on highlighted areas to examine evidence.</p>
+            </div>
+            <button id="evidence-done" class="btn-primary">Done Examining</button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         PHONE MODAL
+         ========================================== -->
+    <div id="phone-modal" class="modal hidden">
+        <div class="modal-content phone-interface">
+            <button class="modal-close">&times;</button>
+            <h2>📞 Make a Call</h2>
+            <p class="phone-warning">⚠️ Phone calls take time. The counter keeps running.</p>
+            <div id="phone-contacts">
+                <!-- Populated by JS -->
+            </div>
+            <div id="phone-call-active" class="hidden">
+                <h3 id="call-contact-name">Calling...</h3>
+                <div id="call-timer">0s</div>
+                <div id="call-dialogue"></div>
+                <button id="end-call-btn" class="btn-primary">End Call</button>
+            </div>
+            <button id="close-phone-btn" class="btn-secondary">Cancel</button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         SUBMIT MODAL
+         ========================================== -->
+    <div id="submit-modal" class="modal hidden">
+        <div class="modal-content submit-form">
+            <button class="modal-close">&times;</button>
+            <h2>Root Cause Submission</h2>
+
+            <div class="form-group">
+                <label for="primary-cause">PRIMARY ROOT CAUSE:</label>
+                <select id="primary-cause">
+                    <option value="">— Select primary cause —</option>
+                    <option value="datum">Different datum reference systems in drawings</option>
+                    <option value="transport">Transport damage to module</option>
+                    <option value="lift">Lift operation deviation from plan</option>
+                    <option value="factory">Factory manufacturing defect</option>
+                    <option value="weather">Weather/ground conditions during installation</option>
+                    <option value="lug">Lifting lug failure</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="contributing1">CONTRIBUTING FACTOR 1:</label>
+                <select id="contributing1">
+                    <option value="">— None —</option>
+                    <option value="datum">Different datum reference systems</option>
+                    <option value="transport">Transport load shift</option>
+                    <option value="lift">Lift operation deviation</option>
+                    <option value="factory">Factory QC issue</option>
+                    <option value="weather">Weather/ground conditions</option>
+                    <option value="lug">Lifting lug condition</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="contributing2">CONTRIBUTING FACTOR 2:</label>
+                <select id="contributing2">
+                    <option value="">— None —</option>
+                    <option value="datum">Different datum reference systems</option>
+                    <option value="transport">Transport load shift</option>
+                    <option value="lift">Lift operation deviation</option>
+                    <option value="factory">Factory QC issue</option>
+                    <option value="weather">Weather/ground conditions</option>
+                    <option value="lug">Lifting lug condition</option>
+                </select>
+            </div>
+
+            <div class="current-cost-display">
+                CURRENT DELAY COST: £<span id="submit-current-cost">0</span>
+            </div>
+
+            <div class="submit-warning">
+                ⚠️ WARNING: Incorrect primary cause adds £500,000 penalty
+            </div>
+
+            <div class="submit-buttons">
+                <button id="confirm-submit-btn" class="btn-danger">SUBMIT — STOP THE CLOCK</button>
+                <button id="cancel-submit-btn" class="btn-secondary">Continue Investigating</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         FIX MODAL
+         ========================================== -->
+    <div id="fix-modal" class="modal hidden">
+        <div class="modal-content fix-form">
+            <h2>Recommended Corrective Action</h2>
+            <p>Based on your root cause finding, recommend the fix:</p>
+
+            <div class="fix-options">
+                <label class="fix-option">
+                    <input type="radio" name="fix" value="remachine">
+                    <div class="fix-details">
+                        <strong>A) Re-machine the module flange</strong>
+                        <span>Cost: £180,000 | Time: 2 weeks</span>
+                    </div>
+                </label>
+
+                <label class="fix-option">
+                    <input type="radio" name="fix" value="repour">
+                    <div class="fix-details">
+                        <strong>B) Re-pour the foundation interface</strong>
+                        <span>Cost: £340,000 | Time: 4 weeks</span>
+                    </div>
+                </label>
+
+                <label class="fix-option">
+                    <input type="radio" name="fix" value="shim">
+                    <div class="fix-details">
+                        <strong>C) Use shimming and adapter plate</strong>
+                        <span>Cost: £45,000 | Time: 3 days</span>
+                    </div>
+                </label>
+
+                <label class="fix-option">
+                    <input type="radio" name="fix" value="redraw">
+                    <div class="fix-details">
+                        <strong>D) New drawings with unified datum, modify foundation</strong>
+                        <span>Cost: £220,000 | Time: 3 weeks</span>
+                    </div>
+                </label>
+            </div>
+
+            <button id="confirm-fix-btn" class="btn-primary">Confirm Recommendation</button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         RESULTS SCREEN
+         ========================================== -->
+    <div id="results-screen" class="screen hidden">
+        <div class="results-container">
+            <h1>YOUR INVESTIGATION RESULTS</h1>
+
+            <div id="epilogue-section">
+                <!-- Epilogue narrative inserted by JS -->
+            </div>
+
+            <div class="score-breakdown">
+                <div class="score-line">
+                    <span>Investigation time:</span>
+                    <span id="result-time">0m 0s</span>
+                </div>
+                <div class="score-line">
+                    <span>Base delay cost:</span>
+                    <span id="result-time-cost">£0</span>
+                </div>
+                <div class="score-line">
+                    <span>Root cause accuracy:</span>
+                    <span id="result-accuracy">—</span>
+                </div>
+                <div class="score-line">
+                    <span>Accuracy penalty:</span>
+                    <span id="result-accuracy-penalty">£0</span>
+                </div>
+                <div class="score-line">
+                    <span>Evidence efficiency:</span>
+                    <span id="result-efficiency">— locations</span>
+                </div>
+                <div class="score-line">
+                    <span>Efficiency bonus:</span>
+                    <span id="result-efficiency-bonus">-£0</span>
+                </div>
+                <div class="score-line">
+                    <span>Fix recommendation:</span>
+                    <span id="result-fix">—</span>
+                </div>
+                <div class="score-line">
+                    <span>Fix penalty:</span>
+                    <span id="result-fix-penalty">£0</span>
+                </div>
+                <div class="score-line total">
+                    <span>TOTAL PROJECT IMPACT:</span>
+                    <span id="result-total">£0</span>
+                </div>
+            </div>
+
+            <div class="benchmark">
+                <span>Industry benchmark (expert):</span>
+                <span>£40,000</span>
+            </div>
+
+            <div id="rank-display">
+                <div id="rank-stars">★★★★★</div>
+                <div id="rank-title">EXPERT INVESTIGATOR</div>
+            </div>
+
+            <div class="results-buttons">
+                <button id="try-again-btn" class="btn-primary">Try Again</button>
+                <button id="return-btn" class="btn-secondary">Return to Course</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript will be added in subsequent phases -->
+    <script>
+        // Phase 1 complete - Static HTML and CSS only
+        // JavaScript functionality will be added in Phases 2-7
+        console.log('Site Day Zero - Phase 1: Structure and Styling Complete');
+    </script>
+</body>
+</html>
