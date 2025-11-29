@@ -197,14 +197,12 @@
 
         /* Hero Section */
         .hero {
-            min-height: 100vh;
+            min-height: calc(100vh - 60px);
             position: relative;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 6rem 2rem 4rem;
+            padding: 2rem 2rem 4rem;
             overflow: hidden;
         }
 
@@ -218,58 +216,89 @@
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, 
-                rgba(26, 35, 41, 0.85) 0%, 
-                rgba(26, 35, 41, 0.9) 50%,
-                rgba(26, 35, 41, 0.95) 100%);
+            background: linear-gradient(135deg,
+                rgba(31, 41, 55, 0.92) 0%,
+                rgba(31, 41, 55, 0.85) 50%,
+                rgba(31, 41, 55, 0.95) 100%);
             z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         .hero-badge {
             display: inline-block;
-            padding: 0.5rem 1.5rem;
+            padding: 0.4rem 1rem;
+            background: rgba(184, 134, 11, 0.15);
             border: 1px solid var(--warm-gold);
             color: var(--warm-gold);
             font-family: 'Rajdhani', sans-serif;
             font-weight: 600;
-            font-size: 0.9rem;
-            letter-spacing: 3px;
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-        }
-
-        .hero-module {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.2rem;
-            color: var(--text-muted);
+            font-size: 0.85rem;
             letter-spacing: 2px;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
 
         .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-size: clamp(2.5rem, 5vw, 4rem);
             font-weight: 700;
             margin-bottom: 1.5rem;
+            line-height: 1.1;
         }
 
         .hero h1 .gold {
             color: var(--warm-gold);
         }
 
-        .hero-subtitle {
+        .hero-intro {
+            font-size: 1.15rem;
+            color: var(--light);
+            margin-bottom: 2rem;
+            max-width: 750px;
+        }
+
+        .hero-points {
+            display: grid;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            color: var(--light);
+        }
+
+        .hero-point-icon {
+            color: var(--warm-gold);
             font-size: 1.2rem;
-            max-width: 700px;
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
+            margin-top: 2px;
+        }
+
+        .hero-message {
+            background: var(--medium-dark);
+            border-left: 4px solid var(--warm-gold);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .hero-message p {
+            color: var(--light);
+            font-size: 1.05rem;
+            margin: 0;
         }
 
         .btn-primary {
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 1rem 2.5rem;
+            padding: 1rem 2rem;
             background: var(--warm-gold);
-            color: var(--uranium-darker);
+            color: var(--darkest);
             font-family: 'Rajdhani', sans-serif;
             font-weight: 600;
             font-size: 1.1rem;
@@ -286,40 +315,88 @@
             box-shadow: 0 8px 30px var(--gold-glow);
         }
 
-        .scroll-indicator {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
+        /* Chapter-based Navigation */
+        body {
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .chapter {
+            display: none;
+            height: 100vh;
+            overflow-y: auto;
+            padding-top: 60px;
+        }
+
+        .chapter.active {
+            display: block;
+        }
+
+        .chapter-nav {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 1rem;
+        }
+
+        .chapter-nav-btn {
+            display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: transparent;
+            border: 2px solid var(--warm-gold);
+            color: var(--warm-gold);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .chapter-nav-btn:hover {
+            background: var(--warm-gold);
+            color: var(--darkest);
+        }
+
+        .chapter-nav-btn.primary {
+            background: var(--warm-gold);
+            color: var(--darkest);
+        }
+
+        .chapter-nav-btn.primary:hover {
+            background: var(--gold-light);
+        }
+
+        .chapter-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .chapter-nav-btn:disabled:hover {
+            background: transparent;
+            color: var(--warm-gold);
+        }
+
+        .chapter-indicator {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
             color: var(--text-muted);
-            font-size: 0.8rem;
-            animation: bounce 2s infinite;
-        }
-
-        .scroll-indicator svg {
-            width: 24px;
-            height: 24px;
-            stroke: var(--warm-gold);
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(10px); }
         }
 
         /* Sections */
         .section {
-            padding: 6rem 2rem;
+            padding: 2rem 2rem 4rem;
             position: relative;
             z-index: 1;
         }
 
         .section-container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
@@ -1224,6 +1301,10 @@
         }
 
         @media (max-width: 768px) {
+            .header-title {
+                display: none;
+            }
+
             .section {
                 padding: 4rem 1.5rem;
             }
@@ -1292,24 +1373,42 @@
     <section class="hero" id="hero">
         <div class="hero-bg"></div>
         <div class="hero-overlay"></div>
-        
-        <div class="hero-badge">THE NUCLEAR HOUSE</div>
-        <div class="hero-module">MODULE 4.2</div>
-        <h1>Lift Point <span class="gold">Design</span></h1>
-        <p class="hero-subtitle">Every lift needs a plan. Learn the regulations, understand the consequences, and check lift plans like an Appointed Person.</p>
-        
-        <button class="btn-primary" onclick="scrollToSection('sectionA')">
-            Begin Module
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-        </button>
 
-        <div class="scroll-indicator">
-            <span>Scroll to begin</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 5v14M5 12l7 7 7-7"/>
-            </svg>
+        <div class="hero-content">
+            <div class="hero-badge">MODULE 4.2</div>
+            <h1>Lift Point <span class="gold">Design</span></h1>
+
+            <p class="hero-intro">Every lift needs a plan. Learn the regulations, understand the consequences, and check lift plans like an Appointed Person.</p>
+
+            <div class="hero-points">
+                <div class="hero-point">
+                    <span class="hero-point-icon">▸</span>
+                    <span>Why LOLER 1998 requires every lifting operation to be properly planned</span>
+                </div>
+                <div class="hero-point">
+                    <span class="hero-point-icon">▸</span>
+                    <span>Real cases where lifting failures led to fatalities and prosecution</span>
+                </div>
+                <div class="hero-point">
+                    <span class="hero-point-icon">▸</span>
+                    <span>Your duties as a designer under CDM 2015</span>
+                </div>
+                <div class="hero-point">
+                    <span class="hero-point-icon">▸</span>
+                    <span>Nuclear-specific lifting requirements and single-failure-proof systems</span>
+                </div>
+            </div>
+
+            <div class="hero-message">
+                <p>The regulations exist because the alternative is unacceptable. Every rule in LOLER, every duty in CDM, every requirement in BS 7121 exists because someone was killed when it wasn't followed.</p>
+            </div>
+
+            <button class="btn-primary" onclick="goToSection(1)">
+                Begin Module
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
         </div>
     </section>
 
@@ -1792,26 +1891,88 @@
         let score = 0;
         let answers = [];
 
+        // ==================== CHAPTER NAVIGATION ====================
+        let currentChapter = 0;
+        let chapters = [];
+        const chapterNames = [
+            'Introduction',
+            'Why Every Lift Needs a Plan',
+            'What Goes Wrong',
+            'Designer Duties',
+            'Nuclear Requirements',
+            'Interactive Exercise',
+            'Summary'
+        ];
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            initChapters();
             createParticles();
             loadScenario(0);
         });
 
-        // ==================== SCROLL & NAVIGATION ====================
-        function updateProgress() {
-            const scrollTop = window.scrollY;
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = Math.round((scrollTop / docHeight) * 100);
-            document.getElementById('progressFill').style.width = progress + '%';
-            document.getElementById('progressText').textContent = progress + '%';
+        function initChapters() {
+            const sections = document.querySelectorAll('section');
+            sections.forEach((section, index) => {
+                // Create chapter wrapper
+                const chapter = document.createElement('div');
+                chapter.className = 'chapter' + (index === 0 ? ' active' : '');
+                chapter.id = 'chapter-' + index;
+
+                // Insert chapter wrapper
+                section.parentNode.insertBefore(chapter, section);
+                chapter.appendChild(section);
+
+                // Add navigation buttons (except for hero which has its own button)
+                if (index > 0) {
+                    const nav = document.createElement('div');
+                    nav.className = 'chapter-nav';
+                    nav.innerHTML = `
+                        <button class="chapter-nav-btn" onclick="goToSection(${index - 1})">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 12H5M12 19l-7-7 7-7"/>
+                            </svg>
+                            Previous
+                        </button>
+                        <span class="chapter-indicator">${index + 1} of ${sections.length}</span>
+                        ${index < sections.length - 1 ? `
+                        <button class="chapter-nav-btn primary" onclick="goToSection(${index + 1})">
+                            Next
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                        ` : '<span></span>'}
+                    `;
+                    section.appendChild(nav);
+                }
+
+                chapters.push(chapter);
+            });
+
+            updateProgress();
+            updateActiveNav();
         }
 
-        window.addEventListener('scroll', updateProgress);
+        function goToSection(index) {
+            if (index < 0 || index >= chapters.length) return;
 
-        function scrollToSection(id) {
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            chapters[currentChapter].classList.remove('active');
+            currentChapter = index;
+            chapters[currentChapter].classList.add('active');
+
+            // Scroll to top of chapter
+            chapters[currentChapter].scrollTop = 0;
+
+            updateProgress();
+            updateActiveNav();
             closeMenu();
+        }
+
+        function updateProgress() {
+            const progress = Math.round(((currentChapter + 1) / chapters.length) * 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = progress + '%';
         }
 
         function toggleMenu() {
@@ -1823,26 +1984,25 @@
         }
 
         function updateActiveNav() {
-            const sections = document.querySelectorAll('section');
             const navLinks = document.querySelectorAll('.nav-menu a');
-
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop - 100;
-                if (window.scrollY >= sectionTop) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            navLinks.forEach(link => {
+            navLinks.forEach((link, index) => {
                 link.classList.remove('active');
-                if (link.getAttribute('href') === '#' + current) {
+                if (index === currentChapter) {
                     link.classList.add('active');
                 }
             });
         }
 
-        window.addEventListener('scroll', updateActiveNav);
+        // Update nav menu links to use goToSection
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            navLinks.forEach((link, index) => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    goToSection(index);
+                });
+            });
+        });
 
         // Close menu when clicking outside
         document.addEventListener('click', (e) => {
