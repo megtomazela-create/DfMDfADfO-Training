@@ -1,0 +1,2373 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4.4: Installation Sequence & Access | The Nuclear House</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --uranium-blue: #4A5D6B;
+            --lightest: #F7F8FA;
+            --light: #D1D9E0;
+            --medium-light: #9BABC2;
+            --medium-dark: #354450;
+            --darkest: #1F2937;
+            --warm-gold: #B8860B;
+            --gold-light: #D4A84B;
+            --gold-glow: rgba(184, 134, 11, 0.3);
+            --radioactive-green: #7FFF00;
+            --access-good: #2E7D32;
+            --blocked-warning: #F57C00;
+            --sequence-error: #C62828;
+            --crane-blue: #1565C0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--darkest);
+            background-image: url('https://i.ibb.co/MHNs3qm/IMAGE18.png');
+            background-repeat: repeat;
+            background-size: 400px;
+            background-blend-mode: overlay;
+            color: var(--lightest);
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        /* Fixed Header - Matching 4.3 */
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(31, 41, 55, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            z-index: 1000;
+        }
+
+        .header-logo {
+            height: 35px;
+            opacity: 0.9;
+        }
+
+        .header-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--light);
+        }
+
+        .header-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-track {
+            width: 150px;
+            height: 4px;
+            background: var(--medium-dark);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--warm-gold), var(--gold-light));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--medium-light);
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--light);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Navigation Menu - Matching 4.3 */
+        .nav-menu {
+            position: fixed;
+            top: 60px;
+            right: 0;
+            background: var(--medium-dark);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 999;
+            min-width: 280px;
+        }
+
+        .nav-menu.open {
+            transform: translateX(0);
+        }
+
+        .nav-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--light);
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(184, 134, 11, 0.2);
+            color: var(--warm-gold);
+        }
+
+        .nav-menu a.active {
+            background: var(--warm-gold);
+            color: var(--darkest);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 6rem 2rem 4rem;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('https://i.ibb.co/XZ2QKN0d/IMAGE01.png') center/cover no-repeat;
+            z-index: -2;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, 
+                rgba(31, 41, 55, 0.92) 0%, 
+                rgba(31, 41, 55, 0.85) 50%,
+                rgba(31, 41, 55, 0.95) 100%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(184, 134, 11, 0.15);
+            border: 1px solid var(--warm-gold);
+            color: var(--warm-gold);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero h1 .gold {
+            color: var(--warm-gold);
+        }
+
+        .hero-intro {
+            font-size: 1.15rem;
+            color: var(--light);
+            margin-bottom: 2rem;
+            max-width: 750px;
+        }
+
+        .hero-quote {
+            background: var(--medium-dark);
+            border-left: 4px solid var(--warm-gold);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        .hero-quote p {
+            color: var(--light);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: var(--warm-gold);
+            color: var(--darkest);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--gold-glow);
+        }
+
+        /* Sections */
+        .section {
+            padding: 5rem 2rem;
+            position: relative;
+        }
+
+        .section-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(184, 134, 11, 0.15);
+            border-left: 3px solid var(--warm-gold);
+            color: var(--warm-gold);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+            margin-bottom: 1rem;
+        }
+
+        .section-intro {
+            font-size: 1.1rem;
+            color: var(--light);
+            margin-bottom: 2.5rem;
+            max-width: 800px;
+        }
+
+        /* Content Blocks */
+        .content-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .content-block.reverse {
+            direction: rtl;
+        }
+
+        .content-block.reverse > * {
+            direction: ltr;
+        }
+
+        .content-image {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .content-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .full-image {
+            margin: 2rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .full-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        h3 {
+            color: var(--gold-light);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        p {
+            color: var(--light);
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            margin: 1rem 0 1rem 1.5rem;
+            color: var(--light);
+        }
+
+        ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Key Concept Box */
+        .key-concept {
+            background: var(--medium-dark);
+            border-left: 4px solid var(--warm-gold);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .key-concept h4 {
+            color: var(--warm-gold);
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .key-concept p {
+            margin: 0;
+        }
+
+        /* Definition Box */
+        .definition-box {
+            background: linear-gradient(135deg, rgba(74, 93, 107, 0.3), rgba(74, 93, 107, 0.1));
+            border: 1px solid var(--uranium-blue);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+
+        .definition-box strong {
+            color: var(--gold-light);
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: linear-gradient(135deg, rgba(245, 124, 0, 0.15), rgba(245, 124, 0, 0.05));
+            border-left: 4px solid var(--blocked-warning);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning-box h4 {
+            color: var(--blocked-warning);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Success Box */
+        .success-box {
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.15), rgba(46, 125, 50, 0.05));
+            border-left: 4px solid var(--access-good);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .success-box h4 {
+            color: var(--access-good);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Real Example Box */
+        .real-example {
+            background: var(--medium-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+
+        .real-example h4 {
+            font-family: 'Rajdhani', sans-serif;
+            color: var(--crane-blue);
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .real-example h4::before {
+            content: '📍';
+        }
+
+        /* Design Rule Box */
+        .design-rule {
+            background: linear-gradient(135deg, rgba(184, 134, 11, 0.2), rgba(184, 134, 11, 0.05));
+            border: 2px solid var(--warm-gold);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .design-rule p {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--lightest);
+            margin: 0;
+        }
+
+        /* Critical Question */
+        .critical-question {
+            background: var(--medium-dark);
+            border: 1px solid var(--sequence-error);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .critical-question::before {
+            content: '?';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--sequence-error);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .critical-question p {
+            font-style: italic;
+            margin: 0;
+        }
+
+        /* Data Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-size: 0.95rem;
+        }
+
+        .data-table th {
+            background: var(--medium-dark);
+            color: var(--warm-gold);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid var(--warm-gold);
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* FME Zone Table */
+        .zone-high { color: var(--sequence-error); font-weight: 600; }
+        .zone-standard { color: var(--blocked-warning); font-weight: 600; }
+        .zone-general { color: var(--access-good); font-weight: 600; }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            margin: 1.5rem 0;
+            padding: 0;
+        }
+
+        .checklist li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: var(--light);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .checklist li::before {
+            content: '☐';
+            position: absolute;
+            left: 0;
+            color: var(--warm-gold);
+            font-size: 1.1rem;
+        }
+
+        /* Two Column Comparison */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        /* Interactive Puzzle Section */
+        .puzzle-container {
+            background: var(--medium-dark);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .puzzle-intro h4 {
+            color: var(--gold-light);
+            margin-bottom: 1rem;
+        }
+
+        .component-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .component-item {
+            background: var(--darkest);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--light);
+        }
+
+        .puzzle-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .drag-zone {
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px dashed var(--medium-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            min-height: 350px;
+        }
+
+        .drag-zone h5 {
+            color: var(--medium-light);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .draggable-item {
+            background: var(--uranium-blue);
+            border: 1px solid var(--medium-light);
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            border-radius: 6px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .draggable-item:hover {
+            background: var(--medium-dark);
+            border-color: var(--warm-gold);
+            transform: translateX(4px);
+        }
+
+        .draggable-item:active {
+            cursor: grabbing;
+        }
+
+        .draggable-item .drag-handle {
+            color: var(--medium-light);
+            font-size: 1.2rem;
+        }
+
+        .draggable-item .item-name {
+            flex: 1;
+            color: var(--lightest);
+        }
+
+        .drop-slot {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed var(--medium-dark);
+            padding: 1rem 1.25rem;
+            border-radius: 6px;
+            min-height: 56px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .drop-slot.drag-over {
+            border-color: var(--warm-gold);
+            background: rgba(184, 134, 11, 0.1);
+        }
+
+        .drop-slot.filled {
+            border-style: solid;
+            border-color: var(--medium-light);
+            background: var(--uranium-blue);
+        }
+
+        .drop-slot.correct {
+            border-color: var(--access-good);
+            background: rgba(46, 125, 50, 0.2);
+        }
+
+        .drop-slot.incorrect {
+            border-color: var(--sequence-error);
+            background: rgba(198, 40, 40, 0.2);
+        }
+
+        .drop-slot.warning {
+            border-color: var(--blocked-warning);
+            background: rgba(245, 124, 0, 0.2);
+        }
+
+        .slot-number {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--warm-gold);
+            min-width: 30px;
+        }
+
+        .slot-label {
+            color: var(--medium-light);
+            font-size: 0.9rem;
+        }
+
+        .slot-content {
+            flex: 1;
+            color: var(--lightest);
+        }
+
+        .consequence-panel {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            min-height: 100px;
+        }
+
+        .consequence-panel h5 {
+            color: var(--medium-light);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .consequence-item {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .consequence-item.good {
+            background: rgba(46, 125, 50, 0.15);
+            border-left: 3px solid var(--access-good);
+        }
+
+        .consequence-item.warning {
+            background: rgba(245, 124, 0, 0.15);
+            border-left: 3px solid var(--blocked-warning);
+        }
+
+        .consequence-item.error {
+            background: rgba(198, 40, 40, 0.15);
+            border-left: 3px solid var(--sequence-error);
+        }
+
+        .puzzle-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            color: var(--warm-gold);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 2px solid var(--warm-gold);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--warm-gold);
+            color: var(--darkest);
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .puzzle-result {
+            margin-top: 2rem;
+            padding: 2rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .puzzle-result.success {
+            display: block;
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.2), rgba(46, 125, 50, 0.05));
+            border: 1px solid var(--access-good);
+        }
+
+        .puzzle-result.failure {
+            display: block;
+            background: linear-gradient(135deg, rgba(245, 124, 0, 0.2), rgba(245, 124, 0, 0.05));
+            border: 1px solid var(--blocked-warning);
+        }
+
+        .puzzle-result h4 {
+            margin-bottom: 1rem;
+        }
+
+        .puzzle-result.success h4 { color: var(--access-good); }
+        .puzzle-result.failure h4 { color: var(--blocked-warning); }
+
+        .result-image {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .result-checklist {
+            list-style: none;
+            margin: 1rem 0;
+            padding: 0;
+        }
+
+        .result-checklist li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: var(--light);
+        }
+
+        .result-checklist li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--access-good);
+            font-weight: bold;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            background: var(--medium-dark);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .quiz-question.active {
+            display: block;
+        }
+
+        .question-number {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.85rem;
+            color: var(--warm-gold);
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            color: var(--lightest);
+            margin-bottom: 0.5rem;
+        }
+
+        .question-subtext {
+            color: var(--light);
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid var(--medium-dark);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            border-color: var(--medium-light);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .option.selected {
+            border-color: var(--warm-gold);
+            background: rgba(184, 134, 11, 0.1);
+        }
+
+        .option.correct {
+            border-color: var(--access-good);
+            background: rgba(46, 125, 50, 0.15);
+        }
+
+        .option.incorrect {
+            border-color: var(--sequence-error);
+            background: rgba(198, 40, 40, 0.15);
+        }
+
+        .option input { display: none; }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--medium-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-radio {
+            border-color: var(--warm-gold);
+            background: var(--warm-gold);
+        }
+
+        .option.selected .option-radio::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--darkest);
+            border-radius: 50%;
+        }
+
+        .option.correct .option-radio {
+            border-color: var(--access-good);
+            background: var(--access-good);
+        }
+
+        .option.correct .option-radio::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .option.incorrect .option-radio {
+            border-color: var(--sequence-error);
+            background: var(--sequence-error);
+        }
+
+        .option.incorrect .option-radio::after {
+            content: '✗';
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .option-text {
+            color: var(--light);
+            flex: 1;
+        }
+
+        .question-feedback {
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .question-feedback.visible {
+            display: block;
+        }
+
+        .question-feedback.correct {
+            background: rgba(46, 125, 50, 0.15);
+            border-left: 4px solid var(--access-good);
+        }
+
+        .question-feedback.incorrect {
+            background: rgba(198, 40, 40, 0.15);
+            border-left: 4px solid var(--sequence-error);
+        }
+
+        .quiz-results {
+            display: none;
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--medium-dark);
+            border-radius: 12px;
+        }
+
+        .quiz-results.visible {
+            display: block;
+        }
+
+        .results-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1.5rem;
+            color: white;
+        }
+
+        .results-score {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .results-message {
+            color: var(--light);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Summary Takeaways */
+        .takeaways-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .takeaway-card {
+            background: var(--medium-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .takeaway-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--warm-gold);
+            color: var(--darkest);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+        }
+
+        .takeaway-card h4 {
+            color: var(--gold-light);
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .takeaway-card p {
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .final-message {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(184, 134, 11, 0.2), rgba(184, 134, 11, 0.05));
+            border: 2px solid var(--warm-gold);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .final-message p {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--lightest);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .module-complete {
+            text-align: center;
+            padding: 3rem;
+            margin-top: 3rem;
+        }
+
+        .complete-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--access-good);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 0 40px rgba(46, 125, 50, 0.4);
+        }
+
+        .module-complete h3 {
+            font-size: 1.75rem;
+            color: var(--lightest);
+            margin-bottom: 0.5rem;
+        }
+
+        .module-complete p {
+            color: var(--medium-light);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--medium-dark);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-logo {
+            height: 30px;
+            opacity: 0.7;
+            margin-bottom: 1rem;
+        }
+
+        .footer-module {
+            color: var(--medium-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-copyright {
+            color: var(--medium-light);
+            font-size: 0.8rem;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-block {
+                grid-template-columns: 1fr;
+            }
+
+            .content-block.reverse {
+                direction: ltr;
+            }
+
+            .puzzle-area {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 4rem 1.5rem;
+            }
+
+            .fixed-header {
+                padding: 0 1rem;
+            }
+
+            .header-title {
+                display: none;
+            }
+
+            .progress-track {
+                width: 100px;
+            }
+
+            .data-table {
+                font-size: 0.85rem;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .takeaways-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Header -->
+    <header class="fixed-header">
+        <img src="https://i.ibb.co/7tbxnN83/Logo-white.png" alt="The Nuclear House" class="header-logo">
+        <span class="header-title">Module 4.4: Installation Sequence & Access</span>
+        <div class="header-progress">
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="progress-text" id="progressText">0%</span>
+            <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18M3 6h18M3 18h18"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-menu" id="navMenu">
+        <a href="#hero" class="active">Introduction</a>
+        <a href="#section1">The Sequence Trap</a>
+        <a href="#section2">Open-Top Construction</a>
+        <a href="#section3">The Access Problem</a>
+        <a href="#section4">Foreign Material Exclusion</a>
+        <a href="#section5">Interactive Exercise</a>
+        <a href="#section6">Crane & Laydown</a>
+        <a href="#section7">BIM & 4D Clash Detection</a>
+        <a href="#section8">Knowledge Check</a>
+        <a href="#section9">Summary</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        
+        <div class="hero-content">
+            <div class="hero-badge">MODULE 4.4</div>
+            <h1>Installation Sequence <span class="gold">& Access</span></h1>
+            
+            <p class="hero-intro">Installation order is a DESIGN decision, not just a construction problem. Learn how the sequence you define determines access for the next 60 years.</p>
+            
+            <div class="hero-quote">
+                <p>"Every component you install changes what can be installed next — and what can ever be accessed again."</p>
+            </div>
+
+            <button class="btn-primary" onclick="scrollToSection('section1')">
+                Begin Module
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- Section 1: The Sequence Trap -->
+    <section class="section" id="section1">
+        <div class="section-container">
+            <div class="section-tag">SECTION 1</div>
+            <h2 class="section-title">The Sequence Trap</h2>
+            
+            <div class="content-block fade-in">
+                <div>
+                    <p>When a designer draws a piping arrangement, they're not just defining where pipes go. They're defining:</p>
+                    <ul>
+                        <li>What must be installed first</li>
+                        <li>What becomes inaccessible once earlier items are in place</li>
+                        <li>Whether maintenance crews can ever reach critical components</li>
+                        <li>Whether equipment can ever be replaced without demolishing surrounding structure</li>
+                    </ul>
+                </div>
+                <div class="content-image">
+                    <img src="https://i.ibb.co/XZ2QKN0d/IMAGE01.png" alt="Open-top construction showing installation sequence">
+                </div>
+            </div>
+
+            <div class="warning-box fade-in">
+                <h4>The Sequence Trap</h4>
+                <p>Designers often focus on the "final state" — how the plant looks when complete. But the plant must be BUILT to reach that state, and it must be MAINTAINED for 60+ years afterwards. Both require ACCESS.</p>
+            </div>
+
+            <div class="content-block reverse fade-in">
+                <div>
+                    <p>Installation sequence isn't just a construction problem to be solved later. It's a <strong>DESIGN decision</strong> that you're making — consciously or unconsciously — every time you position a component.</p>
+                </div>
+                <div class="content-image">
+                    <img src="https://i.ibb.co/mFHnx9dp/IMAGE02.png" alt="Blocked access scenario">
+                </div>
+            </div>
+
+            <div class="key-concept fade-in">
+                <h4>Key Message</h4>
+                <p>The component you position today may block access to the component behind it — forever.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Open-Top Construction -->
+    <section class="section" id="section2">
+        <div class="section-container">
+            <div class="section-tag">SECTION 2</div>
+            <h2 class="section-title">Open-Top Construction</h2>
+            <p class="section-intro">Why sequence matters most during the narrow window when major equipment can still be installed.</p>
+
+            <div class="definition-box fade-in">
+                <p><strong>Open-top construction</strong> means installing large equipment while the reactor building is still open, using very heavy lift (VHL) cranes. Once the dome is placed and sealed, these components can never be removed or replaced without cutting through the containment structure.</p>
+            </div>
+
+            <div class="content-block fade-in">
+                <div class="content-image">
+                    <img src="https://i.ibb.co/7tfRVw1b/IMAGE07.png" alt="VHL crane Big Carl">
+                </div>
+                <div>
+                    <div class="real-example">
+                        <h4>Kudankulam Unit 4 (2025)</h4>
+                        <p>The 317-tonne reactor pressure vessel was lifted to 50 metres height and lowered into the reactor shaft through the open top of the reactor building. This "open top" method saved 5-7 months of construction time compared to installing through temporary openings.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="real-example fade-in">
+                <h4>Akkuyu Unit 1 (Turkey)</h4>
+                <p>The 330-tonne reactor vessel was installed using a Liebherr LR 13000 crawler crane with 3,000-tonne capacity. Before vessel installation:</p>
+                <ul>
+                    <li>Core catcher mounted</li>
+                    <li>Support trusses concreted</li>
+                    <li>Dry shielding installed</li>
+                    <li>Support ring positioned</li>
+                </ul>
+                <p style="margin-top: 1rem; font-style: italic;">Each step had to complete BEFORE the next could begin.</p>
+            </div>
+
+            <h3 class="fade-in">Design Implications</h3>
+
+            <table class="data-table fade-in">
+                <thead>
+                    <tr>
+                        <th>Design Decision</th>
+                        <th>Sequence Consequence</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Steam generator position</td>
+                        <td>Must be installed before surrounding pipework</td>
+                    </tr>
+                    <tr>
+                        <td>Primary pipework routing</td>
+                        <td>Cannot obstruct equipment installation paths</td>
+                    </tr>
+                    <tr>
+                        <td>Platform locations</td>
+                        <td>May need to be installed AFTER major equipment</td>
+                    </tr>
+                    <tr>
+                        <td>Cable tray positions</td>
+                        <td>Must allow crane access during installation</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="full-image fade-in">
+                <img src="https://i.ibb.co/1t5zmTqf/IMAGE13.png" alt="Reactor vessel installation sequence">
+            </div>
+
+            <div class="critical-question fade-in">
+                <p>If the roof were already closed, could this component still be installed? If not, it's on the critical installation sequence.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: The Access Problem -->
+    <section class="section" id="section3">
+        <div class="section-container">
+            <div class="section-tag">SECTION 3</div>
+            <h2 class="section-title">The Access Problem</h2>
+            <p class="section-intro">First in, never out — understanding equipment removal paths and maintenance access.</p>
+
+            <h3 class="fade-in">3.1 Equipment Removal Paths</h3>
+
+            <div class="key-concept fade-in">
+                <h4>Key Principle</h4>
+                <p>Every piece of equipment will eventually need maintenance, repair, or replacement. If there's no path to remove it, you've designed a problem.</p>
+            </div>
+
+            <div class="content-block fade-in">
+                <div>
+                    <div class="real-example">
+                        <h4>From AP1000 Design Philosophy</h4>
+                        <p>"Reactor layout ensures adequate access for inspection and maintenance. Laydown space provides for staging of equipment and personnel, equipment removal paths, and space to accommodate remotely operated service equipment."</p>
+                    </div>
+                </div>
+                <div class="content-image">
+                    <img src="https://i.ibb.co/6J7F6W0m/IMAGE03.png" alt="Equipment removal path">
+                </div>
+            </div>
+
+            <h4 class="fade-in">The Removal Path Checklist</h4>
+            <ul class="checklist fade-in">
+                <li>Can the component be disconnected without disassembling adjacent systems?</li>
+                <li>Is there physical clearance to lift/move the component?</li>
+                <li>Is there a clear route from the component to an exit point?</li>
+                <li>Can overhead cranes, monorails, or mobile equipment reach it?</li>
+                <li>Are doors/hatches large enough for the component to pass through?</li>
+            </ul>
+
+            <h3 class="fade-in">3.2 Heat Exchanger Tube Pull</h3>
+
+            <div class="content-block reverse fade-in">
+                <div>
+                    <p>Heat exchangers need space IN FRONT to withdraw the bundle for cleaning or replacement. This isn't optional — it's physics.</p>
+                    
+                    <div class="warning-box">
+                        <h4>Common Mistake</h4>
+                        <p>Placing equipment in the tube pull zone because "it fits in the final layout" — forgetting that maintenance requires MOVEMENT, not just POSITION.</p>
+                    </div>
+                </div>
+                <div class="content-image">
+                    <img src="https://i.ibb.co/0VMcLGrz/IMAGE17.png" alt="Tube bundle pull space">
+                </div>
+            </div>
+
+            <div class="design-rule fade-in">
+                <p>Tube bundle pull distance = tube length + 900mm minimum</p>
+            </div>
+
+            <h3 class="fade-in">3.3 Valve Access Envelopes</h3>
+
+            <div class="content-block fade-in">
+                <div class="content-image">
+                    <img src="https://i.ibb.co/mr8hDs07/IMAGE14.png" alt="Valve access envelope">
+                </div>
+                <div>
+                    <p>Every valve needs:</p>
+                    <ul>
+                        <li><strong>Operating clearance</strong> — space for handwheel rotation</li>
+                        <li><strong>Maintenance clearance</strong> — space to remove bonnet, replace packing</li>
+                        <li><strong>Body clearance</strong> — space for inspection and repair</li>
+                    </ul>
+                    
+                    <div class="content-image" style="margin-top: 1.5rem;">
+                        <img src="https://i.ibb.co/hJ4D9GYM/IMAGE04.png" alt="Maintenance access platforms">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Foreign Material Exclusion -->
+    <section class="section" id="section4">
+        <div class="section-container">
+            <div class="section-tag">SECTION 4</div>
+            <h2 class="section-title">Foreign Material Exclusion (FME)</h2>
+            <p class="section-intro">Why sequence protects quality — and why you cannot verify cleanliness if you cannot see inside.</p>
+
+            <div class="definition-box fade-in">
+                <p><strong>Foreign Material Exclusion (FME)</strong> is the process of preventing debris, tools, loose parts, and contaminants from entering systems during construction and maintenance.</p>
+            </div>
+
+            <div class="content-block fade-in">
+                <div>
+                    <h3>Why it matters for sequence</h3>
+                    <p>Once a system is closed, any foreign material inside becomes:</p>
+                    <ul>
+                        <li>A potential blockage</li>
+                        <li>A source of wear and damage</li>
+                        <li>A contamination risk</li>
+                        <li>Extremely expensive to retrieve</li>
+                    </ul>
+                </div>
+                <div class="content-image">
+                    <img src="https://i.ibb.co/67rMZ9wZ/IMAGE05.png" alt="FME zone">
+                </div>
+            </div>
+
+            <h3 class="fade-in">FME Zone Categories</h3>
+
+            <table class="data-table fade-in">
+                <thead>
+                    <tr>
+                        <th>Zone</th>
+                        <th>Controls Required</th>
+                        <th>When Used</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="zone-high">Zone 1 (High Risk)</td>
+                        <td>Material accountability log, barrier inspection, closeout verification</td>
+                        <td>Open reactor cavity, spent fuel pool, non-retrievable areas</td>
+                    </tr>
+                    <tr>
+                        <td class="zone-standard">Standard FMEA</td>
+                        <td>Boundary posting, tool control, inspection before closure</td>
+                        <td>Open piping, vessel internals</td>
+                    </tr>
+                    <tr>
+                        <td class="zone-general">Good Housekeeping</td>
+                        <td>General cleanliness, basic tool control</td>
+                        <td>General construction areas</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="fade-in">Design for FME Access</h3>
+
+            <div class="critical-question fade-in">
+                <p>Can inspectors access all internal surfaces for closeout inspection before the system is sealed?</p>
+            </div>
+
+            <div class="comparison-grid fade-in">
+                <div class="content-image">
+                    <img src="https://i.ibb.co/xxp0SfX/IMAGE09.png" alt="Congested pipe routing - bad example">
+                </div>
+                <div class="content-image">
+                    <img src="https://i.ibb.co/wZxXqXZD/IMAGE10.png" alt="Well-planned routing - good example">
+                </div>
+            </div>
+
+            <div class="comparison-grid fade-in">
+                <div class="warning-box" style="margin: 0;">
+                    <h4>Bad Design</h4>
+                    <p>Pipe installed, then vessel installed over connection — connection cannot be inspected before closure.</p>
+                </div>
+                <div class="success-box" style="margin: 0;">
+                    <h4>Good Design</h4>
+                    <p>Installation sequence allows each connection to be inspected before the next component blocks access.</p>
+                </div>
+            </div>
+
+            <div class="key-concept fade-in">
+                <h4>Key Message</h4>
+                <p>Every time you close a system, you're betting that no foreign material got in. FME-conscious sequencing reduces that bet.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Interactive Exercise - The Sequence Puzzle -->
+    <section class="section" id="section5">
+        <div class="section-container">
+            <div class="section-tag">SECTION 5 — INTERACTIVE</div>
+            <h2 class="section-title">The Sequence Puzzle</h2>
+            <p class="section-intro">Put your knowledge to the test. Arrange the components in the correct installation order.</p>
+
+            <div class="puzzle-container">
+                <div class="puzzle-intro">
+                    <h4>Scenario</h4>
+                    <p>You are designing the installation sequence for a coolant pump module. The module contains:</p>
+                    <div class="component-list">
+                        <div class="component-item">1 × Main pump (2 tonnes, requires crane)</div>
+                        <div class="component-item">4 × Isolation valves</div>
+                        <div class="component-item">2 × Heat exchangers</div>
+                        <div class="component-item">1 × Pipe rack (structural)</div>
+                        <div class="component-item">Associated pipework</div>
+                    </div>
+                    <p style="margin-top: 1rem;"><strong>Your Task:</strong> Drag the components into the correct installation order (1 = first, 5 = last).</p>
+                </div>
+
+                <div class="puzzle-area">
+                    <div class="drag-zone" id="componentPool">
+                        <h5>Components to Install</h5>
+                        <div class="draggable-item" draggable="true" data-component="pipework">
+                            <span class="drag-handle">⋮⋮</span>
+                            <span class="item-name">Final Pipework Connections</span>
+                        </div>
+                        <div class="draggable-item" draggable="true" data-component="pump">
+                            <span class="drag-handle">⋮⋮</span>
+                            <span class="item-name">Main Pump</span>
+                        </div>
+                        <div class="draggable-item" draggable="true" data-component="valves">
+                            <span class="drag-handle">⋮⋮</span>
+                            <span class="item-name">Isolation Valves</span>
+                        </div>
+                        <div class="draggable-item" draggable="true" data-component="rack">
+                            <span class="drag-handle">⋮⋮</span>
+                            <span class="item-name">Pipe Rack</span>
+                        </div>
+                        <div class="draggable-item" draggable="true" data-component="exchangers">
+                            <span class="drag-handle">⋮⋮</span>
+                            <span class="item-name">Heat Exchangers</span>
+                        </div>
+                    </div>
+
+                    <div class="drag-zone">
+                        <h5>Installation Sequence</h5>
+                        <div id="sequenceSlots">
+                            <div class="drop-slot" data-slot="1">
+                                <span class="slot-number">1</span>
+                                <span class="slot-label">Install first</span>
+                                <span class="slot-content"></span>
+                            </div>
+                            <div class="drop-slot" data-slot="2">
+                                <span class="slot-number">2</span>
+                                <span class="slot-label">Install second</span>
+                                <span class="slot-content"></span>
+                            </div>
+                            <div class="drop-slot" data-slot="3">
+                                <span class="slot-number">3</span>
+                                <span class="slot-label">Install third</span>
+                                <span class="slot-content"></span>
+                            </div>
+                            <div class="drop-slot" data-slot="4">
+                                <span class="slot-number">4</span>
+                                <span class="slot-label">Install fourth</span>
+                                <span class="slot-content"></span>
+                            </div>
+                            <div class="drop-slot" data-slot="5">
+                                <span class="slot-number">5</span>
+                                <span class="slot-label">Install last</span>
+                                <span class="slot-content"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="consequence-panel" id="consequencePanel">
+                    <h5>Sequence Analysis</h5>
+                    <div id="consequenceList">
+                        <p style="color: var(--medium-light); font-style: italic;">Place components to see real-time feedback on your sequence decisions.</p>
+                    </div>
+                </div>
+
+                <div class="puzzle-controls">
+                    <button class="btn-secondary" onclick="resetPuzzle()">Reset Puzzle</button>
+                    <button class="btn-secondary" id="checkBtn" onclick="checkSequence()" disabled>Check Sequence</button>
+                    <button class="btn-secondary" id="showAnswerBtn" onclick="showAnswer()" style="display: none;">Show Correct Sequence</button>
+                </div>
+
+                <div class="puzzle-result" id="puzzleResult">
+                    <h4 id="resultTitle"></h4>
+                    <img id="resultImage" class="result-image" src="" alt="Result">
+                    <ul class="result-checklist" id="resultChecklist"></ul>
+                    <p id="resultMessage" style="font-style: italic; margin-top: 1rem;"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: Crane Positioning & Laydown -->
+    <section class="section" id="section6">
+        <div class="section-container">
+            <div class="section-tag">SECTION 6</div>
+            <h2 class="section-title">Crane Positioning & Laydown</h2>
+            <p class="section-intro">The site context that determines what can be reached, and therefore what can be installed.</p>
+
+            <div class="key-concept fade-in">
+                <h4>Key Insight</h4>
+                <p>The crane position determines what can be reached, and therefore what can be installed.</p>
+            </div>
+
+            <div class="content-block fade-in">
+                <div class="content-image">
+                    <img src="https://i.ibb.co/xxp0SfX/IMAGE06.png" alt="Crane positioning diagram">
+                </div>
+                <div>
+                    <h3>The Crane Determines the Sequence</h3>
+                    <div class="real-example">
+                        <h4>From IAEA Construction Technologies</h4>
+                        <p>"Exacting studies and logic sequencing are necessary for planning 'maximum radius' crane locations, 'maximum area' hardstand laydown areas, and 'maximum' heavy haul paths to the VHL crane."</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="fade-in">Design Considerations</h3>
+
+            <div class="content-block reverse fade-in">
+                <div>
+                    <ul>
+                        <li>If your module requires crane installation, the crane must be able to <strong>REACH</strong> it</li>
+                        <li>Other modules in the crane's path must be installed <strong>BEFORE</strong> or <strong>AFTER</strong></li>
+                        <li>Crane setup/teardown takes time — minimise repositioning</li>
+                    </ul>
+                </div>
+                <div class="content-image">
+                    <img src="https://i.ibb.co/7tfRVw1b/IMAGE07.png" alt="VHL crane Big Carl">
+                </div>
+            </div>
+
+            <div class="real-example fade-in">
+                <h4>HPC Example</h4>
+                <p>The 750-tonne polar crane was installed inside the reactor building dome. Its first job: lifting the reactor vessel and steam generators into position. Components arrive on rails through the equipment hatch, then are lifted to final position.</p>
+            </div>
+
+            <h3 class="fade-in">Laydown Area Constraints</h3>
+
+            <div class="content-block fade-in">
+                <div>
+                    <div class="warning-box">
+                        <h4>IAEA Warning</h4>
+                        <p>"If lay-down areas become a premium and are not available, the site construction schedule will be detrimentally affected."</p>
+                    </div>
+
+                    <h4>What Designers Must Consider</h4>
+                    <ul>
+                        <li>Where will modules be stored before installation?</li>
+                        <li>Is there space to rotate/reposition for crane pickup?</li>
+                        <li>Can modules be delivered in required order?</li>
+                        <li>Are laydown areas within crane reach radius?</li>
+                    </ul>
+                </div>
+                <div class="content-image">
+                    <img src="https://i.ibb.co/rff6Vw1r/IMAGE11.png" alt="Laydown area">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: BIM & 4D Clash Detection -->
+    <section class="section" id="section7">
+        <div class="section-container">
+            <div class="section-tag">SECTION 7</div>
+            <h2 class="section-title">BIM & 4D Clash Detection</h2>
+            <p class="section-intro">Modern sequence planning tools that find problems before steel is cut.</p>
+
+            <div class="definition-box fade-in">
+                <p><strong>4D BIM</strong> adds TIME to 3D models — showing not just WHERE components go, but WHEN they're installed and whether that sequence creates conflicts.</p>
+            </div>
+
+            <div class="content-block fade-in">
+                <div class="content-image">
+                    <img src="https://i.ibb.co/zVTtV8L0/IMAGE12.png" alt="BIM clash detection">
+                </div>
+                <div>
+                    <h3>Types of Clashes</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Clash Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Hard Clash</strong></td>
+                                <td>Two components occupy same space (e.g. pipe intersects beam)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Soft Clash</strong></td>
+                                <td>Insufficient clearance (e.g. valve too close to wall)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Workflow Clash (4D)</strong></td>
+                                <td>Sequence creates conflict (e.g. equipment scheduled after access blocked)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <h3 class="fade-in">The Cost of Late Discovery</h3>
+
+            <div class="content-block reverse fade-in">
+                <div>
+                    <div class="design-rule">
+                        <p>BIM coordination can save 10× the investment</p>
+                    </div>
+                    <p>A $200,000 coordination investment translated to over $2.5 million in savings.</p>
+                    
+                    <div class="warning-box">
+                        <h4>But only if designers USE it</h4>
+                        <p>A perfect 3D model is useless if no one analyses the installation sequence.</p>
+                    </div>
+                </div>
+                <div class="content-image">
+                    <img src="https://i.ibb.co/hJ4D9GYM/IMAGE08.png" alt="Sequence dependency diagram">
+                </div>
+            </div>
+
+            <div class="key-concept fade-in">
+                <h4>Key Message</h4>
+                <p>Every hour spent on 4D sequence analysis during design saves days of rework during construction.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 8: Knowledge Check -->
+    <section class="section" id="section8">
+        <div class="section-container">
+            <div class="section-tag">SECTION 8</div>
+            <h2 class="section-title">Knowledge Check</h2>
+            <p class="section-intro">Test your understanding with these scenario-based questions.</p>
+
+            <div class="quiz-container" id="quizContainer">
+                <!-- Question 1 -->
+                <div class="quiz-question active" data-question="1">
+                    <div class="question-number">QUESTION 1 OF 5</div>
+                    <p class="question-text">Your design shows a heat exchanger positioned 600mm from a structural wall. The tube bundle is 4 metres long.</p>
+                    <p class="question-subtext">What is the problem with this design?</p>
+                    
+                    <div class="options">
+                        <label class="option" data-answer="A">
+                            <input type="radio" name="q1" value="A">
+                            <span class="option-radio"></span>
+                            <span class="option-text">A) The structural wall will be damaged by vibration</span>
+                        </label>
+                        <label class="option" data-answer="B">
+                            <input type="radio" name="q1" value="B">
+                            <span class="option-radio"></span>
+                            <span class="option-text">B) There is no problem</span>
+                        </label>
+                        <label class="option" data-answer="C">
+                            <input type="radio" name="q1" value="C">
+                            <span class="option-radio"></span>
+                            <span class="option-text">C) There is insufficient tube bundle pull space</span>
+                        </label>
+                        <label class="option" data-answer="D">
+                            <input type="radio" name="q1" value="D">
+                            <span class="option-radio"></span>
+                            <span class="option-text">D) The heat exchanger will overheat</span>
+                        </label>
+                    </div>
+
+                    <button class="btn-primary" onclick="checkAnswer(1, 'C')">Submit Answer</button>
+                    <div class="question-feedback" id="feedback1"></div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="quiz-question" data-question="2">
+                    <div class="question-number">QUESTION 2 OF 5</div>
+                    <p class="question-text">At Kudankulam Unit 4, the reactor pressure vessel was installed using the "open top" method. What does this require?</p>
+                    
+                    <div class="options">
+                        <label class="option" data-answer="A">
+                            <input type="radio" name="q2" value="A">
+                            <span class="option-radio"></span>
+                            <span class="option-text">A) Temporary removal of the containment wall</span>
+                        </label>
+                        <label class="option" data-answer="B">
+                            <input type="radio" name="q2" value="B">
+                            <span class="option-radio"></span>
+                            <span class="option-text">B) A vessel that can be assembled in sections</span>
+                        </label>
+                        <label class="option" data-answer="C">
+                            <input type="radio" name="q2" value="C">
+                            <span class="option-radio"></span>
+                            <span class="option-text">C) A smaller reactor vessel that fits through doorways</span>
+                        </label>
+                        <label class="option" data-answer="D">
+                            <input type="radio" name="q2" value="D">
+                            <span class="option-radio"></span>
+                            <span class="option-text">D) Installation before the reactor building dome is placed</span>
+                        </label>
+                    </div>
+
+                    <button class="btn-primary" onclick="checkAnswer(2, 'D')">Submit Answer</button>
+                    <div class="question-feedback" id="feedback2"></div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="quiz-question" data-question="3">
+                    <div class="question-number">QUESTION 3 OF 5</div>
+                    <p class="question-text">A designer positions four isolation valves behind a large pipe run because "they fit" in the final layout. A maintenance engineer objects.</p>
+                    <p class="question-subtext">What is their concern?</p>
+                    
+                    <div class="options">
+                        <label class="option" data-answer="A">
+                            <input type="radio" name="q3" value="A">
+                            <span class="option-radio"></span>
+                            <span class="option-text">A) The valves will corrode faster</span>
+                        </label>
+                        <label class="option" data-answer="B">
+                            <input type="radio" name="q3" value="B">
+                            <span class="option-radio"></span>
+                            <span class="option-text">B) The pipe will vibrate and damage the valves</span>
+                        </label>
+                        <label class="option" data-answer="C">
+                            <input type="radio" name="q3" value="C">
+                            <span class="option-radio"></span>
+                            <span class="option-text">C) The valves will be too hot from the pipe</span>
+                        </label>
+                        <label class="option" data-answer="D">
+                            <input type="radio" name="q3" value="D">
+                            <span class="option-radio"></span>
+                            <span class="option-text">D) The valves cannot be operated or maintained without removing the pipe</span>
+                        </label>
+                    </div>
+
+                    <button class="btn-primary" onclick="checkAnswer(3, 'D')">Submit Answer</button>
+                    <div class="question-feedback" id="feedback3"></div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="quiz-question" data-question="4">
+                    <div class="question-number">QUESTION 4 OF 5</div>
+                    <p class="question-text">During FME-controlled construction, a pipe system is being closed. One weld location is inaccessible for visual inspection.</p>
+                    <p class="question-subtext">What is the correct response?</p>
+                    
+                    <div class="options">
+                        <label class="option" data-answer="A">
+                            <input type="radio" name="q4" value="A">
+                            <span class="option-radio"></span>
+                            <span class="option-text">A) Stop work and re-evaluate the installation sequence</span>
+                        </label>
+                        <label class="option" data-answer="B">
+                            <input type="radio" name="q4" value="B">
+                            <span class="option-radio"></span>
+                            <span class="option-text">B) Proceed and use radiography instead</span>
+                        </label>
+                        <label class="option" data-answer="C">
+                            <input type="radio" name="q4" value="C">
+                            <span class="option-radio"></span>
+                            <span class="option-text">C) Close the system and add a note to records</span>
+                        </label>
+                        <label class="option" data-answer="D">
+                            <input type="radio" name="q4" value="D">
+                            <span class="option-radio"></span>
+                            <span class="option-text">D) Accept the risk — the welder was qualified</span>
+                        </label>
+                    </div>
+
+                    <button class="btn-primary" onclick="checkAnswer(4, 'A')">Submit Answer</button>
+                    <div class="question-feedback" id="feedback4"></div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="quiz-question" data-question="5">
+                    <div class="question-number">QUESTION 5 OF 5</div>
+                    <p class="question-text">A planner schedules pipe rack installation AFTER the main pump module. The pump weighs 2 tonnes and requires crane lifting from above.</p>
+                    <p class="question-subtext">Why is this problematic?</p>
+                    
+                    <div class="options">
+                        <label class="option" data-answer="A">
+                            <input type="radio" name="q5" value="A">
+                            <span class="option-radio"></span>
+                            <span class="option-text">A) The pipe rack installation will damage the pump</span>
+                        </label>
+                        <label class="option" data-answer="B">
+                            <input type="radio" name="q5" value="B">
+                            <span class="option-radio"></span>
+                            <span class="option-text">B) The pump will have no support structure when installed</span>
+                        </label>
+                        <label class="option" data-answer="C">
+                            <input type="radio" name="q5" value="C">
+                            <span class="option-radio"></span>
+                            <span class="option-text">C) There is no problem — either sequence works</span>
+                        </label>
+                        <label class="option" data-answer="D">
+                            <input type="radio" name="q5" value="D">
+                            <span class="option-radio"></span>
+                            <span class="option-text">D) The pipe rack will be too heavy to install after the pump</span>
+                        </label>
+                    </div>
+
+                    <button class="btn-primary" onclick="checkAnswer(5, 'B')">Submit Answer</button>
+                    <div class="question-feedback" id="feedback5"></div>
+                </div>
+            </div>
+
+            <div class="quiz-results" id="quizResults">
+                <div class="results-icon" id="resultsIcon"></div>
+                <h3 class="results-score" id="resultsScore"></h3>
+                <p class="results-message" id="resultsMessage"></p>
+                <button class="btn-secondary" onclick="restartQuiz()">Retake Quiz</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 9: Summary -->
+    <section class="section" id="section9">
+        <div class="section-container">
+            <div class="section-tag">SECTION 9</div>
+            <h2 class="section-title">Summary & Key Takeaways</h2>
+            
+            <p class="section-intro">Installation sequence isn't something that happens TO your design — it's embedded IN your design. Every component position determines what can be installed, when, and whether it can ever be maintained.</p>
+
+            <div class="full-image fade-in">
+                <img src="https://i.ibb.co/XZ2QKN0d/IMAGE01.png" alt="Open-top construction">
+            </div>
+
+            <div class="takeaways-grid">
+                <div class="takeaway-card fade-in">
+                    <div class="takeaway-number">1</div>
+                    <h4>Design for the sequence, not just the endpoint</h4>
+                    <p>The "final state" must be BUILDABLE through a logical installation order. If your design requires installing a large component after smaller components block access, you've designed rework.</p>
+                </div>
+
+                <div class="takeaway-card fade-in">
+                    <div class="takeaway-number">2</div>
+                    <h4>Equipment removal paths are not optional</h4>
+                    <p>Every component will need maintenance or replacement. No path to remove it = 60-year problem.</p>
+                </div>
+
+                <div class="takeaway-card fade-in">
+                    <div class="takeaway-number">3</div>
+                    <h4>Open-top opportunities are finite</h4>
+                    <p>Major components installed through open containment can never be removed without cutting through structure. Plan these as irreversible milestones.</p>
+                </div>
+
+                <div class="takeaway-card fade-in">
+                    <div class="takeaway-number">4</div>
+                    <h4>FME requires inspection access</h4>
+                    <p>You cannot verify cleanliness if you cannot see inside. Sequence must preserve inspection access until closure.</p>
+                </div>
+
+                <div class="takeaway-card fade-in">
+                    <div class="takeaway-number">5</div>
+                    <h4>4D analysis is a design tool</h4>
+                    <p>Sequence conflicts discovered during construction are 10× more expensive than those found during design. Verify sequence BEFORE steel is cut.</p>
+                </div>
+            </div>
+
+            <div class="full-image fade-in">
+                <img src="https://i.ibb.co/dJ7v1Vf4/IMAGE15.png" alt="Success outcome">
+            </div>
+
+            <div class="final-message fade-in">
+                <p>"The installation sequence you design today determines the access that exists tomorrow — and for the next 60 years. Design like the maintenance crew is watching, because they will be."</p>
+            </div>
+
+            <div class="module-complete fade-in">
+                <div class="complete-icon">✓</div>
+                <h3>Module Complete</h3>
+                <p>You have completed Module 4.4: Installation Sequence & Access</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <img src="https://i.ibb.co/7tbxnN83/Logo-white.png" alt="The Nuclear House" class="footer-logo">
+        <div class="footer-module">Module 4.4: Installation Sequence & Access</div>
+        <div class="footer-copyright">© 2025 The Nuclear House. All rights reserved.</div>
+    </footer>
+
+    <script>
+        // Navigation and Progress
+        function updateProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = Math.round((scrollTop / docHeight) * 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = progress + '%';
+        }
+
+        window.addEventListener('scroll', updateProgress);
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            closeMenu();
+        }
+
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('open');
+        }
+
+        function closeMenu() {
+            document.getElementById('navMenu').classList.remove('open');
+        }
+
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNav);
+
+        // Fade in animations
+        function handleFadeIn() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    el.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', handleFadeIn);
+        window.addEventListener('load', handleFadeIn);
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('navMenu');
+            const toggle = document.querySelector('.menu-toggle');
+            if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+                closeMenu();
+            }
+        });
+
+        // ==================== SEQUENCE PUZZLE ====================
+        const correctSequence = ['rack', 'pump', 'exchangers', 'valves', 'pipework'];
+        let currentSequence = [null, null, null, null, null];
+        let puzzleAttempts = 0;
+        let draggedItem = null;
+
+        const consequences = {
+            rack: {
+                1: { status: 'good', message: '✅ Pipe rack installed first — structural support in place for all subsequent installations.' },
+                2: { status: 'error', message: '❌ SEQUENCE ERROR: The pump has no support structure. The pipe rack cannot be installed without moving the pump — REWORK REQUIRED.' },
+                3: { status: 'error', message: '❌ SEQUENCE ERROR: Equipment installed without structural support — major safety and rework issue.' },
+                4: { status: 'error', message: '❌ SEQUENCE ERROR: Pipe rack should be first — it provides structural support for everything else.' },
+                5: { status: 'error', message: '❌ SEQUENCE ERROR: Pipe rack must be installed first as structural support.' }
+            },
+            pump: {
+                1: { status: 'error', message: '❌ SEQUENCE ERROR: Pump cannot be installed without structural support (pipe rack).' },
+                2: { status: 'good', message: '✅ Main pump installed second — crane access is clear, structural support in place.' },
+                3: { status: 'warning', message: '⚠️ WARNING: Pump installation delayed — heat exchangers may obstruct crane positioning.' },
+                4: { status: 'error', message: '❌ SEQUENCE ERROR: Pipework and valves will block crane access to pump location.' },
+                5: { status: 'error', message: '❌ SEQUENCE ERROR: The pipework blocks crane access to the pump location. REWORK REQUIRED.' }
+            },
+            exchangers: {
+                1: { status: 'error', message: '❌ SEQUENCE ERROR: Heat exchangers need structural support from pipe rack first.' },
+                2: { status: 'warning', message: '⚠️ WARNING: Heat exchangers before pump may obstruct crane access.' },
+                3: { status: 'good', message: '✅ Heat exchangers installed third — tube pull space preserved, pump access maintained.' },
+                4: { status: 'warning', message: '⚠️ WARNING: Heat exchangers can be installed, but valves/pipework may reduce tube bundle access.' },
+                5: { status: 'warning', message: '⚠️ WARNING: Heat exchangers installed last — insufficient space for tube bundle removal. In 15 years, major disassembly required.' }
+            },
+            valves: {
+                1: { status: 'error', message: '❌ SEQUENCE ERROR: Valves cannot be installed without structural support and pipework routes.' },
+                2: { status: 'error', message: '❌ SEQUENCE ERROR: Valves should be installed with their associated pipework, after major equipment.' },
+                3: { status: 'warning', message: '⚠️ WARNING: Valves before heat exchangers may constrain access for future maintenance.' },
+                4: { status: 'good', message: '✅ Isolation valves installed fourth — maintenance access preserved, ready for final pipework.' },
+                5: { status: 'warning', message: '⚠️ Valves installed after pipework — may require additional connection work.' }
+            },
+            pipework: {
+                1: { status: 'error', message: '❌ SEQUENCE ERROR: Pipework cannot be first — it connects equipment that isn\'t installed yet.' },
+                2: { status: 'error', message: '❌ SEQUENCE ERROR: The pipework blocks crane access to the pump location. REWORK REQUIRED.' },
+                3: { status: 'error', message: '❌ SEQUENCE ERROR: Final pipework before major equipment blocks installation access.' },
+                4: { status: 'warning', message: '⚠️ WARNING: Pipework before valves may complicate valve installation and testing.' },
+                5: { status: 'good', message: '✅ Final pipework installed last — system can be closed after FME inspection at each stage.' }
+            }
+        };
+
+        const componentNames = {
+            rack: 'Pipe Rack',
+            pump: 'Main Pump',
+            exchangers: 'Heat Exchangers',
+            valves: 'Isolation Valves',
+            pipework: 'Final Pipework'
+        };
+
+        // Drag and drop setup
+        document.querySelectorAll('.draggable-item').forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                draggedItem = e.target.closest('.draggable-item');
+                draggedItem.style.opacity = '0.5';
+            });
+            item.addEventListener('dragend', (e) => {
+                e.target.style.opacity = '1';
+                document.querySelectorAll('.drop-slot').forEach(slot => slot.classList.remove('drag-over'));
+            });
+        });
+
+        document.querySelectorAll('.drop-slot').forEach(slot => {
+            slot.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.currentTarget.classList.add('drag-over');
+            });
+            slot.addEventListener('dragleave', (e) => {
+                e.currentTarget.classList.remove('drag-over');
+            });
+            slot.addEventListener('drop', handleDrop);
+        });
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const slot = e.currentTarget;
+            slot.classList.remove('drag-over');
+            if (!draggedItem) return;
+
+            const component = draggedItem.dataset.component;
+            const slotNum = parseInt(slot.dataset.slot);
+
+            // Return existing component to pool if slot occupied
+            const existingComponent = currentSequence[slotNum - 1];
+            if (existingComponent) {
+                const existingItem = document.querySelector(`.draggable-item[data-component="${existingComponent}"]`);
+                if (existingItem) existingItem.style.display = 'flex';
+            }
+
+            // Check if component already placed elsewhere
+            const existingSlot = currentSequence.indexOf(component);
+            if (existingSlot !== -1) {
+                currentSequence[existingSlot] = null;
+                const oldSlot = document.querySelector(`.drop-slot[data-slot="${existingSlot + 1}"]`);
+                oldSlot.classList.remove('filled', 'correct', 'incorrect', 'warning');
+                oldSlot.querySelector('.slot-content').textContent = '';
+                oldSlot.querySelector('.slot-label').style.display = 'inline';
+            }
+
+            // Place component
+            currentSequence[slotNum - 1] = component;
+            slot.classList.add('filled');
+            slot.querySelector('.slot-content').textContent = componentNames[component];
+            slot.querySelector('.slot-label').style.display = 'none';
+            draggedItem.style.display = 'none';
+
+            updateConsequences();
+
+            if (currentSequence.every(c => c !== null)) {
+                document.getElementById('checkBtn').disabled = false;
+            }
+        }
+
+        function updateConsequences() {
+            const list = document.getElementById('consequenceList');
+            list.innerHTML = '';
+
+            currentSequence.forEach((component, index) => {
+                if (component) {
+                    const slotNum = index + 1;
+                    const consequence = consequences[component][slotNum];
+                    
+                    const div = document.createElement('div');
+                    div.className = `consequence-item ${consequence.status}`;
+                    div.textContent = consequence.message;
+                    list.appendChild(div);
+
+                    const slot = document.querySelector(`.drop-slot[data-slot="${slotNum}"]`);
+                    slot.classList.remove('correct', 'incorrect', 'warning');
+                    slot.classList.add(consequence.status === 'good' ? 'correct' : consequence.status === 'warning' ? 'warning' : 'incorrect');
+                }
+            });
+
+            if (currentSequence.every(c => c === null)) {
+                list.innerHTML = '<p style="color: var(--medium-light); font-style: italic;">Place components to see real-time feedback on your sequence decisions.</p>';
+            }
+        }
+
+        function resetPuzzle() {
+            currentSequence = [null, null, null, null, null];
+            document.querySelectorAll('.drop-slot').forEach(slot => {
+                slot.classList.remove('filled', 'correct', 'incorrect', 'warning');
+                slot.querySelector('.slot-content').textContent = '';
+                slot.querySelector('.slot-label').style.display = 'inline';
+            });
+            document.querySelectorAll('.draggable-item').forEach(item => item.style.display = 'flex');
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('puzzleResult').className = 'puzzle-result';
+            updateConsequences();
+        }
+
+        function checkSequence() {
+            puzzleAttempts++;
+            const isCorrect = currentSequence.every((c, i) => c === correctSequence[i]);
+            const resultDiv = document.getElementById('puzzleResult');
+
+            if (isCorrect) {
+                resultDiv.className = 'puzzle-result success';
+                document.getElementById('resultTitle').textContent = '✅ Excellent — Correct Sequence!';
+                document.getElementById('resultImage').src = 'https://i.ibb.co/dJ7v1Vf4/IMAGE15.png';
+                document.getElementById('resultChecklist').innerHTML = '<li>All components installed successfully</li><li>Maintenance access preserved for all items</li><li>FME closeout inspection possible at each stage</li><li>Equipment removal paths clear</li>';
+                document.getElementById('resultMessage').textContent = "You've designed for both construction AND the 60-year operational life.";
+            } else {
+                resultDiv.className = 'puzzle-result failure';
+                document.getElementById('resultTitle').textContent = '⚠️ Sequence Issues Detected';
+                document.getElementById('resultImage').src = 'https://i.ibb.co/B56X5yhM/IMAGE16.png';
+                let issues = currentSequence.map((c, i) => {
+                    if (c && consequences[c][i + 1].status !== 'good') {
+                        return '<li style="color: var(--blocked-warning);">' + consequences[c][i + 1].message.replace(/^[✅⚠️❌]\s*/, '') + '</li>';
+                    }
+                    return '';
+                }).filter(x => x).join('');
+                document.getElementById('resultChecklist').innerHTML = issues;
+                document.getElementById('resultMessage').textContent = '"The maintenance crews of 2045 will curse the designer of 2025."';
+                if (puzzleAttempts >= 2) document.getElementById('showAnswerBtn').style.display = 'inline-block';
+            }
+        }
+
+        function showAnswer() {
+            resetPuzzle();
+            correctSequence.forEach((component, index) => {
+                const slot = document.querySelector(`.drop-slot[data-slot="${index + 1}"]`);
+                const item = document.querySelector(`.draggable-item[data-component="${component}"]`);
+                currentSequence[index] = component;
+                slot.classList.add('filled', 'correct');
+                slot.querySelector('.slot-content').textContent = componentNames[component];
+                slot.querySelector('.slot-label').style.display = 'none';
+                item.style.display = 'none';
+            });
+            updateConsequences();
+            document.getElementById('checkBtn').disabled = false;
+        }
+
+        // ==================== QUIZ ====================
+        let currentQuestion = 1;
+        let quizScore = 0;
+        let answered = [false, false, false, false, false];
+
+        const quizFeedback = {
+            1: { correct: 'Correct! Tube bundle pull requires tube length + 900mm minimum. A 4m bundle needs 4.9m clearance. The 600mm shown means tubes can never be replaced without removing the wall or relocating the exchanger.', incorrect: 'Not quite. The problem is insufficient tube bundle pull space. Tube bundle pull requires tube length + 900mm minimum — a 4m bundle needs 4.9m clearance, not 600mm.' },
+            2: { correct: 'Correct! Open-top construction means installing major components through the unclosed top using VHL cranes. Once the dome is placed, these components cannot be installed or removed without cutting through containment.', incorrect: 'Not quite. Open-top construction requires installation before the reactor building dome is placed. This allows VHL cranes to lower components through the open top.' },
+            3: { correct: 'Correct! "They fit" is static analysis. Maintenance requires ACCESS — space for people to reach valves, operate handwheels, remove bonnets. If the pipe blocks access, you\'ve created a 60-year problem.', incorrect: 'Not quite. The maintenance engineer\'s concern is that valves cannot be operated or maintained without removing the pipe. "They fit" ignores access requirements.' },
+            4: { correct: 'Correct! FME Zone 1 requirements exist because foreign material in closed systems can cause catastrophic failures. An uninspected closure point is unacceptable. Stop and re-evaluate the sequence.', incorrect: 'Not quite. The correct response is to stop work and re-evaluate the installation sequence. FME requirements are absolute — an uninspected closure point is not acceptable.' },
+            5: { correct: 'Correct! The pipe rack is structural — it provides support and mounting for the pump. Installing the pump first means it has no support. Structural elements must precede the equipment they support.', incorrect: 'Not quite. The problem is the pump will have no support structure when installed. The pipe rack provides structural support and must be installed first.' }
+        };
+
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const question = this.closest('.quiz-question');
+                if (question.classList.contains('answered')) return;
+                question.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                this.querySelector('input').checked = true;
+            });
+        });
+
+        function checkAnswer(qNum, correctAnswer) {
+            if (answered[qNum - 1]) return;
+            const question = document.querySelector(`.quiz-question[data-question="${qNum}"]`);
+            const selected = question.querySelector('.option.selected');
+            if (!selected) { alert('Please select an answer'); return; }
+
+            answered[qNum - 1] = true;
+            question.classList.add('answered');
+            const isCorrect = selected.dataset.answer === correctAnswer;
+            if (isCorrect) quizScore++;
+
+            question.querySelectorAll('.option').forEach(opt => {
+                if (opt.dataset.answer === correctAnswer) opt.classList.add('correct');
+                else if (opt.classList.contains('selected') && !isCorrect) opt.classList.add('incorrect');
+            });
+
+            const feedback = document.getElementById(`feedback${qNum}`);
+            feedback.textContent = isCorrect ? quizFeedback[qNum].correct : quizFeedback[qNum].incorrect;
+            feedback.className = `question-feedback visible ${isCorrect ? 'correct' : 'incorrect'}`;
+
+            const btn = question.querySelector('.btn-primary');
+            btn.textContent = qNum < 5 ? 'Next Question →' : 'See Results →';
+            btn.onclick = qNum < 5 ? () => goToQuestion(qNum + 1) : showQuizResults;
+        }
+
+        function goToQuestion(qNum) {
+            document.querySelectorAll('.quiz-question').forEach(q => q.classList.remove('active'));
+            document.querySelector(`.quiz-question[data-question="${qNum}"]`).classList.add('active');
+        }
+
+        function showQuizResults() {
+            document.getElementById('quizContainer').style.display = 'none';
+            const results = document.getElementById('quizResults');
+            results.classList.add('visible');
+            document.getElementById('resultsScore').textContent = `${quizScore} / 5 Correct`;
+
+            const icon = document.getElementById('resultsIcon');
+            const message = document.getElementById('resultsMessage');
+
+            if (quizScore === 5) {
+                icon.style.background = 'var(--access-good)';
+                icon.textContent = '✓';
+                message.textContent = 'Excellent! You\'ve demonstrated strong understanding of installation sequence principles.';
+            } else if (quizScore >= 3) {
+                icon.style.background = 'var(--blocked-warning)';
+                icon.textContent = '✓';
+                message.textContent = 'Good result. Review the questions you missed to strengthen your understanding.';
+            } else {
+                icon.style.background = 'var(--sequence-error)';
+                icon.textContent = '!';
+                message.textContent = 'Further study recommended. Review the module content before proceeding.';
+            }
+        }
+
+        function restartQuiz() {
+            quizScore = 0;
+            answered = [false, false, false, false, false];
+            document.querySelectorAll('.quiz-question').forEach((q, i) => {
+                q.classList.remove('active', 'answered');
+                if (i === 0) q.classList.add('active');
+                q.querySelectorAll('.option').forEach(o => o.classList.remove('selected', 'correct', 'incorrect'));
+                q.querySelectorAll('input').forEach(inp => inp.checked = false);
+                const btn = q.querySelector('.btn-primary');
+                btn.textContent = 'Submit Answer';
+                btn.onclick = () => checkAnswer(i + 1, ['C', 'D', 'D', 'A', 'B'][i]);
+            });
+            document.querySelectorAll('.question-feedback').forEach(f => f.className = 'question-feedback');
+            document.getElementById('quizResults').classList.remove('visible');
+            document.getElementById('quizContainer').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
