@@ -4533,7 +4533,757 @@
                 font-size: 14px;
             }
             
-            /* Intro adjustments */
+            /* ============================================
+               MOBILE-FIRST COMPLETE REDESIGN
+               ============================================ */
+            
+            /* Prevent horizontal scroll on all screens */
+            body, html {
+                overflow-x: hidden;
+                max-width: 100vw;
+            }
+            
+            .screen {
+                overflow-x: hidden;
+            }
+            
+            /* --- CINEMATIC INTRO MOBILE --- */
+            .intro-slide {
+                flex-direction: column;
+            }
+            
+            .slide-image {
+                height: 35vh;
+                min-height: 200px;
+            }
+            
+            .slide-content {
+                position: relative;
+                padding: var(--space-md);
+                padding-bottom: 100px; /* Space for button and dots */
+                background: var(--darkest);
+                max-height: calc(65vh - 60px);
+                overflow-y: auto;
+            }
+            
+            .slide-time {
+                font-size: 0.7rem;
+                margin-bottom: var(--space-sm);
+            }
+            
+            .slide-text {
+                max-width: 100%;
+            }
+            
+            .slide-text p {
+                font-size: 0.95rem;
+                margin-bottom: var(--space-sm);
+                line-height: 1.5;
+            }
+            
+            .slide-text .radio-call {
+                font-size: 1rem;
+                padding: var(--space-sm);
+                margin: var(--space-sm) 0;
+            }
+            
+            .slide-next-btn {
+                position: fixed;
+                bottom: 60px;
+                right: var(--space-md);
+                left: auto;
+                padding: var(--space-sm) var(--space-lg);
+                font-size: 0.9rem;
+                z-index: 100;
+            }
+            
+            .slide-progress {
+                position: fixed;
+                bottom: var(--space-md);
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 100;
+            }
+            
+            .skip-intro-btn {
+                top: var(--space-sm);
+                right: var(--space-sm);
+                padding: var(--space-xs) var(--space-sm);
+                font-size: 0.75rem;
+            }
+            
+            .btn-radio-play {
+                padding: var(--space-sm);
+                font-size: 0.85rem;
+            }
+            
+            /* Mission slide adjustments */
+            .mission-slide {
+                padding: var(--space-md);
+                padding-bottom: 100px;
+            }
+            
+            .mission-slide h1 {
+                font-size: 1.5rem !important;
+                margin-bottom: var(--space-sm) !important;
+            }
+            
+            .mission-slide h2 {
+                font-size: 0.85rem !important;
+            }
+            
+            .mission-objectives {
+                gap: var(--space-sm);
+            }
+            
+            .objective-icon {
+                font-size: 1.2rem;
+                width: 28px;
+            }
+            
+            .objective-text strong {
+                font-size: 0.85rem;
+            }
+            
+            .objective-text span {
+                font-size: 0.75rem;
+            }
+            
+            /* --- MAIN GAME SCREEN MOBILE --- */
+            #game-screen {
+                overflow: hidden;
+            }
+            
+            .game-header {
+                flex-direction: column;
+                padding: var(--space-sm);
+                gap: var(--space-sm);
+            }
+            
+            .header-logo {
+                height: 28px;
+            }
+            
+            #money-counter {
+                width: 100%;
+                padding: var(--space-xs) var(--space-sm);
+            }
+            
+            .counter-total {
+                font-size: 1.5rem;
+            }
+            
+            .counter-time {
+                font-size: 0.75rem;
+            }
+            
+            .counter-breakdown {
+                display: none;
+            }
+            
+            /* Main game area - fixed to prevent scroll */
+            .game-main {
+                min-height: unset;
+                height: calc(100vh - 180px); /* Header + evidence bar */
+                overflow: hidden;
+            }
+            
+            /* Location grid - more compact */
+            #evidence-locations {
+                grid-template-columns: repeat(3, 1fr);
+                gap: var(--space-xs);
+                padding: var(--space-sm);
+                max-width: 100%;
+            }
+            
+            .evidence-btn {
+                min-height: 70px;
+                padding: var(--space-xs);
+            }
+            
+            .evidence-btn .evidence-icon {
+                font-size: 1.3rem;
+            }
+            
+            .evidence-btn .evidence-label {
+                font-size: 0.65rem;
+            }
+            
+            /* Evidence bar - much more compact */
+            .evidence-bar {
+                min-height: 80px;
+                padding: var(--space-xs) var(--space-sm);
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+            
+            .evidence-bar-header {
+                font-size: 0.65rem;
+                margin-bottom: var(--space-xs);
+            }
+            
+            #evidence-cards-bar {
+                gap: var(--space-xs);
+                padding-bottom: var(--space-xs);
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .evidence-card {
+                width: 150px;
+                min-width: 150px;
+                padding: var(--space-xs);
+            }
+            
+            .evidence-card h5 {
+                font-size: 0.65rem;
+            }
+            
+            .evidence-card p {
+                font-size: 0.6rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            
+            .evidence-bar-empty {
+                font-size: 0.75rem;
+                padding: var(--space-xs);
+            }
+            
+            /* Action buttons */
+            .game-actions {
+                bottom: 90px;
+                right: var(--space-xs);
+                gap: var(--space-xs);
+            }
+            
+            .action-btn {
+                padding: var(--space-xs);
+                min-width: 44px;
+                min-height: 44px;
+            }
+            
+            .action-btn .action-label {
+                display: none;
+            }
+            
+            .action-btn .action-icon {
+                font-size: 1.3rem;
+            }
+            
+            /* --- EVIDENCE VIEWER MODAL MOBILE --- */
+            .evidence-viewer {
+                width: 100%;
+                max-width: 100%;
+                height: 100vh;
+                max-height: 100vh;
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .evidence-viewer h2 {
+                font-size: 1rem;
+                padding: var(--space-sm);
+                padding-right: 50px;
+            }
+            
+            .modal-close {
+                width: 44px;
+                height: 44px;
+                font-size: 1.5rem;
+            }
+            
+            #evidence-image-container {
+                aspect-ratio: 4/3;
+                max-height: 40vh;
+            }
+            
+            /* Hotspots - smaller on mobile */
+            .hotspot {
+                width: 28px;
+                height: 28px;
+            }
+            
+            .hotspot::after {
+                width: 16px;
+                height: 16px;
+            }
+            
+            .hotspot-label {
+                display: none;
+            }
+            
+            #evidence-findings {
+                max-height: 35vh;
+                padding: var(--space-sm);
+            }
+            
+            .finding-card {
+                padding: var(--space-sm);
+            }
+            
+            .finding-card h4 {
+                font-size: 0.8rem;
+            }
+            
+            .finding-card p {
+                font-size: 0.75rem;
+            }
+            
+            /* --- PHONE INTERFACE MOBILE --- */
+            .phone-interface {
+                width: 100%;
+                max-width: 100%;
+                height: 100vh;
+                max-height: 100vh;
+                margin: 0;
+                border-radius: 0;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .phone-header {
+                padding: var(--space-md);
+                flex-shrink: 0;
+            }
+            
+            .phone-header h2 {
+                font-size: 1rem;
+            }
+            
+            .phone-body {
+                padding: var(--space-sm);
+                flex: 1;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .phone-subtitle {
+                font-size: 0.8rem;
+                margin-bottom: var(--space-md);
+            }
+            
+            .phone-contact {
+                padding: var(--space-sm);
+                gap: var(--space-sm);
+            }
+            
+            .contact-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .contact-name {
+                font-size: 0.9rem;
+            }
+            
+            .contact-role {
+                font-size: 0.7rem;
+            }
+            
+            .contact-status {
+                font-size: 0.65rem;
+                padding: 3px 8px;
+            }
+            
+            /* Call in progress - mobile */
+            #call-in-progress {
+                padding: var(--space-md);
+            }
+            
+            .call-status-text {
+                font-size: 0.75rem;
+            }
+            
+            #call-timer {
+                font-size: 1.3rem;
+            }
+            
+            #call-dialogue {
+                font-size: 0.85rem;
+                min-height: 60px;
+                padding: var(--space-sm);
+            }
+            
+            .call-evidence-found {
+                padding: var(--space-sm);
+            }
+            
+            .phone-footer {
+                padding: var(--space-md);
+            }
+            
+            .btn-end-call {
+                padding: var(--space-sm) var(--space-lg);
+            }
+            
+            /* --- EVIDENCE BOARD MOBILE COMPLETE REDESIGN --- */
+            .evidence-board-modal {
+                padding: 0;
+            }
+            
+            .evidence-board-container {
+                width: 100%;
+                max-width: 100%;
+                height: 100vh;
+                max-height: 100vh;
+                margin: 0;
+                border-radius: 0;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            
+            .board-header {
+                padding: var(--space-sm);
+                flex-shrink: 0;
+            }
+            
+            .board-header h2 {
+                font-size: 1rem;
+            }
+            
+            .board-instructions {
+                font-size: 0.75rem;
+            }
+            
+            /* Mobile board layout - vertical stack */
+            .board-layout {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                padding: 0;
+            }
+            
+            /* Evidence table area - scrollable */
+            .table-area {
+                flex: 1;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: var(--space-sm);
+                background: rgba(0,0,0,0.3);
+                min-height: 100px;
+            }
+            
+            .table-area .evidence-card {
+                width: 100%;
+                margin-bottom: var(--space-xs);
+            }
+            
+            /* Classification zones - horizontal scroll on mobile */
+            .classification-zones {
+                position: relative;
+                bottom: auto;
+                left: auto;
+                transform: none;
+                display: flex;
+                flex-direction: column;
+                gap: var(--space-sm);
+                padding: var(--space-sm);
+                background: rgba(0,0,0,0.5);
+                flex-shrink: 0;
+                max-height: 45vh;
+                overflow-y: auto;
+            }
+            
+            .classification-slot {
+                width: 100%;
+                min-height: 80px;
+                padding: var(--space-sm);
+            }
+            
+            .slot-contributing {
+                width: 100%;
+            }
+            
+            .slot-header {
+                margin-bottom: var(--space-xs);
+                padding-bottom: var(--space-xs);
+            }
+            
+            .slot-label {
+                font-size: 0.7rem;
+            }
+            
+            .slot-hint {
+                font-size: 0.6rem;
+            }
+            
+            .slot-content {
+                gap: var(--space-xs);
+            }
+            
+            .mini-card {
+                font-size: 0.65rem;
+                padding: 4px 8px;
+            }
+            
+            /* Submit area - fixed at bottom */
+            .submit-area {
+                padding: var(--space-sm);
+                background: rgba(0,0,0,0.6);
+                flex-shrink: 0;
+            }
+            
+            .board-status {
+                font-size: 0.7rem;
+                margin-bottom: var(--space-xs);
+            }
+            
+            .btn-submit-board {
+                width: 100%;
+                padding: var(--space-sm);
+            }
+            
+            /* --- SOLUTION MODAL MOBILE --- */
+            .solution-content {
+                width: 100%;
+                max-width: 100%;
+                height: 100vh;
+                max-height: 100vh;
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .solution-counter-mini {
+                top: var(--space-sm);
+                right: var(--space-sm);
+                font-size: 0.65rem;
+                padding: 4px 8px;
+            }
+            
+            .solution-progress {
+                padding-top: var(--space-xl);
+                margin-bottom: var(--space-md);
+            }
+            
+            #solution-progress-text {
+                font-size: 0.75rem;
+            }
+            
+            .solution-step {
+                padding: var(--space-md);
+            }
+            
+            .solution-step-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-xs);
+            }
+            
+            .solution-step-badge {
+                font-size: 0.6rem;
+            }
+            
+            .solution-step-title {
+                font-size: 0.95rem;
+            }
+            
+            .solution-step-description {
+                font-size: 0.8rem;
+                padding: var(--space-sm);
+            }
+            
+            .solution-options {
+                gap: var(--space-sm);
+            }
+            
+            .solution-option {
+                padding: var(--space-sm);
+            }
+            
+            .solution-option-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-xs);
+            }
+            
+            .solution-option-title {
+                font-size: 0.85rem;
+            }
+            
+            .solution-option-cost {
+                font-size: 0.7rem;
+            }
+            
+            .solution-option-desc {
+                font-size: 0.75rem;
+            }
+            
+            /* --- RESULTS/REPORT MOBILE --- */
+            .report-container {
+                margin: 0;
+                border-radius: 0;
+                height: 100vh;
+            }
+            
+            .report-nav {
+                padding: var(--space-xs);
+                gap: 2px;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            
+            .report-nav-btn {
+                padding: var(--space-xs);
+                font-size: 0.6rem;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            
+            .page-header {
+                padding: var(--space-sm);
+            }
+            
+            .page-number {
+                font-size: 0.6rem;
+            }
+            
+            .report-title {
+                font-size: 1.1rem;
+            }
+            
+            .page-title {
+                font-size: 1rem;
+            }
+            
+            .page-content {
+                padding: var(--space-sm);
+                max-height: calc(100vh - 250px);
+                overflow-y: auto;
+            }
+            
+            .page-footer {
+                padding: var(--space-sm);
+            }
+            
+            .page-turn-btn {
+                padding: var(--space-xs) var(--space-sm);
+                font-size: 0.7rem;
+            }
+            
+            /* Score cards */
+            .dual-score-display {
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+            
+            .score-card {
+                padding: var(--space-sm);
+            }
+            
+            .score-card-label {
+                font-size: 0.65rem;
+            }
+            
+            .score-card-value {
+                font-size: 1.5rem;
+            }
+            
+            /* Summary stats */
+            .summary-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--space-xs);
+            }
+            
+            .summary-stat-item {
+                padding: var(--space-xs);
+            }
+            
+            .stat-label {
+                font-size: 0.6rem;
+            }
+            
+            .stat-value {
+                font-size: 0.9rem;
+            }
+            
+            /* Findings table */
+            .findings-table {
+                font-size: 0.7rem;
+            }
+            
+            .findings-table th {
+                font-size: 0.6rem;
+                padding: var(--space-xs);
+            }
+            
+            .findings-table td {
+                padding: var(--space-xs);
+            }
+            
+            .findings-table .problem-location,
+            .findings-table .arrow-cell {
+                display: none;
+            }
+            
+            .table-badge {
+                font-size: 0.5rem;
+                padding: 2px 4px;
+            }
+            
+            /* Takeaway cards */
+            .takeaway-card {
+                flex-direction: column;
+                padding: var(--space-sm);
+                gap: var(--space-sm);
+            }
+            
+            .takeaway-number {
+                width: 24px;
+                height: 24px;
+                font-size: 0.75rem;
+                align-self: flex-start;
+            }
+            
+            .takeaway-content h4 {
+                font-size: 0.85rem;
+            }
+            
+            .takeaway-content p {
+                font-size: 0.75rem;
+            }
+            
+            /* Detail modal */
+            .detail-modal-content {
+                width: 100%;
+                max-width: 100%;
+                max-height: 100vh;
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .detail-header h3 {
+                font-size: 0.95rem;
+            }
+            
+            .detail-section {
+                padding: var(--space-sm);
+            }
+            
+            .detail-section h4 {
+                font-size: 0.8rem;
+            }
+            
+            .detail-section p {
+                font-size: 0.75rem;
+            }
+            
+            /* Report actions */
+            .report-actions {
+                flex-direction: column;
+                padding: var(--space-sm);
+            }
+            
+            .report-actions button {
+                width: 100%;
+            }
+            
+            /* Intro container adjustments */
             .intro-container {
                 padding: var(--space-lg);
             }
@@ -4564,263 +5314,9 @@
                 width: 95%;
             }
             
-            .objective-icon {
-                font-size: 1.3rem;
-                width: 32px;
-            }
-            
-            .objective-text strong {
-                font-size: 0.9rem;
-            }
-            
-            .objective-text span {
-                font-size: 0.8rem;
-            }
-            
             .btn-large {
-                font-size: 1.1rem;
-                padding: var(--space-md) var(--space-xl);
-            }
-            
-            /* Game screen adjustments */
-            .game-header {
-                padding: var(--space-sm) var(--space-md);
-            }
-            
-            .header-logo {
-                height: 30px;
-            }
-            
-            #money-counter {
-                padding: var(--space-sm) var(--space-md);
-            }
-            
-            .counter-total {
-                font-size: 1.8rem;
-            }
-            
-            .counter-breakdown {
-                display: none; /* Hide breakdown on mobile to save space */
-            }
-            
-            #evidence-locations {
-                grid-template-columns: repeat(2, 1fr);
-                gap: var(--space-sm);
-                padding: var(--space-md);
-            }
-            
-            .evidence-btn {
-                padding: var(--space-md);
-                min-height: 90px;
-            }
-            
-            .evidence-btn .evidence-icon {
-                font-size: 1.5rem;
-            }
-            
-            .evidence-btn .evidence-label {
-                font-size: 0.8rem;
-            }
-            
-            /* Action buttons */
-            .game-actions {
-                bottom: var(--space-sm);
-                right: var(--space-sm);
-                gap: var(--space-sm);
-            }
-            
-            .action-btn {
-                padding: var(--space-sm) var(--space-md);
-            }
-            
-            .action-btn .action-label {
-                display: none; /* Show only icons on mobile */
-            }
-            
-            .action-btn .action-icon {
-                font-size: 1.5rem;
-            }
-            
-            /* Evidence bar */
-            .evidence-bar {
-                min-height: 100px;
-                padding: var(--space-sm) var(--space-md);
-            }
-            
-            .evidence-card {
-                width: 220px;
-                padding: var(--space-sm);
-            }
-            
-            .evidence-card h5 {
-                font-size: 0.75rem;
-            }
-            
-            .evidence-card p {
-                font-size: 0.7rem;
-            }
-            
-            /* Modal adjustments */
-            .modal-content {
-                padding: var(--space-lg);
-                margin: var(--space-sm);
-                max-height: calc(100% - var(--space-lg));
-            }
-            
-            .evidence-viewer h2 {
-                font-size: 1.2rem;
-                padding-right: var(--space-xl);
-            }
-            
-            #evidence-image-container {
-                aspect-ratio: 4/3;
-            }
-            
-            .hotspot {
-                width: 36px;
-                height: 36px;
-            }
-            
-            .hotspot-label {
-                display: none; /* Labels crowd mobile - rely on tap */
-            }
-            
-            #evidence-findings {
-                max-height: 150px;
-            }
-            
-            .finding-card {
-                padding: var(--space-sm);
-            }
-            
-            .finding-card h4 {
-                font-size: 0.85rem;
-            }
-            
-            .finding-card p {
-                font-size: 0.8rem;
-            }
-            
-            /* Phone modal */
-            .phone-contact {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: var(--space-xs);
-            }
-            
-            .phone-contact .contact-duration {
-                font-size: 0.75rem;
-            }
-            
-            #call-timer {
-                font-size: 1.5rem;
-            }
-            
-            #call-dialogue {
-                font-size: 0.9rem;
-                min-height: 80px;
-            }
-            
-            /* Submit modal */
-            .form-group select {
-                font-size: 0.9rem;
-                padding: var(--space-sm);
-            }
-            
-            .submit-buttons {
-                flex-direction: column;
-            }
-            
-            .submit-buttons button {
-                width: 100%;
-            }
-            
-            /* Fix modal */
-            .fix-option {
-                padding: var(--space-sm);
-            }
-            
-            .fix-option .fix-details strong {
-                font-size: 0.9rem;
-            }
-            
-            .fix-option .fix-details span {
-                font-size: 0.75rem;
-            }
-            
-            /* Results screen */
-            .results-container {
-                padding: var(--space-md);
-            }
-            
-            /* Evidence Board responsive */
-            .board-layout {
-                grid-template-columns: 1fr;
-                gap: var(--space-md);
-            }
-            
-            .board-content {
-                padding: var(--space-md);
-            }
-            
-            .board-content h2 {
-                font-size: 1.2rem;
-            }
-            
-            .board-instructions {
-                font-size: 0.85rem;
-            }
-            
-            .evidence-drop-zone {
-                min-height: 120px;
-            }
-            
-            .board-actions {
-                flex-direction: column;
-            }
-            
-            .board-actions button {
-                width: 100%;
-            }
-            
-            #epilogue-section {
-                padding: var(--space-md);
-            }
-            
-            #epilogue-section h2 {
                 font-size: 1rem;
-            }
-            
-            #epilogue-section p {
-                font-size: 0.9rem;
-            }
-            
-            .score-breakdown {
-                padding: var(--space-md);
-            }
-            
-            .score-line {
-                font-size: 0.85rem;
-            }
-            
-            .score-line.total span:last-child {
-                font-size: 1.1rem;
-            }
-            
-            #rank-stars {
-                font-size: 2.2rem;
-            }
-            
-            #rank-title {
-                font-size: 1.1rem;
-            }
-            
-            .results-buttons {
-                flex-direction: column;
-            }
-            
-            .results-buttons button {
-                width: 100%;
+                padding: var(--space-md) var(--space-lg);
             }
         }
 
@@ -4890,6 +5386,49 @@
             .btn-danger:active {
                 transform: scale(0.98);
             }
+            
+            /* Mobile tap-to-select for evidence board */
+            .evidence-card.selected-for-move,
+            .mini-card.selected-for-move {
+                outline: 3px solid var(--warm-gold);
+                outline-offset: 2px;
+                background: rgba(212, 175, 55, 0.3) !important;
+                animation: pulse-select 1s infinite;
+            }
+            
+            @keyframes pulse-select {
+                0%, 100% { outline-color: var(--warm-gold); }
+                50% { outline-color: rgba(212, 175, 55, 0.5); }
+            }
+            
+            /* Hint for classification slots when card is selected */
+            .classification-slot.tap-hint {
+                border-color: var(--warm-gold) !important;
+                background: rgba(212, 175, 55, 0.2) !important;
+                animation: pulse-hint 1s infinite;
+            }
+            
+            @keyframes pulse-hint {
+                0%, 100% { border-color: var(--warm-gold); }
+                50% { border-color: rgba(212, 175, 55, 0.4); }
+            }
+            
+            /* Larger touch targets */
+            .modal-close,
+            .detail-close {
+                width: 44px;
+                height: 44px;
+                font-size: 1.5rem;
+            }
+            
+            .fix-option,
+            .solution-option {
+                min-height: 60px;
+            }
+            
+            .findings-table .clickable-row td {
+                padding: var(--space-sm) var(--space-md);
+            }
         }
 
         /* Landscape phone */
@@ -4941,602 +5480,6 @@
             
             #evidence-image-container {
                 aspect-ratio: 16/8;
-            }
-        }
-        
-        /* ============================================
-           MOBILE/TABLET RESPONSIVE - RESULTS & REPORT
-           ============================================ */
-        
-        /* Tablet - Report adjustments */
-        @media (max-width: 900px) {
-            .report-container {
-                margin: var(--space-md);
-                border-radius: 8px;
-            }
-            
-            .report-nav {
-                padding: var(--space-sm) var(--space-md);
-                gap: var(--space-xs);
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .report-nav-btn {
-                padding: var(--space-xs) var(--space-sm);
-                font-size: 0.75rem;
-                min-width: auto;
-            }
-            
-            .page-content {
-                padding: var(--space-md);
-            }
-            
-            .dual-score-display {
-                flex-direction: column;
-                gap: var(--space-sm);
-            }
-            
-            .score-card {
-                padding: var(--space-md);
-            }
-            
-            .score-card-value {
-                font-size: 2rem;
-            }
-            
-            .summary-stats {
-                grid-template-columns: repeat(2, 1fr);
-                gap: var(--space-sm);
-            }
-            
-            .findings-table {
-                font-size: 0.85rem;
-            }
-            
-            .findings-table th,
-            .findings-table td {
-                padding: var(--space-sm);
-            }
-            
-            .findings-table .problem-location {
-                display: none;
-            }
-            
-            .takeaway-card {
-                flex-direction: column;
-                gap: var(--space-sm);
-            }
-            
-            .takeaway-number {
-                align-self: flex-start;
-            }
-        }
-        
-        /* Mobile - Report adjustments */
-        @media (max-width: 700px) {
-            .report-container {
-                margin: var(--space-sm);
-                border-radius: 6px;
-            }
-            
-            .report-nav {
-                padding: var(--space-xs) var(--space-sm);
-                gap: 4px;
-            }
-            
-            .report-nav-btn {
-                padding: var(--space-xs) var(--space-sm);
-                font-size: 0.7rem;
-                flex: 1;
-                text-align: center;
-            }
-            
-            .page-header {
-                padding: var(--space-md);
-            }
-            
-            .page-number {
-                font-size: 0.65rem;
-            }
-            
-            .report-title {
-                font-size: 1.3rem;
-            }
-            
-            .page-title {
-                font-size: 1.1rem;
-            }
-            
-            .page-content {
-                padding: var(--space-sm) var(--space-md);
-                max-height: 55vh;
-            }
-            
-            .page-footer {
-                padding: var(--space-sm) var(--space-md);
-            }
-            
-            .page-turn-btn {
-                padding: var(--space-xs) var(--space-sm);
-                font-size: 0.75rem;
-            }
-            
-            /* Score cards mobile */
-            .score-card-label {
-                font-size: 0.7rem;
-            }
-            
-            .score-card-value {
-                font-size: 1.6rem;
-            }
-            
-            .score-card-target {
-                font-size: 0.7rem;
-            }
-            
-            /* Summary stats mobile */
-            .summary-stat-item {
-                padding: var(--space-sm);
-            }
-            
-            .stat-label {
-                font-size: 0.7rem;
-            }
-            
-            .stat-value {
-                font-size: 1rem;
-            }
-            
-            /* Epilogue mobile */
-            .outcome-section {
-                padding: var(--space-md);
-            }
-            
-            .outcome-section h2 {
-                font-size: 0.8rem;
-            }
-            
-            .outcome-section p {
-                font-size: 0.85rem;
-            }
-            
-            .regulatory-note {
-                padding: var(--space-sm);
-            }
-            
-            .regulatory-note h3 {
-                font-size: 0.75rem;
-            }
-            
-            .regulatory-note p {
-                font-size: 0.8rem;
-            }
-            
-            /* Findings table mobile */
-            .findings-table {
-                font-size: 0.8rem;
-            }
-            
-            .findings-table th {
-                font-size: 0.65rem;
-                padding: var(--space-xs) var(--space-sm);
-            }
-            
-            .findings-table td {
-                padding: var(--space-xs) var(--space-sm);
-            }
-            
-            .findings-table .problem-name {
-                font-size: 0.75rem;
-            }
-            
-            .table-badge {
-                font-size: 0.55rem;
-                padding: 2px 4px;
-            }
-            
-            .status-icon {
-                font-size: 0.9rem;
-            }
-            
-            .findings-table .arrow-cell {
-                display: none;
-            }
-            
-            /* Actions/Financial table mobile */
-            .actions-summary-cards {
-                flex-direction: column;
-                gap: var(--space-sm);
-            }
-            
-            .summary-card {
-                padding: var(--space-sm);
-            }
-            
-            .card-value {
-                font-size: 1.5rem;
-            }
-            
-            .actions-table {
-                font-size: 0.75rem;
-            }
-            
-            .actions-table th {
-                font-size: 0.6rem;
-                padding: var(--space-xs);
-            }
-            
-            .actions-table td {
-                padding: var(--space-xs);
-            }
-            
-            .actions-table .action-text {
-                max-width: 100px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            
-            .actions-table .num-col {
-                font-size: 0.7rem;
-            }
-            
-            /* Missed opportunity cards mobile */
-            .missed-opportunity-card {
-                margin-bottom: var(--space-sm);
-            }
-            
-            .missed-card-header {
-                padding: var(--space-sm);
-                flex-direction: column;
-                align-items: flex-start;
-                gap: var(--space-xs);
-            }
-            
-            .missed-card-body {
-                padding: var(--space-sm);
-            }
-            
-            .missed-card-costs {
-                flex-direction: column;
-                gap: var(--space-xs);
-            }
-            
-            .missed-card-costs .cost-item {
-                padding: var(--space-xs) var(--space-sm);
-            }
-            
-            /* Takeaway cards mobile */
-            .takeaway-card {
-                padding: var(--space-sm);
-                gap: var(--space-sm);
-            }
-            
-            .takeaway-number {
-                width: 28px;
-                height: 28px;
-                font-size: 0.8rem;
-            }
-            
-            .takeaway-card.cdm-warning .takeaway-number,
-            .takeaway-card.regulatory .takeaway-number {
-                width: 32px;
-                height: 32px;
-                font-size: 1rem;
-            }
-            
-            .takeaway-content h4 {
-                font-size: 0.85rem;
-            }
-            
-            .takeaway-content p {
-                font-size: 0.8rem;
-            }
-            
-            /* Rating display mobile */
-            .rating-card .stars {
-                font-size: 1.6rem;
-            }
-            
-            .rating-card .rank-title {
-                font-size: 1rem;
-            }
-            
-            .rating-card .rank-desc {
-                font-size: 0.8rem;
-            }
-            
-            /* Detail modal mobile */
-            .detail-modal {
-                padding: var(--space-sm);
-            }
-            
-            .detail-modal-content {
-                max-width: 100%;
-                max-height: 90vh;
-                border-radius: 8px;
-            }
-            
-            .detail-header h3 {
-                font-size: 1rem;
-            }
-            
-            .detail-section {
-                padding: var(--space-sm);
-                margin-bottom: var(--space-sm);
-            }
-            
-            .detail-section h4 {
-                font-size: 0.85rem;
-            }
-            
-            .detail-section p {
-                font-size: 0.8rem;
-            }
-            
-            /* Report actions mobile */
-            .report-actions {
-                flex-direction: column;
-                padding: var(--space-md) var(--space-lg);
-            }
-            
-            .report-actions button {
-                width: 100%;
-            }
-            
-            /* Classification warning mobile */
-            .classification-warning {
-                font-size: 0.75rem;
-                padding: var(--space-xs) var(--space-sm);
-            }
-            
-            /* 5-star solution section mobile */
-            .full-solution-section {
-                padding: var(--space-sm);
-            }
-            
-            .full-solution-section h4 {
-                font-size: 0.9rem;
-            }
-            
-            .full-solution-section p {
-                font-size: 0.8rem;
-            }
-            
-            .correct-fix {
-                font-size: 0.75rem;
-                padding: var(--space-xs) var(--space-sm);
-            }
-            
-            .fix-note {
-                font-size: 0.75rem;
-            }
-        }
-        
-        /* Small mobile - Report adjustments */
-        @media (max-width: 480px) {
-            .report-nav-btn {
-                font-size: 0.6rem;
-                padding: var(--space-xs);
-            }
-            
-            .page-content {
-                padding: var(--space-xs) var(--space-sm);
-            }
-            
-            .score-card-value {
-                font-size: 1.4rem;
-            }
-            
-            .summary-stats {
-                grid-template-columns: repeat(2, 1fr);
-                gap: var(--space-xs);
-            }
-            
-            .stat-value {
-                font-size: 0.9rem;
-            }
-            
-            /* Hide some columns on very small screens */
-            .findings-table .status-cell:last-of-type {
-                display: none;
-            }
-            
-            .actions-table td:nth-child(5) {
-                display: none;
-            }
-            
-            .takeaway-content h4 {
-                font-size: 0.8rem;
-            }
-            
-            .takeaway-content p {
-                font-size: 0.75rem;
-            }
-        }
-        
-        /* Evidence board drag-drop mobile improvements */
-        @media (max-width: 700px) {
-            .evidence-board-container {
-                padding: var(--space-sm);
-            }
-            
-            .board-layout {
-                gap: var(--space-sm);
-            }
-            
-            .board-content h2 {
-                font-size: 1rem;
-            }
-            
-            .evidence-drop-zone {
-                min-height: 100px;
-                padding: var(--space-sm);
-            }
-            
-            .zone-title {
-                font-size: 0.8rem;
-            }
-            
-            .zone-description {
-                font-size: 0.7rem;
-            }
-            
-            .dropped-evidence {
-                padding: var(--space-xs) var(--space-sm);
-                font-size: 0.75rem;
-            }
-            
-            .dropped-evidence .remove-evidence {
-                width: 18px;
-                height: 18px;
-                font-size: 0.7rem;
-            }
-            
-            /* Fix selector modal mobile */
-            .fix-modal-content {
-                max-width: 95%;
-                margin: var(--space-sm);
-            }
-            
-            .fix-modal-content h3 {
-                font-size: 1rem;
-            }
-            
-            .fix-options {
-                gap: var(--space-sm);
-            }
-            
-            .fix-option {
-                padding: var(--space-sm);
-            }
-            
-            .fix-option .fix-details strong {
-                font-size: 0.85rem;
-            }
-            
-            .fix-option .fix-details span {
-                font-size: 0.7rem;
-            }
-            
-            .fix-cost {
-                font-size: 0.8rem;
-            }
-        }
-        
-        /* Cinematic intro mobile */
-        @media (max-width: 700px) {
-            .intro-slide {
-                flex-direction: column;
-            }
-            
-            .slide-image {
-                height: 40vh;
-            }
-            
-            .slide-content {
-                padding: var(--space-md);
-            }
-            
-            .slide-time {
-                font-size: 0.7rem;
-            }
-            
-            .slide-text p {
-                font-size: 0.9rem;
-            }
-            
-            .slide-next-btn {
-                padding: var(--space-sm) var(--space-lg);
-                font-size: 0.85rem;
-            }
-            
-            .title-slide h1 {
-                font-size: 2rem;
-            }
-            
-            .title-slide h2 {
-                font-size: 0.9rem;
-            }
-        }
-        
-        /* Touch-specific improvements for drag and drop */
-        @media (hover: none) and (pointer: coarse) {
-            /* Make drop zones more prominent on touch */
-            .evidence-drop-zone {
-                border-width: 3px;
-                min-height: 120px;
-            }
-            
-            .evidence-drop-zone.drag-over {
-                border-width: 3px;
-            }
-            
-            /* Larger touch targets for evidence cards */
-            .evidence-card {
-                min-height: 60px;
-            }
-            
-            /* Larger touch targets for dropped items */
-            .dropped-evidence {
-                padding: var(--space-sm) var(--space-md);
-                min-height: 40px;
-            }
-            
-            .dropped-evidence .remove-evidence {
-                width: 24px;
-                height: 24px;
-            }
-            
-            /* Make fix options easier to tap */
-            .fix-option {
-                min-height: 60px;
-            }
-            
-            /* Larger tap areas for table rows */
-            .findings-table .clickable-row td {
-                padding: var(--space-sm) var(--space-md);
-            }
-            
-            /* Make close buttons easier to tap */
-            .modal-close,
-            .detail-close {
-                width: 40px;
-                height: 40px;
-                font-size: 1.5rem;
-            }
-            
-            /* Mobile tap-to-select for evidence cards */
-            .evidence-card.selected-for-move,
-            .mini-card.selected-for-move {
-                outline: 3px solid var(--warm-gold);
-                outline-offset: 2px;
-                background: rgba(212, 175, 55, 0.2);
-                animation: pulse-select 1s infinite;
-            }
-            
-            @keyframes pulse-select {
-                0%, 100% { outline-color: var(--warm-gold); }
-                50% { outline-color: rgba(212, 175, 55, 0.5); }
-            }
-            
-            /* Hint for drop zones when card is selected */
-            .classification-slot.tap-hint {
-                border-color: var(--warm-gold);
-                background: rgba(212, 175, 55, 0.1);
-                animation: pulse-hint 1s infinite;
-            }
-            
-            @keyframes pulse-hint {
-                0%, 100% { border-color: var(--warm-gold); }
-                50% { border-color: rgba(212, 175, 55, 0.4); }
-            }
-            
-            /* Instructions for mobile users */
-            .board-instructions::after {
-                content: " Tap a card to select it, then tap a category to place it.";
-                color: var(--warm-gold);
             }
         }
     </style>
