@@ -5092,14 +5092,17 @@
             
             /* Board button in collection panel */
             .collection-actions {
-                margin-left: 0 !important;
+                margin-left: auto !important;
+                margin-right: 4px !important;
                 flex-shrink: 0;
+                padding-right: env(safe-area-inset-right, 0);
             }
             
             .collection-actions .btn-primary {
-                font-size: 0.6rem !important;
-                padding: 6px 10px !important;
+                font-size: 0.65rem !important;
+                padding: 8px 12px !important;
                 white-space: nowrap;
+                min-width: 50px;
             }
             
             .board-btn-text {
@@ -5109,11 +5112,13 @@
             /* Show icon instead of text */
             #open-board-btn::before {
                 content: '📋';
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
             
             #open-board-btn:not(:disabled)::before {
-                content: '📋 Go';
+                content: '📋 GO';
+                font-size: 0.8rem;
+                font-weight: bold;
             }
             
             /* --- SCENE HOTSPOTS MOBILE --- */
@@ -5404,84 +5409,182 @@
                 padding: 0;
             }
             
-            /* Evidence table area - scrollable */
+            /* ============================================
+               EVIDENCE BOARD - MOBILE COMPLETE REDESIGN
+               ============================================ */
+            
+            .board-screen {
+                width: 100vw;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            
+            .board-close-btn {
+                top: 8px;
+                right: 8px;
+                width: 36px;
+                height: 36px;
+                font-size: 20px;
+            }
+            
+            /* Evidence table area - compact cards */
             .table-area {
                 flex: 1;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
-                padding: var(--space-sm);
-                background: rgba(0,0,0,0.3);
-                min-height: 100px;
+                padding: 50px var(--space-sm) var(--space-sm);
+                padding-bottom: var(--space-sm);
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                align-content: start;
+                background: rgba(0,0,0,0.4);
             }
             
+            /* Compact evidence cards - tap to expand */
             .table-area .evidence-card {
                 width: 100%;
-                margin-bottom: var(--space-xs);
+                min-width: 0;
+                padding: 8px 10px;
+                margin-bottom: 0;
+                transform: none !important;
             }
             
-            /* Classification zones - horizontal scroll on mobile */
-            .classification-zones {
-                position: relative;
-                bottom: auto;
-                left: auto;
-                transform: none;
-                display: flex;
-                flex-direction: column;
-                gap: var(--space-sm);
-                padding: var(--space-sm);
-                background: rgba(0,0,0,0.5);
+            .table-area .evidence-card .card-header {
+                margin-bottom: 4px;
+                padding-bottom: 4px;
+            }
+            
+            .table-area .evidence-card .card-title {
+                font-size: 0.65rem;
+                line-height: 1.2;
+            }
+            
+            .table-area .evidence-card .card-source {
+                display: none;
+            }
+            
+            .table-area .evidence-card .card-body {
+                font-size: 0.6rem;
+                line-height: 1.3;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            
+            /* Expanded card state */
+            .table-area .evidence-card.expanded {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) !important;
+                width: 90vw;
+                max-width: 350px;
+                z-index: 200;
+                padding: 16px;
+                box-shadow: 0 10px 50px rgba(0,0,0,0.8);
+            }
+            
+            .table-area .evidence-card.expanded .card-title {
+                font-size: 0.9rem;
+            }
+            
+            .table-area .evidence-card.expanded .card-source {
+                display: block;
+            }
+            
+            .table-area .evidence-card.expanded .card-body {
+                font-size: 0.8rem;
+                -webkit-line-clamp: unset;
+                display: block;
+            }
+            
+            /* Classification bar - horizontal at bottom */
+            .classification-bar {
+                position: relative !important;
+                bottom: auto !important;
+                left: auto !important;
+                transform: none !important;
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 6px !important;
+                padding: 8px !important;
+                background: rgba(31, 41, 55, 0.95) !important;
                 flex-shrink: 0;
-                max-height: 45vh;
-                overflow-y: auto;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
             }
             
             .classification-slot {
-                width: 100%;
-                min-height: 80px;
-                padding: var(--space-sm);
+                flex: 1;
+                min-width: 100px;
+                min-height: 70px !important;
+                padding: 6px !important;
+                border-radius: 6px;
+            }
+            
+            .slot-root {
+                border-color: var(--money-red) !important;
+                min-width: 90px;
             }
             
             .slot-contributing {
-                width: 100%;
+                min-width: 120px;
+                flex: 2;
+            }
+            
+            .slot-redherring {
+                min-width: 90px;
             }
             
             .slot-header {
-                margin-bottom: var(--space-xs);
-                padding-bottom: var(--space-xs);
+                margin-bottom: 4px !important;
+                padding-bottom: 4px !important;
             }
             
             .slot-label {
-                font-size: 0.7rem;
+                font-size: 0.55rem !important;
             }
             
             .slot-hint {
-                font-size: 0.6rem;
+                font-size: 0.5rem !important;
+                display: none;
             }
             
             .slot-content {
-                gap: var(--space-xs);
+                gap: 3px !important;
+                flex-wrap: wrap;
             }
             
             .mini-card {
-                font-size: 0.65rem;
-                padding: 4px 8px;
+                font-size: 0.5rem !important;
+                padding: 3px 6px !important;
+                max-width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
             
-            /* Submit area - fixed at bottom */
+            /* Submit area */
             .submit-area {
-                padding: var(--space-sm);
-                background: rgba(0,0,0,0.6);
+                padding: 8px var(--space-sm) !important;
+                padding-bottom: calc(8px + env(safe-area-inset-bottom, 0)) !important;
+                background: rgba(0,0,0,0.8) !important;
                 flex-shrink: 0;
             }
             
             .board-status {
-                font-size: 0.7rem;
-                margin-bottom: var(--space-xs);
+                font-size: 0.65rem !important;
+                margin-bottom: 6px !important;
             }
             
             .btn-submit-board {
                 width: 100%;
-                padding: var(--space-sm);
+                padding: 10px !important;
+                font-size: 0.85rem !important;
             }
             
             /* --- SOLUTION MODAL MOBILE --- */
@@ -6209,7 +6312,7 @@
                 </button>
                 
                 <!-- Transport - map on wall showing route -->
-                <button class="scene-hotspot" data-location="transport" style="left: 6%; top: 38.6%;">
+                <button class="scene-hotspot" data-location="transport" style="left: 6%; top: 75%;">
                     <div class="hotspot-card">
                         <img src="images/IMAGE_TRANSPORT_TRAILER.png" alt="Transport">
                         <span class="hotspot-label">Transport Records</span>
@@ -7581,8 +7684,13 @@
             
             if (!isTouchDevice) return;
             
-            // Add tap-to-select for evidence cards
-            document.querySelectorAll('.evidence-card, .mini-card').forEach(card => {
+            // Add tap-to-expand for evidence cards in table area
+            document.querySelectorAll('.table-area .evidence-card').forEach(card => {
+                card.addEventListener('click', handleCardTap);
+            });
+            
+            // Add tap-to-select for mini cards
+            document.querySelectorAll('.mini-card').forEach(card => {
                 card.addEventListener('click', handleCardTapSelect);
             });
             
@@ -7596,6 +7704,144 @@
             if (tableArea) {
                 tableArea.addEventListener('click', handleTableTapDrop);
             }
+            
+            // Setup touch drag for cards
+            setupTouchDrag();
+        }
+        
+        // Handle tap on evidence card - expand/collapse or select
+        function handleCardTap(e) {
+            e.stopPropagation();
+            const card = e.currentTarget;
+            
+            // If card is expanded, collapse it
+            if (card.classList.contains('expanded')) {
+                card.classList.remove('expanded');
+                return;
+            }
+            
+            // If another card is expanded, collapse it first
+            document.querySelectorAll('.evidence-card.expanded').forEach(c => {
+                c.classList.remove('expanded');
+            });
+            
+            // If we have a selected card for move, handle the selection
+            if (selectedCardForMove) {
+                handleCardTapSelect(e);
+                return;
+            }
+            
+            // Otherwise expand this card for reading
+            card.classList.add('expanded');
+        }
+        
+        // Close expanded card when tapping outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.evidence-card')) {
+                document.querySelectorAll('.evidence-card.expanded').forEach(c => {
+                    c.classList.remove('expanded');
+                });
+            }
+        });
+        
+        // Setup touch drag functionality
+        function setupTouchDrag() {
+            let draggedCard = null;
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let cardStartX = 0;
+            let cardStartY = 0;
+            
+            document.querySelectorAll('.evidence-card, .mini-card').forEach(card => {
+                card.addEventListener('touchstart', function(e) {
+                    // Long press to start drag
+                    const touch = e.touches[0];
+                    touchStartX = touch.clientX;
+                    touchStartY = touch.clientY;
+                    
+                    // Start drag after 300ms hold
+                    card.holdTimer = setTimeout(() => {
+                        draggedCard = card;
+                        card.classList.add('dragging');
+                        card.style.position = 'fixed';
+                        card.style.zIndex = '1000';
+                        card.style.width = '150px';
+                        cardStartX = touch.clientX - 75;
+                        cardStartY = touch.clientY - 30;
+                        card.style.left = cardStartX + 'px';
+                        card.style.top = cardStartY + 'px';
+                        
+                        // Show drop hints
+                        showMobileDropHints();
+                    }, 300);
+                }, { passive: true });
+                
+                card.addEventListener('touchmove', function(e) {
+                    if (!draggedCard) {
+                        // Cancel hold if moved too much
+                        const touch = e.touches[0];
+                        const dx = Math.abs(touch.clientX - touchStartX);
+                        const dy = Math.abs(touch.clientY - touchStartY);
+                        if (dx > 10 || dy > 10) {
+                            clearTimeout(card.holdTimer);
+                        }
+                        return;
+                    }
+                    
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    draggedCard.style.left = (touch.clientX - 75) + 'px';
+                    draggedCard.style.top = (touch.clientY - 30) + 'px';
+                    
+                    // Highlight drop zone under finger
+                    const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                    document.querySelectorAll('.classification-slot').forEach(s => s.classList.remove('drag-over'));
+                    const slot = elemBelow?.closest('.classification-slot');
+                    if (slot) slot.classList.add('drag-over');
+                }, { passive: false });
+                
+                card.addEventListener('touchend', function(e) {
+                    clearTimeout(card.holdTimer);
+                    
+                    if (!draggedCard) return;
+                    
+                    const touch = e.changedTouches[0];
+                    const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                    const slot = elemBelow?.closest('.classification-slot');
+                    
+                    if (slot) {
+                        // Simulate drop
+                        selectedCardForMove = draggedCard;
+                        handleSlotTapDrop({ currentTarget: slot, stopPropagation: () => {} });
+                    }
+                    
+                    // Reset card style
+                    draggedCard.classList.remove('dragging');
+                    draggedCard.style.position = '';
+                    draggedCard.style.zIndex = '';
+                    draggedCard.style.width = '';
+                    draggedCard.style.left = '';
+                    draggedCard.style.top = '';
+                    draggedCard = null;
+                    
+                    hideMobileDropHints();
+                    document.querySelectorAll('.classification-slot').forEach(s => s.classList.remove('drag-over'));
+                });
+                
+                card.addEventListener('touchcancel', function() {
+                    clearTimeout(card.holdTimer);
+                    if (draggedCard) {
+                        draggedCard.classList.remove('dragging');
+                        draggedCard.style.position = '';
+                        draggedCard.style.zIndex = '';
+                        draggedCard.style.width = '';
+                        draggedCard.style.left = '';
+                        draggedCard.style.top = '';
+                        draggedCard = null;
+                    }
+                    hideMobileDropHints();
+                });
+            });
         }
         
         function handleCardTapSelect(e) {
