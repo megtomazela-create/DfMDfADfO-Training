@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Site Day Zero — The Investigation | Act 4 Assessment</title>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -4784,66 +4787,136 @@
                 height: 24px;
             }
             
-            /* --- COST COUNTER WITH FULL BREAKDOWN ON MOBILE --- */
+            /* --- COST COUNTER - SIMPLE + CLICKABLE ON MOBILE --- */
             #money-counter {
                 width: 100%;
                 padding: var(--space-xs) var(--space-sm);
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                justify-content: space-between;
-                gap: var(--space-sm);
+                justify-content: center;
+                gap: var(--space-md);
+                cursor: pointer;
+                position: relative;
+            }
+            
+            /* Add tap hint */
+            #money-counter::after {
+                content: 'ⓘ';
+                font-size: 0.7rem;
+                opacity: 0.6;
+                margin-left: var(--space-xs);
             }
             
             .counter-header {
-                font-size: 0.45rem;
+                font-size: 0.5rem;
             }
             
             .counter-total {
-                font-size: 1.1rem;
+                font-size: 1.3rem;
             }
             
             .counter-time {
-                font-size: 0.55rem;
+                font-size: 0.65rem;
             }
             
-            /* Show ALL breakdown on mobile - compact grid */
+            /* HIDE breakdown on mobile - show in popup instead */
             .counter-breakdown {
-                display: grid !important;
-                grid-template-columns: repeat(3, auto);
-                gap: 1px 8px;
-                font-size: 0.45rem;
-                opacity: 0.95;
+                display: none !important;
             }
             
-            .counter-breakdown .cost-line {
-                display: flex !important;
-                justify-content: space-between;
-                gap: 4px;
+            /* Cost Breakdown Popup */
+            .cost-popup {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 500;
+                padding: var(--space-lg);
             }
             
-            .counter-breakdown .cost-line .cost-label {
-                font-size: 0.4rem;
-                color: var(--medium-light);
+            .cost-popup.hidden {
+                display: none;
             }
             
-            .counter-breakdown .cost-line .cost-rate {
-                font-size: 0.45rem;
-                font-weight: 600;
+            .cost-popup-content {
+                background: var(--dark);
+                border: 2px solid var(--money-red);
+                border-radius: 12px;
+                padding: var(--space-lg);
+                max-width: 300px;
+                width: 100%;
+                position: relative;
+                box-shadow: 0 8px 32px rgba(220, 38, 38, 0.3);
             }
             
-            .counter-breakdown .cost-line.total-line {
-                grid-column: span 3;
-                background: rgba(220, 38, 38, 0.3);
-                padding: 2px 6px;
-                border-radius: 3px;
-                margin-top: 2px;
+            .cost-popup-close {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                background: none;
+                border: none;
+                color: var(--light);
+                font-size: 1.5rem;
+                cursor: pointer;
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
                 justify-content: center;
             }
             
-            .counter-breakdown .cost-line.total-line .cost-label,
-            .counter-breakdown .cost-line.total-line .cost-rate {
-                font-size: 0.5rem;
+            .cost-popup-content h3 {
+                font-family: var(--font-heading);
+                font-size: 0.9rem;
+                color: var(--money-red);
+                text-align: center;
+                margin-bottom: var(--space-sm);
+            }
+            
+            .cost-popup-total {
+                font-family: var(--font-mono);
+                font-size: 2rem;
+                font-weight: 700;
+                color: var(--money-red);
+                text-align: center;
+                margin-bottom: var(--space-xs);
+            }
+            
+            .cost-popup-time {
+                font-size: 0.8rem;
+                color: var(--medium-light);
+                text-align: center;
+                margin-bottom: var(--space-md);
+            }
+            
+            .cost-popup-breakdown {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            
+            .cost-popup-line {
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.8rem;
+                color: var(--light);
+                padding: 4px 0;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            
+            .cost-popup-line.total {
+                border-bottom: none;
+                border-top: 2px solid var(--money-red);
+                margin-top: 4px;
+                padding-top: 8px;
+                font-weight: 600;
+                color: var(--money-red);
             }
             
             /* Main game area - MUST leave room for collection panel */
@@ -4986,27 +5059,27 @@
             }
             
             .collection-header h3 {
-                font-size: 0.55rem;
+                font-size: 0.5rem;
             }
             
             .collection-count {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
             
             .collection-slots {
                 flex: 1;
-                gap: 4px;
+                gap: 3px;
                 justify-content: center;
             }
             
             .collection-slot {
-                width: 38px;
-                height: 38px;
-                border-radius: 6px;
+                width: 32px;
+                height: 32px;
+                border-radius: 5px;
             }
             
             .collection-slot.empty .slot-number {
-                font-size: 0.7rem;
+                font-size: 0.6rem;
             }
             
             .collection-slot .slot-evidence span {
@@ -5014,7 +5087,33 @@
             }
             
             .collection-slot.phone-slot {
-                width: 38px;
+                width: 32px;
+            }
+            
+            /* Board button in collection panel */
+            .collection-actions {
+                margin-left: 0 !important;
+                flex-shrink: 0;
+            }
+            
+            .collection-actions .btn-primary {
+                font-size: 0.6rem !important;
+                padding: 6px 10px !important;
+                white-space: nowrap;
+            }
+            
+            .board-btn-text {
+                display: none;
+            }
+            
+            /* Show icon instead of text */
+            #open-board-btn::before {
+                content: '📋';
+                font-size: 1.1rem;
+            }
+            
+            #open-board-btn:not(:disabled)::before {
+                content: '📋 Go';
             }
             
             /* --- SCENE HOTSPOTS MOBILE --- */
@@ -6042,6 +6141,48 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Cost Breakdown Popup (mobile) -->
+        <div id="cost-popup" class="cost-popup hidden">
+            <div class="cost-popup-content">
+                <button class="cost-popup-close" onclick="document.getElementById('cost-popup').classList.add('hidden')">&times;</button>
+                <h3>💸 Project Delay Costs</h3>
+                <div class="cost-popup-total">
+                    £<span id="popup-total-cost">0</span>
+                </div>
+                <div class="cost-popup-time" id="popup-time"></div>
+                <div class="cost-popup-breakdown">
+                    <div class="cost-popup-line">
+                        <span>Crane standing time</span>
+                        <span>£2,400/hr</span>
+                    </div>
+                    <div class="cost-popup-line">
+                        <span>Rigging crew (8)</span>
+                        <span>£640/hr</span>
+                    </div>
+                    <div class="cost-popup-line">
+                        <span>Fit-up team (6)</span>
+                        <span>£480/hr</span>
+                    </div>
+                    <div class="cost-popup-line">
+                        <span>Concrete crew idle</span>
+                        <span>£1,200/hr</span>
+                    </div>
+                    <div class="cost-popup-line">
+                        <span>Supervision/QA</span>
+                        <span>£320/hr</span>
+                    </div>
+                    <div class="cost-popup-line">
+                        <span>Schedule knock-on</span>
+                        <span>£15,000/hr</span>
+                    </div>
+                    <div class="cost-popup-line total">
+                        <span>BURN RATE</span>
+                        <span>£5.50/sec</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Main Scene -->
         <div class="game-main">
@@ -6634,22 +6775,34 @@
             gameState.elapsedSeconds = (Date.now() - gameState.startTime) / 1000;
             gameState.currentCost = gameState.elapsedSeconds * gameState.burnRatePerSecond;
             
+            // Format cost
+            const formattedCost = gameState.currentCost.toLocaleString('en-GB', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            });
+            
+            // Format time
+            const mins = Math.floor(gameState.elapsedSeconds / 60);
+            const secs = Math.floor(gameState.elapsedSeconds % 60);
+            const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            
             // Update main display
             const costElement = document.getElementById('total-cost');
             if (costElement) {
-                costElement.textContent = gameState.currentCost.toLocaleString('en-GB', {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0
-                });
+                costElement.textContent = formattedCost;
             }
+            
+            // Update popup display
+            const popupCost = document.getElementById('popup-total-cost');
+            const popupTime = document.getElementById('popup-time');
+            if (popupCost) popupCost.textContent = formattedCost;
+            if (popupTime) popupTime.textContent = `Time elapsed: ${timeStr}`;
             
             // Update solution modal mini counter
             const solutionTime = document.getElementById('solution-time');
             const solutionCost = document.getElementById('solution-cost');
             if (solutionTime && solutionCost) {
-                const mins = Math.floor(gameState.elapsedSeconds / 60);
-                const secs = Math.floor(gameState.elapsedSeconds % 60);
-                solutionTime.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                solutionTime.textContent = timeStr;
                 solutionCost.textContent = `£${Math.floor(gameState.currentCost).toLocaleString()}`;
             }
             
@@ -7915,6 +8068,21 @@
         // 2.4 Event Listeners (Original)
         // --------------------------------------------
         document.getElementById('start-btn').addEventListener('click', startGame);
+        
+        // Counter click to show breakdown popup (mobile)
+        document.getElementById('money-counter').addEventListener('click', function() {
+            const popup = document.getElementById('cost-popup');
+            if (popup) {
+                popup.classList.remove('hidden');
+            }
+        });
+        
+        // Close popup when clicking outside
+        document.getElementById('cost-popup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
 
         // ============================================
         // PHASE 4: PHONE CALL SYSTEM
