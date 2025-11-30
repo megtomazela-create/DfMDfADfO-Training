@@ -4554,21 +4554,21 @@
             
             .slide-image {
                 height: 35vh;
-                min-height: 200px;
+                min-height: 180px;
             }
             
             .slide-content {
                 position: relative;
-                padding: var(--space-md);
-                padding-bottom: 100px; /* Space for button and dots */
+                padding: var(--space-sm);
+                padding-bottom: 80px; /* Space for button and dots */
                 background: var(--darkest);
-                max-height: calc(65vh - 60px);
+                max-height: calc(65vh - 40px);
                 overflow-y: auto;
             }
             
             .slide-time {
-                font-size: 0.7rem;
-                margin-bottom: var(--space-sm);
+                font-size: 0.65rem;
+                margin-bottom: var(--space-xs);
             }
             
             .slide-text {
@@ -4576,193 +4576,270 @@
             }
             
             .slide-text p {
-                font-size: 0.95rem;
-                margin-bottom: var(--space-sm);
-                line-height: 1.5;
+                font-size: 0.85rem;
+                margin-bottom: var(--space-xs);
+                line-height: 1.4;
             }
             
             .slide-text .radio-call {
-                font-size: 1rem;
-                padding: var(--space-sm);
-                margin: var(--space-sm) 0;
+                font-size: 0.9rem;
+                padding: var(--space-xs);
+                margin: var(--space-xs) 0;
             }
             
             .slide-next-btn {
                 position: fixed;
-                bottom: 60px;
-                right: var(--space-md);
+                bottom: 50px;
+                right: var(--space-sm);
                 left: auto;
-                padding: var(--space-sm) var(--space-lg);
-                font-size: 0.9rem;
+                padding: var(--space-xs) var(--space-md);
+                font-size: 0.8rem;
                 z-index: 100;
             }
             
             .slide-progress {
                 position: fixed;
-                bottom: var(--space-md);
+                bottom: var(--space-sm);
                 left: 50%;
                 transform: translateX(-50%);
                 z-index: 100;
             }
             
             .skip-intro-btn {
-                top: var(--space-sm);
-                right: var(--space-sm);
-                padding: var(--space-xs) var(--space-sm);
-                font-size: 0.75rem;
+                top: var(--space-xs);
+                right: var(--space-xs);
+                padding: 4px var(--space-sm);
+                font-size: 0.7rem;
             }
             
             .btn-radio-play {
-                padding: var(--space-sm);
-                font-size: 0.85rem;
+                padding: var(--space-xs) var(--space-sm);
+                font-size: 0.8rem;
             }
             
-            /* Mission slide adjustments */
+            /* --- MISSION SLIDE (SITE DAY ZERO PAGE) MOBILE --- */
             .mission-slide {
-                padding: var(--space-md);
-                padding-bottom: 100px;
+                padding: var(--space-sm) !important;
+                padding-bottom: 60px !important;
+                justify-content: flex-start !important;
+                overflow-y: auto !important;
+                height: 100vh !important;
+            }
+            
+            .mission-logo {
+                width: 100px;
+                margin-bottom: var(--space-sm);
             }
             
             .mission-slide h1 {
-                font-size: 1.5rem !important;
-                margin-bottom: var(--space-sm) !important;
+                font-size: 1.8rem !important;
+                margin-bottom: 0 !important;
+                letter-spacing: 0.1em !important;
             }
             
             .mission-slide h2 {
-                font-size: 0.85rem !important;
+                font-size: 0.75rem !important;
+                margin-bottom: var(--space-md) !important;
+                letter-spacing: 0.2em !important;
             }
             
-            .mission-objectives {
-                gap: var(--space-sm);
+            .mission-brief {
+                margin-bottom: var(--space-md);
             }
             
-            .objective-icon {
-                font-size: 1.2rem;
-                width: 28px;
-            }
-            
-            .objective-text strong {
+            .mission-brief p {
                 font-size: 0.85rem;
+                margin-bottom: var(--space-xs);
             }
             
-            .objective-text span {
-                font-size: 0.75rem;
+            .mission-brief .highlight {
+                font-size: 1rem;
+                margin: var(--space-sm) 0;
+            }
+            
+            .intro-buttons {
+                gap: var(--space-sm);
+                width: 100%;
+                padding: 0 var(--space-md);
+            }
+            
+            .intro-buttons .btn-secondary {
+                font-size: 0.8rem;
+                padding: var(--space-xs) var(--space-md);
+            }
+            
+            .intro-buttons .btn-large {
+                font-size: 0.9rem !important;
+                padding: var(--space-sm) var(--space-lg) !important;
             }
             
             /* --- MAIN GAME SCREEN MOBILE --- */
             #game-screen {
                 overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
             }
             
             .game-header {
                 flex-direction: column;
-                padding: var(--space-sm);
-                gap: var(--space-sm);
+                padding: var(--space-xs);
+                gap: var(--space-xs);
+                flex-shrink: 0;
             }
             
             .header-logo {
-                height: 28px;
+                height: 24px;
             }
             
+            /* --- COST COUNTER WITH BREAKDOWN ON MOBILE --- */
             #money-counter {
                 width: 100%;
                 padding: var(--space-xs) var(--space-sm);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+            }
+            
+            .counter-header {
+                font-size: 0.5rem;
             }
             
             .counter-total {
-                font-size: 1.5rem;
+                font-size: 1.2rem;
             }
             
             .counter-time {
-                font-size: 0.75rem;
+                font-size: 0.6rem;
             }
             
+            /* Show breakdown on mobile - simplified */
             .counter-breakdown {
-                display: none;
-            }
-            
-            /* Main game area - fixed to prevent scroll */
-            .game-main {
-                min-height: unset;
-                height: calc(100vh - 180px); /* Header + evidence bar */
-                overflow: hidden;
-            }
-            
-            /* Location grid - more compact */
-            #evidence-locations {
-                grid-template-columns: repeat(3, 1fr);
-                gap: var(--space-xs);
-                padding: var(--space-sm);
+                display: flex !important;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 2px 6px;
+                font-size: 0.5rem;
+                opacity: 0.9;
                 max-width: 100%;
             }
             
-            .evidence-btn {
-                min-height: 70px;
+            .counter-breakdown .cost-line {
+                display: none; /* Hide detailed lines */
+            }
+            
+            .counter-breakdown .cost-line.total-line {
+                display: flex !important; /* Show only burn rate */
+                gap: 4px;
+                background: rgba(220, 38, 38, 0.2);
+                padding: 2px 6px;
+                border-radius: 3px;
+            }
+            
+            .counter-breakdown .cost-line.total-line .cost-label,
+            .counter-breakdown .cost-line.total-line .cost-rate {
+                font-size: 0.55rem;
+            }
+            
+            /* Main game area */
+            .game-main {
+                flex: 1;
+                min-height: 0;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            /* Location grid - 3x2 + 1 compact */
+            #evidence-locations {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 4px;
                 padding: var(--space-xs);
+                flex: 1;
+                align-content: start;
+            }
+            
+            .evidence-btn {
+                min-height: 55px;
+                padding: 4px;
             }
             
             .evidence-btn .evidence-icon {
-                font-size: 1.3rem;
+                font-size: 1.1rem;
             }
             
             .evidence-btn .evidence-label {
-                font-size: 0.65rem;
+                font-size: 0.55rem;
+                line-height: 1.2;
             }
             
-            /* Evidence bar - much more compact */
+            /* --- EVIDENCE BAR - SEE ALL 7 ITEMS --- */
             .evidence-bar {
-                min-height: 80px;
-                padding: var(--space-xs) var(--space-sm);
-                max-width: 100vw;
-                overflow-x: hidden;
-            }
-            
-            .evidence-bar-header {
-                font-size: 0.65rem;
-                margin-bottom: var(--space-xs);
-            }
-            
-            #evidence-cards-bar {
-                gap: var(--space-xs);
-                padding-bottom: var(--space-xs);
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            
-            .evidence-card {
-                width: 150px;
-                min-width: 150px;
-                padding: var(--space-xs);
-            }
-            
-            .evidence-card h5 {
-                font-size: 0.65rem;
-            }
-            
-            .evidence-card p {
-                font-size: 0.6rem;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
+                min-height: auto;
+                max-height: 70px;
+                padding: 4px var(--space-xs);
+                flex-shrink: 0;
                 overflow: hidden;
             }
             
+            .evidence-bar-header {
+                font-size: 0.55rem;
+                margin-bottom: 2px;
+            }
+            
+            #evidence-cards-bar {
+                display: flex;
+                gap: 4px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 4px;
+            }
+            
+            /* Tiny evidence cards - fit all 7 visible */
+            .evidence-card {
+                width: calc((100vw - 40px) / 4.5);
+                min-width: 70px;
+                max-width: 85px;
+                padding: 4px;
+                flex-shrink: 0;
+            }
+            
+            .evidence-card h5 {
+                font-size: 0.5rem;
+                margin-bottom: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .evidence-card p {
+                display: none; /* Hide description to save space */
+            }
+            
             .evidence-bar-empty {
-                font-size: 0.75rem;
+                font-size: 0.65rem;
                 padding: var(--space-xs);
             }
             
-            /* Action buttons */
+            /* --- ACTION BUTTONS - ENSURE CLICKABLE --- */
             .game-actions {
-                bottom: 90px;
+                position: fixed;
+                bottom: 65px; /* Above collection panel */
                 right: var(--space-xs);
-                gap: var(--space-xs);
+                gap: 4px;
+                z-index: 50;
+                flex-direction: column;
             }
             
             .action-btn {
-                padding: var(--space-xs);
+                padding: 8px;
                 min-width: 44px;
                 min-height: 44px;
+                background: rgba(31, 41, 55, 0.95);
+                border: 2px solid var(--warm-gold);
+                border-radius: 8px;
             }
             
             .action-btn .action-label {
@@ -4771,6 +4848,56 @@
             
             .action-btn .action-icon {
                 font-size: 1.3rem;
+            }
+            
+            #submit-btn {
+                border-color: var(--warning-amber);
+            }
+            
+            /* --- COLLECTION PANEL - SHOW ALL 7 SLOTS --- */
+            .collection-panel {
+                padding: var(--space-xs);
+                gap: var(--space-sm);
+                flex-wrap: wrap;
+            }
+            
+            .collection-header {
+                min-width: auto;
+                flex-direction: row;
+                align-items: center;
+                gap: var(--space-xs);
+            }
+            
+            .collection-header h3 {
+                font-size: 0.55rem;
+            }
+            
+            .collection-count {
+                font-size: 0.8rem;
+            }
+            
+            .collection-slots {
+                flex: 1;
+                gap: 4px;
+                justify-content: center;
+            }
+            
+            .collection-slot {
+                width: 38px;
+                height: 38px;
+                border-radius: 6px;
+            }
+            
+            .collection-slot.empty .slot-number {
+                font-size: 0.7rem;
+            }
+            
+            .collection-slot .slot-evidence span {
+                display: none;
+            }
+            
+            .collection-slot.phone-slot {
+                width: 38px;
             }
             
             /* --- EVIDENCE VIEWER MODAL MOBILE --- */
@@ -5562,7 +5689,7 @@
             <!-- Slide 5: Your Mission -->
             <div class="intro-slide" data-slide="5">
                 <div class="slide-content mission-slide">
-                    <img src="../00_images/Logo_White_Nobackground.png" alt="The Nuclear House" class="mission-logo">
+                    <img src="images/logo.png" alt="The Nuclear House" class="mission-logo">
                     <h1>SITE DAY ZERO</h1>
                     <h2>The Investigation</h2>
                     <div class="mission-brief">
@@ -5656,7 +5783,7 @@
     <div id="game-screen" class="screen hidden">
         <!-- Header -->
         <div class="game-header">
-            <img src="../00_images/Logo_White_Nobackground.png" alt="The Nuclear House" class="header-logo">
+            <img src="images/logo.png" alt="The Nuclear House" class="header-logo">
             
             <div id="money-counter">
                 <div class="counter-header">PROJECT DELAY COST</div>
