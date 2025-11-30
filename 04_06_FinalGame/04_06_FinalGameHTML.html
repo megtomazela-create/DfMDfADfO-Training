@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Site Day Zero — The Investigation | Act 4 Assessment</title>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -4769,6 +4769,8 @@
                 display: flex;
                 flex-direction: column;
                 height: 100%;
+                /* Account for mobile browser UI */
+                padding-bottom: env(safe-area-inset-bottom, 0);
             }
             
             .game-header {
@@ -4844,24 +4846,27 @@
                 font-size: 0.5rem;
             }
             
-            /* Main game area */
+            /* Main game area - MUST leave room for collection panel */
             .game-main {
                 flex: 1;
                 min-height: 0;
                 overflow: hidden;
                 position: relative;
+                margin-bottom: 70px !important; /* Space for collection panel + action buttons */
             }
             
-            /* Collection panel - FIXED at bottom */
+            /* Collection panel - NOT fixed, part of flex layout */
             .collection-panel {
-                position: fixed !important;
-                bottom: 0 !important;
+                position: absolute !important;
+                bottom: env(safe-area-inset-bottom, 0) !important;
                 left: 0 !important;
                 right: 0 !important;
-                height: 55px !important;
-                padding: 6px var(--space-sm) !important;
+                height: 60px !important;
+                min-height: 60px !important;
+                padding: 8px var(--space-sm) !important;
                 z-index: 60 !important;
                 background: rgba(31, 41, 55, 0.98) !important;
+                border-top: 1px solid var(--warm-gold) !important;
             }
             
             /* Location grid - 3x2 + 1 compact */
@@ -4935,13 +4940,13 @@
                 padding: var(--space-xs);
             }
             
-            /* --- ACTION BUTTONS - FIXED ABOVE COLLECTION PANEL --- */
+            /* --- ACTION BUTTONS - ABOVE COLLECTION PANEL --- */
             .game-actions {
-                position: fixed !important;
-                bottom: 65px !important; /* Above 55px collection panel */
+                position: absolute !important;
+                bottom: 75px !important; /* Above collection panel + safe area */
                 right: var(--space-sm) !important;
                 gap: 6px !important;
-                z-index: 70 !important;
+                z-index: 55 !important;
                 flex-direction: column !important;
                 display: flex !important;
             }
@@ -4972,13 +4977,7 @@
                 border-color: var(--success-green) !important;
             }
             
-            /* --- COLLECTION PANEL - SHOW ALL 7 SLOTS --- */
-            .collection-panel {
-                padding: var(--space-xs);
-                gap: var(--space-sm);
-                flex-wrap: wrap;
-            }
-            
+            /* --- COLLECTION PANEL CONTENT --- */
             .collection-header {
                 min-width: auto;
                 flex-direction: row;
