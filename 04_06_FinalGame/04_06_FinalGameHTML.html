@@ -4936,10 +4936,12 @@
                 right: 0 !important;
                 height: 60px !important;
                 min-height: 60px !important;
-                padding: 8px var(--space-sm) !important;
+                padding: 8px 12px !important;
+                padding-right: 16px !important; /* Extra padding for GO button */
                 z-index: 60 !important;
                 background: rgba(31, 41, 55, 0.98) !important;
                 border-top: 1px solid var(--warm-gold) !important;
+                box-sizing: border-box !important;
             }
             
             /* Location grid - 3x2 + 1 compact */
@@ -5155,19 +5157,23 @@
                 }
             }
             
-            /* Hotspot preview card for mobile - FIXED position for visibility */
+            /* Hotspot preview card for mobile - FORCE CENTER */
+            .scene-hotspot .hotspot-card,
             .hotspot-card {
                 position: fixed !important;
                 bottom: auto !important;
                 top: 50% !important;
                 left: 50% !important;
+                right: auto !important;
                 transform: translate(-50%, -50%) !important;
-                width: 200px;
+                width: 200px !important;
+                max-width: 85vw !important;
                 padding: 12px;
                 pointer-events: auto;
                 z-index: 200;
                 box-shadow: 0 8px 40px rgba(0,0,0,0.8);
                 border: 2px solid var(--warm-gold);
+                background: var(--darkest) !important;
             }
             
             .hotspot-card img {
@@ -5186,7 +5192,7 @@
             
             /* Hide the arrow on mobile since card is centered */
             .hotspot-card::after {
-                display: none;
+                display: none !important;
             }
             
             /* Add a "tap to enter" hint */
@@ -5429,28 +5435,37 @@
                 font-size: 20px;
             }
             
-            /* Evidence table area - compact cards */
+            /* Evidence table area - scattered cards */
             .table-area {
                 flex: 1;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
-                padding: 50px var(--space-sm) var(--space-sm);
-                padding-bottom: var(--space-sm);
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
+                padding: 50px 10px 10px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
                 align-content: start;
+                justify-content: center;
                 background: rgba(0,0,0,0.4);
             }
             
-            /* Compact evidence cards - tap to expand */
+            /* Compact evidence cards - scattered look */
             .table-area .evidence-card {
-                width: 100%;
-                min-width: 0;
+                width: calc(50% - 10px);
+                max-width: 160px;
+                min-width: 130px;
                 padding: 8px 10px;
                 margin-bottom: 0;
-                transform: none !important;
             }
+            
+            /* Add tilts to cards for scattered look */
+            .table-area .evidence-card:nth-child(1) { transform: rotate(-2deg); }
+            .table-area .evidence-card:nth-child(2) { transform: rotate(1.5deg); }
+            .table-area .evidence-card:nth-child(3) { transform: rotate(-1deg); }
+            .table-area .evidence-card:nth-child(4) { transform: rotate(2.5deg); }
+            .table-area .evidence-card:nth-child(5) { transform: rotate(-1.5deg); }
+            .table-area .evidence-card:nth-child(6) { transform: rotate(1deg); }
+            .table-area .evidence-card:nth-child(7) { transform: rotate(-2.5deg); }
             
             .table-area .evidence-card .card-header {
                 margin-bottom: 4px;
@@ -5502,89 +5517,92 @@
                 display: block;
             }
             
-            /* Classification bar - horizontal at bottom */
+            /* Classification bar - VERTICAL STACK, full width */
             .classification-bar {
                 position: relative !important;
                 bottom: auto !important;
                 left: auto !important;
                 transform: none !important;
                 display: flex !important;
-                flex-direction: row !important;
-                gap: 6px !important;
-                padding: 8px !important;
+                flex-direction: column !important;
+                gap: 8px !important;
+                padding: 10px !important;
                 background: rgba(31, 41, 55, 0.95) !important;
                 flex-shrink: 0;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
+                overflow-y: auto;
+                max-height: 40vh;
             }
             
             .classification-slot {
-                flex: 1;
-                min-width: 100px;
-                min-height: 70px !important;
-                padding: 6px !important;
-                border-radius: 6px;
+                width: 100% !important;
+                min-height: 60px !important;
+                padding: 8px !important;
+                border-radius: 8px;
+                flex-shrink: 0;
             }
             
             .slot-root {
                 border-color: var(--money-red) !important;
-                min-width: 90px;
+                border-width: 2px !important;
             }
             
             .slot-contributing {
-                min-width: 120px;
-                flex: 2;
+                border-color: var(--warning-amber) !important;
+                min-height: 80px !important;
             }
             
             .slot-redherring {
-                min-width: 90px;
+                border-color: var(--medium-dark) !important;
             }
             
             .slot-header {
-                margin-bottom: 4px !important;
+                margin-bottom: 6px !important;
                 padding-bottom: 4px !important;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
             
             .slot-label {
-                font-size: 0.55rem !important;
+                font-size: 0.7rem !important;
             }
             
             .slot-hint {
-                font-size: 0.5rem !important;
-                display: none;
+                font-size: 0.55rem !important;
+                display: inline !important;
+                opacity: 0.7;
             }
             
             .slot-content {
-                gap: 3px !important;
+                gap: 4px !important;
                 flex-wrap: wrap;
+                display: flex;
             }
             
             .mini-card {
-                font-size: 0.5rem !important;
-                padding: 3px 6px !important;
+                font-size: 0.55rem !important;
+                padding: 4px 8px !important;
                 max-width: 100%;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+                border-radius: 4px;
             }
             
             /* Submit area */
             .submit-area {
-                padding: 8px var(--space-sm) !important;
-                padding-bottom: calc(8px + env(safe-area-inset-bottom, 0)) !important;
-                background: rgba(0,0,0,0.8) !important;
+                padding: 10px !important;
+                padding-bottom: calc(10px + env(safe-area-inset-bottom, 0)) !important;
+                background: rgba(0,0,0,0.9) !important;
                 flex-shrink: 0;
             }
             
             .board-status {
-                font-size: 0.65rem !important;
-                margin-bottom: 6px !important;
+                font-size: 0.7rem !important;
+                margin-bottom: 8px !important;
             }
             
             .btn-submit-board {
                 width: 100%;
-                padding: 10px !important;
-                font-size: 0.85rem !important;
+                padding: 12px !important;
+                font-size: 0.9rem !important;
             }
             
             /* --- SOLUTION MODAL MOBILE --- */
@@ -7871,6 +7889,7 @@
             if (!selectedCardForMove) return;
             
             const slot = e.currentTarget;
+            const slotContent = slot.querySelector('.slot-content') || slot;
             const category = slot.getAttribute('data-category');
             const evidenceId = selectedCardForMove.getAttribute('data-evidence-id');
             const evidence = gameState.collectedEvidence.find(ev => ev.id === evidenceId);
@@ -7879,20 +7898,21 @@
             
             // Check limits
             if (category === 'rootCause') {
-                const existing = slot.querySelector('.mini-card');
+                const existing = slotContent.querySelector('.mini-card');
                 if (existing && existing.getAttribute('data-evidence-id') !== evidenceId) {
                     alert('Only one root cause can be selected. Remove the current one first.');
                     return;
                 }
             }
             if (category === 'contributing') {
-                const count = slot.querySelectorAll('.mini-card').length;
-                const alreadyInSlot = slot.querySelector(`[data-evidence-id="${evidenceId}"]`);
+                const count = slotContent.querySelectorAll('.mini-card').length;
+                const alreadyInSlot = slotContent.querySelector(`[data-evidence-id="${evidenceId}"]`);
                 if (count >= 6 && !alreadyInSlot) {
                     alert('Maximum 6 contributing factors allowed.');
                     return;
                 }
             }
+            // redHerring has no limit
             
             // Remove from current location
             selectedCardForMove.remove();
@@ -7900,10 +7920,10 @@
             // Update evidence category
             evidence.category = category;
             
-            // Add mini card to slot
+            // Add mini card to slot content
             const miniCard = createMiniCard(evidence);
             miniCard.addEventListener('click', handleCardTapSelect);
-            slot.appendChild(miniCard);
+            slotContent.appendChild(miniCard);
             
             // Clear selection
             selectedCardForMove = null;
