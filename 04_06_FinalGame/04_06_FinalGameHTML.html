@@ -4619,58 +4619,58 @@
             
             /* --- MISSION SLIDE (SITE DAY ZERO PAGE) MOBILE --- */
             .mission-slide {
-                padding: var(--space-sm) !important;
-                padding-bottom: 60px !important;
-                justify-content: flex-start !important;
+                padding: var(--space-md) !important;
+                justify-content: center !important;
+                align-items: center !important;
+                height: 100% !important;
                 overflow-y: auto !important;
-                height: 100vh !important;
             }
             
             .mission-logo {
-                width: 100px;
-                margin-bottom: var(--space-sm);
+                width: 120px;
+                margin-bottom: var(--space-md);
             }
             
             .mission-slide h1 {
-                font-size: 1.8rem !important;
-                margin-bottom: 0 !important;
+                font-size: 2.2rem !important;
+                margin-bottom: var(--space-xs) !important;
                 letter-spacing: 0.1em !important;
             }
             
             .mission-slide h2 {
-                font-size: 0.75rem !important;
-                margin-bottom: var(--space-md) !important;
+                font-size: 0.9rem !important;
+                margin-bottom: var(--space-lg) !important;
                 letter-spacing: 0.2em !important;
             }
             
             .mission-brief {
-                margin-bottom: var(--space-md);
+                margin-bottom: var(--space-lg);
             }
             
             .mission-brief p {
-                font-size: 0.85rem;
-                margin-bottom: var(--space-xs);
+                font-size: 1rem;
+                margin-bottom: var(--space-sm);
             }
             
             .mission-brief .highlight {
-                font-size: 1rem;
-                margin: var(--space-sm) 0;
+                font-size: 1.2rem;
+                margin: var(--space-md) 0;
             }
             
             .intro-buttons {
-                gap: var(--space-sm);
+                gap: var(--space-md);
                 width: 100%;
-                padding: 0 var(--space-md);
+                padding: 0 var(--space-lg);
             }
             
             .intro-buttons .btn-secondary {
-                font-size: 0.8rem;
-                padding: var(--space-xs) var(--space-md);
+                font-size: 0.9rem;
+                padding: var(--space-sm) var(--space-lg);
             }
             
             .intro-buttons .btn-large {
-                font-size: 0.9rem !important;
-                padding: var(--space-sm) var(--space-lg) !important;
+                font-size: 1rem !important;
+                padding: var(--space-md) var(--space-xl) !important;
             }
             
             /* --- MAIN GAME SCREEN MOBILE --- */
@@ -4692,64 +4692,82 @@
                 height: 24px;
             }
             
-            /* --- COST COUNTER WITH BREAKDOWN ON MOBILE --- */
+            /* --- COST COUNTER WITH FULL BREAKDOWN ON MOBILE --- */
             #money-counter {
                 width: 100%;
                 padding: var(--space-xs) var(--space-sm);
                 display: flex;
-                flex-direction: column;
+                flex-direction: row;
                 align-items: center;
-                gap: 2px;
+                justify-content: space-between;
+                gap: var(--space-sm);
             }
             
             .counter-header {
-                font-size: 0.5rem;
+                font-size: 0.45rem;
             }
             
             .counter-total {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
             
             .counter-time {
-                font-size: 0.6rem;
+                font-size: 0.55rem;
             }
             
-            /* Show breakdown on mobile - simplified */
+            /* Show ALL breakdown on mobile - compact grid */
             .counter-breakdown {
-                display: flex !important;
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 2px 6px;
-                font-size: 0.5rem;
-                opacity: 0.9;
-                max-width: 100%;
+                display: grid !important;
+                grid-template-columns: repeat(3, auto);
+                gap: 1px 8px;
+                font-size: 0.45rem;
+                opacity: 0.95;
             }
             
             .counter-breakdown .cost-line {
-                display: none; /* Hide detailed lines */
+                display: flex !important;
+                justify-content: space-between;
+                gap: 4px;
+            }
+            
+            .counter-breakdown .cost-line .cost-label {
+                font-size: 0.4rem;
+                color: var(--medium-light);
+            }
+            
+            .counter-breakdown .cost-line .cost-rate {
+                font-size: 0.45rem;
+                font-weight: 600;
             }
             
             .counter-breakdown .cost-line.total-line {
-                display: flex !important; /* Show only burn rate */
-                gap: 4px;
-                background: rgba(220, 38, 38, 0.2);
+                grid-column: span 3;
+                background: rgba(220, 38, 38, 0.3);
                 padding: 2px 6px;
                 border-radius: 3px;
+                margin-top: 2px;
+                justify-content: center;
             }
             
             .counter-breakdown .cost-line.total-line .cost-label,
             .counter-breakdown .cost-line.total-line .cost-rate {
-                font-size: 0.55rem;
+                font-size: 0.5rem;
             }
             
-            /* Main game area */
+            /* Main game area - leave room for collection panel */
             .game-main {
                 flex: 1;
                 min-height: 0;
                 overflow: hidden;
                 display: flex;
                 flex-direction: column;
+                padding-bottom: 55px; /* Space for collection panel */
+            }
+            
+            /* Collection panel - smaller on mobile */
+            .collection-panel {
+                height: 50px;
+                padding: 4px var(--space-xs);
             }
             
             /* Location grid - 3x2 + 1 compact */
@@ -4898,6 +4916,71 @@
             
             .collection-slot.phone-slot {
                 width: 38px;
+            }
+            
+            /* --- SCENE HOTSPOTS MOBILE --- */
+            /* Make hotspots 60% of original size */
+            .scene-hotspot {
+                width: 22px;
+                height: 22px;
+                border-width: 2px;
+            }
+            
+            .scene-hotspot.collected::after {
+                font-size: 10px;
+            }
+            
+            @keyframes dotPulseAmber {
+                0%, 100% {
+                    box-shadow: 0 1px 4px rgba(0,0,0,0.4), 0 0 0 0 rgba(217, 119, 6, 0.6);
+                    transform: scale(1);
+                }
+                50% {
+                    box-shadow: 0 1px 4px rgba(0,0,0,0.4), 0 0 0 8px rgba(217, 119, 6, 0);
+                    transform: scale(1.05);
+                }
+            }
+            
+            @keyframes dotPulseGreen {
+                0%, 100% {
+                    box-shadow: 0 1px 4px rgba(0,0,0,0.4), 0 0 0 0 rgba(34, 197, 94, 0.6);
+                    transform: scale(1);
+                }
+                50% {
+                    box-shadow: 0 1px 4px rgba(0,0,0,0.4), 0 0 0 8px rgba(34, 197, 94, 0);
+                    transform: scale(1.05);
+                }
+            }
+            
+            /* Hotspot preview card for mobile - show on tap */
+            .hotspot-card {
+                width: 140px;
+                padding: 6px;
+                bottom: calc(100% + 8px);
+                pointer-events: auto; /* Allow clicking the card on mobile */
+            }
+            
+            .hotspot-card img {
+                height: 55px;
+                margin-bottom: 4px;
+            }
+            
+            .hotspot-card .hotspot-label {
+                font-size: 0.65rem;
+            }
+            
+            .hotspot-card .hotspot-doc {
+                font-size: 0.55rem;
+            }
+            
+            .hotspot-card::after {
+                border-width: 6px;
+            }
+            
+            /* Mobile: show card when hotspot has .preview-active class */
+            .scene-hotspot.preview-active .hotspot-card {
+                opacity: 1;
+                visibility: visible;
             }
             
             /* --- EVIDENCE VIEWER MODAL MOBILE --- */
@@ -5689,7 +5772,7 @@
             <!-- Slide 5: Your Mission -->
             <div class="intro-slide" data-slide="5">
                 <div class="slide-content mission-slide">
-                    <img src="images/logo.png" alt="The Nuclear House" class="mission-logo">
+                    <img src="../00_images/Logo_White_Nobackground.png" alt="The Nuclear House" class="mission-logo">
                     <h1>SITE DAY ZERO</h1>
                     <h2>The Investigation</h2>
                     <div class="mission-brief">
@@ -5783,7 +5866,7 @@
     <div id="game-screen" class="screen hidden">
         <!-- Header -->
         <div class="game-header">
-            <img src="images/logo.png" alt="The Nuclear House" class="header-logo">
+            <img src="../00_images/Logo_White_Nobackground.png" alt="The Nuclear House" class="header-logo">
             
             <div id="money-counter">
                 <div class="counter-header">PROJECT DELAY COST</div>
@@ -7628,11 +7711,57 @@
         // --------------------------------------------
         // 3.3 Event Listeners for Evidence
         // --------------------------------------------
+        
+        // Check if touch device
+        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        
         document.querySelectorAll('.scene-hotspot[data-location]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                openEvidence(btn.getAttribute('data-location'));
-            });
+            if (isTouchDevice) {
+                // Mobile: first tap shows preview, second tap (on card) opens location
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    
+                    // If already showing preview, open location
+                    if (btn.classList.contains('preview-active')) {
+                        openEvidence(btn.getAttribute('data-location'));
+                        btn.classList.remove('preview-active');
+                    } else {
+                        // Remove preview from all other hotspots
+                        document.querySelectorAll('.scene-hotspot.preview-active').forEach(h => {
+                            h.classList.remove('preview-active');
+                        });
+                        // Show preview for this one
+                        btn.classList.add('preview-active');
+                    }
+                });
+                
+                // Also allow clicking the card directly to open
+                const card = btn.querySelector('.hotspot-card');
+                if (card) {
+                    card.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openEvidence(btn.getAttribute('data-location'));
+                        btn.classList.remove('preview-active');
+                    });
+                }
+            } else {
+                // Desktop: click goes directly to location (hover shows preview)
+                btn.addEventListener('click', () => {
+                    openEvidence(btn.getAttribute('data-location'));
+                });
+            }
         });
+        
+        // Close preview when clicking elsewhere on mobile
+        if (isTouchDevice) {
+            document.querySelector('.game-main').addEventListener('click', (e) => {
+                if (!e.target.closest('.scene-hotspot')) {
+                    document.querySelectorAll('.scene-hotspot.preview-active').forEach(h => {
+                        h.classList.remove('preview-active');
+                    });
+                }
+            });
+        }
 
         // Close evidence modal
         document.getElementById('evidence-done').addEventListener('click', closeEvidence);
