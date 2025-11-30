@@ -5052,40 +5052,72 @@
                 }
             }
             
-            /* Hotspot preview card for mobile - show on tap */
+            /* Hotspot preview card for mobile - FIXED position for visibility */
             .hotspot-card {
-                width: 140px;
-                padding: 6px;
-                bottom: calc(100% + 8px);
-                pointer-events: auto; /* Allow clicking the card on mobile */
-                z-index: 100; /* Above all other hotspots */
+                position: fixed !important;
+                bottom: auto !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                width: 200px;
+                padding: 12px;
+                pointer-events: auto;
+                z-index: 200;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.8);
+                border: 2px solid var(--warm-gold);
             }
             
             .hotspot-card img {
-                height: 55px;
-                margin-bottom: 4px;
+                height: 80px;
+                margin-bottom: 8px;
             }
             
             .hotspot-card .hotspot-label {
-                font-size: 0.65rem;
+                font-size: 0.85rem;
+                margin-bottom: 4px;
             }
             
             .hotspot-card .hotspot-doc {
-                font-size: 0.55rem;
+                font-size: 0.7rem;
             }
             
+            /* Hide the arrow on mobile since card is centered */
             .hotspot-card::after {
-                border-width: 6px;
+                display: none;
+            }
+            
+            /* Add a "tap to enter" hint */
+            .scene-hotspot.preview-active .hotspot-card::before {
+                content: 'Tap to enter →';
+                display: block;
+                font-size: 0.65rem;
+                color: var(--warm-gold);
+                text-align: center;
+                margin-top: 8px;
+                padding-top: 8px;
+                border-top: 1px solid rgba(184, 134, 11, 0.3);
             }
             
             /* Mobile: show card when hotspot has .preview-active class */
             .scene-hotspot.preview-active {
-                z-index: 50; /* Bring active hotspot above others */
+                z-index: 50;
             }
             
             .scene-hotspot.preview-active .hotspot-card {
                 opacity: 1;
                 visibility: visible;
+            }
+            
+            /* Dim background when preview is shown */
+            .game-main.preview-mode::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 100;
             }
             
             /* --- EVIDENCE VIEWER MODAL MOBILE --- */
@@ -7828,11 +7860,13 @@
                 // Mobile: first tap shows preview, second tap (on card) opens location
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
+                    const gameMain = document.querySelector('.game-main');
                     
                     // If already showing preview, open location
                     if (btn.classList.contains('preview-active')) {
                         openEvidence(btn.getAttribute('data-location'));
                         btn.classList.remove('preview-active');
+                        gameMain.classList.remove('preview-mode');
                     } else {
                         // Remove preview from all other hotspots
                         document.querySelectorAll('.scene-hotspot.preview-active').forEach(h => {
@@ -7840,6 +7874,7 @@
                         });
                         // Show preview for this one
                         btn.classList.add('preview-active');
+                        gameMain.classList.add('preview-mode');
                     }
                 });
                 
@@ -7850,6 +7885,7 @@
                         e.stopPropagation();
                         openEvidence(btn.getAttribute('data-location'));
                         btn.classList.remove('preview-active');
+                        document.querySelector('.game-main').classList.remove('preview-mode');
                     });
                 }
             } else {
@@ -7863,10 +7899,11 @@
         // Close preview when clicking elsewhere on mobile
         if (isTouchDevice) {
             document.querySelector('.game-main').addEventListener('click', (e) => {
-                if (!e.target.closest('.scene-hotspot')) {
+                if (!e.target.closest('.scene-hotspot') && !e.target.closest('.hotspot-card')) {
                     document.querySelectorAll('.scene-hotspot.preview-active').forEach(h => {
                         h.classList.remove('preview-active');
                     });
+                    document.querySelector('.game-main').classList.remove('preview-mode');
                 }
             });
         }
