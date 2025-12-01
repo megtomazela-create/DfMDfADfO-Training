@@ -4925,7 +4925,7 @@
                 min-height: 0;
                 overflow: hidden;
                 position: relative;
-                margin-bottom: 65px !important; /* Space for collection panel */
+                margin-bottom: 55px !important; /* Space for collection panel */
             }
             
             /* Collection panel - compact row */
@@ -4934,14 +4934,14 @@
                 bottom: env(safe-area-inset-bottom, 0) !important;
                 left: 0 !important;
                 right: 0 !important;
-                height: 50px !important;
-                padding: 5px 8px !important;
+                height: 54px !important;
+                padding: 6px 10px !important;
                 z-index: 60 !important;
                 background: rgba(31, 41, 55, 0.98) !important;
                 border-top: 1px solid var(--warm-gold) !important;
                 display: flex !important;
                 align-items: center !important;
-                gap: 6px !important;
+                gap: 8px !important;
             }
             
             .collection-header {
@@ -4951,18 +4951,18 @@
             .collection-slots {
                 flex: 1 !important;
                 display: flex !important;
-                gap: 2px !important;
+                gap: 4px !important;
                 justify-content: center !important;
             }
             
             .collection-slot {
-                width: 28px !important;
-                height: 28px !important;
-                border-radius: 4px !important;
+                width: 38px !important;
+                height: 38px !important;
+                border-radius: 5px !important;
             }
             
             .collection-slot.empty .slot-number {
-                font-size: 0.5rem;
+                font-size: 0.65rem;
             }
             
             .collection-slot .slot-evidence span {
@@ -4974,8 +4974,8 @@
             }
             
             .collection-actions .btn-primary {
-                font-size: 0.6rem !important;
-                padding: 6px 10px !important;
+                font-size: 0.65rem !important;
+                padding: 8px 12px !important;
             }
             
             .board-btn-text {
@@ -4984,16 +4984,16 @@
             
             #open-board-btn::before {
                 content: '📋';
-                font-size: 0.85rem;
+                font-size: 0.9rem;
             }
             
             #open-board-btn:not(:disabled)::before {
                 content: 'GO →';
-                font-size: 0.7rem;
+                font-size: 0.75rem;
                 font-weight: bold;
             }
             
-            /* Hide action buttons - GO button is in collection panel */
+            /* Hide floating action buttons - GO button is in collection panel */
             .game-actions {
                 display: none !important;
             }
@@ -5902,6 +5902,34 @@
             .table-area.tap-hint {
                 outline: 3px dashed var(--warm-gold);
                 outline-offset: -3px;
+            }
+            
+            /* Toast notifications */
+            .toast-notification {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(31, 41, 55, 0.95);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-size: 0.8rem;
+                z-index: 9999;
+                text-align: center;
+                max-width: 280px;
+                border: 2px solid var(--warning-amber);
+                box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+                animation: toastIn 0.3s ease;
+            }
+            
+            .toast-notification.error {
+                border-color: var(--money-red);
+            }
+            
+            @keyframes toastIn {
+                from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+                to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
             }
             
             /* Larger touch targets */
@@ -7649,7 +7677,7 @@
             }
             
             // Setup touch drag for cards
-            setupTouchDrag();
+            // No touch drag - just tap to select
         }
         
         // Handle tap on evidence card - expand/collapse or select
@@ -7687,114 +7715,14 @@
             card.classList.add('expanded');
         }
         
-        // Close expanded card when tapping outside
+        // Close expanded card when tapping outside (but not on slots)
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('.evidence-card')) {
+            if (!e.target.closest('.evidence-card') && !e.target.closest('.classification-slot') && !e.target.closest('.mini-card')) {
                 document.querySelectorAll('.evidence-card.expanded').forEach(c => {
                     c.classList.remove('expanded');
                 });
             }
         });
-        
-        // Setup touch drag functionality
-        function setupTouchDrag() {
-            let draggedCard = null;
-            let touchStartX = 0;
-            let touchStartY = 0;
-            let cardStartX = 0;
-            let cardStartY = 0;
-            
-            document.querySelectorAll('.evidence-card, .mini-card').forEach(card => {
-                card.addEventListener('touchstart', function(e) {
-                    // Long press to start drag
-                    const touch = e.touches[0];
-                    touchStartX = touch.clientX;
-                    touchStartY = touch.clientY;
-                    
-                    // Start drag after 300ms hold
-                    card.holdTimer = setTimeout(() => {
-                        draggedCard = card;
-                        card.classList.add('dragging');
-                        card.style.position = 'fixed';
-                        card.style.zIndex = '1000';
-                        card.style.width = '150px';
-                        cardStartX = touch.clientX - 75;
-                        cardStartY = touch.clientY - 30;
-                        card.style.left = cardStartX + 'px';
-                        card.style.top = cardStartY + 'px';
-                        
-                        // Show drop hints
-                        showMobileDropHints();
-                    }, 300);
-                }, { passive: true });
-                
-                card.addEventListener('touchmove', function(e) {
-                    if (!draggedCard) {
-                        // Cancel hold if moved too much
-                        const touch = e.touches[0];
-                        const dx = Math.abs(touch.clientX - touchStartX);
-                        const dy = Math.abs(touch.clientY - touchStartY);
-                        if (dx > 10 || dy > 10) {
-                            clearTimeout(card.holdTimer);
-                        }
-                        return;
-                    }
-                    
-                    e.preventDefault();
-                    const touch = e.touches[0];
-                    draggedCard.style.left = (touch.clientX - 75) + 'px';
-                    draggedCard.style.top = (touch.clientY - 30) + 'px';
-                    
-                    // Highlight drop zone under finger
-                    const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-                    document.querySelectorAll('.classification-slot').forEach(s => s.classList.remove('drag-over'));
-                    const slot = elemBelow?.closest('.classification-slot');
-                    if (slot) slot.classList.add('drag-over');
-                }, { passive: false });
-                
-                card.addEventListener('touchend', function(e) {
-                    clearTimeout(card.holdTimer);
-                    
-                    if (!draggedCard) return;
-                    
-                    const touch = e.changedTouches[0];
-                    const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-                    const slot = elemBelow?.closest('.classification-slot');
-                    
-                    if (slot) {
-                        // Simulate drop
-                        selectedCardForMove = draggedCard;
-                        handleSlotTapDrop({ currentTarget: slot, stopPropagation: () => {} });
-                    }
-                    
-                    // Reset card style
-                    draggedCard.classList.remove('dragging');
-                    draggedCard.style.position = '';
-                    draggedCard.style.zIndex = '';
-                    draggedCard.style.width = '';
-                    draggedCard.style.left = '';
-                    draggedCard.style.top = '';
-                    draggedCard = null;
-                    
-                    hideMobileDropHints();
-                    document.querySelectorAll('.classification-slot').forEach(s => s.classList.remove('drag-over'));
-                });
-                
-                card.addEventListener('touchcancel', function() {
-                    clearTimeout(card.holdTimer);
-                    if (draggedCard) {
-                        draggedCard.classList.remove('dragging');
-                        draggedCard.style.position = '';
-                        draggedCard.style.zIndex = '';
-                        draggedCard.style.width = '';
-                        draggedCard.style.left = '';
-                        draggedCard.style.top = '';
-                        draggedCard = null;
-                    }
-                    hideMobileDropHints();
-                });
-            });
-        }
         
         function handleCardTapSelect(e) {
             e.stopPropagation();
@@ -7826,6 +7754,24 @@
             }
         }
         
+        // Toast notification function
+        function showToast(message, isError = false) {
+            // Remove any existing toast
+            const existing = document.querySelector('.toast-notification');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification' + (isError ? ' error' : '');
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Auto-remove after 2 seconds
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+        
         function handleSlotTapDrop(e) {
             if (!selectedCardForMove) return;
             
@@ -7841,7 +7787,7 @@
             if (category === 'rootCause') {
                 const existing = slotContent.querySelector('.mini-card');
                 if (existing && existing.getAttribute('data-evidence-id') !== evidenceId) {
-                    alert('Only one root cause can be selected. Remove the current one first.');
+                    showToast('Root Cause only takes 1 card. Tap existing card to move it first.', true);
                     return;
                 }
             }
@@ -7849,7 +7795,7 @@
                 const count = slotContent.querySelectorAll('.mini-card').length;
                 const alreadyInSlot = slotContent.querySelector(`[data-evidence-id="${evidenceId}"]`);
                 if (count >= 6 && !alreadyInSlot) {
-                    alert('Maximum 6 contributing factors allowed.');
+                    showToast('Other Issues is full (max 6 cards)', true);
                     return;
                 }
             }
@@ -7868,6 +7814,8 @@
             
             // Clear selection
             selectedCardForMove = null;
+            document.querySelectorAll('.selected-for-move').forEach(c => c.classList.remove('selected-for-move'));
+            document.querySelectorAll('.expanded').forEach(c => c.classList.remove('expanded'));
             hideMobileDropHints();
             
             // Update board status
@@ -8218,6 +8166,30 @@
         // Check if touch device
         const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
         
+        // Function to position preview card within viewport
+        function positionPreviewCard(btn) {
+            const card = btn.querySelector('.hotspot-card');
+            if (!card || !isTouchDevice) return;
+            
+            // Reset any inline styles first
+            card.style.top = '';
+            card.style.left = '';
+            card.style.right = '';
+            card.style.bottom = '';
+            card.style.transform = '';
+            
+            // Force card to center of viewport
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const cardWidth = 200; // approximate
+            const cardHeight = 150; // approximate
+            
+            card.style.position = 'fixed';
+            card.style.top = Math.max(60, (vh - cardHeight) / 2) + 'px';
+            card.style.left = Math.max(10, (vw - cardWidth) / 2) + 'px';
+            card.style.transform = 'none';
+        }
+        
         document.querySelectorAll('.scene-hotspot[data-location]').forEach(btn => {
             if (isTouchDevice) {
                 // Mobile: first tap shows preview, second tap (on card) opens location
@@ -8238,6 +8210,9 @@
                         // Show preview for this one
                         btn.classList.add('preview-active');
                         gameMain.classList.add('preview-mode');
+                        
+                        // Position the card within viewport
+                        positionPreviewCard(btn);
                     }
                 });
                 
