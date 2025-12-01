@@ -5332,14 +5332,15 @@
             /* Table glow when it's a valid drop target */
             .table-area.tap-hint {
                 animation: tableGlow 1.5s ease-in-out infinite;
+                z-index: 195;
             }
             
             @keyframes tableGlow {
                 0%, 100% {
-                    box-shadow: inset 0 0 20px 5px rgba(212, 175, 55, 0.3);
+                    box-shadow: inset 0 0 30px 10px rgba(212, 175, 55, 0.4);
                 }
                 50% {
-                    box-shadow: inset 0 0 40px 10px rgba(212, 175, 55, 0.5);
+                    box-shadow: inset 0 0 50px 15px rgba(212, 175, 55, 0.7);
                 }
             }
             
@@ -6570,7 +6571,7 @@
             <!-- Submit area - OUTSIDE classification bar -->
             <div class="submit-area">
                 <div class="board-status" id="board-status">Drag cards to classify</div>
-                <button class="btn-submit-board" id="submit-board-btn" disabled>Submit →</button>
+                <button class="btn-submit-board" id="submit-board-btn" disabled>Submit Analysis →</button>
             </div>
         </div>
     </div>
