@@ -5506,7 +5506,7 @@
             .slot-table {
                 display: none !important;
                 position: fixed !important;
-                top: 22% !important;
+                top: 30% !important;
                 left: 50% !important;
                 transform: translateX(-50%) !important;
                 width: 120px !important;
@@ -7771,14 +7771,8 @@
             const contribSlot = document.querySelector('#contributing-zone .slot-content');
             const redherringSlot = document.querySelector('#redherring-zone .slot-content');
             
-            // Preserve the table-slot element before clearing
-            const tableSlot = document.getElementById('table-slot');
-            
-            // Clear everything except preserve table-slot
+            // Clear everything
             tableArea.innerHTML = '';
-            if (tableSlot) {
-                tableArea.appendChild(tableSlot);
-            }
             rootSlot.innerHTML = '';
             contribSlot.innerHTML = '';
             redherringSlot.innerHTML = '';
@@ -11599,7 +11593,370 @@
             });
         });
 
+        // ============================================
+        // HOTSPOT EDITOR MODE
+        // Press 'E' to toggle editor mode
+        // Works on main page AND inside location modals
+        // ============================================
+        let editorMode = false;
+        let editorPanel = null;
+        let currentEditContext = 'main'; // 'main' or location ID
+        
+        function createEditorPanel() {
+            const panel = document.createElement('div');
+            panel.id = 'hotspot-editor';
+            panel.innerHTML = `
+                <style>
+                    #hotspot-editor {
+                        position: fixed;
+                        top: 10px;
+                        left: 10px;
+                        background: rgba(0,0,0,0.95);
+                        border: 2px solid #00ff00;
+                        border-radius: 8px;
+                        padding: 15px;
+                        z-index: 99999;
+                        font-family: monospace;
+                        font-size: 12px;
+                        color: #00ff00;
+                        min-width: 350px;
+                        max-height: 80vh;
+                        overflow-y: auto;
+                    }
+                    #hotspot-editor h3 {
+                        margin: 0 0 10px 0;
+                        color: #00ff00;
+                        font-size: 14px;
+                    }
+                    #hotspot-editor .context-label {
+                        background: #00ff00;
+                        color: #000;
+                        padding: 3px 8px;
+                        border-radius: 4px;
+                        font-weight: bold;
+                        margin-bottom: 10px;
+                        display: inline-block;
+                    }
+                    #hotspot-editor .coords {
+                        margin: 5px 0;
+                        padding: 5px;
+                        background: #111;
+                        border-radius: 4px;
+                    }
+                    #hotspot-editor .coord-line {
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 3px 0;
+                        border-bottom: 1px solid #333;
+                    }
+                    #hotspot-editor .coord-line:last-child {
+                        border-bottom: none;
+                    }
+                    #hotspot-editor .hotspot-name {
+                        color: #ffaa00;
+                    }
+                    #hotspot-editor .hotspot-id {
+                        color: #00aaff;
+                        font-size: 10px;
+                    }
+                    #hotspot-editor .copy-btn {
+                        background: #00ff00;
+                        color: #000;
+                        border: none;
+                        padding: 5px 10px;
+                        margin-top: 10px;
+                        cursor: pointer;
+                        border-radius: 4px;
+                        font-family: monospace;
+                    }
+                    #hotspot-editor .instructions {
+                        color: #888;
+                        font-size: 10px;
+                        margin-top: 10px;
+                    }
+                    .scene-hotspot.editor-mode,
+                    .hotspot.editor-mode {
+                        cursor: move !important;
+                    }
+                    .scene-hotspot.editor-mode::after {
+                        content: attr(data-location);
+                        position: absolute;
+                        top: -20px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        background: #000;
+                        color: #00ff00;
+                        padding: 2px 6px;
+                        font-size: 10px;
+                        font-family: monospace;
+                        border-radius: 3px;
+                        white-space: nowrap;
+                    }
+                    .hotspot.editor-mode::after {
+                        content: attr(data-hotspot-id);
+                        position: absolute;
+                        top: -20px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        background: #000;
+                        color: #00ff00;
+                        padding: 2px 6px;
+                        font-size: 10px;
+                        font-family: monospace;
+                        border-radius: 3px;
+                        white-space: nowrap;
+                    }
+                </style>
+                <h3>🔧 HOTSPOT EDITOR (Press E to close)</h3>
+                <div class="context-label" id="editor-context">MAIN PAGE</div>
+                <div class="coords" id="coord-display">
+                    Loading coordinates...
+                </div>
+                <button class="copy-btn" onclick="copyCoords()">📋 Copy All Coordinates</button>
+                <div class="instructions">
+                    Drag hotspots to reposition.<br>
+                    Coordinates update in real-time.<br>
+                    Works on main page & inside locations.
+                </div>
+            `;
+            document.body.appendChild(panel);
+            return panel;
+        }
+        
+        function updateCoordDisplay() {
+            const display = document.getElementById('coord-display');
+            const contextLabel = document.getElementById('editor-context');
+            if (!display) return;
+            
+            // Check if we're in a location modal
+            const evidenceModal = document.getElementById('evidence-modal');
+            const isInModal = evidenceModal && !evidenceModal.classList.contains('hidden');
+            
+            let html = '';
+            
+            if (isInModal) {
+                // Get location hotspots inside modal
+                const container = document.getElementById('evidence-image-container');
+                const hotspots = container.querySelectorAll('.hotspot');
+                const locationTitle = document.getElementById('evidence-title').textContent;
+                
+                if (contextLabel) contextLabel.textContent = locationTitle.toUpperCase();
+                currentEditContext = locationTitle;
+                
+                hotspots.forEach(h => {
+                    const id = h.getAttribute('data-hotspot-id') || 'unknown';
+                    const left = h.style.left || '0%';
+                    const top = h.style.top || '0%';
+                    
+                    html += `<div class="coord-line">
+                        <span class="hotspot-id">${id}</span>
+                        <span>x: ${parseFloat(left).toFixed(1)}, y: ${parseFloat(top).toFixed(1)}</span>
+                    </div>`;
+                });
+            } else {
+                // Main page hotspots
+                if (contextLabel) contextLabel.textContent = 'MAIN PAGE';
+                currentEditContext = 'main';
+                
+                const hotspots = document.querySelectorAll('.scene-hotspot');
+                
+                hotspots.forEach(h => {
+                    const loc = h.getAttribute('data-location') || h.id || 'phone';
+                    const top = h.style.top || '0%';
+                    const left = h.style.left || '';
+                    const right = h.style.right || '';
+                    
+                    const posStr = left ? `left: ${left}; top: ${top}` : `right: ${right}; top: ${top}`;
+                    
+                    html += `<div class="coord-line">
+                        <span class="hotspot-name">${loc}</span>
+                        <span>${posStr}</span>
+                    </div>`;
+                });
+            }
+            
+            display.innerHTML = html || '<em>No hotspots found</em>';
+        }
+        
+        window.copyCoords = function() {
+            const evidenceModal = document.getElementById('evidence-modal');
+            const isInModal = evidenceModal && !evidenceModal.classList.contains('hidden');
+            
+            let text = '';
+            
+            if (isInModal) {
+                const container = document.getElementById('evidence-image-container');
+                const hotspots = container.querySelectorAll('.hotspot');
+                const locationTitle = document.getElementById('evidence-title').textContent;
+                
+                text = `// ${locationTitle} hotspot positions:\n`;
+                hotspots.forEach(h => {
+                    const id = h.getAttribute('data-hotspot-id') || 'unknown';
+                    const left = parseFloat(h.style.left) || 0;
+                    const top = parseFloat(h.style.top) || 0;
+                    text += `{ id: "${id}", x: ${left.toFixed(1)}, y: ${top.toFixed(1)} },\n`;
+                });
+            } else {
+                text = '// Main page hotspot positions:\n';
+                const hotspots = document.querySelectorAll('.scene-hotspot');
+                
+                hotspots.forEach(h => {
+                    const loc = h.getAttribute('data-location') || h.id || 'phone';
+                    const top = h.style.top || '0%';
+                    const left = h.style.left || '';
+                    const right = h.style.right || '';
+                    
+                    const posStr = left ? `style="left: ${left}; top: ${top}"` : `style="right: ${right}; top: ${top}"`;
+                    text += `// ${loc}: ${posStr}\n`;
+                });
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Coordinates copied to clipboard!');
+            });
+        };
+        
+        function enableDragging(hotspot, container) {
+            let isDragging = false;
+            let startX, startY, startLeft, startTop;
+            
+            hotspot.addEventListener('mousedown', (e) => {
+                if (!editorMode) return;
+                e.preventDefault();
+                e.stopPropagation();
+                
+                isDragging = true;
+                hotspot.style.zIndex = '1000';
+                
+                startX = e.clientX;
+                startY = e.clientY;
+                
+                // Get current position as percentage
+                startTop = parseFloat(hotspot.style.top) || 0;
+                startLeft = parseFloat(hotspot.style.left) || 0;
+                
+                // If using 'right', convert to left
+                if (hotspot.style.right && !hotspot.style.left) {
+                    const rect = container.getBoundingClientRect();
+                    const rightPct = parseFloat(hotspot.style.right);
+                    startLeft = 100 - rightPct - (hotspot.offsetWidth / rect.width * 100);
+                    hotspot.style.left = startLeft + '%';
+                    hotspot.style.right = '';
+                }
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging || !editorMode) return;
+                
+                const rect = container.getBoundingClientRect();
+                
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+                
+                const deltaXPct = (deltaX / rect.width) * 100;
+                const deltaYPct = (deltaY / rect.height) * 100;
+                
+                let newLeft = startLeft + deltaXPct;
+                let newTop = startTop + deltaYPct;
+                
+                // Clamp values
+                newLeft = Math.max(0, Math.min(98, newLeft));
+                newTop = Math.max(0, Math.min(98, newTop));
+                
+                hotspot.style.left = newLeft.toFixed(1) + '%';
+                hotspot.style.top = newTop.toFixed(1) + '%';
+                hotspot.style.right = '';
+                
+                updateCoordDisplay();
+            });
+            
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    hotspot.style.zIndex = '';
+                }
+            });
+        }
+        
+        function applyEditorToCurrentContext() {
+            const evidenceModal = document.getElementById('evidence-modal');
+            const isInModal = evidenceModal && !evidenceModal.classList.contains('hidden');
+            
+            if (isInModal) {
+                // Apply to location modal hotspots
+                const container = document.getElementById('evidence-image-container');
+                const hotspots = container.querySelectorAll('.hotspot');
+                
+                hotspots.forEach(h => {
+                    h.classList.add('editor-mode');
+                    enableDragging(h, container);
+                });
+            } else {
+                // Apply to main page hotspots
+                const scene = document.querySelector('.investigation-scene');
+                document.querySelectorAll('.scene-hotspot').forEach(h => {
+                    h.classList.add('editor-mode');
+                    enableDragging(h, scene);
+                });
+            }
+            
+            updateCoordDisplay();
+        }
+        
+        function removeEditorFromAll() {
+            document.querySelectorAll('.scene-hotspot, .hotspot').forEach(h => {
+                h.classList.remove('editor-mode');
+            });
+        }
+        
+        function toggleEditorMode() {
+            editorMode = !editorMode;
+            
+            if (editorMode) {
+                // Create panel if doesn't exist
+                if (!editorPanel) {
+                    editorPanel = createEditorPanel();
+                }
+                applyEditorToCurrentContext();
+                
+                console.log('Editor mode ENABLED - drag hotspots to reposition');
+            } else {
+                // Remove panel
+                if (editorPanel) {
+                    editorPanel.remove();
+                    editorPanel = null;
+                }
+                removeEditorFromAll();
+                
+                console.log('Editor mode DISABLED');
+            }
+        }
+        
+        // Re-apply editor when modal opens/closes
+        const evidenceModalObserver = new MutationObserver((mutations) => {
+            if (editorMode) {
+                setTimeout(() => {
+                    applyEditorToCurrentContext();
+                }, 100);
+            }
+        });
+        
+        const evidenceModal = document.getElementById('evidence-modal');
+        if (evidenceModal) {
+            evidenceModalObserver.observe(evidenceModal, { attributes: true, attributeFilter: ['class'] });
+        }
+        
+        // Press E to toggle editor
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'e' || e.key === 'E') {
+                // Don't toggle if typing in an input
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                toggleEditorMode();
+            }
+        });
+
         console.log('Site Day Zero - All Phases Complete');
+        console.log('Press E to toggle hotspot editor mode (works on main page AND inside locations)');
     </script>
 </body>
 </html>
