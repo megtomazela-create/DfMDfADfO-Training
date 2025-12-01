@@ -5314,11 +5314,11 @@
                 justify-content: center;
                 background: rgba(0,0,0,0.4);
                 position: relative;
-                z-index: 1;
             }
             
-            /* When table is a drop target, bring it above dim overlay */
-            .table-area.drop-target {
+            /* When table is a drop target or has expanded card, bring it above dim overlay */
+            .table-area.drop-target,
+            .table-area.has-expanded {
                 z-index: 195;
             }
             
@@ -7899,6 +7899,11 @@
             
             // Expand this card
             card.classList.add('expanded');
+            
+            // Raise table-area z-index so expanded card is above dim overlay
+            const tableArea = document.getElementById('evidence-table');
+            if (tableArea) tableArea.classList.add('has-expanded');
+            
             expandedCard = { 
                 type: 'full', 
                 element: card, 
@@ -8123,6 +8128,10 @@
                 expandedCard = null;
                 expandedOverlay = null;
             }
+            
+            // Remove has-expanded class from table area
+            const tableArea = document.getElementById('evidence-table');
+            if (tableArea) tableArea.classList.remove('has-expanded');
             
             hideDimOverlay();
             hideMobileDropHints();
