@@ -5383,19 +5383,20 @@
             }
             
             .table-area .evidence-card.expanded::after {
-                content: 'Tap again to select';
+                content: 'Tap a box below to classify';
                 position: absolute;
                 bottom: 6px;
                 left: 0;
                 right: 0;
                 text-align: center;
-                font-size: 0.55rem;
+                font-size: 0.6rem;
                 color: var(--warm-gold);
             }
             
+            /* Remove the old selected-for-move state hint - no longer needed */
             .table-area .evidence-card.expanded.selected-for-move::after {
-                content: '✓ Tap a box below';
-                color: var(--success-green);
+                content: 'Tap a box below to classify';
+                color: var(--warm-gold);
             }
             
             .table-area .evidence-card.expanded .card-title {
@@ -5431,8 +5432,8 @@
                 flex: 1 !important;
                 min-width: 0 !important;
                 width: auto !important;
-                min-height: 60px !important;
-                padding: 4px !important;
+                min-height: 90px !important;
+                padding: 6px !important;
                 border-radius: 5px;
                 display: flex;
                 flex-direction: column;
@@ -5452,46 +5453,120 @@
             }
             
             .slot-header {
-                margin-bottom: 2px !important;
-                padding-bottom: 2px !important;
+                margin-bottom: 4px !important;
+                padding-bottom: 4px !important;
                 flex-shrink: 0;
                 text-align: center;
             }
             
             .slot-icon {
-                font-size: 0.65rem;
+                font-size: 0.8rem;
                 display: block;
             }
             
             .slot-label {
-                font-size: 0.45rem !important;
+                font-size: 0.55rem !important;
                 display: block;
             }
             
             .slot-hint {
-                font-size: 0.4rem !important;
+                font-size: 0.45rem !important;
                 display: block !important;
                 opacity: 0.6;
             }
             
             .slot-content {
-                gap: 2px !important;
+                gap: 3px !important;
                 flex-wrap: wrap;
                 display: flex;
                 flex: 1;
-                min-height: 18px;
+                min-height: 24px;
                 align-content: start;
             }
             
             .mini-card {
-                font-size: 0.4rem !important;
-                padding: 2px 3px !important;
-                border-radius: 2px;
+                font-size: 0.45rem !important;
+                padding: 3px 5px !important;
+                border-radius: 3px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 max-width: 100%;
                 cursor: pointer;
+            }
+            
+            /* Expanded mini-card overlay - same style as expanded evidence card */
+            .mini-card-expanded-overlay {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 85vw;
+                max-width: 300px;
+                z-index: 250;
+                padding: 12px;
+                padding-bottom: 30px;
+                background: #fffef8;
+                border-radius: 4px;
+                box-shadow: 0 10px 50px rgba(0,0,0,0.9);
+                border-left: 5px solid var(--warm-gold);
+            }
+            
+            .mini-card-expanded-overlay .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 10px;
+                padding-bottom: 8px;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            
+            .mini-card-expanded-overlay .card-title {
+                font-family: var(--font-heading);
+                font-size: 0.9rem;
+                font-weight: 700;
+                color: #1a1a1a;
+                line-height: 1.3;
+            }
+            
+            .mini-card-expanded-overlay .card-source {
+                font-size: 0.65rem;
+                color: #888;
+                background: #f0f0f0;
+                padding: 2px 8px;
+                border-radius: 10px;
+                margin-left: 8px;
+                white-space: nowrap;
+            }
+            
+            .mini-card-expanded-overlay .card-body {
+                font-family: Georgia, serif;
+                font-size: 0.75rem;
+                color: #333;
+                line-height: 1.5;
+            }
+            
+            .mini-card-expanded-overlay::after {
+                content: 'Tap a box to move, or tap table to return';
+                position: absolute;
+                bottom: 6px;
+                left: 0;
+                right: 0;
+                text-align: center;
+                font-size: 0.55rem;
+                color: var(--warm-gold);
+                font-family: var(--font-body);
+            }
+            
+            /* Dim overlay when card is expanded */
+            .board-dim-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.6);
+                z-index: 190;
             }
             
             /* Submit area - inline with status */
@@ -7618,8 +7693,16 @@
         
         // ============================================
         // MOBILE TOUCH SUPPORT FOR EVIDENCE BOARD
+        // Simplified flow:
+        // 1. Tap card on table → expands
+        // 2. While expanded, tap box → moves there
+        // 3. Tap mini-card in box → expands as overlay
+        // 4. While expanded, tap different box → moves there
+        // 5. While expanded, tap table → returns to table
         // ============================================
-        let selectedCardForMove = null;
+        let expandedCard = null;  // Currently expanded card (full card or mini-card data)
+        let expandedOverlay = null;  // The overlay element for mini-cards
+        let dimOverlay = null;  // Background dim
         
         function setupMobileTouchSupport() {
             // Check if touch device
@@ -7627,212 +7710,127 @@
             
             if (!isTouchDevice) return;
             
-            // Add tap-to-expand for evidence cards in table area
+            // Add tap handlers for evidence cards in table area
             document.querySelectorAll('.table-area .evidence-card').forEach(card => {
                 card.addEventListener('click', handleCardTap);
             });
             
-            // Add tap-to-select for mini cards
+            // Add tap handlers for mini cards in slots
             document.querySelectorAll('.mini-card').forEach(card => {
-                card.addEventListener('click', handleCardTapSelect);
+                card.addEventListener('click', handleMiniCardTap);
             });
             
-            // Add tap-to-drop for classification slots
+            // Add tap handlers for classification slots
             document.querySelectorAll('.classification-slot').forEach(slot => {
-                slot.addEventListener('click', handleSlotTapDrop);
+                slot.addEventListener('click', handleSlotTap);
             });
             
-            // Add tap to return to table
+            // Add tap handler for table area (to return cards)
             const tableArea = document.getElementById('evidence-table');
             if (tableArea) {
-                tableArea.addEventListener('click', handleTableTapDrop);
+                tableArea.addEventListener('click', handleTableTap);
             }
-            
-            // Setup touch drag for cards
-            setupTouchDrag();
         }
         
-        // Handle tap on evidence card - expand/collapse or select
+        // Handle tap on evidence card on table - expand it
         function handleCardTap(e) {
             e.stopPropagation();
             const card = e.currentTarget;
             
-            // If card is expanded, tap again to select it for moving
+            // If this card is already expanded, collapse it
             if (card.classList.contains('expanded')) {
-                // Toggle selection
-                if (card.classList.contains('selected-for-move')) {
-                    card.classList.remove('selected-for-move');
-                    selectedCardForMove = null;
-                    hideMobileDropHints();
-                } else {
-                    document.querySelectorAll('.selected-for-move').forEach(c => c.classList.remove('selected-for-move'));
-                    card.classList.add('selected-for-move');
-                    selectedCardForMove = card;
-                    showMobileDropHints();
-                }
+                collapseExpandedCard();
                 return;
             }
             
-            // If another card is expanded, collapse it first
-            document.querySelectorAll('.evidence-card.expanded').forEach(c => {
-                c.classList.remove('expanded');
-                c.classList.remove('selected-for-move');
-            });
+            // Collapse any other expanded card first
+            collapseExpandedCard();
             
-            // Clear any selection when expanding a new card
-            selectedCardForMove = null;
-            hideMobileDropHints();
-            
-            // Expand this card for reading
+            // Expand this card
             card.classList.add('expanded');
-        }
-        
-        // Close expanded card when tapping outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.evidence-card')) {
-                document.querySelectorAll('.evidence-card.expanded').forEach(c => {
-                    c.classList.remove('expanded');
-                });
-            }
-        });
-        
-        // Setup touch drag functionality
-        function setupTouchDrag() {
-            let draggedCard = null;
-            let touchStartX = 0;
-            let touchStartY = 0;
-            let cardStartX = 0;
-            let cardStartY = 0;
+            expandedCard = { 
+                type: 'full', 
+                element: card, 
+                evidenceId: card.getAttribute('data-evidence-id') 
+            };
             
-            document.querySelectorAll('.evidence-card, .mini-card').forEach(card => {
-                card.addEventListener('touchstart', function(e) {
-                    // Long press to start drag
-                    const touch = e.touches[0];
-                    touchStartX = touch.clientX;
-                    touchStartY = touch.clientY;
-                    
-                    // Start drag after 300ms hold
-                    card.holdTimer = setTimeout(() => {
-                        draggedCard = card;
-                        card.classList.add('dragging');
-                        card.style.position = 'fixed';
-                        card.style.zIndex = '1000';
-                        card.style.width = '150px';
-                        cardStartX = touch.clientX - 75;
-                        cardStartY = touch.clientY - 30;
-                        card.style.left = cardStartX + 'px';
-                        card.style.top = cardStartY + 'px';
-                        
-                        // Show drop hints
-                        showMobileDropHints();
-                    }, 300);
-                }, { passive: true });
-                
-                card.addEventListener('touchmove', function(e) {
-                    if (!draggedCard) {
-                        // Cancel hold if moved too much
-                        const touch = e.touches[0];
-                        const dx = Math.abs(touch.clientX - touchStartX);
-                        const dy = Math.abs(touch.clientY - touchStartY);
-                        if (dx > 10 || dy > 10) {
-                            clearTimeout(card.holdTimer);
-                        }
-                        return;
-                    }
-                    
-                    e.preventDefault();
-                    const touch = e.touches[0];
-                    draggedCard.style.left = (touch.clientX - 75) + 'px';
-                    draggedCard.style.top = (touch.clientY - 30) + 'px';
-                    
-                    // Highlight drop zone under finger
-                    const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-                    document.querySelectorAll('.classification-slot').forEach(s => s.classList.remove('drag-over'));
-                    const slot = elemBelow?.closest('.classification-slot');
-                    if (slot) slot.classList.add('drag-over');
-                }, { passive: false });
-                
-                card.addEventListener('touchend', function(e) {
-                    clearTimeout(card.holdTimer);
-                    
-                    if (!draggedCard) return;
-                    
-                    const touch = e.changedTouches[0];
-                    const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-                    const slot = elemBelow?.closest('.classification-slot');
-                    
-                    if (slot) {
-                        // Simulate drop
-                        selectedCardForMove = draggedCard;
-                        handleSlotTapDrop({ currentTarget: slot, stopPropagation: () => {} });
-                    }
-                    
-                    // Reset card style
-                    draggedCard.classList.remove('dragging');
-                    draggedCard.style.position = '';
-                    draggedCard.style.zIndex = '';
-                    draggedCard.style.width = '';
-                    draggedCard.style.left = '';
-                    draggedCard.style.top = '';
-                    draggedCard = null;
-                    
-                    hideMobileDropHints();
-                    document.querySelectorAll('.classification-slot').forEach(s => s.classList.remove('drag-over'));
-                });
-                
-                card.addEventListener('touchcancel', function() {
-                    clearTimeout(card.holdTimer);
-                    if (draggedCard) {
-                        draggedCard.classList.remove('dragging');
-                        draggedCard.style.position = '';
-                        draggedCard.style.zIndex = '';
-                        draggedCard.style.width = '';
-                        draggedCard.style.left = '';
-                        draggedCard.style.top = '';
-                        draggedCard = null;
-                    }
-                    hideMobileDropHints();
-                });
-            });
-        }
-        
-        function handleCardTapSelect(e) {
-            e.stopPropagation();
-            const card = e.currentTarget;
+            // Show dim overlay
+            showDimOverlay();
             
-            // If already selected, deselect
-            if (card.classList.contains('selected-for-move')) {
-                card.classList.remove('selected-for-move');
-                selectedCardForMove = null;
-                hideMobileDropHints();
-                return;
-            }
-            
-            // Deselect any previously selected card
-            document.querySelectorAll('.selected-for-move').forEach(c => c.classList.remove('selected-for-move'));
-            document.querySelectorAll('.expanded').forEach(c => c.classList.remove('expanded'));
-            
-            // Select this card
-            card.classList.add('selected-for-move');
-            selectedCardForMove = card;
-            
-            // Show drop zone hints
+            // Highlight drop zones
             showMobileDropHints();
-            
-            // Also highlight table area if this is a mini-card (already classified)
-            const tableArea = document.getElementById('evidence-table');
-            if (card.classList.contains('mini-card') && tableArea) {
-                tableArea.classList.add('tap-hint');
-            }
         }
         
-        function handleSlotTapDrop(e) {
-            if (!selectedCardForMove) return;
+        // Handle tap on mini-card in a slot - show expanded overlay
+        function handleMiniCardTap(e) {
+            e.stopPropagation();
+            const miniCard = e.currentTarget;
+            
+            // Collapse any existing expanded state
+            collapseExpandedCard();
+            
+            // Get evidence data
+            const evidenceId = miniCard.getAttribute('data-evidence-id');
+            const evidence = gameState.collectedEvidence.find(ev => ev.id === evidenceId);
+            if (!evidence) return;
+            
+            // Get source name
+            let source = evidence.locationId || 'Phone';
+            const sourceMap = {
+                'module': 'Module',
+                'transport': 'Transport',
+                'lift': 'Lift Plan',
+                'factory': 'Factory QC',
+                'drawings': 'Drawings',
+                'weather': 'Weather'
+            };
+            source = sourceMap[evidence.locationId] || source;
+            if (evidence.id.startsWith('call-')) source = '📞 Call';
+            
+            // Create expanded overlay
+            expandedOverlay = document.createElement('div');
+            expandedOverlay.className = 'mini-card-expanded-overlay';
+            expandedOverlay.innerHTML = `
+                <div class="card-header">
+                    <div class="card-title">${evidence.title}</div>
+                    <span class="card-source">${source}</span>
+                </div>
+                <div class="card-body">${evidence.description}</div>
+            `;
+            expandedOverlay.setAttribute('data-evidence-id', evidenceId);
+            
+            // Add to board screen
+            document.querySelector('.board-screen').appendChild(expandedOverlay);
+            
+            // Track expanded state
+            expandedCard = {
+                type: 'mini',
+                element: miniCard,
+                overlay: expandedOverlay,
+                evidenceId: evidenceId,
+                originalCategory: evidence.category
+            };
+            
+            // Show dim overlay
+            showDimOverlay();
+            
+            // Highlight drop zones and table
+            showMobileDropHints();
+            const tableArea = document.getElementById('evidence-table');
+            if (tableArea) tableArea.classList.add('tap-hint');
+        }
+        
+        // Handle tap on classification slot
+        function handleSlotTap(e) {
+            // Only process if we have an expanded card
+            if (!expandedCard) return;
+            
+            e.stopPropagation();
             
             const slot = e.currentTarget;
-            const slotContent = slot.querySelector('.slot-content') || slot;
+            const slotContent = slot.querySelector('.slot-content');
             const category = slot.getAttribute('data-category');
-            const evidenceId = selectedCardForMove.getAttribute('data-evidence-id');
+            const evidenceId = expandedCard.evidenceId;
             const evidence = gameState.collectedEvidence.find(ev => ev.id === evidenceId);
             
             if (!evidence) return;
@@ -7841,7 +7839,7 @@
             if (category === 'rootCause') {
                 const existing = slotContent.querySelector('.mini-card');
                 if (existing && existing.getAttribute('data-evidence-id') !== evidenceId) {
-                    alert('Only one root cause can be selected. Remove the current one first.');
+                    alert('Only one root cause allowed. Remove current one first.');
                     return;
                 }
             }
@@ -7849,61 +7847,108 @@
                 const count = slotContent.querySelectorAll('.mini-card').length;
                 const alreadyInSlot = slotContent.querySelector(`[data-evidence-id="${evidenceId}"]`);
                 if (count >= 6 && !alreadyInSlot) {
-                    alert('Maximum 6 contributing factors allowed.');
+                    alert('Maximum 6 other issues allowed.');
                     return;
                 }
             }
-            // redHerring has no limit
             
             // Remove from current location
-            selectedCardForMove.remove();
+            if (expandedCard.type === 'full') {
+                expandedCard.element.remove();
+            } else if (expandedCard.type === 'mini') {
+                expandedCard.element.remove();
+            }
             
             // Update evidence category
             evidence.category = category;
             
-            // Add mini card to slot content
+            // Create mini card in new slot
             const miniCard = createMiniCard(evidence);
-            miniCard.addEventListener('click', handleCardTapSelect);
+            miniCard.addEventListener('click', handleMiniCardTap);
             slotContent.appendChild(miniCard);
             
-            // Clear selection
-            selectedCardForMove = null;
-            hideMobileDropHints();
-            
-            // Update board status
+            // Clean up
+            collapseExpandedCard();
             updateBoardStatus();
         }
         
-        function handleTableTapDrop(e) {
-            // Only handle if we have a selected card and clicked directly on table area
-            if (!selectedCardForMove) return;
+        // Handle tap on table area
+        function handleTableTap(e) {
+            // If no expanded card, do nothing
+            if (!expandedCard) return;
+            
+            // Don't process if tapped on a card
             if (e.target.closest('.evidence-card') || e.target.closest('.mini-card')) return;
             
-            const evidenceId = selectedCardForMove.getAttribute('data-evidence-id');
+            e.stopPropagation();
+            
+            const evidenceId = expandedCard.evidenceId;
             const evidence = gameState.collectedEvidence.find(ev => ev.id === evidenceId);
             
-            if (!evidence) return;
+            if (!evidence) {
+                collapseExpandedCard();
+                return;
+            }
             
-            // Only unclassify if it was classified (mini-card in a slot)
-            if (evidence.category) {
-                selectedCardForMove.remove();
+            // If it's a full card that's just expanded, just collapse it
+            if (expandedCard.type === 'full') {
+                collapseExpandedCard();
+                return;
+            }
+            
+            // If it's a mini-card, return it to the table
+            if (expandedCard.type === 'mini') {
+                // Remove from slot
+                expandedCard.element.remove();
+                
+                // Clear category
                 evidence.category = null;
                 
-                // Add card back to table
+                // Create full card on table
                 const tableArea = document.getElementById('evidence-table');
                 const fullCard = createFullCard(evidence);
                 fullCard.addEventListener('click', handleCardTap);
                 tableArea.appendChild(fullCard);
+                
+                // Clean up
+                collapseExpandedCard();
+                updateBoardStatus();
+            }
+        }
+        
+        // Collapse any expanded card
+        function collapseExpandedCard() {
+            if (expandedCard) {
+                if (expandedCard.type === 'full' && expandedCard.element) {
+                    expandedCard.element.classList.remove('expanded');
+                }
+                if (expandedCard.overlay) {
+                    expandedCard.overlay.remove();
+                }
+                expandedCard = null;
+                expandedOverlay = null;
             }
             
-            // Clear selection
-            selectedCardForMove = null;
-            document.querySelectorAll('.selected-for-move').forEach(c => c.classList.remove('selected-for-move'));
-            document.querySelectorAll('.expanded').forEach(c => c.classList.remove('expanded'));
+            hideDimOverlay();
             hideMobileDropHints();
-            
-            // Update board status
-            updateBoardStatus();
+        }
+        
+        function showDimOverlay() {
+            if (!dimOverlay) {
+                dimOverlay = document.createElement('div');
+                dimOverlay.className = 'board-dim-overlay';
+                dimOverlay.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    collapseExpandedCard();
+                });
+            }
+            document.querySelector('.board-screen').appendChild(dimOverlay);
+        }
+        
+        function hideDimOverlay() {
+            if (dimOverlay && dimOverlay.parentNode) {
+                dimOverlay.remove();
+            }
         }
         
         function showMobileDropHints() {
@@ -7916,10 +7961,17 @@
             document.querySelectorAll('.classification-slot').forEach(slot => {
                 slot.classList.remove('tap-hint');
             });
-            document.querySelectorAll('.selected-for-move').forEach(c => c.classList.remove('selected-for-move'));
             const tableArea = document.getElementById('evidence-table');
             if (tableArea) tableArea.classList.remove('tap-hint');
         }
+        
+        // Close expanded card when tapping outside (backup handler)
+        document.addEventListener('click', function(e) {
+            if (expandedCard && !e.target.closest('.evidence-card') && !e.target.closest('.mini-card') && 
+                !e.target.closest('.mini-card-expanded-overlay') && !e.target.closest('.classification-slot')) {
+                collapseExpandedCard();
+            }
+        });
 
         let draggedCard = null;
 
