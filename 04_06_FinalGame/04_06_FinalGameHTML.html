@@ -5314,6 +5314,12 @@
                 justify-content: center;
                 background: rgba(0,0,0,0.4);
                 position: relative;
+                z-index: 1;
+            }
+            
+            /* When table is a drop target, bring it above dim overlay */
+            .table-area.drop-target {
+                z-index: 195;
             }
             
             /* Table drop zone box - appears when card can be returned */
@@ -5329,9 +5335,10 @@
                 display: none;
                 align-items: center;
                 justify-content: center;
-                z-index: 195;
+                z-index: 250;
                 flex-direction: column;
                 gap: 4px;
+                pointer-events: auto;
             }
             
             .table-drop-zone.active {
@@ -6930,6 +6937,16 @@
             // Add active to new slide
             document.querySelector(`.intro-slide[data-slide="${currentSlide}"]`).classList.add('active');
             document.querySelector(`.progress-dot[data-slide="${currentSlide}"]`).classList.add('active');
+            
+            // Hide skip intro button on last slide (Begin Investigation screen)
+            const skipBtn = document.querySelector('.skip-intro-btn');
+            if (skipBtn) {
+                if (currentSlide === totalSlides) {
+                    skipBtn.style.display = 'none';
+                } else {
+                    skipBtn.style.display = '';
+                }
+            }
         }
 
         function skipIntro() {
@@ -8142,11 +8159,14 @@
             
             // Show table drop zone only if card is NOT from table
             const tableDropZone = document.getElementById('table-drop-zone');
-            if (tableDropZone) {
+            const tableArea = document.getElementById('evidence-table');
+            if (tableDropZone && tableArea) {
                 if (excludeLocation !== 'table') {
                     tableDropZone.classList.add('active');
+                    tableArea.classList.add('drop-target');
                 } else {
                     tableDropZone.classList.remove('active');
+                    tableArea.classList.remove('drop-target');
                 }
             }
         }
@@ -8156,7 +8176,9 @@
                 slot.classList.remove('tap-hint');
             });
             const tableDropZone = document.getElementById('table-drop-zone');
+            const tableArea = document.getElementById('evidence-table');
             if (tableDropZone) tableDropZone.classList.remove('active');
+            if (tableArea) tableArea.classList.remove('drop-target');
         }
         
         // Close expanded card when tapping outside (backup handler)
