@@ -5070,18 +5070,6 @@
                 display: none !important;
             }
             
-            /* Add a "tap to enter" hint */
-            .scene-hotspot.preview-active .hotspot-card::before {
-                content: 'Tap to enter →';
-                display: block;
-                font-size: 0.65rem;
-                color: var(--warm-gold);
-                text-align: center;
-                margin-top: 8px;
-                padding-top: 8px;
-                border-top: 1px solid rgba(184, 134, 11, 0.3);
-            }
-            
             /* Mobile: show card when hotspot has .preview-active class */
             .scene-hotspot.preview-active {
                 z-index: 50;
@@ -5325,22 +5313,36 @@
                 align-content: start;
                 justify-content: center;
                 background: rgba(0,0,0,0.4);
-                transition: box-shadow 0.3s ease;
                 position: relative;
             }
             
-            /* Table glow when it's a valid drop target */
-            .table-area.tap-hint {
-                animation: tableGlow 1.5s ease-in-out infinite;
+            /* Table top strip glow when it's a valid drop target */
+            .table-area.tap-hint::before {
+                content: '↑ Return to table';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 36px;
+                background: linear-gradient(to bottom, rgba(212, 175, 55, 0.3), transparent);
                 z-index: 195;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.65rem;
+                color: var(--warm-gold);
+                font-weight: 600;
+                animation: tableStripGlow 1.5s ease-in-out infinite;
             }
             
-            @keyframes tableGlow {
+            @keyframes tableStripGlow {
                 0%, 100% {
-                    box-shadow: inset 0 0 30px 10px rgba(212, 175, 55, 0.4);
+                    background: linear-gradient(to bottom, rgba(212, 175, 55, 0.3), transparent);
+                    text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
                 }
                 50% {
-                    box-shadow: inset 0 0 50px 15px rgba(212, 175, 55, 0.7);
+                    background: linear-gradient(to bottom, rgba(212, 175, 55, 0.6), transparent);
+                    text-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
                 }
             }
             
@@ -8484,6 +8486,44 @@
                     document.querySelector('.game-main').classList.remove('preview-mode');
                 }
             });
+            
+            // Phone hotspot - same preview behaviour as other hotspots
+            const phoneBtn = document.getElementById('phone-hotspot');
+            if (phoneBtn) {
+                // Remove the direct openPhone handler for mobile
+                phoneBtn.removeEventListener('click', openPhone);
+                
+                phoneBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const gameMain = document.querySelector('.game-main');
+                    
+                    // If already showing preview, open phone
+                    if (phoneBtn.classList.contains('preview-active')) {
+                        openPhone();
+                        phoneBtn.classList.remove('preview-active');
+                        gameMain.classList.remove('preview-mode');
+                    } else {
+                        // Remove preview from all other hotspots
+                        document.querySelectorAll('.scene-hotspot.preview-active').forEach(h => {
+                            h.classList.remove('preview-active');
+                        });
+                        // Show preview for this one
+                        phoneBtn.classList.add('preview-active');
+                        gameMain.classList.add('preview-mode');
+                    }
+                });
+                
+                // Also allow clicking the card directly to open
+                const card = phoneBtn.querySelector('.hotspot-card');
+                if (card) {
+                    card.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openPhone();
+                        phoneBtn.classList.remove('preview-active');
+                        document.querySelector('.game-main').classList.remove('preview-mode');
+                    });
+                }
+            }
         }
 
         // Close evidence modal
@@ -10133,7 +10173,10 @@
         // --------------------------------------------
         // 4.3 Phone Event Listeners
         // --------------------------------------------
-        document.getElementById('phone-hotspot').addEventListener('click', openPhone);
+        // Phone hotspot - desktop only (mobile handled in hotspot preview section)
+        if (!isTouchDevice) {
+            document.getElementById('phone-hotspot').addEventListener('click', openPhone);
+        }
         document.getElementById('close-phone-btn').addEventListener('click', closePhone);
         document.querySelector('#phone-modal .modal-close').addEventListener('click', closePhone);
         document.getElementById('end-call-btn').addEventListener('click', skipToEnd);
