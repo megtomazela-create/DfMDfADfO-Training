@@ -5502,11 +5502,19 @@
                 animation: slotGlowGray 1.5s ease-in-out infinite;
             }
             
-            /* Table slot - hidden by default, wood colour */
+            /* Table slot - hidden by default, positioned in middle of table area */
             .slot-table {
                 display: none !important;
+                position: absolute !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                width: 120px !important;
+                min-height: 70px !important;
+                flex: none !important;
                 border-color: rgba(139, 90, 43, 0.8) !important;
-                background: rgba(101, 67, 33, 0.3) !important;
+                background: rgba(101, 67, 33, 0.4) !important;
+                z-index: 250 !important;
             }
             
             .slot-table.active {
@@ -6584,20 +6592,18 @@
             
             <!-- Cards spread on table - full readable content -->
             <div class="table-area" id="evidence-table">
-                <!-- Evidence cards populated by JS -->
-            </div>
-            
-            <!-- Classification bar at bottom -->
-            <div class="classification-bar">
-                <!-- Table slot - only shows when returning cards from boxes -->
+                <!-- Table slot - shows when returning cards from boxes -->
                 <div class="classification-slot slot-table" id="table-slot" data-category="table">
                     <div class="slot-header">
                         <span class="slot-icon">📋</span>
                         <span class="slot-label">Table</span>
                     </div>
-                    <div class="slot-content"></div>
                 </div>
-                
+                <!-- Evidence cards populated by JS -->
+            </div>
+            
+            <!-- Classification bar at bottom -->
+            <div class="classification-bar">
                 <!-- Root cause slot -->
                 <div class="classification-slot slot-root" id="root-cause-zone" data-category="rootCause">
                     <div class="slot-header">
