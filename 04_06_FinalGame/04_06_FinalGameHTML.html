@@ -7771,8 +7771,14 @@
             const contribSlot = document.querySelector('#contributing-zone .slot-content');
             const redherringSlot = document.querySelector('#redherring-zone .slot-content');
             
-            // Clear everything
+            // Preserve the table-slot element before clearing
+            const tableSlot = document.getElementById('table-slot');
+            
+            // Clear everything except preserve table-slot
             tableArea.innerHTML = '';
+            if (tableSlot) {
+                tableArea.appendChild(tableSlot);
+            }
             rootSlot.innerHTML = '';
             contribSlot.innerHTML = '';
             redherringSlot.innerHTML = '';
