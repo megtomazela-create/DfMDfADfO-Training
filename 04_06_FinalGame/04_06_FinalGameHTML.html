@@ -4925,7 +4925,7 @@
                 min-height: 0;
                 overflow: hidden;
                 position: relative;
-                margin-bottom: 55px !important; /* Space for collection panel */
+                margin-bottom: 65px !important; /* Space for collection panel */
             }
             
             /* Collection panel - compact row */
@@ -4934,14 +4934,14 @@
                 bottom: env(safe-area-inset-bottom, 0) !important;
                 left: 0 !important;
                 right: 0 !important;
-                height: 54px !important;
-                padding: 6px 10px !important;
+                height: 50px !important;
+                padding: 5px 8px !important;
                 z-index: 60 !important;
                 background: rgba(31, 41, 55, 0.98) !important;
                 border-top: 1px solid var(--warm-gold) !important;
                 display: flex !important;
                 align-items: center !important;
-                gap: 8px !important;
+                gap: 6px !important;
             }
             
             .collection-header {
@@ -4951,18 +4951,18 @@
             .collection-slots {
                 flex: 1 !important;
                 display: flex !important;
-                gap: 4px !important;
+                gap: 2px !important;
                 justify-content: center !important;
             }
             
             .collection-slot {
-                width: 38px !important;
-                height: 38px !important;
-                border-radius: 5px !important;
+                width: 28px !important;
+                height: 28px !important;
+                border-radius: 4px !important;
             }
             
             .collection-slot.empty .slot-number {
-                font-size: 0.65rem;
+                font-size: 0.5rem;
             }
             
             .collection-slot .slot-evidence span {
@@ -4974,8 +4974,8 @@
             }
             
             .collection-actions .btn-primary {
-                font-size: 0.65rem !important;
-                padding: 8px 12px !important;
+                font-size: 0.6rem !important;
+                padding: 6px 10px !important;
             }
             
             .board-btn-text {
@@ -4984,16 +4984,16 @@
             
             #open-board-btn::before {
                 content: '📋';
-                font-size: 0.9rem;
+                font-size: 0.85rem;
             }
             
             #open-board-btn:not(:disabled)::before {
                 content: 'GO →';
-                font-size: 0.75rem;
+                font-size: 0.7rem;
                 font-weight: bold;
             }
             
-            /* Hide floating action buttons - GO button is in collection panel */
+            /* Hide action buttons - GO button is in collection panel */
             .game-actions {
                 display: none !important;
             }
@@ -5032,52 +5032,42 @@
                 }
             }
             
-            /* Hotspot preview card for mobile - FIXED position for visibility */
+            /* Hotspot preview card for mobile - FORCE CENTER */
+            .scene-hotspot .hotspot-card,
             .hotspot-card {
                 position: fixed !important;
                 bottom: auto !important;
                 top: 50% !important;
                 left: 50% !important;
+                right: auto !important;
                 transform: translate(-50%, -50%) !important;
-                width: 200px;
-                max-width: 85vw;
-                padding: 12px;
+                width: 180px !important;
+                max-width: 80vw !important;
+                padding: 10px;
                 pointer-events: auto;
                 z-index: 200;
                 box-shadow: 0 8px 40px rgba(0,0,0,0.8);
                 border: 2px solid var(--warm-gold);
-                background: var(--darkest);
+                background: var(--darkest) !important;
             }
             
             .hotspot-card img {
-                height: 80px;
-                margin-bottom: 8px;
+                height: 70px;
+                margin-bottom: 6px;
             }
             
             .hotspot-card .hotspot-label {
-                font-size: 0.85rem;
-                margin-bottom: 4px;
+                font-size: 0.8rem;
+                margin-bottom: 2px;
             }
             
             .hotspot-card .hotspot-doc {
-                font-size: 0.7rem;
+                font-size: 0.65rem;
             }
             
             /* Hide the arrow on mobile since card is centered */
             .hotspot-card::after {
-                display: none;
-            }
-            
-            /* Add a "tap to enter" hint */
-            .scene-hotspot.preview-active .hotspot-card::before {
-                content: 'Tap to enter →';
-                display: block;
-                font-size: 0.65rem;
-                color: var(--warm-gold);
-                text-align: center;
-                margin-top: 8px;
-                padding-top: 8px;
-                border-top: 1px solid rgba(184, 134, 11, 0.3);
+                display: none !important;
             }
             
             /* Mobile: show card when hotspot has .preview-active class */
@@ -5099,8 +5089,7 @@
                 right: 0;
                 bottom: 0;
                 background: rgba(0, 0, 0, 0.5);
-                z-index: 40;
-                pointer-events: none;
+                z-index: 100;
             }
             
             /* --- EVIDENCE VIEWER MODAL MOBILE --- */
@@ -5411,7 +5400,7 @@
                 display: block;
             }
             
-            /* Classification bar - HORIZONTAL ROW, BIGGER BOXES */
+            /* Classification bar - HORIZONTAL ROW, NO SCROLL */
             .classification-bar {
                 position: relative !important;
                 bottom: auto !important;
@@ -5419,8 +5408,8 @@
                 transform: none !important;
                 display: flex !important;
                 flex-direction: row !important;
-                gap: 6px !important;
-                padding: 8px !important;
+                gap: 4px !important;
+                padding: 6px !important;
                 background: rgba(31, 41, 55, 0.98) !important;
                 flex-shrink: 0 !important;
                 overflow: visible !important;
@@ -5430,9 +5419,9 @@
                 flex: 1 !important;
                 min-width: 0 !important;
                 width: auto !important;
-                min-height: 80px !important;
-                padding: 6px !important;
-                border-radius: 6px;
+                min-height: 60px !important;
+                padding: 4px !important;
+                border-radius: 5px;
                 display: flex;
                 flex-direction: column;
             }
@@ -5451,41 +5440,41 @@
             }
             
             .slot-header {
-                margin-bottom: 4px !important;
-                padding-bottom: 3px !important;
+                margin-bottom: 2px !important;
+                padding-bottom: 2px !important;
                 flex-shrink: 0;
                 text-align: center;
             }
             
             .slot-icon {
-                font-size: 0.8rem;
+                font-size: 0.65rem;
                 display: block;
             }
             
             .slot-label {
-                font-size: 0.5rem !important;
+                font-size: 0.45rem !important;
                 display: block;
             }
             
             .slot-hint {
-                font-size: 0.45rem !important;
+                font-size: 0.4rem !important;
                 display: block !important;
                 opacity: 0.6;
             }
             
             .slot-content {
-                gap: 3px !important;
+                gap: 2px !important;
                 flex-wrap: wrap;
                 display: flex;
                 flex: 1;
-                min-height: 25px;
+                min-height: 18px;
                 align-content: start;
             }
             
             .mini-card {
-                font-size: 0.45rem !important;
-                padding: 3px 5px !important;
-                border-radius: 3px;
+                font-size: 0.4rem !important;
+                padding: 2px 3px !important;
+                border-radius: 2px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -5493,28 +5482,34 @@
                 cursor: pointer;
             }
             
-            /* Submit area - bigger and clearer */
+            /* Submit area - inline with status */
             .submit-area {
-                padding: 10px !important;
-                padding-bottom: calc(10px + env(safe-area-inset-bottom, 0)) !important;
+                padding: 6px 8px !important;
+                padding-bottom: calc(6px + env(safe-area-inset-bottom, 0)) !important;
                 background: rgba(0,0,0,0.9) !important;
                 flex-shrink: 0 !important;
                 display: flex !important;
                 align-items: center;
-                gap: 10px;
+                gap: 8px;
             }
             
             .board-status {
-                font-size: 0.65rem !important;
+                font-size: 0.55rem !important;
                 margin-bottom: 0 !important;
                 flex: 1;
             }
             
             .btn-submit-board {
-                padding: 10px 18px !important;
-                font-size: 0.8rem !important;
+                padding: 8px 14px !important;
+                font-size: 0.7rem !important;
                 flex-shrink: 0;
                 width: auto !important;
+            }
+            
+            .btn-submit-board {
+                width: 100%;
+                padding: 12px !important;
+                font-size: 0.9rem !important;
             }
             
             /* --- SOLUTION MODAL MOBILE --- */
@@ -5895,34 +5890,6 @@
             .table-area.tap-hint {
                 outline: 3px dashed var(--warm-gold);
                 outline-offset: -3px;
-            }
-            
-            /* Toast notifications */
-            .toast-notification {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: rgba(31, 41, 55, 0.95);
-                color: white;
-                padding: 12px 20px;
-                border-radius: 8px;
-                font-size: 0.8rem;
-                z-index: 9999;
-                text-align: center;
-                max-width: 280px;
-                border: 2px solid var(--warning-amber);
-                box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-                animation: toastIn 0.3s ease;
-            }
-            
-            .toast-notification.error {
-                border-color: var(--money-red);
-            }
-            
-            @keyframes toastIn {
-                from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-                to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
             }
             
             /* Larger touch targets */
@@ -6416,7 +6383,7 @@
             <!-- Submit area - OUTSIDE classification bar -->
             <div class="submit-area">
                 <div class="board-status" id="board-status">Drag cards to classify</div>
-                <button class="btn-submit-board" id="submit-board-btn" disabled>Submit Analysis →</button>
+                <button class="btn-submit-board" id="submit-board-btn" disabled>Submit →</button>
             </div>
         </div>
     </div>
@@ -7670,7 +7637,7 @@
             }
             
             // Setup touch drag for cards
-            // No touch drag - just tap to select
+            setupTouchDrag();
         }
         
         // Handle tap on evidence card - expand/collapse or select
@@ -7708,35 +7675,118 @@
             card.classList.add('expanded');
         }
         
-        // Close expanded card when tapping outside (but not on slots)
+        // Close expanded card when tapping outside
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('.evidence-card') && !e.target.closest('.classification-slot') && !e.target.closest('.mini-card')) {
+            if (!e.target.closest('.evidence-card')) {
                 document.querySelectorAll('.evidence-card.expanded').forEach(c => {
                     c.classList.remove('expanded');
                 });
             }
         });
         
+        // Setup touch drag functionality
+        function setupTouchDrag() {
+            let draggedCard = null;
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let cardStartX = 0;
+            let cardStartY = 0;
+            
+            document.querySelectorAll('.evidence-card, .mini-card').forEach(card => {
+                card.addEventListener('touchstart', function(e) {
+                    // Long press to start drag
+                    const touch = e.touches[0];
+                    touchStartX = touch.clientX;
+                    touchStartY = touch.clientY;
+                    
+                    // Start drag after 300ms hold
+                    card.holdTimer = setTimeout(() => {
+                        draggedCard = card;
+                        card.classList.add('dragging');
+                        card.style.position = 'fixed';
+                        card.style.zIndex = '1000';
+                        card.style.width = '150px';
+                        cardStartX = touch.clientX - 75;
+                        cardStartY = touch.clientY - 30;
+                        card.style.left = cardStartX + 'px';
+                        card.style.top = cardStartY + 'px';
+                        
+                        // Show drop hints
+                        showMobileDropHints();
+                    }, 300);
+                }, { passive: true });
+                
+                card.addEventListener('touchmove', function(e) {
+                    if (!draggedCard) {
+                        // Cancel hold if moved too much
+                        const touch = e.touches[0];
+                        const dx = Math.abs(touch.clientX - touchStartX);
+                        const dy = Math.abs(touch.clientY - touchStartY);
+                        if (dx > 10 || dy > 10) {
+                            clearTimeout(card.holdTimer);
+                        }
+                        return;
+                    }
+                    
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    draggedCard.style.left = (touch.clientX - 75) + 'px';
+                    draggedCard.style.top = (touch.clientY - 30) + 'px';
+                    
+                    // Highlight drop zone under finger
+                    const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                    document.querySelectorAll('.classification-slot').forEach(s => s.classList.remove('drag-over'));
+                    const slot = elemBelow?.closest('.classification-slot');
+                    if (slot) slot.classList.add('drag-over');
+                }, { passive: false });
+                
+                card.addEventListener('touchend', function(e) {
+                    clearTimeout(card.holdTimer);
+                    
+                    if (!draggedCard) return;
+                    
+                    const touch = e.changedTouches[0];
+                    const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                    const slot = elemBelow?.closest('.classification-slot');
+                    
+                    if (slot) {
+                        // Simulate drop
+                        selectedCardForMove = draggedCard;
+                        handleSlotTapDrop({ currentTarget: slot, stopPropagation: () => {} });
+                    }
+                    
+                    // Reset card style
+                    draggedCard.classList.remove('dragging');
+                    draggedCard.style.position = '';
+                    draggedCard.style.zIndex = '';
+                    draggedCard.style.width = '';
+                    draggedCard.style.left = '';
+                    draggedCard.style.top = '';
+                    draggedCard = null;
+                    
+                    hideMobileDropHints();
+                    document.querySelectorAll('.classification-slot').forEach(s => s.classList.remove('drag-over'));
+                });
+                
+                card.addEventListener('touchcancel', function() {
+                    clearTimeout(card.holdTimer);
+                    if (draggedCard) {
+                        draggedCard.classList.remove('dragging');
+                        draggedCard.style.position = '';
+                        draggedCard.style.zIndex = '';
+                        draggedCard.style.width = '';
+                        draggedCard.style.left = '';
+                        draggedCard.style.top = '';
+                        draggedCard = null;
+                    }
+                    hideMobileDropHints();
+                });
+            });
+        }
+        
         function handleCardTapSelect(e) {
             e.stopPropagation();
             const card = e.currentTarget;
-            
-            // If this is a mini-card, check for double-tap to return to table
-            if (card.classList.contains('mini-card')) {
-                if (handleMiniCardDoubleTap(card)) {
-                    return; // Double tap handled
-                }
-            }
-            
-            // If we have a selected card and this is a mini-card in a slot, 
-            // treat it as clicking the slot (drop target)
-            if (selectedCardForMove && card.classList.contains('mini-card') && selectedCardForMove !== card) {
-                const slot = card.closest('.classification-slot');
-                if (slot) {
-                    handleSlotTapDrop({ currentTarget: slot, stopPropagation: () => {} });
-                    return;
-                }
-            }
             
             // If already selected, deselect
             if (card.classList.contains('selected-for-move')) {
@@ -7764,24 +7814,6 @@
             }
         }
         
-        // Toast notification function
-        function showToast(message, isError = false) {
-            // Remove any existing toast
-            const existing = document.querySelector('.toast-notification');
-            if (existing) existing.remove();
-            
-            const toast = document.createElement('div');
-            toast.className = 'toast-notification' + (isError ? ' error' : '');
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            // Auto-remove after 2 seconds
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 2000);
-        }
-        
         function handleSlotTapDrop(e) {
             if (!selectedCardForMove) return;
             
@@ -7797,7 +7829,7 @@
             if (category === 'rootCause') {
                 const existing = slotContent.querySelector('.mini-card');
                 if (existing && existing.getAttribute('data-evidence-id') !== evidenceId) {
-                    showToast('Root Cause only takes 1 card. Tap existing card to move it first.', true);
+                    alert('Only one root cause can be selected. Remove the current one first.');
                     return;
                 }
             }
@@ -7805,7 +7837,7 @@
                 const count = slotContent.querySelectorAll('.mini-card').length;
                 const alreadyInSlot = slotContent.querySelector(`[data-evidence-id="${evidenceId}"]`);
                 if (count >= 6 && !alreadyInSlot) {
-                    showToast('Other Issues is full (max 6 cards)', true);
+                    alert('Maximum 6 contributing factors allowed.');
                     return;
                 }
             }
@@ -7824,8 +7856,6 @@
             
             // Clear selection
             selectedCardForMove = null;
-            document.querySelectorAll('.selected-for-move').forEach(c => c.classList.remove('selected-for-move'));
-            document.querySelectorAll('.expanded').forEach(c => c.classList.remove('expanded'));
             hideMobileDropHints();
             
             // Update board status
@@ -7833,14 +7863,9 @@
         }
         
         function handleTableTapDrop(e) {
-            // Only handle if we have a selected card
+            // Only handle if we have a selected card and clicked directly on table area
             if (!selectedCardForMove) return;
-            
-            // If clicked on an evidence card or mini-card, let those handlers deal with it
             if (e.target.closest('.evidence-card') || e.target.closest('.mini-card')) return;
-            
-            // If clicked on a classification slot, let that handler deal with it
-            if (e.target.closest('.classification-slot')) return;
             
             const evidenceId = selectedCardForMove.getAttribute('data-evidence-id');
             const evidence = gameState.collectedEvidence.find(ev => ev.id === evidenceId);
@@ -7857,8 +7882,6 @@
                 const fullCard = createFullCard(evidence);
                 fullCard.addEventListener('click', handleCardTap);
                 tableArea.appendChild(fullCard);
-                
-                showToast('Card returned to table');
             }
             
             // Clear selection
@@ -7869,34 +7892,6 @@
             
             // Update board status
             updateBoardStatus();
-        }
-        
-        // Allow double-tap on mini-card to return it to table
-        let lastMiniCardTap = 0;
-        function handleMiniCardDoubleTap(card) {
-            const now = Date.now();
-            if (now - lastMiniCardTap < 400) {
-                // Double tap - return to table
-                const evidenceId = card.getAttribute('data-evidence-id');
-                const evidence = gameState.collectedEvidence.find(ev => ev.id === evidenceId);
-                
-                if (evidence && evidence.category) {
-                    card.remove();
-                    evidence.category = null;
-                    
-                    const tableArea = document.getElementById('evidence-table');
-                    const fullCard = createFullCard(evidence);
-                    fullCard.addEventListener('click', handleCardTap);
-                    tableArea.appendChild(fullCard);
-                    
-                    showToast('Card returned to table');
-                    updateBoardStatus();
-                }
-                lastMiniCardTap = 0;
-                return true;
-            }
-            lastMiniCardTap = now;
-            return false;
         }
         
         function showMobileDropHints() {
@@ -8208,7 +8203,6 @@
         // 3.3 Event Listeners for Evidence
         // --------------------------------------------
         
-        // Check if touch device
         // Check if touch device
         const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
         
