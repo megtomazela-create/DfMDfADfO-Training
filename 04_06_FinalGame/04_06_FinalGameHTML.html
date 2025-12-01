@@ -5412,7 +5412,7 @@
                 display: block;
             }
             
-            /* Classification bar - HORIZONTAL ROW, NO SCROLL */
+            /* Classification bar - HORIZONTAL ROW, BIGGER BOXES */
             .classification-bar {
                 position: relative !important;
                 bottom: auto !important;
@@ -5420,8 +5420,8 @@
                 transform: none !important;
                 display: flex !important;
                 flex-direction: row !important;
-                gap: 4px !important;
-                padding: 6px !important;
+                gap: 6px !important;
+                padding: 8px !important;
                 background: rgba(31, 41, 55, 0.98) !important;
                 flex-shrink: 0 !important;
                 overflow: visible !important;
@@ -5431,9 +5431,9 @@
                 flex: 1 !important;
                 min-width: 0 !important;
                 width: auto !important;
-                min-height: 60px !important;
-                padding: 4px !important;
-                border-radius: 5px;
+                min-height: 80px !important;
+                padding: 6px !important;
+                border-radius: 6px;
                 display: flex;
                 flex-direction: column;
             }
@@ -5452,41 +5452,41 @@
             }
             
             .slot-header {
-                margin-bottom: 2px !important;
-                padding-bottom: 2px !important;
+                margin-bottom: 4px !important;
+                padding-bottom: 3px !important;
                 flex-shrink: 0;
                 text-align: center;
             }
             
             .slot-icon {
-                font-size: 0.65rem;
+                font-size: 0.8rem;
                 display: block;
             }
             
             .slot-label {
-                font-size: 0.45rem !important;
+                font-size: 0.5rem !important;
                 display: block;
             }
             
             .slot-hint {
-                font-size: 0.4rem !important;
+                font-size: 0.45rem !important;
                 display: block !important;
                 opacity: 0.6;
             }
             
             .slot-content {
-                gap: 2px !important;
+                gap: 3px !important;
                 flex-wrap: wrap;
                 display: flex;
                 flex: 1;
-                min-height: 18px;
+                min-height: 25px;
                 align-content: start;
             }
             
             .mini-card {
-                font-size: 0.4rem !important;
-                padding: 2px 3px !important;
-                border-radius: 2px;
+                font-size: 0.45rem !important;
+                padding: 3px 5px !important;
+                border-radius: 3px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -5494,34 +5494,28 @@
                 cursor: pointer;
             }
             
-            /* Submit area - inline with status */
+            /* Submit area - bigger and clearer */
             .submit-area {
-                padding: 6px 8px !important;
-                padding-bottom: calc(6px + env(safe-area-inset-bottom, 0)) !important;
+                padding: 10px !important;
+                padding-bottom: calc(10px + env(safe-area-inset-bottom, 0)) !important;
                 background: rgba(0,0,0,0.9) !important;
                 flex-shrink: 0 !important;
                 display: flex !important;
                 align-items: center;
-                gap: 8px;
+                gap: 10px;
             }
             
             .board-status {
-                font-size: 0.55rem !important;
+                font-size: 0.65rem !important;
                 margin-bottom: 0 !important;
                 flex: 1;
             }
             
             .btn-submit-board {
-                padding: 8px 14px !important;
-                font-size: 0.7rem !important;
+                padding: 10px 18px !important;
+                font-size: 0.8rem !important;
                 flex-shrink: 0;
                 width: auto !important;
-            }
-            
-            .btn-submit-board {
-                width: 100%;
-                padding: 12px !important;
-                font-size: 0.9rem !important;
             }
             
             /* --- SOLUTION MODAL MOBILE --- */
@@ -6423,7 +6417,7 @@
             <!-- Submit area - OUTSIDE classification bar -->
             <div class="submit-area">
                 <div class="board-status" id="board-status">Drag cards to classify</div>
-                <button class="btn-submit-board" id="submit-board-btn" disabled>Submit →</button>
+                <button class="btn-submit-board" id="submit-board-btn" disabled>Submit Analysis →</button>
             </div>
         </div>
     </div>
@@ -7728,6 +7722,23 @@
             e.stopPropagation();
             const card = e.currentTarget;
             
+            // If this is a mini-card, check for double-tap to return to table
+            if (card.classList.contains('mini-card')) {
+                if (handleMiniCardDoubleTap(card)) {
+                    return; // Double tap handled
+                }
+            }
+            
+            // If we have a selected card and this is a mini-card in a slot, 
+            // treat it as clicking the slot (drop target)
+            if (selectedCardForMove && card.classList.contains('mini-card') && selectedCardForMove !== card) {
+                const slot = card.closest('.classification-slot');
+                if (slot) {
+                    handleSlotTapDrop({ currentTarget: slot, stopPropagation: () => {} });
+                    return;
+                }
+            }
+            
             // If already selected, deselect
             if (card.classList.contains('selected-for-move')) {
                 card.classList.remove('selected-for-move');
@@ -7823,9 +7834,14 @@
         }
         
         function handleTableTapDrop(e) {
-            // Only handle if we have a selected card and clicked directly on table area
+            // Only handle if we have a selected card
             if (!selectedCardForMove) return;
+            
+            // If clicked on an evidence card or mini-card, let those handlers deal with it
             if (e.target.closest('.evidence-card') || e.target.closest('.mini-card')) return;
+            
+            // If clicked on a classification slot, let that handler deal with it
+            if (e.target.closest('.classification-slot')) return;
             
             const evidenceId = selectedCardForMove.getAttribute('data-evidence-id');
             const evidence = gameState.collectedEvidence.find(ev => ev.id === evidenceId);
@@ -7842,6 +7858,8 @@
                 const fullCard = createFullCard(evidence);
                 fullCard.addEventListener('click', handleCardTap);
                 tableArea.appendChild(fullCard);
+                
+                showToast('Card returned to table');
             }
             
             // Clear selection
@@ -7852,6 +7870,34 @@
             
             // Update board status
             updateBoardStatus();
+        }
+        
+        // Allow double-tap on mini-card to return it to table
+        let lastMiniCardTap = 0;
+        function handleMiniCardDoubleTap(card) {
+            const now = Date.now();
+            if (now - lastMiniCardTap < 400) {
+                // Double tap - return to table
+                const evidenceId = card.getAttribute('data-evidence-id');
+                const evidence = gameState.collectedEvidence.find(ev => ev.id === evidenceId);
+                
+                if (evidence && evidence.category) {
+                    card.remove();
+                    evidence.category = null;
+                    
+                    const tableArea = document.getElementById('evidence-table');
+                    const fullCard = createFullCard(evidence);
+                    fullCard.addEventListener('click', handleCardTap);
+                    tableArea.appendChild(fullCard);
+                    
+                    showToast('Card returned to table');
+                    updateBoardStatus();
+                }
+                lastMiniCardTap = 0;
+                return true;
+            }
+            lastMiniCardTap = now;
+            return false;
         }
         
         function showMobileDropHints() {
@@ -8166,28 +8212,30 @@
         // Check if touch device
         const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
         
-        // Function to position preview card within viewport
+        // Function to position preview card within viewport - OVERRIDE ALL BASE CSS
         function positionPreviewCard(btn) {
             const card = btn.querySelector('.hotspot-card');
             if (!card || !isTouchDevice) return;
             
-            // Reset any inline styles first
-            card.style.top = '';
-            card.style.left = '';
-            card.style.right = '';
-            card.style.bottom = '';
-            card.style.transform = '';
-            
-            // Force card to center of viewport
+            // Force card to center of viewport with inline styles that override everything
             const vw = window.innerWidth;
             const vh = window.innerHeight;
-            const cardWidth = 200; // approximate
-            const cardHeight = 150; // approximate
             
-            card.style.position = 'fixed';
-            card.style.top = Math.max(60, (vh - cardHeight) / 2) + 'px';
-            card.style.left = Math.max(10, (vw - cardWidth) / 2) + 'px';
-            card.style.transform = 'none';
+            // Set all positioning inline to override base CSS
+            card.style.cssText = `
+                position: fixed !important;
+                top: 50% !important;
+                left: 50% !important;
+                right: auto !important;
+                bottom: auto !important;
+                transform: translate(-50%, -50%) !important;
+                width: 200px !important;
+                max-width: 85vw !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                pointer-events: auto !important;
+                z-index: 9999 !important;
+            `;
         }
         
         document.querySelectorAll('.scene-hotspot[data-location]').forEach(btn => {
