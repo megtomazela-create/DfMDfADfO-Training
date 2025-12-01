@@ -5032,23 +5032,13 @@
                 }
             }
             
-            /* Hotspot preview card for mobile - FORCE CENTER */
+            /* Hotspot preview card for mobile - HIDDEN BY DEFAULT */
             .scene-hotspot .hotspot-card,
             .hotspot-card {
-                position: fixed !important;
-                bottom: auto !important;
-                top: 50% !important;
-                left: 50% !important;
-                right: auto !important;
-                transform: translate(-50%, -50%) !important;
-                width: 200px !important;
-                max-width: 85vw !important;
-                padding: 12px;
-                pointer-events: auto;
-                z-index: 200;
-                box-shadow: 0 8px 40px rgba(0,0,0,0.8);
-                border: 2px solid var(--warm-gold);
-                background: var(--darkest) !important;
+                /* Keep cards hidden by default */
+                opacity: 0 !important;
+                visibility: hidden !important;
+                pointer-events: none !important;
             }
             
             .hotspot-card img {
@@ -5065,7 +5055,7 @@
                 font-size: 0.7rem;
             }
             
-            /* Hide the arrow on mobile since card is centered */
+            /* Hide the arrow on mobile */
             .hotspot-card::after {
                 display: none !important;
             }
@@ -5082,14 +5072,14 @@
                 border-top: 1px solid rgba(184, 134, 11, 0.3);
             }
             
-            /* Mobile: show card when hotspot has .preview-active class */
+            /* Mobile: show card ONLY when hotspot has .preview-active class */
             .scene-hotspot.preview-active {
                 z-index: 50;
             }
             
+            /* The active preview card gets shown via inline styles from JS */
             .scene-hotspot.preview-active .hotspot-card {
-                opacity: 1;
-                visibility: visible;
+                /* JS will set inline styles to show and position */
             }
             
             /* Dim background when preview is shown */
@@ -8212,30 +8202,45 @@
         // Check if touch device
         const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
         
-        // Function to position preview card within viewport - OVERRIDE ALL BASE CSS
+        // Function to position preview card within viewport
         function positionPreviewCard(btn) {
             const card = btn.querySelector('.hotspot-card');
             if (!card || !isTouchDevice) return;
             
-            // Force card to center of viewport with inline styles that override everything
-            const vw = window.innerWidth;
-            const vh = window.innerHeight;
+            // First, reset ALL hotspot cards to default hidden state
+            document.querySelectorAll('.hotspot-card').forEach(c => {
+                if (c !== card) {
+                    c.removeAttribute('style');
+                }
+            });
             
-            // Set all positioning inline to override base CSS
-            card.style.cssText = `
-                position: fixed !important;
-                top: 50% !important;
-                left: 50% !important;
-                right: auto !important;
-                bottom: auto !important;
-                transform: translate(-50%, -50%) !important;
-                width: 200px !important;
-                max-width: 85vw !important;
-                opacity: 1 !important;
-                visibility: visible !important;
-                pointer-events: auto !important;
-                z-index: 9999 !important;
-            `;
+            // Force this card to center of viewport with inline styles
+            card.setAttribute('style', 
+                'position: fixed; ' +
+                'top: 50%; ' +
+                'left: 50%; ' +
+                'right: auto; ' +
+                'bottom: auto; ' +
+                'transform: translate(-50%, -50%); ' +
+                'width: 220px; ' +
+                'max-width: 85vw; ' +
+                'opacity: 1; ' +
+                'visibility: visible; ' +
+                'pointer-events: auto; ' +
+                'z-index: 9999; ' +
+                'background: #1a1f2e; ' +
+                'border: 2px solid #b8860b; ' +
+                'border-radius: 8px; ' +
+                'padding: 12px;'
+            );
+        }
+        
+        // Reset card styles when preview is dismissed
+        function resetPreviewCard(btn) {
+            const card = btn.querySelector('.hotspot-card');
+            if (card) {
+                card.removeAttribute('style');
+            }
         }
         
         document.querySelectorAll('.scene-hotspot[data-location]').forEach(btn => {
@@ -8247,12 +8252,14 @@
                     
                     // If already showing preview, open location
                     if (btn.classList.contains('preview-active')) {
+                        resetPreviewCard(btn);
                         openEvidence(btn.getAttribute('data-location'));
                         btn.classList.remove('preview-active');
                         gameMain.classList.remove('preview-mode');
                     } else {
-                        // Remove preview from all other hotspots
+                        // Remove preview from all other hotspots and reset their cards
                         document.querySelectorAll('.scene-hotspot.preview-active').forEach(h => {
+                            resetPreviewCard(h);
                             h.classList.remove('preview-active');
                         });
                         // Show preview for this one
@@ -8269,6 +8276,7 @@
                 if (card) {
                     card.addEventListener('click', (e) => {
                         e.stopPropagation();
+                        resetPreviewCard(btn);
                         openEvidence(btn.getAttribute('data-location'));
                         btn.classList.remove('preview-active');
                         document.querySelector('.game-main').classList.remove('preview-mode');
@@ -8287,6 +8295,7 @@
             document.querySelector('.game-main').addEventListener('click', (e) => {
                 if (!e.target.closest('.scene-hotspot') && !e.target.closest('.hotspot-card')) {
                     document.querySelectorAll('.scene-hotspot.preview-active').forEach(h => {
+                        resetPreviewCard(h);
                         h.classList.remove('preview-active');
                     });
                     document.querySelector('.game-main').classList.remove('preview-mode');
