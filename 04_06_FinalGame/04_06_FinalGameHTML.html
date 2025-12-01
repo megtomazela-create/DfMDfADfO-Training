@@ -5631,6 +5631,44 @@
                 z-index: 190;
             }
             
+            /* Toast notification for errors */
+            .board-toast {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.9);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-size: 0.8rem;
+                z-index: 300;
+                text-align: center;
+                max-width: 80vw;
+                animation: toastFade 2s ease-in-out forwards;
+                pointer-events: none;
+            }
+            
+            @keyframes toastFade {
+                0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+                10% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                80% { opacity: 1; }
+                100% { opacity: 0; }
+            }
+            
+            /* Shake animation for rejected slots */
+            .classification-slot.shake {
+                animation: slotShake 0.4s ease-in-out;
+            }
+            
+            @keyframes slotShake {
+                0%, 100% { transform: translateX(0); }
+                20% { transform: translateX(-5px); }
+                40% { transform: translateX(5px); }
+                60% { transform: translateX(-5px); }
+                80% { transform: translateX(5px); }
+            }
+            
             /* Submit area - inline with status */
             .submit-area {
                 padding: 6px 8px !important;
@@ -7924,7 +7962,8 @@
             if (category === 'rootCause') {
                 const existing = slotContent.querySelector('.mini-card');
                 if (existing && existing.getAttribute('data-evidence-id') !== evidenceId) {
-                    alert('Only one root cause allowed. Remove current one first.');
+                    showBoardToast('Only 1 root cause allowed');
+                    shakeSlot(slot);
                     return;
                 }
             }
@@ -7932,7 +7971,8 @@
                 const count = slotContent.querySelectorAll('.mini-card').length;
                 const alreadyInSlot = slotContent.querySelector(`[data-evidence-id="${evidenceId}"]`);
                 if (count >= 6 && !alreadyInSlot) {
-                    alert('Maximum 6 other issues allowed.');
+                    showBoardToast('Maximum 6 reached');
+                    shakeSlot(slot);
                     return;
                 }
             }
@@ -7955,6 +7995,27 @@
             // Clean up
             collapseExpandedCard();
             updateBoardStatus();
+        }
+        
+        // Show a toast message
+        function showBoardToast(message) {
+            // Remove any existing toast
+            const existing = document.querySelector('.board-toast');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'board-toast';
+            toast.textContent = message;
+            document.querySelector('.board-screen').appendChild(toast);
+            
+            // Remove after animation
+            setTimeout(() => toast.remove(), 2000);
+        }
+        
+        // Shake a slot to indicate rejection
+        function shakeSlot(slot) {
+            slot.classList.add('shake');
+            setTimeout(() => slot.classList.remove('shake'), 400);
         }
         
         // Handle tap on table area
