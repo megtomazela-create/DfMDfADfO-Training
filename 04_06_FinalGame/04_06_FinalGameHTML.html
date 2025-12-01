@@ -5325,6 +5325,22 @@
                 align-content: start;
                 justify-content: center;
                 background: rgba(0,0,0,0.4);
+                transition: box-shadow 0.3s ease;
+                position: relative;
+            }
+            
+            /* Table glow when it's a valid drop target */
+            .table-area.tap-hint {
+                animation: tableGlow 1.5s ease-in-out infinite;
+            }
+            
+            @keyframes tableGlow {
+                0%, 100% {
+                    box-shadow: inset 0 0 20px 5px rgba(212, 175, 55, 0.3);
+                }
+                50% {
+                    box-shadow: inset 0 0 40px 10px rgba(212, 175, 55, 0.5);
+                }
             }
             
             /* Compact evidence cards - scattered look */
@@ -7740,11 +7756,13 @@
         // ============================================
         // MOBILE TOUCH SUPPORT FOR EVIDENCE BOARD
         // Simplified flow:
-        // 1. Tap card on table → expands
+        // 1. Tap card on table → expands, boxes glow (not table)
         // 2. While expanded, tap box → moves there
-        // 3. Tap mini-card in box → expands as overlay
+        // 3. Tap mini-card in box → expands as overlay, other boxes + table glow
         // 4. While expanded, tap different box → moves there
         // 5. While expanded, tap table → returns to table
+        // 6. Tap on the expanded card itself → closes visualisation
+        // 7. When card is expanded, clicking mini-cards acts as clicking the box
         // ============================================
         let expandedCard = null;  // Currently expanded card (full card or mini-card data)
         let expandedOverlay = null;  // The overlay element for mini-cards
@@ -7783,7 +7801,7 @@
             e.stopPropagation();
             const card = e.currentTarget;
             
-            // If this card is already expanded, collapse it
+            // If this card is already expanded, collapse it (tap on expanded card = close)
             if (card.classList.contains('expanded')) {
                 collapseExpandedCard();
                 return;
@@ -7797,23 +7815,34 @@
             expandedCard = { 
                 type: 'full', 
                 element: card, 
-                evidenceId: card.getAttribute('data-evidence-id') 
+                evidenceId: card.getAttribute('data-evidence-id'),
+                sourceLocation: 'table'  // Card is coming from table
             };
             
             // Show dim overlay
             showDimOverlay();
             
-            // Highlight drop zones
-            showMobileDropHints();
+            // Highlight drop zones (boxes glow, but NOT table since card is already there)
+            showMobileDropHints('table');
         }
         
-        // Handle tap on mini-card in a slot - show expanded overlay
+        // Handle tap on mini-card in a slot
         function handleMiniCardTap(e) {
             e.stopPropagation();
             const miniCard = e.currentTarget;
             
-            // Collapse any existing expanded state
-            collapseExpandedCard();
+            // If there's already an expanded card, this tap should move the card to this slot
+            // (mini-cards act as part of their parent slot when another card is expanded)
+            if (expandedCard) {
+                // Find the parent slot and trigger slot tap
+                const parentSlot = miniCard.closest('.classification-slot');
+                if (parentSlot) {
+                    handleSlotTap({ currentTarget: parentSlot, stopPropagation: () => {} });
+                }
+                return;
+            }
+            
+            // No expanded card - open this mini-card for viewing
             
             // Get evidence data
             const evidenceId = miniCard.getAttribute('data-evidence-id');
@@ -7845,25 +7874,29 @@
             `;
             expandedOverlay.setAttribute('data-evidence-id', evidenceId);
             
+            // Add click handler to close when tapping on the overlay itself
+            expandedOverlay.addEventListener('click', (e) => {
+                e.stopPropagation();
+                collapseExpandedCard();
+            });
+            
             // Add to board screen
             document.querySelector('.board-screen').appendChild(expandedOverlay);
             
-            // Track expanded state
+            // Track expanded state - remember which category this card is in
             expandedCard = {
                 type: 'mini',
                 element: miniCard,
                 overlay: expandedOverlay,
                 evidenceId: evidenceId,
-                originalCategory: evidence.category
+                sourceLocation: evidence.category  // 'rootCause', 'contributing', or 'redHerring'
             };
             
             // Show dim overlay
             showDimOverlay();
             
-            // Highlight drop zones and table
-            showMobileDropHints();
-            const tableArea = document.getElementById('evidence-table');
-            if (tableArea) tableArea.classList.add('tap-hint');
+            // Highlight drop zones - all boxes EXCEPT the one the card is currently in, plus table
+            showMobileDropHints(evidence.category);
         }
         
         // Handle tap on classification slot
@@ -7880,6 +7913,12 @@
             const evidence = gameState.collectedEvidence.find(ev => ev.id === evidenceId);
             
             if (!evidence) return;
+            
+            // If tapping the same slot the card is already in, just close
+            if (expandedCard.sourceLocation === category) {
+                collapseExpandedCard();
+                return;
+            }
             
             // Check limits
             if (category === 'rootCause') {
@@ -7923,8 +7962,8 @@
             // If no expanded card, do nothing
             if (!expandedCard) return;
             
-            // Don't process if tapped on a card
-            if (e.target.closest('.evidence-card') || e.target.closest('.mini-card')) return;
+            // Don't process if tapped on a card (let card handler deal with it)
+            if (e.target.closest('.evidence-card')) return;
             
             e.stopPropagation();
             
@@ -7936,13 +7975,13 @@
                 return;
             }
             
-            // If it's a full card that's just expanded, just collapse it
-            if (expandedCard.type === 'full') {
+            // If it's a full card on the table, just collapse (already on table)
+            if (expandedCard.type === 'full' && expandedCard.sourceLocation === 'table') {
                 collapseExpandedCard();
                 return;
             }
             
-            // If it's a mini-card, return it to the table
+            // If it's a mini-card from a box, return it to the table
             if (expandedCard.type === 'mini') {
                 // Remove from slot
                 expandedCard.element.remove();
@@ -7997,10 +8036,26 @@
             }
         }
         
-        function showMobileDropHints() {
+        // Show drop hints, but exclude the location where the card currently is
+        function showMobileDropHints(excludeLocation) {
             document.querySelectorAll('.classification-slot').forEach(slot => {
-                slot.classList.add('tap-hint');
+                const category = slot.getAttribute('data-category');
+                if (category !== excludeLocation) {
+                    slot.classList.add('tap-hint');
+                } else {
+                    slot.classList.remove('tap-hint');
+                }
             });
+            
+            // Show table hint only if card is NOT from table
+            const tableArea = document.getElementById('evidence-table');
+            if (tableArea) {
+                if (excludeLocation !== 'table') {
+                    tableArea.classList.add('tap-hint');
+                } else {
+                    tableArea.classList.remove('tap-hint');
+                }
+            }
         }
         
         function hideMobileDropHints() {
