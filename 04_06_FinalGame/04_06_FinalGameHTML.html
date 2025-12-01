@@ -5426,6 +5426,7 @@
                 background: rgba(31, 41, 55, 0.98) !important;
                 flex-shrink: 0 !important;
                 overflow: visible !important;
+                z-index: 200 !important;
             }
             
             .classification-slot {
@@ -5437,6 +5438,51 @@
                 border-radius: 5px;
                 display: flex;
                 flex-direction: column;
+                transition: box-shadow 0.3s ease, transform 0.2s ease;
+            }
+            
+            /* Glow effect when slots are tappable */
+            .classification-slot.tap-hint {
+                animation: slotGlow 1.5s ease-in-out infinite;
+            }
+            
+            .classification-slot.tap-hint.slot-root {
+                animation: slotGlowRed 1.5s ease-in-out infinite;
+            }
+            
+            .classification-slot.tap-hint.slot-contributing {
+                animation: slotGlowAmber 1.5s ease-in-out infinite;
+            }
+            
+            .classification-slot.tap-hint.slot-redherring {
+                animation: slotGlowGray 1.5s ease-in-out infinite;
+            }
+            
+            @keyframes slotGlowRed {
+                0%, 100% {
+                    box-shadow: 0 0 8px 2px rgba(239, 68, 68, 0.5), inset 0 0 4px rgba(239, 68, 68, 0.2);
+                }
+                50% {
+                    box-shadow: 0 0 16px 4px rgba(239, 68, 68, 0.8), inset 0 0 8px rgba(239, 68, 68, 0.3);
+                }
+            }
+            
+            @keyframes slotGlowAmber {
+                0%, 100% {
+                    box-shadow: 0 0 8px 2px rgba(217, 119, 6, 0.5), inset 0 0 4px rgba(217, 119, 6, 0.2);
+                }
+                50% {
+                    box-shadow: 0 0 16px 4px rgba(217, 119, 6, 0.8), inset 0 0 8px rgba(217, 119, 6, 0.3);
+                }
+            }
+            
+            @keyframes slotGlowGray {
+                0%, 100% {
+                    box-shadow: 0 0 8px 2px rgba(156, 163, 175, 0.5), inset 0 0 4px rgba(156, 163, 175, 0.2);
+                }
+                50% {
+                    box-shadow: 0 0 16px 4px rgba(156, 163, 175, 0.8), inset 0 0 8px rgba(156, 163, 175, 0.3);
+                }
             }
             
             .slot-root {
