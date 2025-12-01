@@ -5502,19 +5502,23 @@
                 animation: slotGlowGray 1.5s ease-in-out infinite;
             }
             
-            /* Table slot - hidden by default, positioned in middle of table area */
+            /* Table slot - hidden by default, positioned in upper middle of screen */
             .slot-table {
                 display: none !important;
-                position: absolute !important;
-                top: 50% !important;
+                position: fixed !important;
+                top: 30% !important;
                 left: 50% !important;
-                transform: translate(-50%, -50%) !important;
+                transform: translateX(-50%) !important;
                 width: 120px !important;
                 min-height: 70px !important;
                 flex: none !important;
-                border-color: rgba(139, 90, 43, 0.8) !important;
-                background: rgba(101, 67, 33, 0.4) !important;
+                border: 2px dashed rgba(139, 90, 43, 0.8) !important;
+                border-radius: 8px !important;
+                background: rgba(101, 67, 33, 0.5) !important;
                 z-index: 250 !important;
+                align-items: center !important;
+                justify-content: center !important;
+                flex-direction: column !important;
             }
             
             .slot-table.active {
