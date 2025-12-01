@@ -4925,202 +4925,77 @@
                 min-height: 0;
                 overflow: hidden;
                 position: relative;
-                margin-bottom: 70px !important; /* Space for collection panel + action buttons */
+                margin-bottom: 65px !important; /* Space for collection panel */
             }
             
-            /* Collection panel - NOT fixed, part of flex layout */
+            /* Collection panel - compact row */
             .collection-panel {
                 position: absolute !important;
                 bottom: env(safe-area-inset-bottom, 0) !important;
                 left: 0 !important;
                 right: 0 !important;
-                height: 60px !important;
-                min-height: 60px !important;
-                padding: 8px 12px !important;
-                padding-right: 16px !important; /* Extra padding for GO button */
+                height: 50px !important;
+                padding: 5px 8px !important;
                 z-index: 60 !important;
                 background: rgba(31, 41, 55, 0.98) !important;
                 border-top: 1px solid var(--warm-gold) !important;
-                box-sizing: border-box !important;
-            }
-            
-            /* Location grid - 3x2 + 1 compact */
-            #evidence-locations {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 4px;
-                padding: var(--space-xs);
-                flex: 1;
-                align-content: start;
-            }
-            
-            .evidence-btn {
-                min-height: 55px;
-                padding: 4px;
-            }
-            
-            .evidence-btn .evidence-icon {
-                font-size: 1.1rem;
-            }
-            
-            .evidence-btn .evidence-label {
-                font-size: 0.55rem;
-                line-height: 1.2;
-            }
-            
-            /* --- EVIDENCE BAR - SEE ALL 7 ITEMS --- */
-            .evidence-bar {
-                min-height: auto;
-                max-height: 70px;
-                padding: 4px var(--space-xs);
-                flex-shrink: 0;
-                overflow: hidden;
-            }
-            
-            .evidence-bar-header {
-                font-size: 0.55rem;
-                margin-bottom: 2px;
-            }
-            
-            #evidence-cards-bar {
-                display: flex;
-                gap: 4px;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                padding-bottom: 4px;
-            }
-            
-            /* Tiny evidence cards - fit all 7 visible */
-            .evidence-card {
-                width: calc((100vw - 40px) / 4.5);
-                min-width: 70px;
-                max-width: 85px;
-                padding: 4px;
-                flex-shrink: 0;
-            }
-            
-            .evidence-card h5 {
-                font-size: 0.5rem;
-                margin-bottom: 2px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            
-            .evidence-card p {
-                display: none; /* Hide description to save space */
-            }
-            
-            .evidence-bar-empty {
-                font-size: 0.65rem;
-                padding: var(--space-xs);
-            }
-            
-            /* --- ACTION BUTTONS - ABOVE COLLECTION PANEL --- */
-            .game-actions {
-                position: absolute !important;
-                bottom: 75px !important; /* Above collection panel + safe area */
-                right: var(--space-sm) !important;
-                gap: 6px !important;
-                z-index: 55 !important;
-                flex-direction: column !important;
                 display: flex !important;
+                align-items: center !important;
+                gap: 6px !important;
             }
             
-            .action-btn {
-                padding: 10px !important;
-                min-width: 48px !important;
-                min-height: 48px !important;
-                background: rgba(31, 41, 55, 0.98) !important;
-                border: 2px solid var(--warm-gold) !important;
-                border-radius: 10px !important;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.5) !important;
-            }
-            
-            .action-btn .action-label {
-                display: none;
-            }
-            
-            .action-btn .action-icon {
-                font-size: 1.4rem;
-            }
-            
-            #submit-btn {
-                border-color: var(--warning-amber) !important;
-            }
-            
-            #open-board-btn {
-                border-color: var(--success-green) !important;
-            }
-            
-            /* --- COLLECTION PANEL CONTENT --- */
             .collection-header {
-                min-width: auto;
-                flex-direction: row;
-                align-items: center;
-                gap: var(--space-xs);
-            }
-            
-            .collection-header h3 {
-                font-size: 0.5rem;
-            }
-            
-            .collection-count {
-                font-size: 0.75rem;
+                display: none !important;
             }
             
             .collection-slots {
-                flex: 1;
-                gap: 3px;
-                justify-content: center;
+                flex: 1 !important;
+                display: flex !important;
+                gap: 2px !important;
+                justify-content: center !important;
             }
             
             .collection-slot {
-                width: 32px;
-                height: 32px;
-                border-radius: 5px;
+                width: 28px !important;
+                height: 28px !important;
+                border-radius: 4px !important;
             }
             
             .collection-slot.empty .slot-number {
-                font-size: 0.6rem;
+                font-size: 0.5rem;
             }
             
             .collection-slot .slot-evidence span {
                 display: none;
             }
             
-            .collection-slot.phone-slot {
-                width: 32px;
-            }
-            
-            /* Board button in collection panel */
             .collection-actions {
-                margin-left: auto !important;
-                margin-right: 4px !important;
-                flex-shrink: 0;
-                padding-right: env(safe-area-inset-right, 0);
+                flex-shrink: 0 !important;
             }
             
             .collection-actions .btn-primary {
-                font-size: 0.65rem !important;
-                padding: 8px 12px !important;
-                white-space: nowrap;
-                min-width: 50px;
+                font-size: 0.6rem !important;
+                padding: 6px 10px !important;
             }
             
             .board-btn-text {
-                display: none;
+                display: none !important;
             }
             
-            /* Show icon instead of text */
             #open-board-btn::before {
                 content: '📋';
-                font-size: 1rem;
+                font-size: 0.85rem;
             }
             
             #open-board-btn:not(:disabled)::before {
-                content: '📋 GO';
-                font-size: 0.8rem;
+                content: 'GO →';
+                font-size: 0.7rem;
                 font-weight: bold;
+            }
+            
+            /* Hide action buttons - GO button is in collection panel */
+            .game-actions {
+                display: none !important;
             }
             
             /* --- SCENE HOTSPOTS MOBILE --- */
@@ -5422,28 +5297,31 @@
             .board-screen {
                 width: 100vw;
                 height: 100vh;
+                height: 100dvh;
                 display: flex;
                 flex-direction: column;
-                overflow: hidden;
+                overflow: hidden !important;
             }
             
             .board-close-btn {
-                top: 8px;
-                right: 8px;
-                width: 36px;
-                height: 36px;
-                font-size: 20px;
+                top: 6px;
+                right: 6px;
+                width: 32px;
+                height: 32px;
+                font-size: 18px;
+                z-index: 10;
             }
             
             /* Evidence table area - scattered cards */
             .table-area {
                 flex: 1;
+                min-height: 0;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
-                padding: 50px 10px 10px;
+                padding: 38px 6px 6px;
                 display: flex;
                 flex-wrap: wrap;
-                gap: 10px;
+                gap: 6px;
                 align-content: start;
                 justify-content: center;
                 background: rgba(0,0,0,0.4);
@@ -5451,10 +5329,10 @@
             
             /* Compact evidence cards - scattered look */
             .table-area .evidence-card {
-                width: calc(50% - 10px);
-                max-width: 160px;
-                min-width: 130px;
-                padding: 8px 10px;
+                width: calc(50% - 6px);
+                max-width: 145px;
+                min-width: 115px;
+                padding: 6px 8px;
                 margin-bottom: 0;
             }
             
@@ -5468,13 +5346,13 @@
             .table-area .evidence-card:nth-child(7) { transform: rotate(-2.5deg); }
             
             .table-area .evidence-card .card-header {
-                margin-bottom: 4px;
-                padding-bottom: 4px;
+                margin-bottom: 3px;
+                padding-bottom: 3px;
             }
             
             .table-area .evidence-card .card-title {
-                font-size: 0.65rem;
-                line-height: 1.2;
+                font-size: 0.58rem;
+                line-height: 1.15;
             }
             
             .table-area .evidence-card .card-source {
@@ -5482,8 +5360,8 @@
             }
             
             .table-area .evidence-card .card-body {
-                font-size: 0.6rem;
-                line-height: 1.3;
+                font-size: 0.5rem;
+                line-height: 1.2;
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
@@ -5496,15 +5374,32 @@
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%) !important;
-                width: 90vw;
-                max-width: 350px;
+                width: 85vw;
+                max-width: 300px;
                 z-index: 200;
-                padding: 16px;
+                padding: 12px;
+                padding-bottom: 30px;
                 box-shadow: 0 10px 50px rgba(0,0,0,0.8);
             }
             
+            .table-area .evidence-card.expanded::after {
+                content: 'Tap again to select';
+                position: absolute;
+                bottom: 6px;
+                left: 0;
+                right: 0;
+                text-align: center;
+                font-size: 0.55rem;
+                color: var(--warm-gold);
+            }
+            
+            .table-area .evidence-card.expanded.selected-for-move::after {
+                content: '✓ Tap a box below';
+                color: var(--success-green);
+            }
+            
             .table-area .evidence-card.expanded .card-title {
-                font-size: 0.9rem;
+                font-size: 0.8rem;
             }
             
             .table-area .evidence-card.expanded .card-source {
@@ -5512,33 +5407,35 @@
             }
             
             .table-area .evidence-card.expanded .card-body {
-                font-size: 0.8rem;
+                font-size: 0.7rem;
                 -webkit-line-clamp: unset;
                 display: block;
             }
             
-            /* Classification bar - VERTICAL STACK, full width */
+            /* Classification bar - HORIZONTAL ROW, NO SCROLL */
             .classification-bar {
                 position: relative !important;
                 bottom: auto !important;
                 left: auto !important;
                 transform: none !important;
                 display: flex !important;
-                flex-direction: column !important;
-                gap: 8px !important;
-                padding: 10px !important;
-                background: rgba(31, 41, 55, 0.95) !important;
-                flex-shrink: 0;
-                overflow-y: auto;
-                max-height: 40vh;
+                flex-direction: row !important;
+                gap: 4px !important;
+                padding: 6px !important;
+                background: rgba(31, 41, 55, 0.98) !important;
+                flex-shrink: 0 !important;
+                overflow: visible !important;
             }
             
             .classification-slot {
-                width: 100% !important;
+                flex: 1 !important;
+                min-width: 0 !important;
+                width: auto !important;
                 min-height: 60px !important;
-                padding: 8px !important;
-                border-radius: 8px;
-                flex-shrink: 0;
+                padding: 4px !important;
+                border-radius: 5px;
+                display: flex;
+                flex-direction: column;
             }
             
             .slot-root {
@@ -5548,55 +5445,77 @@
             
             .slot-contributing {
                 border-color: var(--warning-amber) !important;
-                min-height: 80px !important;
             }
             
             .slot-redherring {
-                border-color: var(--medium-dark) !important;
+                border-color: var(--medium) !important;
             }
             
             .slot-header {
-                margin-bottom: 6px !important;
-                padding-bottom: 4px !important;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
+                margin-bottom: 2px !important;
+                padding-bottom: 2px !important;
+                flex-shrink: 0;
+                text-align: center;
+            }
+            
+            .slot-icon {
+                font-size: 0.65rem;
+                display: block;
             }
             
             .slot-label {
-                font-size: 0.7rem !important;
+                font-size: 0.45rem !important;
+                display: block;
             }
             
             .slot-hint {
-                font-size: 0.55rem !important;
-                display: inline !important;
-                opacity: 0.7;
+                font-size: 0.4rem !important;
+                display: block !important;
+                opacity: 0.6;
             }
             
             .slot-content {
-                gap: 4px !important;
+                gap: 2px !important;
                 flex-wrap: wrap;
                 display: flex;
+                flex: 1;
+                min-height: 18px;
+                align-content: start;
             }
             
             .mini-card {
-                font-size: 0.55rem !important;
-                padding: 4px 8px !important;
+                font-size: 0.4rem !important;
+                padding: 2px 3px !important;
+                border-radius: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 max-width: 100%;
-                border-radius: 4px;
+                cursor: pointer;
             }
             
-            /* Submit area */
+            /* Submit area - inline with status */
             .submit-area {
-                padding: 10px !important;
-                padding-bottom: calc(10px + env(safe-area-inset-bottom, 0)) !important;
+                padding: 6px 8px !important;
+                padding-bottom: calc(6px + env(safe-area-inset-bottom, 0)) !important;
                 background: rgba(0,0,0,0.9) !important;
-                flex-shrink: 0;
+                flex-shrink: 0 !important;
+                display: flex !important;
+                align-items: center;
+                gap: 8px;
             }
             
             .board-status {
+                font-size: 0.55rem !important;
+                margin-bottom: 0 !important;
+                flex: 1;
+            }
+            
+            .btn-submit-board {
+                padding: 8px 14px !important;
                 font-size: 0.7rem !important;
-                margin-bottom: 8px !important;
+                flex-shrink: 0;
+                width: auto !important;
             }
             
             .btn-submit-board {
@@ -5977,6 +5896,12 @@
             @keyframes pulse-hint {
                 0%, 100% { border-color: var(--warm-gold); }
                 50% { border-color: rgba(212, 175, 55, 0.4); }
+            }
+            
+            /* Table area hint when mini-card is selected */
+            .table-area.tap-hint {
+                outline: 3px dashed var(--warm-gold);
+                outline-offset: -3px;
             }
             
             /* Larger touch targets */
@@ -6465,12 +6390,12 @@
                     </div>
                     <div class="slot-content"></div>
                 </div>
-                
-                <!-- Submit area -->
-                <div class="submit-area">
-                    <div class="board-status" id="board-status">Drag cards to classify</div>
-                    <button class="btn-submit-board" id="submit-board-btn" disabled>Submit →</button>
-                </div>
+            </div>
+            
+            <!-- Submit area - OUTSIDE classification bar -->
+            <div class="submit-area">
+                <div class="board-status" id="board-status">Drag cards to classify</div>
+                <button class="btn-submit-board" id="submit-board-btn" disabled>Submit →</button>
             </div>
         </div>
     </div>
@@ -7732,24 +7657,33 @@
             e.stopPropagation();
             const card = e.currentTarget;
             
-            // If card is expanded, collapse it
+            // If card is expanded, tap again to select it for moving
             if (card.classList.contains('expanded')) {
-                card.classList.remove('expanded');
+                // Toggle selection
+                if (card.classList.contains('selected-for-move')) {
+                    card.classList.remove('selected-for-move');
+                    selectedCardForMove = null;
+                    hideMobileDropHints();
+                } else {
+                    document.querySelectorAll('.selected-for-move').forEach(c => c.classList.remove('selected-for-move'));
+                    card.classList.add('selected-for-move');
+                    selectedCardForMove = card;
+                    showMobileDropHints();
+                }
                 return;
             }
             
             // If another card is expanded, collapse it first
             document.querySelectorAll('.evidence-card.expanded').forEach(c => {
                 c.classList.remove('expanded');
+                c.classList.remove('selected-for-move');
             });
             
-            // If we have a selected card for move, handle the selection
-            if (selectedCardForMove) {
-                handleCardTapSelect(e);
-                return;
-            }
+            // Clear any selection when expanding a new card
+            selectedCardForMove = null;
+            hideMobileDropHints();
             
-            // Otherwise expand this card for reading
+            // Expand this card for reading
             card.classList.add('expanded');
         }
         
@@ -7876,6 +7810,7 @@
             
             // Deselect any previously selected card
             document.querySelectorAll('.selected-for-move').forEach(c => c.classList.remove('selected-for-move'));
+            document.querySelectorAll('.expanded').forEach(c => c.classList.remove('expanded'));
             
             // Select this card
             card.classList.add('selected-for-move');
@@ -7883,6 +7818,12 @@
             
             // Show drop zone hints
             showMobileDropHints();
+            
+            // Also highlight table area if this is a mini-card (already classified)
+            const tableArea = document.getElementById('evidence-table');
+            if (card.classList.contains('mini-card') && tableArea) {
+                tableArea.classList.add('tap-hint');
+            }
         }
         
         function handleSlotTapDrop(e) {
@@ -7943,7 +7884,7 @@
             
             if (!evidence) return;
             
-            // Only unclassify if it was classified
+            // Only unclassify if it was classified (mini-card in a slot)
             if (evidence.category) {
                 selectedCardForMove.remove();
                 evidence.category = null;
@@ -7951,12 +7892,14 @@
                 // Add card back to table
                 const tableArea = document.getElementById('evidence-table');
                 const fullCard = createFullCard(evidence);
-                fullCard.addEventListener('click', handleCardTapSelect);
+                fullCard.addEventListener('click', handleCardTap);
                 tableArea.appendChild(fullCard);
             }
             
             // Clear selection
             selectedCardForMove = null;
+            document.querySelectorAll('.selected-for-move').forEach(c => c.classList.remove('selected-for-move'));
+            document.querySelectorAll('.expanded').forEach(c => c.classList.remove('expanded'));
             hideMobileDropHints();
             
             // Update board status
@@ -7974,6 +7917,8 @@
                 slot.classList.remove('tap-hint');
             });
             document.querySelectorAll('.selected-for-move').forEach(c => c.classList.remove('selected-for-move'));
+            const tableArea = document.getElementById('evidence-table');
+            if (tableArea) tableArea.classList.remove('tap-hint');
         }
 
         let draggedCard = null;
