@@ -5077,7 +5077,7 @@
                 z-index: 50;
             }
             
-            /* Dim background when preview is shown */
+            /* Dim background when preview is shown - clicks pass through */
             .game-main.preview-mode::before {
                 content: '';
                 position: fixed;
@@ -5087,6 +5087,7 @@
                 bottom: 0;
                 background: rgba(0, 0, 0, 0.5);
                 z-index: 100;
+                pointer-events: none;
             }
             
             /* --- EVIDENCE VIEWER MODAL MOBILE --- */
@@ -8195,7 +8196,8 @@
         // --------------------------------------------
         
         // Check if touch device
-        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        // Check if mobile/touch device - matches CSS media query
+        const isMobile = window.innerWidth <= 700;
         
         // Track which hotspot is currently previewing
         let activePreviewHotspot = null;
@@ -8209,7 +8211,8 @@
                     card.style.cssText = 'opacity: 0; visibility: hidden; pointer-events: none;';
                 }
             });
-            document.querySelector('.game-main')?.classList.remove('preview-mode');
+            const gameMain = document.querySelector('.game-main');
+            if (gameMain) gameMain.classList.remove('preview-mode');
             activePreviewHotspot = null;
         }
         
@@ -8223,31 +8226,31 @@
             
             // Mark this hotspot as active
             btn.classList.add('preview-active');
-            document.querySelector('.game-main')?.classList.add('preview-mode');
+            const gameMain = document.querySelector('.game-main');
+            if (gameMain) gameMain.classList.add('preview-mode');
             activePreviewHotspot = btn;
             
             // Position and show the card - CENTERED ON SCREEN
-            card.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 220px;
-                max-width: 85vw;
-                opacity: 1;
-                visibility: visible;
-                pointer-events: auto;
-                z-index: 9999;
-                background: #1a1f2e;
-                border: 2px solid #b8860b;
-                border-radius: 8px;
-                padding: 12px;
-                box-shadow: 0 10px 50px rgba(0,0,0,0.8);
-            `;
+            card.style.cssText = 
+                'position: fixed; ' +
+                'top: 50%; ' +
+                'left: 50%; ' +
+                'transform: translate(-50%, -50%); ' +
+                'width: 220px; ' +
+                'max-width: 85vw; ' +
+                'opacity: 1; ' +
+                'visibility: visible; ' +
+                'pointer-events: auto; ' +
+                'z-index: 9999; ' +
+                'background: #1a1f2e; ' +
+                'border: 2px solid #b8860b; ' +
+                'border-radius: 8px; ' +
+                'padding: 12px; ' +
+                'box-shadow: 0 10px 50px rgba(0,0,0,0.8);';
         }
         
         document.querySelectorAll('.scene-hotspot[data-location]').forEach(btn => {
-            if (isTouchDevice) {
+            if (isMobile) {
                 // Mobile: tap hotspot to show/hide preview or open location
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -8286,8 +8289,8 @@
         });
         
         // Close preview when clicking elsewhere on mobile
-        if (isTouchDevice) {
-            document.querySelector('.game-main').addEventListener('click', (e) => {
+        if (isMobile) {
+            document.querySelector('.game-main')?.addEventListener('click', (e) => {
                 if (!e.target.closest('.scene-hotspot') && !e.target.closest('.hotspot-card')) {
                     hideAllPreviews();
                 }
