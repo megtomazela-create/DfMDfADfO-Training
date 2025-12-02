@@ -1246,6 +1246,21 @@
             margin: 0 auto;
         }
 
+        /* Radiozone Showcase */
+        .radiozone-showcase {
+            margin: 2rem 0;
+        }
+
+        .radiozone-showcase .image-placeholder {
+            min-height: 300px;
+            padding: 1rem;
+        }
+
+        .radiozone-showcase .image-placeholder img {
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(255, 107, 107, 0.2);
+        }
+
         /* Three Zones Visual */
         .zones-visual {
             display: grid;
@@ -1371,7 +1386,7 @@
 <body>
     <!-- Fixed Header -->
     <header class="fixed-header">
-        <img src="../00_images/Logo_white.png" alt="The Nuclear House" class="header-logo">
+        <img src="https://raw.githubusercontent.com/MartinHoworworworworworworko/nuclearpower/refs/heads/main/assets/images/logo.png" alt="The Nuclear House" class="header-logo">
         <span class="header-title">Module 5.2: Design for Maintenance</span>
         <div class="header-progress">
             <div class="progress-track">
@@ -1839,6 +1854,15 @@
                         <h4>Laydown Yard</h4>
                         <p>Larger components, long-term staging. Prepared surface for heavy loads. Weather protection if needed.</p>
                     </div>
+                </div>
+
+                <div class="radiozone-showcase">
+                    <div class="image-placeholder" data-image="IMAGE_RADIOZONE" style="border: 2px solid var(--accent-cost); background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 107, 107, 0.02));">
+                        <img src="images/IMAGE_RADIOZONE.png" alt="Controlled radiological zone with contaminated component staging" style="max-height: 350px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'; this.parentElement.querySelector('.placeholder-text').style.display='block';">
+                        <span class="placeholder-icon" style="display: none;">☢️</span>
+                        <span class="placeholder-text" style="display: none;">Controlled radiological zone — barriers, radiation signage, PPE stations, and designated contaminated component staging</span>
+                    </div>
+                    <p class="image-caption" style="text-align: center; color: var(--text-secondary); font-size: 0.9rem; margin-top: 1rem; font-style: italic;">A controlled radiological zone: barriers define the contaminated area, radiation monitoring in progress, PPE ready for workers entering the zone</p>
                 </div>
 
                 <div class="warning-box">
