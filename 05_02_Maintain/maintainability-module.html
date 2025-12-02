@@ -384,6 +384,87 @@
             max-width: 800px;
         }
 
+        /* Regulatory Elements */
+        .regulatory-note {
+            font-size: 0.95rem;
+            color: var(--accent-warning);
+            font-style: italic;
+            margin-top: 0.5rem;
+            opacity: 0;
+        }
+
+        .regulatory-callout {
+            background: linear-gradient(135deg, rgba(240, 165, 0, 0.1), rgba(240, 165, 0, 0.05));
+            border: 1px solid rgba(240, 165, 0, 0.3);
+            border-left: 4px solid var(--accent-warning);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .regulatory-callout .reg-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .regulatory-callout .reg-content h4 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            color: var(--accent-warning);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .regulatory-callout .reg-content p {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .regulatory-callout .reg-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .regulatory-callout .reg-implication {
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 0.75rem;
+        }
+
+        .regulatory-callout.compact {
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .regulatory-callout.compact .reg-icon {
+            font-size: 1.25rem;
+        }
+
+        .regulatory-callout.compact .reg-content h4 {
+            font-size: 0.95rem;
+        }
+
+        .regulatory-callout.compact .reg-content p {
+            font-size: 0.9rem;
+        }
+
+        .reg-reference {
+            display: inline-block;
+            background: rgba(240, 165, 0, 0.15);
+            color: var(--accent-warning);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-left: 0.25rem;
+        }
+
         /* SCREEN 2: Outage Reality */
         .stats-grid {
             display: grid;
@@ -922,60 +1003,248 @@
             margin: 0;
         }
 
-        /* SCREEN 8: Calculator */
-        .calculator-section {
-            background: var(--bg-secondary);
+        /* SCREEN 8: Design Decision Simulator */
+        
+        /* Hero Image */
+        .simulator-hero {
+            position: relative;
             border-radius: 16px;
-            padding: 2.5rem;
-            margin: 2rem 0;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            height: 200px;
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
         }
 
-        .calculator-title {
+        .simulator-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+        }
+
+        .simulator-hero.no-image {
+            height: auto;
+            padding: 2rem;
+        }
+
+        .simulator-hero.no-image img {
+            display: none;
+        }
+
+        .hero-overlay-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
         }
 
-        .calculator-title h3 {
+        .simulator-hero.no-image .hero-overlay-text {
+            position: relative;
+            background: none;
+        }
+
+        .hero-stat {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
             color: var(--accent-warning);
         }
 
-        .calculator-title .icon {
-            font-size: 1.5rem;
-        }
-
-        .calculator-scenario {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .calculator-scenario h4 {
-            color: var(--text-primary);
-            margin-bottom: 1.5rem;
-        }
-
-        .slider-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .slider-label {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-
-        .slider-label span {
+        .hero-divider {
             color: var(--text-secondary);
         }
 
-        .slider-label .value {
+        /* Gauge */
+        .gauge-container {
+            text-align: center;
+            min-width: 180px;
+        }
+
+        .gauge {
+            width: 180px;
+            height: 110px;
+        }
+
+        .gauge-needle {
+            transform-origin: 100px 100px;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .gauge-labels {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            margin-top: -10px;
+        }
+
+        .gauge-label-bad, .gauge-label-good {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .gauge-label-bad {
+            color: var(--accent-cost);
+        }
+
+        .gauge-label-good {
+            color: var(--accent-success);
+        }
+
+        .gauge-value {
             font-family: 'Roboto Mono', monospace;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-success);
+            margin-top: 0.25rem;
+            transition: color 0.3s ease;
+        }
+
+        .gauge-value.warning {
             color: var(--accent-warning);
-            font-weight: 600;
+        }
+
+        .gauge-value.danger {
+            color: var(--accent-cost);
+        }
+
+        .gauge-title {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .simulator-container {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .simulator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .simulator-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .simulator-title .icon {
+            font-size: 1.5rem;
+        }
+
+        .simulator-title h3 {
+            color: var(--accent-warning);
+            margin: 0;
+        }
+
+        .decisions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .decision-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-bg-icon {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 8rem;
+            opacity: 0.04;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .decision-card:hover .card-bg-icon {
+            opacity: 0.08;
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .decision-card.poor-design .card-bg-icon {
+            opacity: 0.1;
+        }
+
+        .decision-card:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .decision-card.poor-design {
+            border-color: var(--accent-cost);
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.15);
+        }
+
+        .decision-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .decision-icon {
+            font-size: 1.75rem;
+            line-height: 1;
+        }
+
+        .decision-info h4 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1.1rem;
+        }
+
+        .decision-penalty {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .decision-controls {
+            margin-bottom: 1rem;
+        }
+
+        .quantity-control {
+            margin-bottom: 1rem;
+        }
+
+        .quantity-control label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .quantity-slider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quantity-slider .slider-input {
+            flex: 1;
         }
 
         .slider-input {
@@ -1013,46 +1282,344 @@
             border: none;
         }
 
-        .calculator-result {
-            background: rgba(255, 107, 107, 0.1);
-            border: 2px solid var(--accent-cost);
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
-            margin-top: 1.5rem;
+        .qty-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent-warning);
+            min-width: 60px;
+            text-align: right;
         }
 
-        .calculator-result .result-value {
+        .toggle-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-primary);
+            border-radius: 8px;
+        }
+
+        .toggle-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            text-align: center;
+            flex: 1;
+        }
+
+        .toggle-label.good {
+            color: var(--text-secondary);
+        }
+
+        .toggle-label.bad {
+            color: var(--text-secondary);
+        }
+
+        .toggle-control:has(input:checked) .toggle-label.good {
+            color: var(--accent-success);
+            font-weight: 600;
+        }
+
+        .toggle-control:has(input:not(:checked)) .toggle-label.bad {
+            color: var(--accent-cost);
+            font-weight: 600;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 56px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--accent-cost);
+            transition: 0.4s;
+            border-radius: 28px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: var(--accent-success);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(28px);
+        }
+
+        .decision-impact {
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .impact-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.4rem 0;
+        }
+
+        .impact-row.cost-row {
+            border-top: 1px dashed rgba(255, 255, 255, 0.05);
+            margin-top: 0.25rem;
+            padding-top: 0.5rem;
+        }
+
+        .impact-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .impact-value {
             font-family: 'Roboto Mono', monospace;
-            font-size: 2rem;
-            font-weight: 700;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent-success);
+            transition: color 0.3s ease;
+        }
+
+        .impact-value.negative {
             color: var(--accent-cost);
         }
 
-        .calculator-result .result-label {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-top: 0.5rem;
+        .impact-cost {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-success);
+            transition: all 0.3s ease;
         }
 
-        .impact-message {
+        .impact-cost.negative {
+            color: var(--accent-cost);
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Results Dashboard */
+        .results-dashboard {
             background: var(--bg-card);
             border-radius: 12px;
             padding: 2rem;
-            text-align: center;
-            margin-top: 2rem;
+            border: 2px solid var(--accent-warning);
         }
 
-        .impact-message p {
-            font-size: 1.3rem;
-            color: var(--text-heading);
-            font-weight: 500;
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .dashboard-header h3 {
             margin: 0;
+            color: var(--text-heading);
         }
 
-        .impact-message .highlight-cost {
-            color: var(--accent-cost);
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-card {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .result-card.highlight {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.15), rgba(255, 107, 107, 0.05));
+            border: 1px solid var(--accent-cost);
+        }
+
+        .result-card.major {
+            background: linear-gradient(135deg, rgba(240, 165, 0, 0.2), rgba(240, 165, 0, 0.05));
+            border: 2px solid var(--accent-warning);
+            grid-column: span 2;
+        }
+
+        @media (max-width: 600px) {
+            .result-card.major {
+                grid-column: span 1;
+            }
+        }
+
+        .result-icon {
+            font-size: 1.75rem;
+        }
+
+        .result-data {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .result-number {
             font-family: 'Roboto Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            line-height: 1.2;
+        }
+
+        .result-card.highlight .result-number,
+        .result-card.major .result-number {
+            color: var(--accent-cost);
+        }
+
+        .result-unit {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Impact Breakdown */
+        .impact-breakdown {
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .impact-breakdown.visible {
+            display: block;
+        }
+
+        .impact-breakdown h4 {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .breakdown-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .breakdown-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .breakdown-label {
+            min-width: 140px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .breakdown-track {
+            flex: 1;
+            height: 12px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .breakdown-fill {
+            height: 100%;
+            background: var(--accent-cost);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        .breakdown-value {
+            min-width: 80px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-cost);
+            text-align: right;
+        }
+
+        /* Verdict */
+        .impact-verdict {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-success);
+            transition: all 0.3s ease;
+        }
+
+        .impact-verdict.warning {
+            border-left-color: var(--accent-warning);
+        }
+
+        .impact-verdict.danger {
+            border-left-color: var(--accent-cost);
+        }
+
+        .verdict-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--bg-primary);
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .impact-verdict.warning .verdict-icon {
+            background: var(--accent-warning);
+        }
+
+        .impact-verdict.danger .verdict-icon {
+            background: var(--accent-cost);
+        }
+
+        .verdict-text h4 {
+            margin: 0 0 0.25rem 0;
+            color: var(--text-heading);
+        }
+
+        .verdict-text p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .verdict-reg {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--accent-warning);
+            font-style: italic;
         }
 
         /* SCREEN 9: Checklist & Close */
@@ -1356,6 +1923,217 @@
             .principles-grid {
                 grid-template-columns: 1fr;
             }
+
+            /* Regulatory callouts mobile */
+            .regulatory-callout {
+                flex-direction: column;
+                padding: 1.25rem;
+            }
+
+            .regulatory-callout .reg-icon {
+                font-size: 1.25rem;
+            }
+
+            .regulatory-callout .reg-content h4 {
+                font-size: 1rem;
+            }
+
+            .reg-reference {
+                font-size: 0.7rem;
+                padding: 0.1rem 0.4rem;
+            }
+
+            /* Simulator mobile */
+            .simulator-header {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .gauge-container {
+                order: -1;
+            }
+
+            .gauge {
+                width: 150px;
+                height: 95px;
+            }
+
+            .decisions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .decision-card {
+                padding: 1.25rem;
+            }
+
+            .toggle-control {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+
+            .toggle-label {
+                text-align: center;
+                font-size: 0.75rem;
+            }
+
+            .toggle-switch {
+                align-self: center;
+            }
+
+            .results-dashboard {
+                padding: 1.25rem;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
+            }
+
+            .result-card {
+                padding: 0.75rem;
+            }
+
+            .result-number {
+                font-size: 1.25rem;
+            }
+
+            .impact-verdict {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.75rem;
+            }
+
+            .verdict-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.25rem;
+            }
+
+            .verdict-reg {
+                font-size: 0.8rem;
+            }
+
+            /* Hero image mobile */
+            .simulator-hero {
+                height: 150px;
+            }
+
+            .hero-overlay-text {
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+
+            .hero-stat {
+                font-size: 0.9rem;
+            }
+
+            /* Checklist mobile */
+            .checklist-item .title {
+                font-size: 0.95rem;
+            }
+
+            .checklist-item .title .reg-reference {
+                display: block;
+                margin-top: 0.25rem;
+            }
+
+            /* Breakdown bars mobile */
+            .breakdown-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+
+            .breakdown-label {
+                min-width: auto;
+            }
+
+            .breakdown-track {
+                width: 100%;
+            }
+
+            .breakdown-value {
+                min-width: auto;
+                align-self: flex-end;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-buttons .btn-primary,
+            .nav-buttons .btn-back {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .cost-ticker {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .regulatory-callout .reg-content p {
+                font-size: 0.85rem;
+            }
+
+            .gauge {
+                width: 130px;
+                height: 85px;
+            }
+
+            .gauge-value {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Touch-friendly enhancements */
+        @media (hover: none) and (pointer: coarse) {
+            .toggle-switch {
+                width: 60px;
+                height: 34px;
+            }
+
+            .toggle-slider:before {
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+            }
+
+            input:checked + .toggle-slider:before {
+                transform: translateX(26px);
+            }
+
+            .btn-primary, .btn-secondary {
+                min-height: 48px;
+                padding: 0.875rem 1.5rem;
+            }
+
+            .quiz-option {
+                min-height: 48px;
+            }
+
+            .checklist-item {
+                min-height: 60px;
+            }
+
+            .principle-card {
+                min-height: 120px;
+            }
         }
 
         /* Pulse animation for interactive elements */
@@ -1446,6 +2224,7 @@
                     <span class="value">-£2,100,000</span>
                 </div>
                 <p id="hookText3" class="impact">Your design decisions determine how long that outage lasts.</p>
+                <p id="hookText4" class="regulatory-note">And they determine whether your design passes regulatory assessment.</p>
             </div>
             <button class="btn-primary pulse" onclick="goToPage(2)" id="hookBtn" style="opacity: 0;">
                 See the Challenge <span>→</span>
@@ -1460,6 +2239,16 @@
                 <span class="section-tag">THE REALITY</span>
                 <h2 class="section-title">Inside a Nuclear Outage</h2>
                 <p class="section-intro">Every 18-24 months, the plant shuts down. What happens next is a precisely choreographed race against time and money.</p>
+
+                <!-- Regulatory Callout -->
+                <div class="regulatory-callout">
+                    <div class="reg-icon">⚖️</div>
+                    <div class="reg-content">
+                        <h4>Licence Condition 28</h4>
+                        <p>The licensee shall make and implement <strong>adequate arrangements</strong> for the regular and systematic examination, inspection, maintenance and testing of all plant which may affect safety.</p>
+                        <p class="reg-implication">Your design decisions determine whether those arrangements are even physically possible.</p>
+                    </div>
+                </div>
 
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -1631,6 +2420,16 @@
                     </div>
                 </div>
 
+                <!-- Regulatory Reference -->
+                <div class="regulatory-callout compact">
+                    <div class="reg-icon">📋</div>
+                    <div class="reg-content">
+                        <h4>ONR Safety Assessment Principles</h4>
+                        <p><span class="reg-reference">SAP ELO.1</span> The layout should provide for safe and efficient operation, inspection, maintenance and replacement of structures, systems and components.</p>
+                        <p><span class="reg-reference">SAP EMT.1</span> SSCs should be designed and located so they can be appropriately maintained, inspected and tested throughout their operational life.</p>
+                    </div>
+                </div>
+
                 <div class="case-study">
                     <h4>AP1000 DESIGN APPROACH</h4>
                     <p>"Access platforms and lifting devices are provided at key locations, as are service provisions such as electrical power, demineralised water, breathing and service air, ventilation and lighting."</p>
@@ -1730,6 +2529,16 @@
                     This single choice determines <em>hours vs days</em> of maintenance time.</p>
                 </div>
 
+                <!-- Regulatory Reference -->
+                <div class="regulatory-callout compact">
+                    <div class="reg-icon">👤</div>
+                    <div class="reg-content">
+                        <h4>Human Factors Requirements</h4>
+                        <p><span class="reg-reference">SAP EHF.5</span> Task analysis should be used to verify the design supports the reliable performance of human actions identified as important to safety.</p>
+                        <p class="reg-implication">If your design forces technicians into awkward postures, blind fastening, or single-handed operations, you've created human factors issues that must be addressed in the safety case.</p>
+                    </div>
+                </div>
+
                 <div class="nav-buttons">
                     <button class="btn-primary btn-back" onclick="goToPage(4)">← Back</button>
                     <button class="btn-primary" onclick="goToPage(6)">Next Principle →</button>
@@ -1795,6 +2604,16 @@
                     <strong>Challenge:</strong> No clear removal path existed. Standard rigging couldn't fit.<br>
                     <strong>Solution:</strong> Specialist engineers designed a custom travelling low-headroom cantilever system with 3 coordinated hoists<br><br>
                     <strong>Lesson:</strong> This complexity — and cost — could have been avoided with better original design.</p>
+                </div>
+
+                <!-- Regulatory Reference -->
+                <div class="regulatory-callout compact">
+                    <div class="reg-icon">🌐</div>
+                    <div class="reg-content">
+                        <h4>International Standard</h4>
+                        <p><span class="reg-reference">IAEA SSR-2/1 Rev.1</span> Requirement 30 states structures, systems and components shall be designed and located to facilitate inspection, testing, maintenance and replacement.</p>
+                        <p class="reg-implication">The UK's GDA process benchmarks against IAEA standards. Designs that ignore removal paths will face assessment findings.</p>
+                    </div>
                 </div>
 
                 <div class="nav-buttons">
@@ -1870,6 +2689,16 @@
                     <p>Components from the primary system may be radioactively contaminated. Laydown areas may need to be in controlled radiological zones. Decontamination may be required before components leave certain areas. These constraints affect WHERE laydown can be located — it's not just "any empty space."</p>
                 </div>
 
+                <!-- Regulatory Reference -->
+                <div class="regulatory-callout compact">
+                    <div class="reg-icon">☢️</div>
+                    <div class="reg-content">
+                        <h4>ALARP Demonstration Required</h4>
+                        <p><span class="reg-reference">SAP RP.6</span> Doses should be as low as reasonably practicable (ALARP).</p>
+                        <p class="reg-implication">Laydown areas in high-dose zones extend worker exposure times. In ALARP assessments, reviewers will ask: "Could this have been designed with lower-dose laydown locations?" Poor laydown design doesn't just cost time — it increases collective dose and makes your ALARP case harder to defend.</p>
+                    </div>
+                </div>
+
                 <div class="nav-buttons">
                     <button class="btn-primary btn-back" onclick="goToPage(6)">← Back</button>
                     <button class="btn-primary" onclick="goToPage(8)">See the Multiplication Effect →</button>
@@ -1884,73 +2713,350 @@
             <div class="section-container">
                 <span class="section-tag">THE IMPACT</span>
                 <h2 class="section-title">Small Decisions Multiply Across Thousands of Tasks</h2>
-                <p class="section-intro">What seems like a minor inconvenience on paper becomes a major cost driver when multiplied across a nuclear plant.</p>
+                <p class="section-intro">You're the designer. Make your decisions below and watch how they compound across a 60-year plant life.</p>
 
-                <div class="calculator-section">
-                    <div class="calculator-title">
-                        <span class="icon">🧮</span>
-                        <h3>Interactive Impact Calculator</h3>
-                    </div>
-
-                    <div class="calculator-scenario">
-                        <h4>Scenario 1: Valve Access</h4>
-                        <div class="slider-group">
-                            <div class="slider-label">
-                                <span>Number of valves requiring periodic maintenance:</span>
-                                <span class="value" id="valveCount">1,000</span>
-                            </div>
-                            <input type="range" class="slider-input" id="valveSlider" min="100" max="2000" value="1000" step="100">
-                        </div>
-                        <div class="slider-group">
-                            <div class="slider-label">
-                                <span>Extra time per valve due to poor access:</span>
-                                <span class="value" id="valveTime">15 min</span>
-                            </div>
-                            <input type="range" class="slider-input" id="valveTimeSlider" min="5" max="60" value="15" step="5">
-                        </div>
-                        <div class="calculator-result">
-                            <div class="result-value" id="valveResult">250 hours</div>
-                            <div class="result-label">= <span id="valveDays">31</span> extra working days of valve maintenance</div>
-                        </div>
-                    </div>
-
-                    <div class="calculator-scenario">
-                        <h4>Scenario 2: Fastener Standardisation</h4>
-                        <div class="slider-group">
-                            <div class="slider-label">
-                                <span>Total maintenance tasks per outage:</span>
-                                <span class="value">9,000</span>
-                            </div>
-                        </div>
-                        <div class="slider-group">
-                            <div class="slider-label">
-                                <span>Overhead per task for non-standard fasteners:</span>
-                                <span class="value" id="fastenerTime">5 min</span>
-                            </div>
-                            <input type="range" class="slider-input" id="fastenerSlider" min="1" max="10" value="5" step="1">
-                        </div>
-                        <div class="calculator-result">
-                            <div class="result-value" id="fastenerResult">750 hours</div>
-                            <div class="result-label">= <span id="fastenerDays">94</span> extra working days per outage</div>
-                        </div>
+                <!-- Hero Image -->
+                <div class="simulator-hero">
+                    <img src="images/IMAGE_OUTAGE_HERO.png" alt="Intense maintenance activity during nuclear plant outage" onerror="this.parentElement.classList.add('no-image');">
+                    <div class="hero-overlay-text">
+                        <span class="hero-stat">9,000 tasks</span>
+                        <span class="hero-divider">•</span>
+                        <span class="hero-stat">30 days</span>
+                        <span class="hero-divider">•</span>
+                        <span class="hero-stat">£2.1M/day at stake</span>
                     </div>
                 </div>
 
-                <div class="impact-message">
-                    <p>A 30-day outage can easily become 40 days.<br>That's an extra <span class="highlight-cost">£10-15 million</span>.<br>All from decisions made years earlier.</p>
+                <div class="simulator-container">
+                    <div class="simulator-header">
+                        <div class="simulator-title">
+                            <span class="icon">⚙️</span>
+                            <h3>Design Decision Simulator</h3>
+                        </div>
+                        
+                        <!-- Gauge Score -->
+                        <div class="gauge-container" id="gaugeContainer">
+                            <svg class="gauge" viewBox="0 0 200 120">
+                                <defs>
+                                    <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#ff6b6b"/>
+                                        <stop offset="50%" style="stop-color:#f0a500"/>
+                                        <stop offset="100%" style="stop-color:#4ecca3"/>
+                                    </linearGradient>
+                                </defs>
+                                <!-- Background arc -->
+                                <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#1a1a2e" stroke-width="16" stroke-linecap="round"/>
+                                <!-- Coloured arc -->
+                                <path class="gauge-fill" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gaugeGradient)" stroke-width="16" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="0"/>
+                                <!-- Needle -->
+                                <g class="gauge-needle" id="gaugeNeedle">
+                                    <line x1="100" y1="100" x2="100" y2="30" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+                                    <circle cx="100" cy="100" r="8" fill="#ffffff"/>
+                                </g>
+                            </svg>
+                            <div class="gauge-labels">
+                                <span class="gauge-label-bad">Poor</span>
+                                <span class="gauge-label-good">Excellent</span>
+                            </div>
+                            <div class="gauge-value" id="gaugeValue">100%</div>
+                            <div class="gauge-title">Maintainability Score</div>
+                        </div>
+                    </div>
+
+                    <div class="decisions-grid">
+                        <!-- Decision 1: Valves -->
+                        <div class="decision-card" data-component="valves">
+                            <div class="card-bg-icon">🔧</div>
+                            <div class="decision-header">
+                                <div class="decision-icon">🔧</div>
+                                <div class="decision-info">
+                                    <h4>Valves</h4>
+                                    <p class="decision-penalty">Poor design: +45 min per valve</p>
+                                </div>
+                            </div>
+                            <div class="decision-controls">
+                                <div class="quantity-control">
+                                    <label>Quantity in plant:</label>
+                                    <div class="quantity-slider">
+                                        <input type="range" class="slider-input" id="valvesQty" min="200" max="2000" value="800" step="100">
+                                        <span class="qty-value" id="valvesQtyValue">800</span>
+                                    </div>
+                                </div>
+                                <div class="toggle-control">
+                                    <span class="toggle-label bad">Maintenance not considered</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="valvesToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <span class="toggle-label good">Designed for maintenance</span>
+                                </div>
+                            </div>
+                            <div class="decision-impact">
+                                <div class="impact-row">
+                                    <span class="impact-label">Time impact:</span>
+                                    <span class="impact-value" id="valvesImpact">0 hours</span>
+                                </div>
+                                <div class="impact-row cost-row">
+                                    <span class="impact-label">Cost impact:</span>
+                                    <span class="impact-cost" id="valvesCost">£0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Decision 2: Pumps -->
+                        <div class="decision-card" data-component="pumps">
+                            <div class="card-bg-icon">⚙️</div>
+                            <div class="decision-header">
+                                <div class="decision-icon">⚙️</div>
+                                <div class="decision-info">
+                                    <h4>Pumps</h4>
+                                    <p class="decision-penalty">Poor design: +2 hours per pump</p>
+                                </div>
+                            </div>
+                            <div class="decision-controls">
+                                <div class="quantity-control">
+                                    <label>Quantity in plant:</label>
+                                    <div class="quantity-slider">
+                                        <input type="range" class="slider-input" id="pumpsQty" min="50" max="300" value="120" step="10">
+                                        <span class="qty-value" id="pumpsQtyValue">120</span>
+                                    </div>
+                                </div>
+                                <div class="toggle-control">
+                                    <span class="toggle-label bad">Maintenance not considered</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="pumpsToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <span class="toggle-label good">Designed for maintenance</span>
+                                </div>
+                            </div>
+                            <div class="decision-impact">
+                                <div class="impact-row">
+                                    <span class="impact-label">Time impact:</span>
+                                    <span class="impact-value" id="pumpsImpact">0 hours</span>
+                                </div>
+                                <div class="impact-row cost-row">
+                                    <span class="impact-label">Cost impact:</span>
+                                    <span class="impact-cost" id="pumpsCost">£0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Decision 3: Heat Exchangers -->
+                        <div class="decision-card" data-component="heatex">
+                            <div class="card-bg-icon">🔥</div>
+                            <div class="decision-header">
+                                <div class="decision-icon">🔥</div>
+                                <div class="decision-info">
+                                    <h4>Heat Exchangers</h4>
+                                    <p class="decision-penalty">Poor design: +8 hours each</p>
+                                </div>
+                            </div>
+                            <div class="decision-controls">
+                                <div class="quantity-control">
+                                    <label>Quantity in plant:</label>
+                                    <div class="quantity-slider">
+                                        <input type="range" class="slider-input" id="heatexQty" min="10" max="50" value="25" step="5">
+                                        <span class="qty-value" id="heatexQtyValue">25</span>
+                                    </div>
+                                </div>
+                                <div class="toggle-control">
+                                    <span class="toggle-label bad">Maintenance not considered</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="heatexToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <span class="toggle-label good">Designed for maintenance</span>
+                                </div>
+                            </div>
+                            <div class="decision-impact">
+                                <div class="impact-row">
+                                    <span class="impact-label">Time impact:</span>
+                                    <span class="impact-value" id="heatexImpact">0 hours</span>
+                                </div>
+                                <div class="impact-row cost-row">
+                                    <span class="impact-label">Cost impact:</span>
+                                    <span class="impact-cost" id="heatexCost">£0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Decision 4: Electrical Panels -->
+                        <div class="decision-card" data-component="electrical">
+                            <div class="card-bg-icon">⚡</div>
+                            <div class="decision-header">
+                                <div class="decision-icon">⚡</div>
+                                <div class="decision-info">
+                                    <h4>Electrical Panels</h4>
+                                    <p class="decision-penalty">Poor design: +4 hours each</p>
+                                </div>
+                            </div>
+                            <div class="decision-controls">
+                                <div class="quantity-control">
+                                    <label>Quantity in plant:</label>
+                                    <div class="quantity-slider">
+                                        <input type="range" class="slider-input" id="electricalQty" min="50" max="200" value="100" step="10">
+                                        <span class="qty-value" id="electricalQtyValue">100</span>
+                                    </div>
+                                </div>
+                                <div class="toggle-control">
+                                    <span class="toggle-label bad">Maintenance not considered</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="electricalToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <span class="toggle-label good">Designed for maintenance</span>
+                                </div>
+                            </div>
+                            <div class="decision-impact">
+                                <div class="impact-row">
+                                    <span class="impact-label">Time impact:</span>
+                                    <span class="impact-value" id="electricalImpact">0 hours</span>
+                                </div>
+                                <div class="impact-row cost-row">
+                                    <span class="impact-label">Cost impact:</span>
+                                    <span class="impact-cost" id="electricalCost">£0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Decision 5: Instrumentation -->
+                        <div class="decision-card" data-component="instruments">
+                            <div class="card-bg-icon">📊</div>
+                            <div class="decision-header">
+                                <div class="decision-icon">📊</div>
+                                <div class="decision-info">
+                                    <h4>Instrumentation</h4>
+                                    <p class="decision-penalty">Poor design: +15 min each</p>
+                                </div>
+                            </div>
+                            <div class="decision-controls">
+                                <div class="quantity-control">
+                                    <label>Quantity in plant:</label>
+                                    <div class="quantity-slider">
+                                        <input type="range" class="slider-input" id="instrumentsQty" min="500" max="3000" value="1500" step="100">
+                                        <span class="qty-value" id="instrumentsQtyValue">1,500</span>
+                                    </div>
+                                </div>
+                                <div class="toggle-control">
+                                    <span class="toggle-label bad">Maintenance not considered</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="instrumentsToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <span class="toggle-label good">Designed for maintenance</span>
+                                </div>
+                            </div>
+                            <div class="decision-impact">
+                                <div class="impact-row">
+                                    <span class="impact-label">Time impact:</span>
+                                    <span class="impact-value" id="instrumentsImpact">0 hours</span>
+                                </div>
+                                <div class="impact-row cost-row">
+                                    <span class="impact-label">Cost impact:</span>
+                                    <span class="impact-cost" id="instrumentsCost">£0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Decision 6: Large Components -->
+                        <div class="decision-card" data-component="large">
+                            <div class="card-bg-icon">🏗️</div>
+                            <div class="decision-header">
+                                <div class="decision-icon">🏗️</div>
+                                <div class="decision-info">
+                                    <h4>Large Components</h4>
+                                    <p class="decision-penalty">Poor design: +16 hours each</p>
+                                </div>
+                            </div>
+                            <div class="decision-controls">
+                                <div class="quantity-control">
+                                    <label>Quantity in plant:</label>
+                                    <div class="quantity-slider">
+                                        <input type="range" class="slider-input" id="largeQty" min="5" max="30" value="15" step="1">
+                                        <span class="qty-value" id="largeQtyValue">15</span>
+                                    </div>
+                                </div>
+                                <div class="toggle-control">
+                                    <span class="toggle-label bad">Maintenance not considered</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="largeToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <span class="toggle-label good">Designed for maintenance</span>
+                                </div>
+                            </div>
+                            <div class="decision-impact">
+                                <div class="impact-row">
+                                    <span class="impact-label">Time impact:</span>
+                                    <span class="impact-value" id="largeImpact">0 hours</span>
+                                </div>
+                                <div class="impact-row cost-row">
+                                    <span class="impact-label">Cost impact:</span>
+                                    <span class="impact-cost" id="largeCost">£0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Dashboard -->
+                    <div class="results-dashboard">
+                        <div class="dashboard-header">
+                            <h3>📊 Your Design Impact</h3>
+                            <button class="btn-secondary" onclick="resetSimulator()">Reset All Decisions</button>
+                        </div>
+                        
+                        <div class="results-grid">
+                            <div class="result-card">
+                                <div class="result-icon">⏱️</div>
+                                <div class="result-data">
+                                    <span class="result-number" id="totalHours">0</span>
+                                    <span class="result-unit">extra hours per outage</span>
+                                </div>
+                            </div>
+                            <div class="result-card">
+                                <div class="result-icon">📅</div>
+                                <div class="result-data">
+                                    <span class="result-number" id="totalDays">0</span>
+                                    <span class="result-unit">extra days per outage</span>
+                                </div>
+                            </div>
+                            <div class="result-card highlight">
+                                <div class="result-icon">💷</div>
+                                <div class="result-data">
+                                    <span class="result-number" id="costPerOutage">£0</span>
+                                    <span class="result-unit">cost per outage</span>
+                                </div>
+                            </div>
+                            <div class="result-card major">
+                                <div class="result-icon">🏭</div>
+                                <div class="result-data">
+                                    <span class="result-number" id="lifetimeCost">£0</span>
+                                    <span class="result-unit">60-year lifetime cost</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="impact-breakdown" id="impactBreakdown">
+                            <h4>Breakdown by Component</h4>
+                            <div class="breakdown-bars" id="breakdownBars">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="impact-verdict" id="impactVerdict">
+                            <div class="verdict-icon" id="verdictIcon">✓</div>
+                            <div class="verdict-text">
+                                <h4 id="verdictTitle">Excellent Design</h4>
+                                <p id="verdictMessage">All components designed with maintenance in mind. The operations team will thank you.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="key-concept" style="margin-top: 2rem;">
-                    <h4>QUESTIONS EVERY DESIGNER SHOULD ASK</h4>
-                    <p><strong>For every component:</strong><br>
-                    • How will this be maintained during a 30-day outage window?<br>
-                    • What's the fastest realistic time to complete maintenance?<br>
-                    • What would make it take twice as long? Have I eliminated those factors?<br>
-                    • Who else is working in this area simultaneously?<br><br>
-                    <strong>For every layout:</strong><br>
-                    • If three maintenance crews are working here at once, is there enough space?<br>
-                    • Where does removed equipment go? Is there a clear path?<br>
-                    • What happens if a task runs over — can the next crew start anyway?</p>
+                    <h4>💡 THE LESSON</h4>
+                    <p>Toggle just a few switches to "Maintenance not considered" and watch the 60-year cost climb into the hundreds of millions. These aren't hypothetical numbers — they're the real consequence of design decisions made in offices, years before the first outage begins.</p>
                 </div>
 
                 <div class="nav-buttons">
@@ -1973,58 +3079,76 @@
                     <div class="checklist-item" onclick="toggleChecklistItem(this)">
                         <div class="checkbox"></div>
                         <div class="content">
-                            <div class="title">Can a worker physically reach the component in full PPE?</div>
+                            <div class="title">Can a worker physically reach the component in full PPE? <span class="reg-reference">SAP ELO.1</span></div>
                             <div class="explanation">Consider anti-contamination suits, respiratory protection, and tool belts. These add bulk and restrict movement.</div>
                         </div>
                     </div>
                     <div class="checklist-item" onclick="toggleChecklistItem(this)">
                         <div class="checkbox"></div>
                         <div class="content">
-                            <div class="title">Is there clearance for tools and equipment?</div>
-                            <div class="explanation">Include chain hoists, jib cranes, torque wrenches, and space for two workers when tasks require assistance.</div>
+                            <div class="title">Is there clearance for tools and equipment? <span class="reg-reference">SAP EHF.5</span></div>
+                            <div class="explanation">Include chain hoists, jib cranes, torque wrenches, and space for two workers when tasks require assistance. Human factors assessment requires adequate workspace.</div>
                         </div>
                     </div>
                     <div class="checklist-item" onclick="toggleChecklistItem(this)">
                         <div class="checkbox"></div>
                         <div class="content">
-                            <div class="title">Is the removal path defined and unobstructed?</div>
-                            <div class="explanation">Verify crane coverage, hook height, travel path, and ensure no temporary removals are required.</div>
+                            <div class="title">Is the removal path defined and unobstructed? <span class="reg-reference">IAEA SSR-2/1</span></div>
+                            <div class="explanation">Verify crane coverage, hook height, travel path, and ensure no temporary removals are required. International standards require design to facilitate maintenance and replacement.</div>
                         </div>
                     </div>
                     <div class="checklist-item" onclick="toggleChecklistItem(this)">
                         <div class="checkbox"></div>
                         <div class="content">
-                            <div class="title">Is there laydown space within practical distance?</div>
-                            <div class="explanation">Consider floor load ratings, crane reach, contamination control, and path to decontamination facilities.</div>
+                            <div class="title">Is there laydown space within practical distance? <span class="reg-reference">SAP RP.6</span></div>
+                            <div class="explanation">Consider floor load ratings, crane reach, contamination control, and path to decontamination facilities. Laydown location affects worker dose — ALARP implications.</div>
                         </div>
                     </div>
                     <div class="checklist-item" onclick="toggleChecklistItem(this)">
                         <div class="checkbox"></div>
                         <div class="content">
-                            <div class="title">Does the overhead crane cover this location?</div>
-                            <div class="explanation">Polar cranes, bridge cranes, and jib cranes each have specific coverage areas. Verify yours.</div>
+                            <div class="title">Does the overhead crane cover this location? <span class="reg-reference">SAP EMT.1</span></div>
+                            <div class="explanation">Polar cranes, bridge cranes, and jib cranes each have specific coverage areas. Verify yours. Equipment must be designed and located so it can be maintained.</div>
                         </div>
                     </div>
                     <div class="checklist-item" onclick="toggleChecklistItem(this)">
                         <div class="checkbox"></div>
                         <div class="content">
-                            <div class="title">Can routine maintenance be done without removal?</div>
-                            <div class="explanation">In-line maintainable designs (e.g., top-entry valves) save days compared to removal-required alternatives.</div>
+                            <div class="title">Can routine maintenance be done without removal? <span class="reg-reference">SAP EMT.3</span></div>
+                            <div class="explanation">In-line maintainable designs (e.g., top-entry valves) save days compared to removal-required alternatives. SSCs should be capable of being maintained, inspected and tested while in place.</div>
                         </div>
                     </div>
                     <div class="checklist-item" onclick="toggleChecklistItem(this)">
                         <div class="checkbox"></div>
                         <div class="content">
-                            <div class="title">Are fasteners and connections standardised?</div>
-                            <div class="explanation">Non-standard fasteners mean tool changes, procurement delays, and documentation overhead — thousands of times.</div>
+                            <div class="title">Are fasteners and connections standardised? <span class="reg-reference">LC28</span></div>
+                            <div class="explanation">Non-standard fasteners mean tool changes, procurement delays, and documentation overhead — thousands of times. Affects your LC28 maintenance arrangements.</div>
                         </div>
                     </div>
                     <div class="checklist-item" onclick="toggleChecklistItem(this)">
                         <div class="checkbox"></div>
                         <div class="content">
-                            <div class="title">Have maintenance durations been estimated and challenged?</div>
-                            <div class="explanation">Don't accept "about a day" — demand task breakdowns and identify time-consuming steps that could be designed out.</div>
+                            <div class="title">Have maintenance durations been estimated and challenged? <span class="reg-reference">LC15</span></div>
+                            <div class="explanation">Don't accept "about a day" — demand task breakdowns and identify time-consuming steps that could be designed out. Periodic Safety Reviews will assess maintenance performance.</div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Regulatory Summary -->
+                <div class="regulatory-callout">
+                    <div class="reg-icon">📚</div>
+                    <div class="reg-content">
+                        <h4>Regulatory Framework Summary</h4>
+                        <p>The maintainability principles in this module map to specific regulatory requirements:</p>
+                        <p style="margin-top: 0.75rem;">
+                            <span class="reg-reference">LC28</span> Examination, Inspection, Maintenance & Testing<br>
+                            <span class="reg-reference">SAP EMT</span> Design for maintenance, inspection & testing<br>
+                            <span class="reg-reference">SAP ELO</span> Layout for safe and efficient access<br>
+                            <span class="reg-reference">SAP EHF</span> Human factors in task performance<br>
+                            <span class="reg-reference">SAP RP.6</span> ALARP for radiation protection<br>
+                            <span class="reg-reference">IAEA SSR-2/1</span> International design requirements
+                        </p>
+                        <p class="reg-implication">Good maintainability design isn't just efficient — it's required for regulatory approval.</p>
                     </div>
                 </div>
 
@@ -2123,12 +3247,15 @@
 
         // ==================== PAGE 1: HOOK ANIMATIONS ====================
         function triggerHookAnimations() {
-            const texts = ['hookText1', 'hookText2', 'hookText3'];
+            const texts = ['hookText1', 'hookText2', 'hookText3', 'hookText4'];
             const ticker = document.getElementById('hookTicker');
             const btn = document.getElementById('hookBtn');
             
             // Reset all
-            texts.forEach(id => document.getElementById(id).classList.remove('visible'));
+            texts.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('visible');
+            });
             ticker.style.opacity = '0';
             btn.style.opacity = '0';
 
@@ -2137,7 +3264,14 @@
             setTimeout(() => document.getElementById('hookText2').classList.add('visible'), 2500);
             setTimeout(() => { ticker.style.opacity = '1'; ticker.style.transition = 'opacity 0.5s ease'; }, 3500);
             setTimeout(() => document.getElementById('hookText3').classList.add('visible'), 4500);
-            setTimeout(() => { btn.style.opacity = '1'; btn.style.transition = 'opacity 0.5s ease'; }, 5500);
+            setTimeout(() => {
+                const text4 = document.getElementById('hookText4');
+                if (text4) {
+                    text4.style.opacity = '1';
+                    text4.style.transition = 'opacity 0.5s ease';
+                }
+            }, 5500);
+            setTimeout(() => { btn.style.opacity = '1'; btn.style.transition = 'opacity 0.5s ease'; }, 6500);
         }
 
         // ==================== QUIZ 1 ====================
@@ -2182,37 +3316,218 @@
             });
         });
 
-        // ==================== CALCULATOR ====================
-        const valveSlider = document.getElementById('valveSlider');
-        const valveTimeSlider = document.getElementById('valveTimeSlider');
-        const fastenerSlider = document.getElementById('fastenerSlider');
+        // ==================== DESIGN DECISION SIMULATOR ====================
+        const componentConfig = {
+            valves: { penalty: 45, unit: 'min', label: 'Valves' },
+            pumps: { penalty: 120, unit: 'min', label: 'Pumps' },
+            heatex: { penalty: 480, unit: 'min', label: 'Heat Exchangers' },
+            electrical: { penalty: 240, unit: 'min', label: 'Electrical Panels' },
+            instruments: { penalty: 15, unit: 'min', label: 'Instrumentation' },
+            large: { penalty: 960, unit: 'min', label: 'Large Components' }
+        };
 
-        function updateValveCalculator() {
-            const valves = parseInt(valveSlider.value);
-            const time = parseInt(valveTimeSlider.value);
-            const hours = Math.round((valves * time) / 60);
-            const days = Math.round(hours / 8);
+        const COST_PER_DAY = 2100000; // £2.1M per day
+        const COST_PER_HOUR = COST_PER_DAY / 24; // 24-hour operations
+        const OUTAGES_IN_60_YEARS = 30; // Roughly every 2 years
 
-            document.getElementById('valveCount').textContent = valves.toLocaleString();
-            document.getElementById('valveTime').textContent = `${time} min`;
-            document.getElementById('valveResult').textContent = `${hours.toLocaleString()} hours`;
-            document.getElementById('valveDays').textContent = days.toLocaleString();
+        function formatCurrency(num) {
+            if (num >= 1000000000) {
+                return '£' + (num / 1000000000).toFixed(1) + 'B';
+            } else if (num >= 1000000) {
+                return '£' + (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return '£' + Math.round(num / 1000) + 'K';
+            }
+            return '£' + Math.round(num).toLocaleString();
         }
 
-        function updateFastenerCalculator() {
-            const time = parseInt(fastenerSlider.value);
-            const hours = Math.round((9000 * time) / 60);
-            const days = Math.round(hours / 8);
-
-            document.getElementById('fastenerTime').textContent = `${time} min`;
-            document.getElementById('fastenerResult').textContent = `${hours.toLocaleString()} hours`;
-            document.getElementById('fastenerDays').textContent = days.toLocaleString();
+        function formatNumber(num) {
+            return formatCurrency(num);
         }
 
-        if (valveSlider) {
-            valveSlider.addEventListener('input', updateValveCalculator);
-            valveTimeSlider.addEventListener('input', updateValveCalculator);
-            fastenerSlider.addEventListener('input', updateFastenerCalculator);
+        function updateGauge(score) {
+            const needle = document.getElementById('gaugeNeedle');
+            const gaugeValue = document.getElementById('gaugeValue');
+            
+            if (!needle || !gaugeValue) return;
+
+            // Needle rotation: 0% = -90deg (left), 100% = 90deg (right)
+            const rotation = -90 + (score * 1.8); // 180 degrees total range
+            needle.style.transform = `rotate(${rotation}deg)`;
+
+            // Update value display
+            gaugeValue.textContent = score + '%';
+
+            // Update colours
+            gaugeValue.classList.remove('warning', 'danger');
+            if (score < 50) {
+                gaugeValue.classList.add('danger');
+            } else if (score < 100) {
+                gaugeValue.classList.add('warning');
+            }
+        }
+
+        function calculateSimulator() {
+            let totalMinutes = 0;
+            let componentImpacts = {};
+            let poorDecisions = 0;
+            const totalComponents = 6;
+
+            Object.keys(componentConfig).forEach(component => {
+                const qtySlider = document.getElementById(`${component}Qty`);
+                const toggle = document.getElementById(`${component}Toggle`);
+                const qtyValue = document.getElementById(`${component}QtyValue`);
+                const impactValue = document.getElementById(`${component}Impact`);
+                const costValue = document.getElementById(`${component}Cost`);
+                const card = document.querySelector(`[data-component="${component}"]`);
+
+                if (!qtySlider || !toggle) return;
+
+                const qty = parseInt(qtySlider.value);
+                const isGoodDesign = toggle.checked;
+
+                // Update quantity display
+                qtyValue.textContent = qty.toLocaleString();
+
+                // Calculate impact
+                let impactMinutes = 0;
+                if (!isGoodDesign) {
+                    impactMinutes = qty * componentConfig[component].penalty;
+                    poorDecisions++;
+                    card.classList.add('poor-design');
+                    impactValue.classList.add('negative');
+                    costValue.classList.add('negative');
+                } else {
+                    card.classList.remove('poor-design');
+                    impactValue.classList.remove('negative');
+                    costValue.classList.remove('negative');
+                }
+
+                componentImpacts[component] = impactMinutes;
+                totalMinutes += impactMinutes;
+
+                // Calculate cost for this component (per outage)
+                const hours = impactMinutes / 60;
+                const componentCost = hours * COST_PER_HOUR;
+                const componentLifetimeCost = componentCost * OUTAGES_IN_60_YEARS;
+
+                // Update individual impact display
+                const displayHours = Math.round(hours);
+                impactValue.textContent = displayHours > 0 ? `+${displayHours.toLocaleString()} hours` : '0 hours';
+                
+                // Update cost display (show lifetime cost for impact)
+                costValue.textContent = componentLifetimeCost > 0 ? formatCurrency(componentLifetimeCost) : '£0';
+            });
+
+            // Calculate totals
+            const totalHours = Math.round(totalMinutes / 60);
+            const totalDays = totalHours / 24; // 24-hour operations during outage
+            const costPerOutage = totalDays * COST_PER_DAY;
+            const lifetimeCost = costPerOutage * OUTAGES_IN_60_YEARS;
+
+            // Update dashboard
+            document.getElementById('totalHours').textContent = totalHours.toLocaleString();
+            document.getElementById('totalDays').textContent = totalDays.toFixed(1);
+            document.getElementById('costPerOutage').textContent = formatCurrency(costPerOutage);
+            document.getElementById('lifetimeCost').textContent = formatCurrency(lifetimeCost);
+
+            // Update gauge
+            const score = Math.round(((totalComponents - poorDecisions) / totalComponents) * 100);
+            updateGauge(score);
+
+            // Update breakdown bars
+            updateBreakdownBars(componentImpacts, totalMinutes);
+
+            // Update verdict
+            updateVerdict(poorDecisions, lifetimeCost);
+        }
+
+        function updateBreakdownBars(impacts, totalMinutes) {
+            const breakdown = document.getElementById('impactBreakdown');
+            const barsContainer = document.getElementById('breakdownBars');
+
+            if (totalMinutes === 0) {
+                breakdown.classList.remove('visible');
+                return;
+            }
+
+            breakdown.classList.add('visible');
+            barsContainer.innerHTML = '';
+
+            Object.keys(impacts).forEach(component => {
+                if (impacts[component] === 0) return;
+
+                const hours = Math.round(impacts[component] / 60);
+                const percentage = (impacts[component] / totalMinutes) * 100;
+
+                const bar = document.createElement('div');
+                bar.className = 'breakdown-bar';
+                bar.innerHTML = `
+                    <span class="breakdown-label">${componentConfig[component].label}</span>
+                    <div class="breakdown-track">
+                        <div class="breakdown-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <span class="breakdown-value">+${hours.toLocaleString()}h</span>
+                `;
+                barsContainer.appendChild(bar);
+            });
+        }
+
+        function updateVerdict(poorDecisions, lifetimeCost) {
+            const verdict = document.getElementById('impactVerdict');
+            const icon = document.getElementById('verdictIcon');
+            const title = document.getElementById('verdictTitle');
+            const message = document.getElementById('verdictMessage');
+
+            verdict.classList.remove('warning', 'danger');
+
+            if (poorDecisions === 0) {
+                icon.textContent = '✓';
+                title.textContent = 'Excellent Design';
+                message.innerHTML = 'All components designed with maintenance in mind. The operations team will thank you for decades.<br><span class="verdict-reg">Regulatory: Likely to satisfy SAP EMT and LC28 requirements.</span>';
+            } else if (poorDecisions <= 2) {
+                verdict.classList.add('warning');
+                icon.textContent = '⚠';
+                title.textContent = 'Room for Improvement';
+                message.innerHTML = `${poorDecisions} component type${poorDecisions > 1 ? 's' : ''} not optimised for maintenance. Lifetime cost impact: ${formatCurrency(lifetimeCost)}.<br><span class="verdict-reg">Regulatory: May require ALARP justification for design choices during GDA/PSR.</span>`;
+            } else if (poorDecisions <= 4) {
+                verdict.classList.add('danger');
+                icon.textContent = '⚠';
+                title.textContent = 'Significant Issues';
+                message.innerHTML = `${poorDecisions} component types will cause maintenance difficulties. ${formatCurrency(lifetimeCost)} in avoidable costs.<br><span class="verdict-reg">Regulatory: Expect assessment findings. Safety case will require compensatory measures.</span>`;
+            } else {
+                verdict.classList.add('danger');
+                icon.textContent = '✗';
+                title.textContent = 'Critical Design Failure';
+                message.innerHTML = `Almost nothing designed for maintenance. ${formatCurrency(lifetimeCost)} in unnecessary costs. Every outage will be a nightmare.<br><span class="verdict-reg">Regulatory: Will not pass GDA. Fundamental redesign required to meet SAP EMT.</span>`;
+            }
+        }
+
+        function resetSimulator() {
+            Object.keys(componentConfig).forEach(component => {
+                const toggle = document.getElementById(`${component}Toggle`);
+                if (toggle) toggle.checked = true;
+            });
+            calculateSimulator();
+        }
+
+        // Initialise simulator
+        function initSimulator() {
+            // Add event listeners to all sliders and toggles
+            Object.keys(componentConfig).forEach(component => {
+                const qtySlider = document.getElementById(`${component}Qty`);
+                const toggle = document.getElementById(`${component}Toggle`);
+
+                if (qtySlider) {
+                    qtySlider.addEventListener('input', calculateSimulator);
+                }
+                if (toggle) {
+                    toggle.addEventListener('change', calculateSimulator);
+                }
+            });
+
+            // Initial calculation
+            calculateSimulator();
         }
 
         // ==================== CHECKLIST ====================
@@ -2247,9 +3562,8 @@
             // Trigger hook animations on load
             triggerHookAnimations();
             
-            // Initialise calculators
-            updateValveCalculator();
-            updateFastenerCalculator();
+            // Initialise design decision simulator
+            initSimulator();
 
             // Close menu when clicking outside
             document.addEventListener('click', function(e) {
