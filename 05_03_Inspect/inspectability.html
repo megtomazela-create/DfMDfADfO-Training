@@ -1,0 +1,3010 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Module 5.3: Inspectability In-Service | The Nuclear House</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #1a1a2e;
+            --secondary-bg: #16213e;
+            --accent-cyan: #00d9ff;
+            --accent-amber: #f0a500;
+            --accent-red: #e74c3c;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --success-green: #27ae60;
+            --card-bg: #0f3460;
+            --glow-cyan: rgba(0, 217, 255, 0.3);
+            --glow-amber: rgba(240, 165, 0, 0.3);
+            --glow-red: rgba(231, 76, 60, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        /* Fixed Header */
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: rgba(26, 26, 46, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            z-index: 1000;
+        }
+
+        .header-logo {
+            height: 28px;
+            opacity: 0.9;
+        }
+
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-indicator {
+            display: flex;
+            gap: 6px;
+        }
+
+        .page-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--secondary-bg);
+            border: 1px solid var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .page-dot.active {
+            background: var(--accent-cyan);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 8px var(--glow-cyan);
+        }
+
+        .page-dot:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        .progress-text {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            min-width: 45px;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-toggle:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* Navigation Menu */
+        .nav-menu {
+            position: fixed;
+            top: 56px;
+            right: 0;
+            bottom: 0;
+            background: rgba(22, 33, 62, 0.98);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid rgba(0, 217, 255, 0.2);
+            padding: 1rem;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 999;
+            width: 280px;
+            overflow-y: auto;
+        }
+
+        .nav-menu.open {
+            transform: translateX(0);
+        }
+
+        .nav-menu a {
+            display: block;
+            padding: 0.875rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            margin-bottom: 4px;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--accent-cyan);
+            border-left-color: var(--accent-cyan);
+        }
+
+        .nav-menu a.active {
+            background: var(--accent-cyan);
+            color: var(--primary-bg);
+            border-left-color: var(--accent-cyan);
+        }
+
+        /* Page Container */
+        .pages-container {
+            position: fixed;
+            top: 56px;
+            left: 0;
+            right: 0;
+            bottom: 60px;
+            overflow: hidden;
+        }
+
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 1.5rem;
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(100%);
+            transition: all 0.4s ease;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .page.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        .page.exit-left {
+            transform: translateX(-100%);
+        }
+
+        .page-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(26, 26, 46, 0.98);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 217, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: transparent;
+            border: 2px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+            justify-content: center;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: var(--accent-cyan);
+            color: var(--primary-bg);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .nav-btn.primary {
+            background: var(--accent-cyan);
+            color: var(--primary-bg);
+        }
+
+        .nav-btn.primary:hover:not(:disabled) {
+            background: #33e1ff;
+            box-shadow: 0 0 20px var(--glow-cyan);
+        }
+
+        .page-counter {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Hero Page */
+        .hero-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: -1.5rem;
+            background: url('images/hero-inspection.png') center/cover no-repeat;
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, var(--primary-bg) 70%);
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.4rem 1.25rem;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 500;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+
+        .hero-page h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .hero-page h1 .cyan {
+            color: var(--accent-cyan);
+        }
+
+        .hero-intro {
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Counter Animation */
+        .inspection-counter {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem auto;
+            max-width: 500px;
+        }
+
+        .counter-weld {
+            display: flex;
+            justify-content: center;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .weld-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--accent-cyan);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            opacity: 0.3;
+        }
+
+        .weld-icon.active {
+            opacity: 1;
+            box-shadow: 0 0 15px var(--glow-cyan);
+        }
+
+        .counter-display {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 0.25rem;
+        }
+
+        .counter-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .counter-years {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .year-marker {
+            padding: 0.35rem 0.75rem;
+            background: var(--secondary-bg);
+            border: 1px solid transparent;
+            border-radius: 16px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .year-marker.active {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            background: rgba(0, 217, 255, 0.1);
+        }
+
+        .hero-quote {
+            background: var(--secondary-bg);
+            border-left: 4px solid var(--accent-amber);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem auto;
+            border-radius: 0 8px 8px 0;
+            max-width: 500px;
+            text-align: left;
+        }
+
+        .hero-quote p {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-style: italic;
+            margin: 0;
+        }
+
+        /* Section Styling */
+        .section-tag {
+            display: inline-block;
+            padding: 0.35rem 0.875rem;
+            background: rgba(0, 217, 255, 0.1);
+            border-left: 3px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 500;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-bottom: 0.75rem;
+        }
+
+        .section-intro {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Content Image */
+        .content-image {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            margin: 1rem 0;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .content-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .full-image {
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .full-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .image-caption {
+            background: var(--secondary-bg);
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border-top: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        /* Key Concept Box */
+        .key-concept {
+            background: var(--secondary-bg);
+            border-left: 4px solid var(--accent-cyan);
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .key-concept h4 {
+            color: var(--accent-cyan);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .key-concept p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: rgba(240, 165, 0, 0.1);
+            border-left: 4px solid var(--accent-amber);
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning-box h4 {
+            color: var(--accent-amber);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-box p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Error Box */
+        .error-box {
+            background: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid var(--accent-red);
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .error-box h4 {
+            color: var(--accent-red);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-box p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Success Box */
+        .success-box {
+            background: rgba(39, 174, 96, 0.1);
+            border-left: 4px solid var(--success-green);
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .success-box h4 {
+            color: var(--success-green);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Regulation Cards */
+        .regulation-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .regulation-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .regulation-card h4 {
+            color: var(--accent-cyan);
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+            font-family: 'Roboto Mono', monospace;
+            letter-spacing: 1px;
+        }
+
+        .regulation-card h3 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .regulation-card blockquote {
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 3px solid var(--accent-amber);
+            padding: 0.75rem;
+            margin: 0.75rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+            border-radius: 0 8px 8px 0;
+            font-size: 0.85rem;
+        }
+
+        .regulation-card ul {
+            margin: 0.75rem 0;
+            padding-left: 1.25rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .regulation-card li {
+            margin-bottom: 0.35rem;
+        }
+
+        /* Exam Cards */
+        .exam-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .exam-card {
+            background: var(--card-bg);
+            border: 2px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .exam-card:hover, .exam-card.expanded {
+            border-color: var(--accent-cyan);
+        }
+
+        .exam-card-header {
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .exam-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-amber));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .exam-card-header h3 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .exam-card-header p {
+            margin: 0.15rem 0 0;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .exam-expand-icon {
+            margin-left: auto;
+            color: var(--accent-cyan);
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+
+        .exam-card.expanded .exam-expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .exam-card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .exam-card.expanded .exam-card-content {
+            max-height: 1000px;
+        }
+
+        .exam-card-inner {
+            padding: 1rem;
+        }
+
+        .exam-card-image {
+            width: 100%;
+            height: 160px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .exam-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .exam-method {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+
+        .exam-method h5 {
+            color: var(--accent-amber);
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .exam-method p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .requirement-list {
+            list-style: none;
+            padding: 0;
+            margin: 0.75rem 0;
+        }
+
+        .requirement-list li {
+            padding: 0.35rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .requirement-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success-green);
+            font-weight: bold;
+        }
+
+        .design-question {
+            background: rgba(240, 165, 0, 0.1);
+            border: 1px solid var(--accent-amber);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+        }
+
+        .design-question p {
+            margin: 0;
+            font-style: italic;
+            color: var(--accent-amber);
+            font-size: 0.85rem;
+        }
+
+        /* Comparison Panels */
+        .comparison-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .comparison-panel {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .comparison-panel.good {
+            border-color: var(--success-green);
+        }
+
+        .comparison-panel.bad {
+            border-color: var(--accent-red);
+        }
+
+        .comparison-header {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .comparison-panel.good .comparison-header {
+            background: rgba(39, 174, 96, 0.2);
+        }
+
+        .comparison-panel.bad .comparison-header {
+            background: rgba(231, 76, 60, 0.2);
+        }
+
+        .comparison-header h4 {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .comparison-panel.good .comparison-header h4 {
+            color: var(--success-green);
+        }
+
+        .comparison-panel.bad .comparison-header h4 {
+            color: var(--accent-red);
+        }
+
+        .comparison-image {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+        }
+
+        .comparison-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .comparison-content {
+            padding: 1rem;
+        }
+
+        .comparison-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .comparison-list li {
+            padding: 0.35rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .comparison-panel.good .comparison-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success-green);
+            font-weight: bold;
+        }
+
+        .comparison-panel.bad .comparison-list li::before {
+            content: '✗';
+            position: absolute;
+            left: 0;
+            color: var(--accent-red);
+            font-weight: bold;
+        }
+
+        /* UT Simulator */
+        .ut-simulator {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+        }
+
+        .ut-simulator h4 {
+            color: var(--accent-cyan);
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .ut-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .ut-btn {
+            padding: 0.6rem 1rem;
+            background: var(--secondary-bg);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-weight: 500;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 90px;
+        }
+
+        .ut-btn:hover, .ut-btn.active {
+            background: var(--accent-cyan);
+            color: var(--primary-bg);
+        }
+
+        .ut-visual {
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .ut-pipe {
+            position: absolute;
+            top: 50%;
+            left: 8%;
+            right: 8%;
+            height: 60px;
+            background: linear-gradient(to bottom, #4a5d6b, #2d3b45, #4a5d6b);
+            transform: translateY(-50%);
+            border-radius: 4px;
+        }
+
+        .ut-weld {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 80px;
+            background: linear-gradient(to right, #6a7d8b, #8a9dab, #6a7d8b);
+            transform: translate(-50%, -50%);
+            border-radius: 2px;
+        }
+
+        .ut-zone {
+            position: absolute;
+            border: 2px dashed var(--success-green);
+            background: rgba(39, 174, 96, 0.1);
+            border-radius: 4px;
+        }
+
+        .ut-zone.blocked {
+            border-color: var(--accent-red);
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        .ut-zone.left {
+            left: 20%;
+            top: 25%;
+            width: 18%;
+            height: 50%;
+        }
+
+        .ut-zone.right {
+            right: 20%;
+            top: 25%;
+            width: 18%;
+            height: 50%;
+        }
+
+        .ut-obstruction {
+            position: absolute;
+            background: var(--accent-red);
+            border-radius: 4px;
+            right: 15%;
+            top: 20%;
+            width: 50px;
+            height: 80px;
+            display: none;
+        }
+
+        .ut-probe {
+            position: absolute;
+            left: 25%;
+            top: 30%;
+            width: 28px;
+            height: 36px;
+            background: var(--accent-cyan);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--primary-bg);
+        }
+
+        .ut-feedback {
+            padding: 0.875rem;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            font-size: 0.85rem;
+        }
+
+        .ut-feedback.success {
+            border-left: 4px solid var(--success-green);
+        }
+
+        .ut-feedback.warning {
+            border-left: 4px solid var(--accent-amber);
+        }
+
+        .ut-feedback.error {
+            border-left: 4px solid var(--accent-red);
+        }
+
+        /* Nozzle Interactive */
+        .nozzle-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+        }
+
+        .nozzle-visual {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            aspect-ratio: 1;
+            background: var(--secondary-bg);
+            border-radius: 50%;
+        }
+
+        .nozzle-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40%;
+            height: 40%;
+            background: linear-gradient(135deg, #4a5d6b, #2d3b45);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            border: 3px solid #6a7d8b;
+        }
+
+        .nozzle-weld-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 55%;
+            height: 55%;
+            border: 6px solid var(--accent-amber);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.6;
+        }
+
+        .nozzle-hotspot {
+            position: absolute;
+            width: 44px;
+            height: 44px;
+            background: rgba(0, 217, 255, 0.2);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            transition: all 0.3s ease;
+        }
+
+        .nozzle-hotspot:hover, .nozzle-hotspot.active {
+            background: var(--accent-cyan);
+            color: var(--primary-bg);
+            box-shadow: 0 0 15px var(--glow-cyan);
+        }
+
+        .nozzle-hotspot-1 { top: 2%; left: 50%; transform: translateX(-50%); }
+        .nozzle-hotspot-2 { top: 50%; right: 2%; transform: translateY(-50%); }
+        .nozzle-hotspot-3 { bottom: 2%; left: 50%; transform: translateX(-50%); }
+        .nozzle-hotspot-4 { top: 50%; left: 2%; transform: translateY(-50%); }
+
+        .nozzle-info {
+            margin-top: 1.25rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            min-height: 100px;
+        }
+
+        .nozzle-info h5 {
+            color: var(--accent-cyan);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .nozzle-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Steam Generator */
+        .sg-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+        }
+
+        .sg-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .sg-stat {
+            background: var(--secondary-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .sg-stat-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .sg-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.15rem;
+        }
+
+        .sg-tube-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 3px;
+            padding: 0.75rem;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .sg-tube {
+            aspect-ratio: 1;
+            background: #4a5d6b;
+            border-radius: 50%;
+            transition: all 0.1s ease;
+        }
+
+        .sg-tube.inspected {
+            background: var(--success-green);
+        }
+
+        .sg-tube.current {
+            background: var(--accent-cyan);
+            box-shadow: 0 0 6px var(--glow-cyan);
+            animation: pulse 0.5s ease infinite;
+        }
+
+        .sg-tube.defect {
+            background: var(--accent-red);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .sg-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sg-progress-bar {
+            flex: 1;
+            height: 16px;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .sg-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-green), var(--accent-cyan));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .sg-progress-text {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-cyan);
+            min-width: 40px;
+        }
+
+        .sg-controls {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .sg-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--secondary-bg);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .sg-btn:hover {
+            background: var(--accent-cyan);
+            color: var(--primary-bg);
+        }
+
+        /* Checklist */
+        .checklist-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .checklist-category {
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .checklist-category:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-header {
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-header:hover {
+            background: rgba(0, 217, 255, 0.05);
+        }
+
+        .checklist-header.complete {
+            background: rgba(39, 174, 96, 0.2);
+        }
+
+        .checklist-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .checklist-header.complete .checklist-icon {
+            background: var(--success-green);
+        }
+
+        .checklist-title {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .checklist-title h4 {
+            margin: 0;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .checklist-title span {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .checklist-progress {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-cyan);
+        }
+
+        .checklist-expand {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .checklist-category.open .checklist-expand {
+            transform: rotate(180deg);
+        }
+
+        .checklist-items {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .checklist-category.open .checklist-items {
+            max-height: 500px;
+        }
+
+        .checklist-item {
+            padding: 0.875rem 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .checklist-item:hover {
+            background: rgba(0, 217, 255, 0.05);
+        }
+
+        .checklist-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--text-secondary);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .checklist-item.checked .checklist-checkbox {
+            background: var(--success-green);
+            border-color: var(--success-green);
+        }
+
+        .checklist-checkbox::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .checklist-item.checked .checklist-checkbox::after {
+            opacity: 1;
+        }
+
+        .checklist-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.4;
+            transition: color 0.2s ease;
+        }
+
+        .checklist-item.checked .checklist-text {
+            color: var(--text-primary);
+        }
+
+        /* Quiz */
+        .quiz-container {
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            display: none;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .quiz-question.active {
+            display: block;
+        }
+
+        .question-number {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            letter-spacing: 2px;
+            margin-bottom: 0.75rem;
+        }
+
+        .question-scenario {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-amber);
+        }
+
+        .question-scenario h5 {
+            color: var(--accent-amber);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-scenario p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .question-text {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid var(--secondary-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        .option.selected {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 217, 255, 0.1);
+        }
+
+        .option.correct {
+            border-color: var(--success-green);
+            background: rgba(39, 174, 96, 0.15);
+        }
+
+        .option.incorrect {
+            border-color: var(--accent-red);
+            background: rgba(231, 76, 60, 0.15);
+        }
+
+        .option input { display: none; }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            transition: all 0.2s ease;
+        }
+
+        .option.selected .option-radio {
+            border-color: var(--accent-cyan);
+            background: var(--accent-cyan);
+        }
+
+        .option.selected .option-radio::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--primary-bg);
+            border-radius: 50%;
+        }
+
+        .option.correct .option-radio {
+            border-color: var(--success-green);
+            background: var(--success-green);
+        }
+
+        .option.correct .option-radio::after {
+            content: '✓';
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .option.incorrect .option-radio {
+            border-color: var(--accent-red);
+            background: var(--accent-red);
+        }
+
+        .option.incorrect .option-radio::after {
+            content: '✗';
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .option-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .question-feedback {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.85rem;
+        }
+
+        .question-feedback.visible {
+            display: block;
+        }
+
+        .question-feedback.correct {
+            background: rgba(39, 174, 96, 0.15);
+            border-left: 4px solid var(--success-green);
+        }
+
+        .question-feedback.incorrect {
+            background: rgba(231, 76, 60, 0.15);
+            border-left: 4px solid var(--accent-red);
+        }
+
+        .quiz-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--accent-cyan);
+            border: none;
+            color: var(--primary-bg);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-btn:hover {
+            background: #33e1ff;
+        }
+
+        .quiz-results {
+            display: none;
+            text-align: center;
+            padding: 2rem 1.5rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .quiz-results.visible {
+            display: block;
+        }
+
+        .results-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1rem;
+            color: white;
+        }
+
+        .results-score {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 2rem;
+            color: var(--accent-cyan);
+            margin-bottom: 0.75rem;
+        }
+
+        .results-message {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Summary */
+        .summary-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .summary-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            position: relative;
+        }
+
+        .summary-number {
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: var(--accent-cyan);
+            color: var(--primary-bg);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .summary-card h4 {
+            color: var(--accent-cyan);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            margin-top: 0.25rem;
+        }
+
+        .summary-card p {
+            font-size: 0.85rem;
+            margin: 0;
+            color: var(--text-secondary);
+        }
+
+        .final-message {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(240, 165, 0, 0.1));
+            border: 2px solid var(--accent-cyan);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .final-message p {
+            font-size: 1rem;
+            font-style: italic;
+            color: var(--text-primary);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .module-complete {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .complete-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--success-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin: 0 auto 1rem;
+            box-shadow: 0 0 30px rgba(39, 174, 96, 0.4);
+        }
+
+        .module-complete h3 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .module-complete p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.85rem;
+        }
+
+        .data-table th {
+            background: var(--secondary-bg);
+            color: var(--accent-cyan);
+            font-weight: 600;
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 2px solid var(--accent-cyan);
+        }
+
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+        }
+
+        /* Image Grid */
+        .image-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .image-grid-item {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .image-grid-item img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        /* Swipe hint */
+        .swipe-hint {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 217, 255, 0.2);
+            color: var(--accent-cyan);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .swipe-hint.visible {
+            opacity: 1;
+        }
+
+        /* Desktop/Tablet Enhancements */
+        @media (min-width: 768px) {
+            .pages-container {
+                bottom: 70px;
+            }
+
+            .bottom-nav {
+                height: 70px;
+            }
+
+            .page {
+                padding: 2rem;
+            }
+
+            .page-content {
+                max-width: 800px;
+            }
+
+            .regulation-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .comparison-container {
+                flex-direction: row;
+            }
+
+            .comparison-panel {
+                flex: 1;
+            }
+
+            .sg-stats {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .sg-tube-grid {
+                grid-template-columns: repeat(15, 1fr);
+            }
+
+            .image-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .summary-grid {
+                flex-direction: row;
+            }
+
+            .summary-card {
+                flex: 1;
+            }
+
+            .page-dot {
+                width: 10px;
+                height: 10px;
+            }
+
+            .nav-btn {
+                min-width: 140px;
+                padding: 0.875rem 1.5rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .page-content {
+                max-width: 900px;
+            }
+
+            .regulation-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .sg-tube-grid {
+                grid-template-columns: repeat(20, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Header -->
+    <header class="fixed-header">
+        <img src="https://i.ibb.co/7tbxnN83/Logo-white.png" alt="The Nuclear House" class="header-logo">
+        <div class="header-center">
+            <div class="page-indicator" id="pageIndicator"></div>
+            <span class="progress-text" id="progressText">1/9</span>
+        </div>
+        <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+        </button>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-menu" id="navMenu">
+        <a href="#" data-page="0" class="active">1. Introduction</a>
+        <a href="#" data-page="1">2. The Lifetime Burden</a>
+        <a href="#" data-page="2">3. Regulatory Framework</a>
+        <a href="#" data-page="3">4. Three Examination Types</a>
+        <a href="#" data-page="4">5. UT Access Challenge</a>
+        <a href="#" data-page="5">6. Nozzle Weld Challenge</a>
+        <a href="#" data-page="6">7. Steam Generator Scale</a>
+        <a href="#" data-page="7">8. Designer's Checklist</a>
+        <a href="#" data-page="8">9. Knowledge Check</a>
+        <a href="#" data-page="9">10. Summary</a>
+    </nav>
+
+    <!-- Pages Container -->
+    <div class="pages-container" id="pagesContainer">
+        
+        <!-- PAGE 0: Hero/Introduction -->
+        <div class="page active" data-page="0">
+            <div class="page-content hero-page">
+                <div class="hero-bg"></div>
+                <div class="hero-badge">MODULE 5.3</div>
+                <h1>Inspectability <span class="cyan">In-Service</span></h1>
+                <p class="hero-intro">Every weld you design will be inspected repeatedly over 60 years. If your design makes inspection difficult, you've created a problem that compounds across thousands of inspection cycles.</p>
+                
+                <div class="inspection-counter">
+                    <div class="counter-weld" id="weldIcons">
+                        <div class="weld-icon" data-year="0">⚡</div>
+                        <div class="weld-icon" data-year="10">⚡</div>
+                        <div class="weld-icon" data-year="20">⚡</div>
+                        <div class="weld-icon" data-year="30">⚡</div>
+                        <div class="weld-icon" data-year="40">⚡</div>
+                        <div class="weld-icon" data-year="50">⚡</div>
+                    </div>
+                    <div class="counter-display" id="counterDisplay">0</div>
+                    <div class="counter-label">inspections per weld over 60 years</div>
+                    <div class="counter-years" id="counterYears">
+                        <span class="year-marker" data-year="0">PSI</span>
+                        <span class="year-marker" data-year="10">10yr</span>
+                        <span class="year-marker" data-year="20">20yr</span>
+                        <span class="year-marker" data-year="30">30yr</span>
+                        <span class="year-marker" data-year="40">40yr</span>
+                        <span class="year-marker" data-year="50">50yr</span>
+                        <span class="year-marker" data-year="60">60yr</span>
+                    </div>
+                </div>
+
+                <div class="hero-quote">
+                    <p>"This isn't a choice — it's Licence Condition 28. Your design must enable regular and systematic examination."</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 1: The Lifetime Burden -->
+        <div class="page" data-page="1">
+            <div class="page-content">
+                <div class="section-tag">THE REALITY</div>
+                <h2 class="section-title">The Lifetime Inspection Burden</h2>
+                <p class="section-intro">That extra 30 minutes per inspection doesn't sound like much. Until you do the maths.</p>
+
+                <div class="content-image">
+                    <img src="images/inspection-accumulation.png" alt="Inspection time accumulation over 60 years">
+                </div>
+
+                <h3 style="margin: 1.25rem 0 0.75rem; font-size: 1.1rem;">The Multiplication Effect</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Consider a typical nuclear plant with 500 welds requiring periodic UT inspection. Each weld is inspected approximately 6 times over its 60-year service life.</p>
+
+                <div class="key-concept">
+                    <h4>500 welds × 6 inspections = 3,000 individual inspections</h4>
+                    <p>If your design adds 30 minutes to each inspection...</p>
+                </div>
+
+                <p class="mono" style="font-size: 1.25rem; color: var(--accent-amber); text-align: center; margin: 1rem 0;">
+                    3,000 × 0.5 hours = <strong>1,500 hours</strong> additional work
+                </p>
+
+                <div class="warning-box">
+                    <h4>⚠️ Hidden Costs</h4>
+                    <p>Additional inspection time means: longer outages, higher radiation dose to personnel, increased labour costs at outage rates, and risk of extended outage if problems are discovered.</p>
+                </div>
+
+                <div class="error-box">
+                    <h4>Regulatory Reality</h4>
+                    <p><strong>LC28</strong> requires inspections "within the intervals specified in the plant maintenance schedule." If your design makes inspections take longer than allowed, you have a compliance problem.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 2: Regulatory Framework -->
+        <div class="page" data-page="2">
+            <div class="page-content">
+                <div class="section-tag">REGULATORY FRAMEWORK</div>
+                <h2 class="section-title">Why Inspection Is Non-Negotiable</h2>
+                <p class="section-intro">Required by site licence, expected by ONR, mandated by IAEA, specified in ASME codes.</p>
+
+                <div class="full-image">
+                    <img src="images/regulatory-framework.png" alt="Nuclear regulatory compliance documentation">
+                </div>
+
+                <div class="regulation-grid">
+                    <div class="regulation-card">
+                        <h4>UK REGULATION</h4>
+                        <h3>Licence Condition 28</h3>
+                        <blockquote>"The licensee shall make adequate arrangements for regular and systematic examination of all plant affecting safety."</blockquote>
+                        <ul>
+                            <li>Plant maintenance schedule required</li>
+                            <li>Examinations by SQEP personnel</li>
+                            <li>Written schemes specified</li>
+                        </ul>
+                    </div>
+
+                    <div class="regulation-card">
+                        <h4>ONR EXPECTATIONS</h4>
+                        <h3>Safety Assessment Principles</h3>
+                        <blockquote><strong>EMT.1:</strong> ISI requirements must be identified in the safety case.</blockquote>
+                        <blockquote><strong>EMT.5:</strong> Adequate access for EMIT activities.</blockquote>
+                    </div>
+
+                    <div class="regulation-card">
+                        <h4>INTERNATIONAL</h4>
+                        <h3>IAEA SSR-2/1 Req. 29</h3>
+                        <blockquote>"Design shall include provisions for access to allow safe execution of ISI."</blockquote>
+                        <p style="color: var(--accent-amber); font-size: 0.8rem; margin-top: 0.5rem;">ASME Section XI: 10-year inspection cycles since 1970.</p>
+                    </div>
+                </div>
+
+                <div class="error-box">
+                    <h4>The Design-Inspection Gap</h4>
+                    <p><strong>ONR:</strong> "Components designed according to ASME III often cannot meet ASME XI NDE requirements." This gap persists for 60 years.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 3: Three Examination Types -->
+        <div class="page" data-page="3">
+            <div class="page-content">
+                <div class="section-tag">NDE METHODS</div>
+                <h2 class="section-title">The Three Examination Types</h2>
+                <p class="section-intro">Different methods have different access requirements. Tap each card to learn more.</p>
+
+                <div class="exam-cards">
+                    <div class="exam-card" onclick="toggleExamCard(this)">
+                        <div class="exam-card-header">
+                            <div class="exam-icon">👁️</div>
+                            <div>
+                                <h3>VISUAL (VT)</h3>
+                                <p>Can inspectors see it?</p>
+                            </div>
+                            <span class="exam-expand-icon">▼</span>
+                        </div>
+                        <div class="exam-card-content">
+                            <div class="exam-card-inner">
+                                <div class="exam-card-image">
+                                    <img src="images/visual-inspection.png" alt="Visual inspection">
+                                </div>
+                                <div class="exam-method">
+                                    <h5>VT-1: Detailed Visual</h5>
+                                    <p>Within 600mm, ≥30° viewing angle, 50 foot-candles lighting.</p>
+                                </div>
+                                <ul class="requirement-list">
+                                    <li>Clear line of sight</li>
+                                    <li>Adequate lighting</li>
+                                    <li>Access path for inspector</li>
+                                </ul>
+                                <div class="design-question">
+                                    <p>"Is there a clear sightline to every surface that matters?"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exam-card" onclick="toggleExamCard(this)">
+                        <div class="exam-card-header">
+                            <div class="exam-icon">〰️</div>
+                            <div>
+                                <h3>SURFACE (PT/MT/ET)</h3>
+                                <p>Can inspectors reach the surface?</p>
+                            </div>
+                            <span class="exam-expand-icon">▼</span>
+                        </div>
+                        <div class="exam-card-content">
+                            <div class="exam-card-inner">
+                                <div class="exam-card-image">
+                                    <img src="images/surface-inspection.png" alt="Surface inspection">
+                                </div>
+                                <div class="exam-method">
+                                    <h5>Liquid Penetrant / Magnetic Particle</h5>
+                                    <p>Requires full surface access and cleanup capability.</p>
+                                </div>
+                                <ul class="requirement-list">
+                                    <li>Direct physical contact</li>
+                                    <li>Often requires weld crown grinding</li>
+                                    <li>Space for applicators</li>
+                                </ul>
+                                <div class="design-question">
+                                    <p>"Can an inspector physically reach every weld surface?"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exam-card" onclick="toggleExamCard(this)">
+                        <div class="exam-card-header">
+                            <div class="exam-icon">🔊</div>
+                            <div>
+                                <h3>VOLUMETRIC (UT/RT)</h3>
+                                <p>Can inspectors see inside?</p>
+                            </div>
+                            <span class="exam-expand-icon">▼</span>
+                        </div>
+                        <div class="exam-card-content">
+                            <div class="exam-card-inner">
+                                <div class="exam-card-image">
+                                    <img src="images/volumetric-inspection.png" alt="Volumetric inspection">
+                                </div>
+                                <div class="exam-method">
+                                    <h5>Ultrasonic Testing</h5>
+                                    <p>Sound waves through material — the workhorse of nuclear inspection.</p>
+                                </div>
+                                <ul class="requirement-list">
+                                    <li>75-100mm clear on BOTH sides</li>
+                                    <li>Surface finish Ra ≤ 6.3 μm</li>
+                                    <li>Multiple probe angles (45°, 60°, 70°)</li>
+                                </ul>
+                                <div class="design-question">
+                                    <p>"Is there space for probes on both sides, at multiple angles?"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="key-concept">
+                    <h4>Key Insight</h4>
+                    <p>Visual → Surface → Volumetric: access requirements become progressively more demanding. Design for the most stringent method.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 4: UT Access Challenge -->
+        <div class="page" data-page="4">
+            <div class="page-content">
+                <div class="section-tag">INTERACTIVE</div>
+                <h2 class="section-title">UT Access Simulator</h2>
+                <p class="section-intro">See how design decisions affect inspection feasibility.</p>
+
+                <div class="ut-simulator">
+                    <h4>🔬 Explore Probe Access Scenarios</h4>
+                    <div class="ut-controls">
+                        <button class="ut-btn active" id="goodDesignBtn" onclick="setUTScenario('good')">Good Design</button>
+                        <button class="ut-btn" id="badDesignBtn" onclick="setUTScenario('bad')">Obstructed</button>
+                        <button class="ut-btn" id="partialBtn" onclick="setUTScenario('partial')">Partial</button>
+                    </div>
+                    <div class="ut-visual">
+                        <div class="ut-pipe"></div>
+                        <div class="ut-weld"></div>
+                        <div class="ut-zone left" id="leftZone"></div>
+                        <div class="ut-zone right" id="rightZone"></div>
+                        <div class="ut-probe">UT</div>
+                        <div class="ut-obstruction" id="obstruction"></div>
+                    </div>
+                    <div class="ut-feedback success" id="utFeedback">
+                        <strong>✓ Full Coverage</strong> — Both sides accessible. Complete volumetric examination achievable.
+                    </div>
+                </div>
+
+                <div class="comparison-container">
+                    <div class="comparison-panel good">
+                        <div class="comparison-header">
+                            <span>✓</span>
+                            <h4>Good Design</h4>
+                        </div>
+                        <div class="comparison-image">
+                            <img src="images/ut-good-access.png" alt="Good UT access">
+                        </div>
+                        <div class="comparison-content">
+                            <ul class="comparison-list">
+                                <li>100mm clear zone both sides</li>
+                                <li>Smooth surface finish</li>
+                                <li>Permanent platform access</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="comparison-panel bad">
+                        <div class="comparison-header">
+                            <span>✗</span>
+                            <h4>Bad Design</h4>
+                        </div>
+                        <div class="comparison-image">
+                            <img src="images/ut-bad-access.png" alt="Bad UT access">
+                        </div>
+                        <div class="comparison-content">
+                            <ul class="comparison-list">
+                                <li>Adjacent pipe blocks access</li>
+                                <li>One-side scan only</li>
+                                <li>"Limited examination" flag</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 5: Nozzle Weld Challenge -->
+        <div class="page" data-page="5">
+            <div class="page-content">
+                <div class="section-tag">COMPLEX GEOMETRY</div>
+                <h2 class="section-title">Nozzle Weld Challenge</h2>
+                <p class="section-intro">Tap each position to explore access challenges around a nozzle weld.</p>
+
+                <div class="content-image">
+                    <img src="images/nozzle-weld-overview.png" alt="Nozzle weld overview">
+                </div>
+
+                <div class="nozzle-container">
+                    <div class="nozzle-visual">
+                        <div class="nozzle-weld-ring"></div>
+                        <div class="nozzle-center"></div>
+                        <div class="nozzle-hotspot nozzle-hotspot-1" onclick="showNozzleInfo(0)">0°</div>
+                        <div class="nozzle-hotspot nozzle-hotspot-2" onclick="showNozzleInfo(90)">90°</div>
+                        <div class="nozzle-hotspot nozzle-hotspot-3" onclick="showNozzleInfo(180)">180°</div>
+                        <div class="nozzle-hotspot nozzle-hotspot-4" onclick="showNozzleInfo(270)">270°</div>
+                    </div>
+                    <div class="nozzle-info" id="nozzleInfo">
+                        <h5>Tap a position to explore</h5>
+                        <p>Each quadrant presents unique inspection challenges. Sound beam skewing, obstructions, and scanner mounting vary by position.</p>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <h4>Design Rules for Nozzle Welds</h4>
+                    <p>• Space nozzles for scanner travel • Avoid obstructions within 100mm of weld • Provide mounting points • Access at all quadrants</p>
+                </div>
+
+                <div class="key-concept">
+                    <h4>Minimum: 75mm Radial Clearance</h4>
+                    <p>Many designs don't provide even this basic clearance — creating 60 years of inspection problems.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 6: Steam Generator Scale -->
+        <div class="page" data-page="6">
+            <div class="page-content">
+                <div class="section-tag">SCALE</div>
+                <h2 class="section-title">Steam Generator Tubes</h2>
+                <p class="section-intro">Thousands of tubes, inspected every outage. Watch the simulation.</p>
+
+                <div class="content-image">
+                    <img src="images/steam-generator-cutaway.png" alt="Steam generator cutaway">
+                </div>
+
+                <div class="sg-container">
+                    <div class="sg-stats">
+                        <div class="sg-stat">
+                            <div class="sg-stat-value" id="tubeCount">0</div>
+                            <div class="sg-stat-label">Tubes</div>
+                        </div>
+                        <div class="sg-stat">
+                            <div class="sg-stat-value" id="defectCount">0</div>
+                            <div class="sg-stat-label">Defects</div>
+                        </div>
+                        <div class="sg-stat">
+                            <div class="sg-stat-value" id="timeElapsed">0:00</div>
+                            <div class="sg-stat-label">Time</div>
+                        </div>
+                        <div class="sg-stat">
+                            <div class="sg-stat-value">80</div>
+                            <div class="sg-stat-label">in/sec</div>
+                        </div>
+                    </div>
+                    <div class="sg-tube-grid" id="sgTubeGrid"></div>
+                    <div class="sg-progress">
+                        <div class="sg-progress-bar">
+                            <div class="sg-progress-fill" id="sgProgressFill"></div>
+                        </div>
+                        <div class="sg-progress-text" id="sgProgressText">0%</div>
+                    </div>
+                    <div class="sg-controls">
+                        <button class="sg-btn" onclick="startSGSimulation()">▶ Start</button>
+                        <button class="sg-btn" onclick="resetSGSimulation()">↺ Reset</button>
+                    </div>
+                </div>
+
+                <div class="key-concept">
+                    <h4>17,000 Tubes in 77 Hours</h4>
+                    <p>Modern systems save $500,000+ per outage. Only possible because the design accommodates inspection robots.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 7: Designer's Checklist -->
+        <div class="page" data-page="7">
+            <div class="page-content">
+                <div class="section-tag">YOUR CHECKLIST</div>
+                <h2 class="section-title">Designer's Inspection Checklist</h2>
+                <p class="section-intro">Tap items to check them off. Complete each category.</p>
+
+                <div class="image-grid">
+                    <div class="image-grid-item">
+                        <img src="images/borescope-equipment.png" alt="Borescope equipment">
+                        <div class="image-caption">Remote Visual Inspection equipment</div>
+                    </div>
+                    <div class="image-grid-item">
+                        <img src="images/rvi-path-diagram.png" alt="RVI path diagram">
+                        <div class="image-caption">Camera path planning for RVI</div>
+                    </div>
+                </div>
+
+                <div class="checklist-container">
+                    <div class="checklist-category" id="cat1">
+                        <div class="checklist-header" onclick="toggleChecklist('cat1')">
+                            <div class="checklist-icon">📋</div>
+                            <div class="checklist-title">
+                                <h4>Regulatory Compliance</h4>
+                                <span>LC28, SAPs, ASME XI</span>
+                            </div>
+                            <div class="checklist-progress" id="cat1-progress">0/3</div>
+                            <span class="checklist-expand">▼</span>
+                        </div>
+                        <div class="checklist-items">
+                            <div class="checklist-item" onclick="toggleCheckItem(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">ISI requirements identified for this component?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheckItem(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Safety case inspection method achievable?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheckItem(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">ASME XI access requirements met?</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-category" id="cat2">
+                        <div class="checklist-header" onclick="toggleChecklist('cat2')">
+                            <div class="checklist-icon">🚶</div>
+                            <div class="checklist-title">
+                                <h4>Physical Access</h4>
+                                <span>Can inspectors reach it?</span>
+                            </div>
+                            <div class="checklist-progress" id="cat2-progress">0/3</div>
+                            <span class="checklist-expand">▼</span>
+                        </div>
+                        <div class="checklist-items">
+                            <div class="checklist-item" onclick="toggleCheckItem(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Inspector can physically reach location?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheckItem(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Permanent platform or scaffolding required?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheckItem(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Clearance for inspector + equipment + PPE?</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-category" id="cat3">
+                        <div class="checklist-header" onclick="toggleChecklist('cat3')">
+                            <div class="checklist-icon">📡</div>
+                            <div class="checklist-title">
+                                <h4>Probe Positioning</h4>
+                                <span>UT/ET sensor access</span>
+                            </div>
+                            <div class="checklist-progress" id="cat3-progress">0/3</div>
+                            <span class="checklist-expand">▼</span>
+                        </div>
+                        <div class="checklist-items">
+                            <div class="checklist-item" onclick="toggleCheckItem(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">75-100mm clear on BOTH sides of weld?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheckItem(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">UT probes at 45°, 60°, 70° angles possible?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheckItem(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Full skip distance unobstructed?</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-category" id="cat4">
+                        <div class="checklist-header" onclick="toggleChecklist('cat4')">
+                            <div class="checklist-icon">⏱️</div>
+                            <div class="checklist-title">
+                                <h4>Lifetime Thinking</h4>
+                                <span>60-year perspective</span>
+                            </div>
+                            <div class="checklist-progress" id="cat4-progress">0/3</div>
+                            <span class="checklist-expand">▼</span>
+                        </div>
+                        <div class="checklist-items">
+                            <div class="checklist-item" onclick="toggleCheckItem(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Minimised time/dose for each inspection cycle?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheckItem(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Automated inspection possible if applicable?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheckItem(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Still inspectable after 40 years of ageing?</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 8: Knowledge Check -->
+        <div class="page" data-page="8">
+            <div class="page-content">
+                <div class="section-tag">KNOWLEDGE CHECK</div>
+                <h2 class="section-title">Test Your Understanding</h2>
+                <p class="section-intro">Apply what you've learned to real scenarios.</p>
+
+                <div class="quiz-container" id="quizContainer">
+                    <div class="quiz-question active" data-question="1">
+                        <div class="question-number">QUESTION 1 OF 5</div>
+                        <div class="question-scenario">
+                            <h5>📍 Scenario</h5>
+                            <p>A pipe weld has a support bracket 40mm from the weld centreline. The safety case specifies UT inspection.</p>
+                        </div>
+                        <p class="question-text">What is the primary concern?</p>
+                        <div class="options">
+                            <div class="option" data-answer="A" onclick="selectOption(this)">
+                                <input type="radio" name="q1">
+                                <div class="option-radio"></div>
+                                <span class="option-text">The bracket may corrode</span>
+                            </div>
+                            <div class="option" data-answer="B" onclick="selectOption(this)">
+                                <input type="radio" name="q1">
+                                <div class="option-radio"></div>
+                                <span class="option-text">Bracket blocks UT probe access, preventing full examination</span>
+                            </div>
+                            <div class="option" data-answer="C" onclick="selectOption(this)">
+                                <input type="radio" name="q1">
+                                <div class="option-radio"></div>
+                                <span class="option-text">40mm clearance is adequate</span>
+                            </div>
+                        </div>
+                        <div class="question-feedback" id="feedback1"></div>
+                        <button class="quiz-btn" onclick="checkAnswer(1, 'B')">Submit Answer</button>
+                    </div>
+
+                    <div class="quiz-question" data-question="2">
+                        <div class="question-number">QUESTION 2 OF 5</div>
+                        <div class="question-scenario">
+                            <h5>📍 Scenario</h5>
+                            <p>A nozzle weld can be accessed from 0°, 90°, 180° but a penetration blocks 270°.</p>
+                        </div>
+                        <p class="question-text">What inspection issue does this create?</p>
+                        <div class="options">
+                            <div class="option" data-answer="A" onclick="selectOption(this)">
+                                <input type="radio" name="q2">
+                                <div class="option-radio"></div>
+                                <span class="option-text">No issue — 75% coverage is acceptable</span>
+                            </div>
+                            <div class="option" data-answer="B" onclick="selectOption(this)">
+                                <input type="radio" name="q2">
+                                <div class="option-radio"></div>
+                                <span class="option-text">Flagged as "limited examination" with incomplete coverage</span>
+                            </div>
+                            <div class="option" data-answer="C" onclick="selectOption(this)">
+                                <input type="radio" name="q2">
+                                <div class="option-radio"></div>
+                                <span class="option-text">Visual can compensate for blocked area</span>
+                            </div>
+                        </div>
+                        <div class="question-feedback" id="feedback2"></div>
+                        <button class="quiz-btn" onclick="checkAnswer(2, 'B')">Submit Answer</button>
+                    </div>
+
+                    <div class="quiz-question" data-question="3">
+                        <div class="question-number">QUESTION 3 OF 5</div>
+                        <div class="question-scenario">
+                            <h5>📍 Scenario</h5>
+                            <p>A colleague says grinding weld crowns flush adds unnecessary fabrication cost.</p>
+                        </div>
+                        <p class="question-text">Best response regarding in-service inspection?</p>
+                        <div class="options">
+                            <div class="option" data-answer="A" onclick="selectOption(this)">
+                                <input type="radio" name="q3">
+                                <div class="option-radio"></div>
+                                <span class="option-text">Agree — modern UT works with any profile</span>
+                            </div>
+                            <div class="option" data-answer="B" onclick="selectOption(this)">
+                                <input type="radio" name="q3">
+                                <div class="option-radio"></div>
+                                <span class="option-text">One-time grinding costs less than repeated outage grinding over 60 years</span>
+                            </div>
+                            <div class="option" data-answer="C" onclick="selectOption(this)">
+                                <input type="radio" name="q3">
+                                <div class="option-radio"></div>
+                                <span class="option-text">Surface doesn't affect UT quality</span>
+                            </div>
+                        </div>
+                        <div class="question-feedback" id="feedback3"></div>
+                        <button class="quiz-btn" onclick="checkAnswer(3, 'B')">Submit Answer</button>
+                    </div>
+
+                    <div class="quiz-question" data-question="4">
+                        <div class="question-number">QUESTION 4 OF 5</div>
+                        <div class="question-scenario">
+                            <h5>📍 Scenario</h5>
+                            <p>Borescope path has two 90° bends between the port and target surface.</p>
+                        </div>
+                        <p class="question-text">Most likely inspection issue?</p>
+                        <div class="options">
+                            <div class="option" data-answer="A" onclick="selectOption(this)">
+                                <input type="radio" name="q4">
+                                <div class="option-radio"></div>
+                                <span class="option-text">No issue — borescopes handle this</span>
+                            </div>
+                            <div class="option" data-answer="B" onclick="selectOption(this)">
+                                <input type="radio" name="q4">
+                                <div class="option-radio"></div>
+                                <span class="option-text">Two 90° bends may exceed articulation limits</span>
+                            </div>
+                            <div class="option" data-answer="C" onclick="selectOption(this)">
+                                <input type="radio" name="q4">
+                                <div class="option-radio"></div>
+                                <span class="option-text">Port diameter is the only concern</span>
+                            </div>
+                        </div>
+                        <div class="question-feedback" id="feedback4"></div>
+                        <button class="quiz-btn" onclick="checkAnswer(4, 'B')">Submit Answer</button>
+                    </div>
+
+                    <div class="quiz-question" data-question="5">
+                        <div class="question-number">QUESTION 5 OF 5</div>
+                        <div class="question-scenario">
+                            <h5>📍 Scenario</h5>
+                            <p>ONR finds a safety-significant weld requires UT per safety case, but design only permits visual access.</p>
+                        </div>
+                        <p class="question-text">What issue has been identified?</p>
+                        <div class="options">
+                            <div class="option" data-answer="A" onclick="selectOption(this)">
+                                <input type="radio" name="q5">
+                                <div class="option-radio"></div>
+                                <span class="option-text">Regulatory gap — safety case claims cannot be delivered</span>
+                            </div>
+                            <div class="option" data-answer="B" onclick="selectOption(this)">
+                                <input type="radio" name="q5">
+                                <div class="option-radio"></div>
+                                <span class="option-text">Minor documentation issue</span>
+                            </div>
+                            <div class="option" data-answer="C" onclick="selectOption(this)">
+                                <input type="radio" name="q5">
+                                <div class="option-radio"></div>
+                                <span class="option-text">Construction issue, not design</span>
+                            </div>
+                        </div>
+                        <div class="question-feedback" id="feedback5"></div>
+                        <button class="quiz-btn" onclick="checkAnswer(5, 'A')">Submit Answer</button>
+                    </div>
+                </div>
+
+                <div class="quiz-results" id="quizResults">
+                    <div class="results-icon" id="resultsIcon">✓</div>
+                    <div class="results-score" id="resultsScore">0/5</div>
+                    <p class="results-message" id="resultsMessage"></p>
+                    <button class="quiz-btn" onclick="restartQuiz()">Restart Quiz</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 9: Summary -->
+        <div class="page" data-page="9">
+            <div class="page-content">
+                <div class="section-tag">SUMMARY</div>
+                <h2 class="section-title">Key Takeaways</h2>
+                <p class="section-intro">Design for the inspection reality — it's a regulatory requirement.</p>
+
+                <div class="full-image">
+                    <img src="images/design-consequences.png" alt="Good vs bad design consequences">
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-number">1</div>
+                        <h4>Design for the Method</h4>
+                        <p>Know what inspection your component requires. Design to accommodate it from the start.</p>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-number">2</div>
+                        <h4>Think in Decades</h4>
+                        <p>15 extra minutes × 6 cycles × 500 welds = massive cumulative impact over 60 years.</p>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-number">3</div>
+                        <h4>Can't Inspect = Can't Verify</h4>
+                        <p>Impossible inspection = ongoing safety question. Design for certainty.</p>
+                    </div>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Requirement</th>
+                            <th>Your Responsibility</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>LC28</strong></td>
+                            <td>Enable systematic examination</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ONR SAPs</strong></td>
+                            <td>Inspection claims must be achievable</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ASME XI</strong></td>
+                            <td>10-year cycles must be possible</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="final-message">
+                    <p>"Your designs will be inspected thousands of times. Design for that reality."</p>
+                </div>
+
+                <div class="module-complete">
+                    <div class="complete-icon">✓</div>
+                    <h3>Module Complete</h3>
+                    <p>Next: Module 5.4 — ALARP and Human Factors</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-btn" id="prevBtn" onclick="goToPage(currentPage - 1)" disabled>
+            ← Back
+        </button>
+        <span class="page-counter" id="pageCounter">1 of 10</span>
+        <button class="nav-btn primary" id="nextBtn" onclick="goToPage(currentPage + 1)">
+            Next →
+        </button>
+    </nav>
+
+    <!-- Swipe Hint -->
+    <div class="swipe-hint" id="swipeHint">Swipe to navigate</div>
+
+    <script>
+        // ==================== PAGE NAVIGATION ====================
+        let currentPage = 0;
+        const totalPages = 10;
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function initPages() {
+            // Create page dots
+            const indicator = document.getElementById('pageIndicator');
+            for (let i = 0; i < totalPages; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'page-dot' + (i === 0 ? ' active' : '');
+                dot.onclick = () => goToPage(i);
+                indicator.appendChild(dot);
+            }
+            updateNavigation();
+        }
+
+        function goToPage(pageIndex) {
+            if (pageIndex < 0 || pageIndex >= totalPages) return;
+            
+            const pages = document.querySelectorAll('.page');
+            const currentPageEl = pages[currentPage];
+            const nextPageEl = pages[pageIndex];
+            
+            // Determine direction
+            const goingForward = pageIndex > currentPage;
+            
+            // Update classes for animation
+            if (goingForward) {
+                currentPageEl.classList.add('exit-left');
+                currentPageEl.classList.remove('active');
+            } else {
+                currentPageEl.classList.remove('active');
+            }
+            
+            currentPage = pageIndex;
+            
+            setTimeout(() => {
+                pages.forEach(p => p.classList.remove('exit-left'));
+                nextPageEl.classList.add('active');
+                nextPageEl.scrollTop = 0;
+            }, 50);
+            
+            updateNavigation();
+            updateActiveNavLink();
+            
+            // Trigger page-specific animations
+            if (currentPage === 0) {
+                startCounterAnimation();
+            }
+        }
+
+        function updateNavigation() {
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages - 1;
+            document.getElementById('nextBtn').textContent = currentPage === totalPages - 1 ? 'Finish' : 'Next →';
+            document.getElementById('pageCounter').textContent = `${currentPage + 1} of ${totalPages}`;
+            document.getElementById('progressText').textContent = `${currentPage + 1}/${totalPages}`;
+            
+            // Update dots
+            document.querySelectorAll('.page-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentPage);
+            });
+        }
+
+        function updateActiveNavLink() {
+            document.querySelectorAll('.nav-menu a').forEach(a => {
+                a.classList.toggle('active', parseInt(a.dataset.page) === currentPage);
+            });
+        }
+
+        // ==================== MENU ====================
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('open');
+        }
+
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const page = parseInt(this.dataset.page);
+                goToPage(page);
+                document.getElementById('navMenu').classList.remove('open');
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            const navMenu = document.getElementById('navMenu');
+            const menuToggle = document.querySelector('.menu-toggle');
+            if (!navMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+                navMenu.classList.remove('open');
+            }
+        });
+
+        // ==================== KEYBOARD & TOUCH ====================
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                goToPage(currentPage + 1);
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                goToPage(currentPage - 1);
+            } else if (e.key === 'Escape') {
+                document.getElementById('navMenu').classList.remove('open');
+            }
+        });
+
+        // Touch/Swipe support
+        document.getElementById('pagesContainer').addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        document.getElementById('pagesContainer').addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const diff = touchStartX - touchEndX;
+            const threshold = 50;
+            
+            if (diff > threshold) {
+                goToPage(currentPage + 1);
+            } else if (diff < -threshold) {
+                goToPage(currentPage - 1);
+            }
+        }
+
+        // Show swipe hint on mobile
+        function showSwipeHint() {
+            if ('ontouchstart' in window) {
+                const hint = document.getElementById('swipeHint');
+                hint.classList.add('visible');
+                setTimeout(() => hint.classList.remove('visible'), 3000);
+            }
+        }
+
+        // ==================== COUNTER ANIMATION ====================
+        let counterStarted = false;
+
+        function startCounterAnimation() {
+            if (counterStarted) return;
+            counterStarted = true;
+
+            const weldIcons = document.querySelectorAll('.weld-icon');
+            const yearMarkers = document.querySelectorAll('.year-marker');
+            const counterDisplay = document.getElementById('counterDisplay');
+            let count = 0;
+
+            function animateStep(index) {
+                if (index > 6) return;
+
+                if (index < weldIcons.length) {
+                    weldIcons[index].classList.add('active');
+                }
+                if (index < yearMarkers.length) {
+                    yearMarkers[index].classList.add('active');
+                }
+
+                count = index === 0 ? 1 : index + 1;
+                counterDisplay.textContent = count;
+
+                setTimeout(() => animateStep(index + 1), 500);
+            }
+
+            setTimeout(() => animateStep(0), 300);
+        }
+
+        // ==================== EXAM CARDS ====================
+        function toggleExamCard(card) {
+            const wasExpanded = card.classList.contains('expanded');
+            document.querySelectorAll('.exam-card').forEach(c => c.classList.remove('expanded'));
+            if (!wasExpanded) card.classList.add('expanded');
+        }
+
+        // ==================== UT SIMULATOR ====================
+        function setUTScenario(scenario) {
+            const obstruction = document.getElementById('obstruction');
+            const rightZone = document.getElementById('rightZone');
+            const feedback = document.getElementById('utFeedback');
+            
+            document.querySelectorAll('.ut-btn').forEach(btn => btn.classList.remove('active'));
+
+            if (scenario === 'good') {
+                document.getElementById('goodDesignBtn').classList.add('active');
+                obstruction.style.display = 'none';
+                rightZone.classList.remove('blocked');
+                feedback.className = 'ut-feedback success';
+                feedback.innerHTML = '<strong>✓ Full Coverage</strong> — Both sides accessible. Complete volumetric examination achievable.';
+            } else if (scenario === 'bad') {
+                document.getElementById('badDesignBtn').classList.add('active');
+                obstruction.style.display = 'block';
+                rightZone.classList.add('blocked');
+                feedback.className = 'ut-feedback error';
+                feedback.innerHTML = '<strong>✗ Blocked</strong> — One-side scan only. Will be flagged as "limited examination."';
+            } else {
+                document.getElementById('partialBtn').classList.add('active');
+                obstruction.style.display = 'block';
+                obstruction.style.width = '35px';
+                rightZone.classList.add('blocked');
+                feedback.className = 'ut-feedback warning';
+                feedback.innerHTML = '<strong>⚠ Partial</strong> — Some angles achievable. Alternative techniques needed.';
+            }
+        }
+
+        // ==================== NOZZLE INFO ====================
+        const nozzleData = {
+            0: { title: '0° Position (Top)', content: 'Easiest access. Watch for overhead obstructions limiting probe positioning.' },
+            90: { title: '90° Position (Right)', content: 'Adjacent nozzles commonly obstruct. Need 75mm minimum radial clearance.' },
+            180: { title: '180° Position (Bottom)', content: 'Challenging for manual inspection. Platform needed underneath.' },
+            270: { title: '270° Position (Left)', content: 'Often blocked by supports or platforms. If inaccessible, weld cannot be fully inspected.' }
+        };
+
+        function showNozzleInfo(position) {
+            const info = document.getElementById('nozzleInfo');
+            const data = nozzleData[position];
+            document.querySelectorAll('.nozzle-hotspot').forEach(h => h.classList.remove('active'));
+            event.target.classList.add('active');
+            info.innerHTML = `<h5>${data.title}</h5><p>${data.content}</p>`;
+        }
+
+        // ==================== STEAM GENERATOR ====================
+        let sgInterval = null;
+        let tubeIndex = 0;
+        const totalTubes = 100;
+        let defects = 0;
+        let startTime = null;
+
+        function initSGGrid() {
+            const grid = document.getElementById('sgTubeGrid');
+            grid.innerHTML = '';
+            for (let i = 0; i < totalTubes; i++) {
+                const tube = document.createElement('div');
+                tube.className = 'sg-tube';
+                tube.id = `tube-${i}`;
+                grid.appendChild(tube);
+            }
+        }
+
+        function startSGSimulation() {
+            if (sgInterval) return;
+            resetSGSimulation();
+            startTime = Date.now();
+            
+            sgInterval = setInterval(() => {
+                if (tubeIndex >= totalTubes) {
+                    clearInterval(sgInterval);
+                    sgInterval = null;
+                    return;
+                }
+
+                const tube = document.getElementById(`tube-${tubeIndex}`);
+                const prevTube = document.getElementById(`tube-${tubeIndex - 1}`);
+                
+                if (prevTube) {
+                    prevTube.classList.remove('current');
+                    if (Math.random() < 0.04) {
+                        prevTube.classList.add('defect');
+                        defects++;
+                        document.getElementById('defectCount').textContent = defects;
+                    }
+                }
+                
+                tube.classList.add('inspected', 'current');
+                tubeIndex++;
+                
+                document.getElementById('tubeCount').textContent = tubeIndex;
+                const progress = (tubeIndex / totalTubes) * 100;
+                document.getElementById('sgProgressFill').style.width = progress + '%';
+                document.getElementById('sgProgressText').textContent = Math.round(progress) + '%';
+                
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById('timeElapsed').textContent = `${Math.floor(elapsed/60)}:${(elapsed%60).toString().padStart(2,'0')}`;
+            }, 80);
+        }
+
+        function resetSGSimulation() {
+            if (sgInterval) { clearInterval(sgInterval); sgInterval = null; }
+            tubeIndex = 0; defects = 0;
+            document.getElementById('tubeCount').textContent = '0';
+            document.getElementById('defectCount').textContent = '0';
+            document.getElementById('timeElapsed').textContent = '0:00';
+            document.getElementById('sgProgressFill').style.width = '0%';
+            document.getElementById('sgProgressText').textContent = '0%';
+            document.querySelectorAll('.sg-tube').forEach(t => t.classList.remove('inspected','current','defect'));
+        }
+
+        // ==================== CHECKLIST ====================
+        function toggleChecklist(catId) {
+            const category = document.getElementById(catId);
+            const wasOpen = category.classList.contains('open');
+            document.querySelectorAll('.checklist-category').forEach(c => c.classList.remove('open'));
+            if (!wasOpen) category.classList.add('open');
+        }
+
+        function toggleCheckItem(item) {
+            item.classList.toggle('checked');
+            updateChecklistProgress();
+        }
+
+        function updateChecklistProgress() {
+            for (let i = 1; i <= 4; i++) {
+                const category = document.getElementById(`cat${i}`);
+                const items = category.querySelectorAll('.checklist-item');
+                const checked = category.querySelectorAll('.checklist-item.checked');
+                document.getElementById(`cat${i}-progress`).textContent = `${checked.length}/${items.length}`;
+                category.querySelector('.checklist-header').classList.toggle('complete', checked.length === items.length);
+            }
+        }
+
+        // ==================== QUIZ ====================
+        let quizScore = 0;
+        let answered = [false, false, false, false, false];
+
+        const quizFeedback = {
+            1: { correct: 'Correct! 40mm is insufficient. UT requires 75-100mm clearance on both sides.', incorrect: 'Not quite. 40mm clearance blocks UT access. Standard is 75-100mm.' },
+            2: { correct: 'Correct! Incomplete coverage = limited examination flag.', incorrect: 'Not quite. 75% is not acceptable — the blocked area cannot be verified.' },
+            3: { correct: 'Correct! One-time fab grinding is far cheaper than repeated outage grinding over 60 years.', incorrect: 'Not quite. Surface condition affects UT. Consider the 60-year cost.' },
+            4: { correct: 'Correct! Two 90° bends may exceed articulation limits (typically 90-120° max).', incorrect: 'Not quite. Path geometry with bends is the limiting factor.' },
+            5: { correct: 'Correct! This is a regulatory gap — safety case claims must be deliverable.', incorrect: 'Not quite. This is a fundamental gap requiring design modification.' }
+        };
+
+        function selectOption(option) {
+            const question = option.closest('.quiz-question');
+            if (question.classList.contains('answered')) return;
+            question.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+            option.classList.add('selected');
+        }
+
+        function checkAnswer(qNum, correctAnswer) {
+            if (answered[qNum - 1]) return;
+            const question = document.querySelector(`.quiz-question[data-question="${qNum}"]`);
+            const selected = question.querySelector('.option.selected');
+            if (!selected) { alert('Please select an answer'); return; }
+
+            answered[qNum - 1] = true;
+            question.classList.add('answered');
+            const isCorrect = selected.dataset.answer === correctAnswer;
+            if (isCorrect) quizScore++;
+
+            question.querySelectorAll('.option').forEach(opt => {
+                if (opt.dataset.answer === correctAnswer) opt.classList.add('correct');
+                else if (opt.classList.contains('selected') && !isCorrect) opt.classList.add('incorrect');
+            });
+
+            const feedback = document.getElementById(`feedback${qNum}`);
+            feedback.textContent = isCorrect ? quizFeedback[qNum].correct : quizFeedback[qNum].incorrect;
+            feedback.className = `question-feedback visible ${isCorrect ? 'correct' : 'incorrect'}`;
+
+            const btn = question.querySelector('.quiz-btn');
+            btn.textContent = qNum < 5 ? 'Next Question →' : 'See Results →';
+            btn.onclick = qNum < 5 ? () => {
+                question.classList.remove('active');
+                document.querySelector(`.quiz-question[data-question="${qNum + 1}"]`).classList.add('active');
+            } : showQuizResults;
+        }
+
+        function showQuizResults() {
+            document.getElementById('quizContainer').style.display = 'none';
+            const results = document.getElementById('quizResults');
+            results.classList.add('visible');
+            document.getElementById('resultsScore').textContent = `${quizScore}/5`;
+
+            const icon = document.getElementById('resultsIcon');
+            const message = document.getElementById('resultsMessage');
+
+            if (quizScore >= 4) {
+                icon.style.background = 'var(--success-green)';
+                icon.textContent = '✓';
+                message.textContent = 'Excellent! Strong understanding of inspectability requirements.';
+            } else if (quizScore >= 3) {
+                icon.style.background = 'var(--accent-amber)';
+                icon.textContent = '✓';
+                message.textContent = 'Good result. Review missed questions to strengthen understanding.';
+            } else {
+                icon.style.background = 'var(--accent-red)';
+                icon.textContent = '!';
+                message.textContent = 'Review recommended. Focus on regulatory requirements and access specifications.';
+            }
+        }
+
+        function restartQuiz() {
+            quizScore = 0;
+            answered = [false, false, false, false, false];
+            document.querySelectorAll('.quiz-question').forEach((q, i) => {
+                q.classList.remove('active', 'answered');
+                if (i === 0) q.classList.add('active');
+                q.querySelectorAll('.option').forEach(o => o.classList.remove('selected', 'correct', 'incorrect'));
+                const btn = q.querySelector('.quiz-btn');
+                btn.textContent = 'Submit Answer';
+                const answers = ['B', 'B', 'B', 'B', 'A'];
+                btn.onclick = () => checkAnswer(i + 1, answers[i]);
+            });
+            document.querySelectorAll('.question-feedback').forEach(f => f.className = 'question-feedback');
+            document.getElementById('quizResults').classList.remove('visible');
+            document.getElementById('quizContainer').style.display = 'block';
+        }
+
+        // ==================== INIT ====================
+        initPages();
+        initSGGrid();
+        showSwipeHint();
+        setTimeout(startCounterAnimation, 500);
+    </script>
+</body>
+</html>
