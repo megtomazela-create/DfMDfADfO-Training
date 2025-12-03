@@ -3606,6 +3606,203 @@
             border-radius: 50%;
         }
 
+        /* Story-based Game Intro */
+        .story-intro {
+            max-width: 700px;
+            text-align: left;
+        }
+
+        .briefing-image {
+            margin-bottom: var(--space-xl);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .briefing-image svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .story-badge {
+            display: inline-block;
+            padding: var(--space-xs) var(--space-md);
+            background: rgba(196, 30, 58, 0.2);
+            border: 1px solid #c41e3a;
+            color: #c41e3a;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--space-md);
+        }
+
+        .story-intro h2 {
+            font-size: 2rem;
+            margin-bottom: var(--space-lg);
+            text-align: left;
+        }
+
+        .story-narrative {
+            margin-bottom: var(--space-xl);
+        }
+
+        .story-lead {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-lg);
+        }
+
+        .story-email {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            margin-bottom: var(--space-xl);
+        }
+
+        .email-header {
+            padding: var(--space-md) var(--space-lg);
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 0.85rem;
+        }
+
+        .email-from, .email-subject {
+            margin-bottom: var(--space-xs);
+            color: var(--text-muted);
+        }
+
+        .email-body {
+            padding: var(--space-lg);
+        }
+
+        .email-body p {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-md);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .email-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .story-instructions {
+            background: rgba(0, 176, 240, 0.1);
+            border: 1px solid rgba(0, 176, 240, 0.3);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .story-instructions h4 {
+            color: var(--accent-blue);
+            margin-bottom: var(--space-md);
+            font-size: 1rem;
+        }
+
+        .instruction-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+
+        .instruction-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .instruction-num {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-blue);
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.8rem;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .instruction-warning {
+            color: var(--color-warning);
+            font-size: 0.9rem;
+            margin: 0;
+            padding-top: var(--space-sm);
+            border-top: 1px solid rgba(0, 176, 240, 0.2);
+        }
+
+        /* Decision tracking indicator */
+        .decisions-tracker {
+            display: flex;
+            gap: var(--space-sm);
+            padding: var(--space-md) var(--space-lg);
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .decision-dot {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-elevated);
+            border: 2px solid var(--border-subtle);
+            border-radius: 50%;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .decision-dot.decided {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+        }
+
+        .decision-dot.decided.suboptimal {
+            background: var(--color-warning);
+            border-color: var(--color-warning);
+        }
+
+        .decision-dot.decided.poor {
+            background: var(--color-danger);
+            border-color: var(--color-danger);
+        }
+
+        /* Submit button */
+        .submit-assessment {
+            display: none;
+            margin-top: var(--space-lg);
+            padding: var(--space-lg);
+            background: linear-gradient(135deg, rgba(146, 208, 80, 0.15), rgba(146, 208, 80, 0.05));
+            border: 1px solid rgba(146, 208, 80, 0.3);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .submit-assessment.visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .submit-assessment p {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-md);
+        }
+
         /* Game Area */
         .game-area {
             min-height: calc(100vh - 64px);
@@ -3949,6 +4146,23 @@
             pointer-events: none;
         }
 
+        .option-item.current-choice {
+            border-color: var(--accent-blue);
+            background: rgba(0, 176, 240, 0.1);
+        }
+
+        .current-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--accent-blue);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            margin-left: var(--space-sm);
+            text-transform: uppercase;
+        }
+
         .option-radio {
             width: 20px;
             height: 20px;
@@ -4260,6 +4474,339 @@
             gap: var(--space-md);
         }
 
+        /* ONR Assessment Response Styling */
+        .onr-response {
+            max-width: 800px;
+        }
+
+        .onr-header {
+            margin-bottom: var(--space-xl);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .onr-letterhead {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .assessment-outcome {
+            padding: var(--space-xl);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-xl);
+            text-align: center;
+        }
+
+        .assessment-outcome.approved {
+            background: linear-gradient(135deg, rgba(146, 208, 80, 0.2), rgba(146, 208, 80, 0.1));
+            border: 2px solid var(--accent-green);
+        }
+
+        .assessment-outcome.conditional {
+            background: linear-gradient(135deg, rgba(204, 85, 0, 0.2), rgba(204, 85, 0, 0.1));
+            border: 2px solid var(--accent-orange);
+        }
+
+        .assessment-outcome.rejected {
+            background: linear-gradient(135deg, rgba(233, 69, 96, 0.2), rgba(233, 69, 96, 0.1));
+            border: 2px solid var(--color-danger);
+        }
+
+        .outcome-badge {
+            display: inline-block;
+            padding: var(--space-sm) var(--space-xl);
+            border-radius: var(--radius-xl);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: var(--space-md);
+        }
+
+        .approved .outcome-badge {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .conditional .outcome-badge {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .rejected .outcome-badge {
+            background: var(--color-danger);
+            color: white;
+        }
+
+        .outcome-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+        }
+
+        .outcome-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .assessment-narrative {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        .narrative-section {
+            margin-bottom: var(--space-lg);
+        }
+
+        .narrative-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .narrative-section h5 {
+            color: var(--accent-blue);
+            font-size: 0.9rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .narrative-section p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: var(--space-sm);
+        }
+
+        .inspector-quote {
+            background: var(--bg-card);
+            border-left: 3px solid #c41e3a;
+            padding: var(--space-md) var(--space-lg);
+            margin: var(--space-md) 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        .inspector-quote::before {
+            content: '"';
+            font-size: 2rem;
+            color: #c41e3a;
+            line-height: 0;
+            vertical-align: -0.4em;
+            margin-right: var(--space-xs);
+        }
+
+        .assessment-scene {
+            margin-bottom: var(--space-xl);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            opacity: 0.9;
+        }
+
+        .assessment-scene svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .regulatory-observations {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        .regulatory-observations h4 {
+            color: #c41e3a;
+            font-size: 1rem;
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .regulatory-observations h4::before {
+            content: '⚠️';
+        }
+
+        .ro-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-md);
+        }
+
+        .ro-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .ro-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+        }
+
+        .ro-ref {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #c41e3a;
+            background: rgba(196, 30, 58, 0.1);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+        }
+
+        .ro-severity {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+        }
+
+        .ro-severity.high {
+            background: rgba(233, 69, 96, 0.2);
+            color: var(--color-danger);
+        }
+
+        .ro-severity.medium {
+            background: rgba(204, 85, 0, 0.2);
+            color: var(--accent-orange);
+        }
+
+        .ro-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .ro-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .ro-action {
+            margin-top: var(--space-md);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border-subtle);
+            font-size: 0.85rem;
+        }
+
+        .ro-action strong {
+            color: var(--accent-blue);
+        }
+
+        .no-observations {
+            text-align: center;
+            color: var(--accent-green);
+            padding: var(--space-lg);
+        }
+
+        .no-observations::before {
+            content: '✓ ';
+        }
+
+        .decision-summary-table {
+            margin-bottom: var(--space-xl);
+        }
+
+        .decision-summary-table h4 {
+            font-size: 1rem;
+            margin-bottom: var(--space-lg);
+        }
+
+        .summary-table {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .summary-row {
+            display: grid;
+            grid-template-columns: 40px 1fr 150px 100px;
+            gap: var(--space-md);
+            align-items: center;
+            padding: var(--space-md);
+            background: var(--bg-elevated);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+        }
+
+        .summary-num {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border-radius: 50%;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .summary-problem {
+            color: var(--text-primary);
+        }
+
+        .summary-choice {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .summary-status {
+            text-align: right;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .summary-status.good {
+            color: var(--accent-green);
+        }
+
+        .summary-status.partial {
+            color: var(--accent-orange);
+        }
+
+        .summary-status.poor {
+            color: var(--color-danger);
+        }
+
+        .tracker-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .current-selection {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            background: rgba(0, 176, 240, 0.1);
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+        }
+
+        .current-label {
+            color: var(--text-muted);
+        }
+
+        .current-value {
+            color: var(--accent-blue);
+            font-weight: 500;
+        }
+
+        .submit-warning {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: var(--space-md) !important;
+        }
+
         /* Responsive Game */
         @media (max-width: 768px) {
             .game-header {
@@ -4287,6 +4834,39 @@
 
             .complete-actions .btn {
                 width: 100%;
+            }
+
+            .summary-row {
+                grid-template-columns: 32px 1fr;
+                gap: var(--space-sm);
+            }
+
+            .summary-choice,
+            .summary-status {
+                grid-column: 2;
+            }
+
+            .decisions-tracker {
+                flex-wrap: wrap;
+                gap: var(--space-sm);
+            }
+
+            .tracker-hint {
+                width: 100%;
+                text-align: center;
+                margin-top: var(--space-sm);
+            }
+
+            .story-intro {
+                padding: var(--space-md);
+            }
+
+            .email-body {
+                padding: var(--space-md);
+            }
+
+            .briefing-image {
+                margin-bottom: var(--space-lg);
             }
         }
 
@@ -5211,7 +5791,7 @@
          ======================================== -->
     <header class="fixed-header">
         <div class="header-left">
-            <img src="../00_images/Logo_white.png" alt="The Nuclear House" class="header-logo">
+            <img src="images/tnh-logo-white.svg" alt="The Nuclear House" class="header-logo">
             <div class="header-divider"></div>
             <div class="header-title">Module <span>5.4</span></div>
         </div>
@@ -6835,44 +7415,116 @@
          PAGE 7: Game 1 - Maintenance Cell
          ======================================== -->
     <div class="page" id="page7" data-page="7">
-        <!-- Game Intro -->
+        <!-- Game Intro - Story Briefing -->
         <div class="game-intro" id="game1Intro">
-            <div class="game-intro-content">
-                <div class="game-badge">INTERACTIVE SCENARIO</div>
-                <h2>Fix the Room</h2>
-                <h3>Scenario 1: The Maintenance Cell</h3>
+            <div class="game-intro-content story-intro">
+                <!-- Briefing Scene Image -->
+                <div class="briefing-image">
+                    <svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="bgGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a1a2e"/>
+                                <stop offset="100%" style="stop-color:#16213e"/>
+                            </linearGradient>
+                            <linearGradient id="deskGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#4a4a5a"/>
+                                <stop offset="100%" style="stop-color:#3a3a4a"/>
+                            </linearGradient>
+                            <linearGradient id="screenGlow1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#0066cc;stop-opacity:0.3"/>
+                                <stop offset="100%" style="stop-color:#0066cc;stop-opacity:0"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="600" height="300" fill="url(#bgGrad1)"/>
+                        <rect x="400" y="20" width="180" height="120" rx="4" fill="#0a0a1a" stroke="#3a3a4a" stroke-width="2"/>
+                        <rect x="405" y="25" width="170" height="110" fill="#1a2a3a"/>
+                        <rect x="420" y="80" width="30" height="55" fill="#0a1520"/>
+                        <rect x="425" y="60" width="20" height="20" fill="#0a1520"/>
+                        <circle cx="435" cy="55" r="12" fill="none" stroke="#0a1520" stroke-width="8"/>
+                        <rect x="470" y="50" width="40" height="85" fill="#0a1520"/>
+                        <rect x="475" y="35" width="30" height="15" fill="#0a1520"/>
+                        <rect x="530" y="70" width="25" height="65" fill="#0a1520"/>
+                        <path d="M540 70 Q552 90 548 135 L532 135 Q528 90 540 70" fill="#0a1520"/>
+                        <circle cx="560" cy="45" r="12" fill="#2a3a4a"/>
+                        <rect x="20" y="180" width="560" height="100" fill="url(#deskGrad1)"/>
+                        <rect x="20" y="180" width="560" height="4" fill="#5a5a6a"/>
+                        <rect x="200" y="80" width="180" height="110" rx="4" fill="#2a2a3a" stroke="#4a4a5a" stroke-width="3"/>
+                        <rect x="210" y="90" width="160" height="90" fill="#1a3a5a"/>
+                        <rect x="210" y="90" width="160" height="90" fill="url(#screenGlow1)"/>
+                        <rect x="220" y="100" width="60" height="40" fill="none" stroke="#4a8acc" stroke-width="1"/>
+                        <line x1="220" y1="120" x2="280" y2="120" stroke="#4a8acc" stroke-width="1"/>
+                        <circle cx="250" cy="120" r="8" fill="none" stroke="#e94560" stroke-width="1"/>
+                        <text x="295" y="115" fill="#6a9acc" font-family="monospace" font-size="8">MAINTENANCE CELL</text>
+                        <text x="295" y="128" fill="#6a9acc" font-family="monospace" font-size="8">HF ASSESSMENT</text>
+                        <text x="295" y="141" fill="#e94560" font-family="monospace" font-size="7">⚠ 6 ISSUES IDENTIFIED</text>
+                        <rect x="220" y="150" width="140" height="20" fill="#c41e3a" rx="2"/>
+                        <text x="290" y="164" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="9" font-weight="bold">ONR REVIEW: 21 DAYS</text>
+                        <rect x="275" y="190" width="30" height="20" fill="#3a3a4a"/>
+                        <rect x="260" y="208" width="60" height="8" rx="2" fill="#4a4a5a"/>
+                        <g transform="rotate(-5, 80, 220)">
+                            <rect x="40" y="200" width="80" height="60" fill="#f5f5f5" stroke="#ddd" stroke-width="1"/>
+                            <rect x="45" y="205" width="70" height="4" fill="#c41e3a"/>
+                            <line x1="50" y1="220" x2="110" y2="220" stroke="#ccc" stroke-width="1"/>
+                            <line x1="50" y1="230" x2="100" y2="230" stroke="#ccc" stroke-width="1"/>
+                        </g>
+                        <g transform="rotate(3, 140, 230)">
+                            <rect x="100" y="210" width="70" height="50" fill="#ffffee" stroke="#ddd" stroke-width="1"/>
+                            <text x="135" y="230" text-anchor="middle" fill="#333" font-family="Arial" font-size="7" font-weight="bold">NS-TAST-GD-058</text>
+                            <text x="135" y="242" text-anchor="middle" fill="#666" font-family="Arial" font-size="6">Human Factors</text>
+                        </g>
+                        <ellipse cx="500" cy="220" rx="18" ry="6" fill="#2a2a3a"/>
+                        <rect x="482" y="195" width="36" height="25" rx="2" fill="#3a3a4a" stroke="#4a4a5a" stroke-width="1"/>
+                        <ellipse cx="500" cy="195" rx="18" ry="6" fill="#2a2a3a" stroke="#4a4a5a" stroke-width="1"/>
+                        <ellipse cx="500" cy="197" rx="14" ry="4" fill="#4a3020"/>
+                        <g transform="rotate(-8, 420, 240)">
+                            <rect x="400" y="220" width="60" height="40" fill="#ffffaa" stroke="#dddd88" stroke-width="1"/>
+                            <text x="430" y="235" text-anchor="middle" fill="#333" font-family="Arial" font-size="8" font-weight="bold">BUDGET</text>
+                            <text x="430" y="250" text-anchor="middle" fill="#c41e3a" font-family="Arial" font-size="10" font-weight="bold">£75,000</text>
+                        </g>
+                    </svg>
+                </div>
                 
-                <div class="game-brief">
-                    <p>You've inherited a maintenance cell design with <strong>multiple human factors problems</strong>. Your task is to review each issue and decide how to address it.</p>
+                <div class="story-badge">SCENARIO 1</div>
+                <h2>The Maintenance Cell</h2>
+                
+                <div class="story-narrative">
+                    <p class="story-lead">You're the <strong>Design Authority Engineer</strong> for a maintenance cell modification project. This morning, you received this email:</p>
                     
-                    <div class="budget-intro">
-                        <div class="budget-icon">💷</div>
-                        <div class="budget-info">
-                            <div class="budget-label">Your Budget</div>
-                            <div class="budget-amount">£75,000</div>
+                    <div class="story-email">
+                        <div class="email-header">
+                            <div class="email-from"><strong>From:</strong> Project Manager</div>
+                            <div class="email-subject"><strong>Subject:</strong> URGENT - ONR Permissioning Assessment Scheduled</div>
+                        </div>
+                        <div class="email-body">
+                            <p>The ONR Human Factors Inspector has scheduled a <strong>design assessment in 3 weeks</strong>. They'll be reviewing our ALARP demonstration for the maintenance cell modifications.</p>
+                            <p>I've allocated <strong>£75,000</strong> for HF improvements. The previous designer identified 6 issues but never resolved them. You need to decide how to address each one.</p>
+                            <p>Remember: ONR will challenge any decision where you've chosen a cheaper option over a better engineering solution. <em>"Reasonably practicable"</em> is not the same as <em>"reasonably affordable"</em>.</p>
+                            <p>Make your decisions count. The inspector won't accept "we ran out of budget" as ALARP justification.</p>
                         </div>
                     </div>
                     
-                    <p>Some fixes are cheap, others expensive. Some are critical, others nice-to-have. You <strong>cannot fix everything</strong> — choose wisely and justify your decisions.</p>
-                    
-                    <div class="game-rules">
-                        <div class="rule-item">
-                            <span class="rule-num">1</span>
-                            <span>Click on highlighted problem areas</span>
+                    <div class="story-instructions">
+                        <h4>Your Task</h4>
+                        <div class="instruction-list">
+                            <div class="instruction-item">
+                                <span class="instruction-num">1</span>
+                                <span>Review all 6 human factors problems</span>
+                            </div>
+                            <div class="instruction-item">
+                                <span class="instruction-num">2</span>
+                                <span>Select a fix for each — you can change your mind before submitting</span>
+                            </div>
+                            <div class="instruction-item">
+                                <span class="instruction-num">3</span>
+                                <span>Submit your decisions to ONR for assessment</span>
+                            </div>
                         </div>
-                        <div class="rule-item">
-                            <span class="rule-num">2</span>
-                            <span>Review the issue and select a fix option</span>
-                        </div>
-                        <div class="rule-item">
-                            <span class="rule-num">3</span>
-                            <span>Balance cost vs. safety benefit (ALARP thinking)</span>
-                        </div>
+                        <p class="instruction-warning">⚠️ The total cost of optimal solutions exceeds your budget. You'll need to make trade-offs — but be prepared to defend them.</p>
                     </div>
                 </div>
                 
                 <button class="btn btn-primary btn-lg" onclick="startGame1()">
-                    Start Scenario <span class="btn-icon">→</span>
+                    Begin Assessment <span class="btn-icon">→</span>
                 </button>
             </div>
         </div>
@@ -6891,14 +7543,22 @@
                         <span class="stat-value" id="game1Budget">£75,000</span>
                     </div>
                     <div class="stat-item stat-progress">
-                        <span class="stat-label">Problems</span>
+                        <span class="stat-label">Decisions</span>
                         <span class="stat-value"><span id="game1Solved">0</span>/6</span>
                     </div>
-                    <div class="stat-item stat-score">
-                        <span class="stat-label">Score</span>
-                        <span class="stat-value" id="game1Score">0</span>
-                    </div>
                 </div>
+            </div>
+
+            <!-- Decision Tracker -->
+            <div class="decisions-tracker" id="decisionsTracker1">
+                <div class="decision-dot" id="decDot1" data-problem="1" onclick="showProblem(1)">1</div>
+                <div class="decision-dot" id="decDot2" data-problem="2" onclick="showProblem(2)">2</div>
+                <div class="decision-dot" id="decDot3" data-problem="3" onclick="showProblem(3)">3</div>
+                <div class="decision-dot" id="decDot4" data-problem="4" onclick="showProblem(4)">4</div>
+                <div class="decision-dot" id="decDot5" data-problem="5" onclick="showProblem(5)">5</div>
+                <div class="decision-dot" id="decDot6" data-problem="6" onclick="showProblem(6)">6</div>
+                <div style="flex: 1;"></div>
+                <div class="tracker-hint" id="trackerHint1">Click problems to review and decide</div>
             </div>
 
             <!-- Room Visualisation -->
@@ -6951,6 +7611,15 @@
                     <span class="instruction-icon">👆</span>
                     Click on the numbered hotspots to review each human factors problem
                 </div>
+
+                <!-- Submit Assessment Area -->
+                <div class="submit-assessment" id="submitArea1">
+                    <p>✅ All 6 decisions made. Ready to submit your ALARP demonstration to ONR?</p>
+                    <p class="submit-warning">⚠️ You can still change any decision by clicking its number above.</p>
+                    <button class="btn btn-primary btn-lg" onclick="submitToONR1()">
+                        Submit to ONR Assessment <span class="btn-icon">→</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Problem Modal -->
@@ -6977,72 +7646,97 @@
                         <div class="budget-remaining">
                             Budget remaining: <span id="modalBudget">£75,000</span>
                         </div>
+                        <div class="current-selection hidden" id="currentSelection">
+                            <span class="current-label">Current choice:</span>
+                            <span class="current-value" id="currentSelectionText">None</span>
+                        </div>
                         <button class="btn btn-primary" id="confirmBtn" onclick="confirmSelection()" disabled>
-                            Confirm Selection
+                            Select This Option
                         </button>
                     </div>
                 </div>
             </div>
-
-            <!-- Feedback Toast -->
-            <div class="feedback-toast hidden" id="feedbackToast">
-                <div class="toast-icon" id="toastIcon">✓</div>
-                <div class="toast-content">
-                    <div class="toast-title" id="toastTitle">Decision Recorded</div>
-                    <div class="toast-message" id="toastMessage">Feedback message...</div>
-                </div>
-            </div>
         </div>
 
-        <!-- Game Complete -->
+        <!-- ONR Assessment Response -->
         <div class="game-complete hidden" id="game1Complete">
-            <div class="complete-content">
-                <div class="complete-header">
-                    <div class="complete-icon">📋</div>
-                    <h3>Scenario Complete</h3>
-                    <p>Maintenance Cell Assessment</p>
-                </div>
-                
-                <div class="complete-stats">
-                    <div class="final-stat">
-                        <div class="final-stat-value" id="finalScore1">0</div>
-                        <div class="final-stat-label">Score (out of 600)</div>
-                    </div>
-                    <div class="final-stat">
-                        <div class="final-stat-value" id="finalBudget1">£0</div>
-                        <div class="final-stat-label">Budget Used</div>
-                    </div>
-                    <div class="final-stat">
-                        <div class="final-stat-value" id="finalRemaining1">£0</div>
-                        <div class="final-stat-label">Remaining</div>
-                    </div>
+            <div class="complete-content onr-response">
+                <!-- ONR Header -->
+                <div class="onr-header">
+                    <svg viewBox="0 0 600 80" xmlns="http://www.w3.org/2000/svg" class="onr-letterhead">
+                        <rect width="600" height="80" fill="#1a1a2e"/>
+                        <rect x="0" y="0" width="600" height="50" fill="#c41e3a"/>
+                        <circle cx="40" cy="25" r="18" fill="#ffffff"/>
+                        <text x="40" y="30" text-anchor="middle" fill="#c41e3a" font-family="Arial Black, sans-serif" font-size="12" font-weight="bold">ONR</text>
+                        <text x="75" y="22" fill="#ffffff" font-family="Arial, sans-serif" font-size="10" font-weight="bold">OFFICE FOR NUCLEAR REGULATION</text>
+                        <text x="75" y="36" fill="#ffffff" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Protecting society by securing safe nuclear operations</text>
+                        <text x="300" y="68" text-anchor="middle" fill="#888888" font-family="Courier, monospace" font-size="9">DESIGN ASSESSMENT RESPONSE | REF: ONR-HF-2024-MC01</text>
+                    </svg>
                 </div>
 
-                <!-- ALARP Documentation -->
-                <div class="alarp-documentation">
-                    <div class="alarp-doc-header">
-                        <span class="alarp-doc-icon">📄</span>
-                        <span>ALARP Documentation Preview</span>
-                    </div>
-                    <p class="alarp-doc-intro">This is how your decisions would appear in formal safety case documentation:</p>
-                    <div class="alarp-doc-list" id="alarpDocList1">
+                <!-- Assessment Outcome Banner -->
+                <div class="assessment-outcome" id="assessmentOutcome1">
+                    <!-- Populated by JS based on results -->
+                </div>
+
+                <!-- Story Narrative -->
+                <div class="assessment-narrative" id="assessmentNarrative1">
+                    <!-- Populated by JS - story-based feedback -->
+                </div>
+
+                <!-- Assessment Meeting Image -->
+                <div class="assessment-scene">
+                    <svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="roomGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a1a2e"/>
+                                <stop offset="100%" style="stop-color:#0f0f1a"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="600" height="200" fill="url(#roomGrad1)"/>
+                        <rect x="200" y="10" width="200" height="50" fill="#c41e3a" opacity="0.9"/>
+                        <text x="300" y="35" text-anchor="middle" fill="#ffffff" font-family="Arial Black" font-size="11">OFFICE FOR NUCLEAR REGULATION</text>
+                        <text x="300" y="50" text-anchor="middle" fill="#ffffff" font-family="Arial" font-size="8" opacity="0.9">Design Assessment Panel</text>
+                        <ellipse cx="300" cy="140" rx="180" ry="40" fill="#3a3a4a" stroke="#4a4a5a" stroke-width="2"/>
+                        <rect x="240" y="120" width="40" height="25" fill="#f5f5f5" transform="rotate(-10, 260, 132)"/>
+                        <rect x="280" y="118" width="40" height="25" fill="#ffffee" transform="rotate(5, 300, 130)"/>
+                        <rect x="320" y="120" width="40" height="25" fill="#f5f5f5" transform="rotate(-3, 340, 132)"/>
+                        <!-- Inspector -->
+                        <g transform="translate(100, 70)">
+                            <rect x="0" y="35" width="45" height="55" rx="4" fill="#2a2a3a"/>
+                            <circle cx="22" cy="22" r="16" fill="#d4a574"/>
+                            <ellipse cx="22" cy="10" rx="14" ry="9" fill="#4a4a5a"/>
+                            <rect x="12" y="18" width="9" height="6" rx="1" fill="none" stroke="#3a3a4a" stroke-width="1"/>
+                            <rect x="24" y="18" width="9" height="6" rx="1" fill="none" stroke="#3a3a4a" stroke-width="1"/>
+                        </g>
+                        <!-- Engineer -->
+                        <g transform="translate(430, 75)">
+                            <rect x="0" y="30" width="40" height="50" rx="4" fill="#2a4a6a"/>
+                            <circle cx="20" cy="18" r="14" fill="#c4956a"/>
+                            <ellipse cx="20" cy="8" rx="12" ry="8" fill="#3a2a1a"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- Regulatory Observations -->
+                <div class="regulatory-observations" id="regObservations1">
+                    <h4>Regulatory Observations</h4>
+                    <div class="ro-list" id="roList1">
                         <!-- Populated by JS -->
                     </div>
                 </div>
 
-                <div class="alarp-assessment" id="alarpAssessment1">
-                    <div class="assessment-header">
-                        <span class="assessment-icon">⚖️</span>
-                        <span>ALARP Assessment</span>
-                    </div>
-                    <div class="assessment-content" id="assessmentContent1">
+                <!-- Decision Summary -->
+                <div class="decision-summary-table">
+                    <h4>Decision Summary</h4>
+                    <div class="summary-table" id="summaryTable1">
                         <!-- Populated by JS -->
                     </div>
                 </div>
 
                 <div class="complete-actions">
                     <button class="btn btn-ghost" onclick="resetGame1()">
-                        <span class="btn-icon">↺</span> Try Again
+                        <span class="btn-icon">↺</span> Revise & Resubmit
                     </button>
                     <button class="btn btn-primary" onclick="goToPage(8)">
                         Continue to Scenario 2 <span class="btn-icon">→</span>
@@ -7056,34 +7750,97 @@
          PAGE 8: Game 2 - Control Panel
          ======================================== -->
     <div class="page" id="page8" data-page="8">
-        <!-- Game Intro -->
+        <!-- Game Intro - Story Briefing -->
         <div class="game-intro" id="game2Intro">
-            <div class="game-intro-content">
-                <div class="game-badge">INTERACTIVE SCENARIO</div>
-                <h2>Fix the Room</h2>
-                <h3>Scenario 2: The Local Control Panel</h3>
+            <div class="game-intro-content story-intro">
+                <!-- Briefing Scene Image -->
+                <div class="briefing-image">
+                    <svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a1a2e"/>
+                                <stop offset="100%" style="stop-color:#16213e"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="600" height="300" fill="url(#bgGrad2)"/>
+                        <!-- Control panel schematic on screen -->
+                        <rect x="180" y="60" width="200" height="150" rx="4" fill="#2a2a3a" stroke="#4a4a5a" stroke-width="3"/>
+                        <rect x="190" y="70" width="180" height="130" fill="#1a3a5a"/>
+                        <!-- Panel schematic -->
+                        <rect x="210" y="85" width="140" height="100" fill="#2a2a3a" stroke="#4a4a5a" stroke-width="1"/>
+                        <circle cx="240" cy="105" r="8" fill="#cc2020"/>
+                        <text x="260" y="108" fill="#6a9acc" font-family="monospace" font-size="6">E-STOP</text>
+                        <rect x="220" y="120" width="110" height="15" fill="#1a1a2a"/>
+                        <circle cx="235" cy="127" r="4" fill="#22aa44"/>
+                        <circle cx="255" cy="127" r="4" fill="#dd3333"/>
+                        <circle cx="275" cy="127" r="4" fill="#ffaa00"/>
+                        <circle cx="295" cy="127" r="4" fill="#dd3333"/>
+                        <rect x="220" y="145" width="110" height="30" fill="#1a1a2a"/>
+                        <text x="280" y="195" text-anchor="middle" fill="#e94560" font-family="monospace" font-size="7">⚠ 6 HF ISSUES</text>
+                        <!-- Monitor stand -->
+                        <rect x="265" y="210" width="30" height="15" fill="#3a3a4a"/>
+                        <rect x="250" y="223" width="60" height="6" rx="2" fill="#4a4a5a"/>
+                        <!-- Documents -->
+                        <g transform="rotate(-8, 80, 220)">
+                            <rect x="40" y="200" width="80" height="60" fill="#f5f5f5" stroke="#ddd" stroke-width="1"/>
+                            <rect x="45" y="205" width="70" height="4" fill="#c41e3a"/>
+                            <text x="80" y="230" text-anchor="middle" fill="#333" font-family="Arial" font-size="6">LOCAL PANEL</text>
+                            <text x="80" y="240" text-anchor="middle" fill="#333" font-family="Arial" font-size="6">HF REVIEW</text>
+                        </g>
+                        <!-- Budget note -->
+                        <g transform="rotate(5, 500, 230)">
+                            <rect x="480" y="210" width="60" height="40" fill="#ffffaa" stroke="#dddd88" stroke-width="1"/>
+                            <text x="510" y="225" text-anchor="middle" fill="#333" font-family="Arial" font-size="7" font-weight="bold">BUDGET</text>
+                            <text x="510" y="240" text-anchor="middle" fill="#c41e3a" font-family="Arial" font-size="9" font-weight="bold">£50,000</text>
+                        </g>
+                        <!-- Plant silhouette -->
+                        <rect x="420" y="40" width="30" height="100" fill="#0a1520"/>
+                        <rect x="460" y="60" width="40" height="80" fill="#0a1520"/>
+                        <circle cx="520" cy="50" r="15" fill="#2a3a4a"/>
+                    </svg>
+                </div>
                 
-                <div class="game-brief">
-                    <p>A local control panel needs HF improvements before installation. This panel controls a <strong>safety-related system</strong>, so your decisions will be documented and scrutinised.</p>
+                <div class="story-badge">SCENARIO 2</div>
+                <h2>The Local Control Panel</h2>
+                
+                <div class="story-narrative">
+                    <p class="story-lead">Following your maintenance cell assessment, another project needs your attention:</p>
                     
-                    <div class="budget-intro">
-                        <div class="budget-icon">💷</div>
-                        <div class="budget-info">
-                            <div class="budget-label">Your Budget</div>
-                            <div class="budget-amount">£50,000</div>
+                    <div class="story-email">
+                        <div class="email-header">
+                            <div class="email-from"><strong>From:</strong> Senior Human Factors Engineer</div>
+                            <div class="email-subject"><strong>Subject:</strong> Control Panel HF Review - Safety-Related System</div>
+                        </div>
+                        <div class="email-body">
+                            <p>We need your input on the local control panel for the new safety-related system. The vendor's design has some HF concerns that must be addressed before we accept delivery.</p>
+                            <p>Budget is tighter on this one: <strong>£50,000</strong>. But this is a safety-related system, so every decision will be scrutinised during the permissioning process.</p>
+                            <p>The ONR inspector has already flagged this panel for focused review. They'll be looking closely at how we've applied Human Factors Engineering guidance from <strong>NS-TAST-GD-058</strong>.</p>
+                            <p>Don't let commercial pressure compromise safety. The project manager wants it cheap, but we'll be the ones defending it to the regulator.</p>
                         </div>
                     </div>
                     
-                    <p>Every decision you make (or don't make) will need to be justified in the safety case. This scenario includes <strong>ALARP documentation</strong> showing how your choices would be recorded.</p>
-                    
-                    <div class="game-highlight">
-                        <span class="highlight-icon">📋</span>
-                        <span>New: See how your decisions translate to ALARP documentation</span>
+                    <div class="story-instructions">
+                        <h4>Your Task</h4>
+                        <div class="instruction-list">
+                            <div class="instruction-item">
+                                <span class="instruction-num">1</span>
+                                <span>Review all 6 human factors issues on the panel design</span>
+                            </div>
+                            <div class="instruction-item">
+                                <span class="instruction-num">2</span>
+                                <span>Select modifications for each — you can revise before submitting</span>
+                            </div>
+                            <div class="instruction-item">
+                                <span class="instruction-num">3</span>
+                                <span>Submit your modifications for ONR assessment</span>
+                            </div>
+                        </div>
+                        <p class="instruction-warning">⚠️ Safety-related systems attract greater regulatory attention. Weak ALARP arguments won't be accepted.</p>
                     </div>
                 </div>
                 
                 <button class="btn btn-primary btn-lg" onclick="startGame2()">
-                    Start Scenario <span class="btn-icon">→</span>
+                    Begin Assessment <span class="btn-icon">→</span>
                 </button>
             </div>
         </div>
@@ -7102,14 +7859,22 @@
                         <span class="stat-value" id="game2Budget">£50,000</span>
                     </div>
                     <div class="stat-item stat-progress">
-                        <span class="stat-label">Problems</span>
+                        <span class="stat-label">Decisions</span>
                         <span class="stat-value"><span id="game2Solved">0</span>/6</span>
                     </div>
-                    <div class="stat-item stat-score">
-                        <span class="stat-label">Score</span>
-                        <span class="stat-value" id="game2Score">0</span>
-                    </div>
                 </div>
+            </div>
+
+            <!-- Decision Tracker -->
+            <div class="decisions-tracker" id="decisionsTracker2">
+                <div class="decision-dot" id="decDot2_1" data-problem="1" onclick="showProblem2(1)">1</div>
+                <div class="decision-dot" id="decDot2_2" data-problem="2" onclick="showProblem2(2)">2</div>
+                <div class="decision-dot" id="decDot2_3" data-problem="3" onclick="showProblem2(3)">3</div>
+                <div class="decision-dot" id="decDot2_4" data-problem="4" onclick="showProblem2(4)">4</div>
+                <div class="decision-dot" id="decDot2_5" data-problem="5" onclick="showProblem2(5)">5</div>
+                <div class="decision-dot" id="decDot2_6" data-problem="6" onclick="showProblem2(6)">6</div>
+                <div style="flex: 1;"></div>
+                <div class="tracker-hint" id="trackerHint2">Click problems to review and decide</div>
             </div>
 
             <!-- Panel Visualisation -->
@@ -7266,6 +8031,15 @@
                     <span class="instruction-icon">👆</span>
                     Click on the numbered hotspots to review each human factors problem
                 </div>
+
+                <!-- Submit Assessment Area -->
+                <div class="submit-assessment" id="submitArea2">
+                    <p>✅ All 6 decisions made. Ready to submit your ALARP demonstration to ONR?</p>
+                    <p class="submit-warning">⚠️ You can still change any decision by clicking its number above.</p>
+                    <button class="btn btn-primary btn-lg" onclick="submitToONR2()">
+                        Submit to ONR Assessment <span class="btn-icon">→</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Problem Modal (reused structure) -->
@@ -7292,72 +8066,97 @@
                         <div class="budget-remaining">
                             Budget remaining: <span id="modal2Budget">£50,000</span>
                         </div>
+                        <div class="current-selection hidden" id="currentSelection2">
+                            <span class="current-label">Current choice:</span>
+                            <span class="current-value" id="currentSelectionText2">None</span>
+                        </div>
                         <button class="btn btn-primary" id="confirm2Btn" onclick="confirmSelection2()" disabled>
-                            Confirm Selection
+                            Select This Option
                         </button>
                     </div>
                 </div>
             </div>
-
-            <!-- Feedback Toast -->
-            <div class="feedback-toast hidden" id="feedbackToast2">
-                <div class="toast-icon" id="toast2Icon">✓</div>
-                <div class="toast-content">
-                    <div class="toast-title" id="toast2Title">Decision Recorded</div>
-                    <div class="toast-message" id="toast2Message">Feedback message...</div>
-                </div>
-            </div>
         </div>
 
-        <!-- Game Complete with ALARP Documentation -->
+        <!-- ONR Assessment Response -->
         <div class="game-complete hidden" id="game2Complete">
-            <div class="complete-content">
-                <div class="complete-header">
-                    <div class="complete-icon">📋</div>
-                    <h3>Scenario Complete</h3>
-                    <p>Control Panel Assessment</p>
-                </div>
-                
-                <div class="complete-stats">
-                    <div class="final-stat">
-                        <div class="final-stat-value" id="finalScore2">0</div>
-                        <div class="final-stat-label">Score (out of 600)</div>
-                    </div>
-                    <div class="final-stat">
-                        <div class="final-stat-value" id="finalBudget2">£0</div>
-                        <div class="final-stat-label">Budget Used</div>
-                    </div>
-                    <div class="final-stat">
-                        <div class="final-stat-value" id="finalRemaining2">£0</div>
-                        <div class="final-stat-label">Remaining</div>
-                    </div>
+            <div class="complete-content onr-response">
+                <!-- ONR Header -->
+                <div class="onr-header">
+                    <svg viewBox="0 0 600 80" xmlns="http://www.w3.org/2000/svg" class="onr-letterhead">
+                        <rect width="600" height="80" fill="#1a1a2e"/>
+                        <rect x="0" y="0" width="600" height="50" fill="#c41e3a"/>
+                        <circle cx="40" cy="25" r="18" fill="#ffffff"/>
+                        <text x="40" y="30" text-anchor="middle" fill="#c41e3a" font-family="Arial Black, sans-serif" font-size="12" font-weight="bold">ONR</text>
+                        <text x="75" y="22" fill="#ffffff" font-family="Arial, sans-serif" font-size="10" font-weight="bold">OFFICE FOR NUCLEAR REGULATION</text>
+                        <text x="75" y="36" fill="#ffffff" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Protecting society by securing safe nuclear operations</text>
+                        <text x="300" y="68" text-anchor="middle" fill="#888888" font-family="Courier, monospace" font-size="9">DESIGN ASSESSMENT RESPONSE | REF: ONR-HF-2024-CP02</text>
+                    </svg>
                 </div>
 
-                <!-- ALARP Documentation Preview -->
-                <div class="alarp-documentation" id="alarpDocs">
-                    <div class="alarp-doc-header">
-                        <span class="doc-icon">📄</span>
-                        <h4>ALARP Assessment Documentation</h4>
-                        <span class="doc-note">How your decisions would appear in the safety case</span>
-                    </div>
-                    <div class="alarp-doc-list" id="alarpDocList">
+                <!-- Assessment Outcome Banner -->
+                <div class="assessment-outcome" id="assessmentOutcome2">
+                    <!-- Populated by JS based on results -->
+                </div>
+
+                <!-- Story Narrative -->
+                <div class="assessment-narrative" id="assessmentNarrative2">
+                    <!-- Populated by JS - story-based feedback -->
+                </div>
+
+                <!-- Assessment Meeting Image -->
+                <div class="assessment-scene">
+                    <svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="roomGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a1a2e"/>
+                                <stop offset="100%" style="stop-color:#0f0f1a"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="600" height="200" fill="url(#roomGrad2)"/>
+                        <rect x="200" y="10" width="200" height="50" fill="#c41e3a" opacity="0.9"/>
+                        <text x="300" y="35" text-anchor="middle" fill="#ffffff" font-family="Arial Black" font-size="11">OFFICE FOR NUCLEAR REGULATION</text>
+                        <text x="300" y="50" text-anchor="middle" fill="#ffffff" font-family="Arial" font-size="8" opacity="0.9">Design Assessment Panel</text>
+                        <ellipse cx="300" cy="140" rx="180" ry="40" fill="#3a3a4a" stroke="#4a4a5a" stroke-width="2"/>
+                        <rect x="240" y="120" width="40" height="25" fill="#f5f5f5" transform="rotate(-10, 260, 132)"/>
+                        <rect x="280" y="118" width="40" height="25" fill="#ffffee" transform="rotate(5, 300, 130)"/>
+                        <rect x="320" y="120" width="40" height="25" fill="#f5f5f5" transform="rotate(-3, 340, 132)"/>
+                        <!-- Inspector -->
+                        <g transform="translate(100, 70)">
+                            <rect x="0" y="35" width="45" height="55" rx="4" fill="#2a2a3a"/>
+                            <circle cx="22" cy="22" r="16" fill="#d4a574"/>
+                            <ellipse cx="22" cy="10" rx="14" ry="9" fill="#4a4a5a"/>
+                            <rect x="12" y="18" width="9" height="6" rx="1" fill="none" stroke="#3a3a4a" stroke-width="1"/>
+                            <rect x="24" y="18" width="9" height="6" rx="1" fill="none" stroke="#3a3a4a" stroke-width="1"/>
+                        </g>
+                        <!-- Engineer -->
+                        <g transform="translate(430, 75)">
+                            <rect x="0" y="30" width="40" height="50" rx="4" fill="#2a4a6a"/>
+                            <circle cx="20" cy="18" r="14" fill="#c4956a"/>
+                            <ellipse cx="20" cy="8" rx="12" ry="8" fill="#3a2a1a"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- Regulatory Observations -->
+                <div class="regulatory-observations" id="regObservations2">
+                    <h4>Regulatory Observations</h4>
+                    <div class="ro-list" id="roList2">
                         <!-- Populated by JS -->
                     </div>
                 </div>
 
-                <div class="alarp-assessment" id="alarpAssessment2">
-                    <div class="assessment-header">
-                        <span class="assessment-icon">⚖️</span>
-                        <span>Overall ALARP Assessment</span>
-                    </div>
-                    <div class="assessment-content" id="assessmentContent2">
+                <!-- Decision Summary -->
+                <div class="decision-summary-table">
+                    <h4>Decision Summary</h4>
+                    <div class="summary-table" id="summaryTable2">
                         <!-- Populated by JS -->
                     </div>
                 </div>
 
                 <div class="complete-actions">
                     <button class="btn btn-ghost" onclick="resetGame2()">
-                        <span class="btn-icon">↺</span> Try Again
+                        <span class="btn-icon">↺</span> Revise & Resubmit
                     </button>
                     <button class="btn btn-primary" onclick="goToPage(9)">
                         Continue to Checklist <span class="btn-icon">→</span>
@@ -8127,9 +8926,7 @@
         let game1State = {
             budget: 75000,
             startBudget: 75000,
-            score: 0,
-            solved: 0,
-            decisions: [],
+            decisions: {}, // keyed by problem ID
             currentProblem: null,
             selectedOption: null
         };
@@ -8144,18 +8941,20 @@
             game1State = {
                 budget: 75000,
                 startBudget: 75000,
-                score: 0,
-                solved: 0,
-                decisions: [],
+                decisions: {},
                 currentProblem: null,
                 selectedOption: null
             };
             updateGame1Stats();
+            updateDecisionTracker1();
             
             // Reset all hotspots
-            document.querySelectorAll('.game-hotspot').forEach(h => {
+            document.querySelectorAll('#game1Area .game-hotspot').forEach(h => {
                 h.classList.remove('solved');
             });
+            
+            // Hide submit button
+            document.getElementById('submitArea1').classList.remove('visible');
         }
 
         function resetGame1() {
@@ -8166,17 +8965,60 @@
         }
 
         function updateGame1Stats() {
+            // Calculate current budget based on decisions
+            let spent = 0;
+            Object.values(game1State.decisions).forEach(dec => {
+                spent += dec.cost;
+            });
+            game1State.budget = game1State.startBudget - spent;
+            
             document.getElementById('game1Budget').textContent = `£${game1State.budget.toLocaleString()}`;
-            document.getElementById('game1Solved').textContent = game1State.solved;
-            document.getElementById('game1Score').textContent = game1State.score;
+            document.getElementById('game1Solved').textContent = Object.keys(game1State.decisions).length;
 
             // Update budget colour
-            const budgetStat = document.querySelector('.stat-budget');
+            const budgetStat = document.querySelector('#game1Area .stat-budget');
             budgetStat.classList.remove('low', 'critical');
             if (game1State.budget < 20000) {
                 budgetStat.classList.add('critical');
             } else if (game1State.budget < 40000) {
                 budgetStat.classList.add('low');
+            }
+        }
+
+        function updateDecisionTracker1() {
+            const decisionCount = Object.keys(game1State.decisions).length;
+            
+            // Update decision dots
+            for (let i = 1; i <= 6; i++) {
+                const dot = document.getElementById(`decDot${i}`);
+                dot.classList.remove('decided', 'suboptimal', 'poor');
+                
+                if (game1State.decisions[i]) {
+                    dot.classList.add('decided');
+                    const score = game1State.decisions[i].score;
+                    if (score < 50) {
+                        dot.classList.add('poor');
+                    } else if (score < 80) {
+                        dot.classList.add('suboptimal');
+                    }
+                }
+            }
+            
+            // Update tracker hint
+            const hint = document.getElementById('trackerHint1');
+            if (decisionCount === 0) {
+                hint.textContent = 'Click problems to review and decide';
+            } else if (decisionCount < 6) {
+                hint.textContent = `${6 - decisionCount} decision${6 - decisionCount > 1 ? 's' : ''} remaining`;
+            } else {
+                hint.textContent = 'All decisions made — ready to submit';
+            }
+            
+            // Show/hide submit button
+            if (decisionCount >= 6) {
+                document.getElementById('submitArea1').classList.add('visible');
+            } else {
+                document.getElementById('submitArea1').classList.remove('visible');
             }
         }
 
@@ -8186,22 +9028,42 @@
 
             game1State.currentProblem = problem;
             game1State.selectedOption = null;
+            
+            // Check if there's an existing decision
+            const existingDecision = game1State.decisions[problemId];
 
             // Populate modal
             document.getElementById('modalProblemNum').textContent = problem.id;
             document.getElementById('modalTitle').textContent = problem.title;
             document.getElementById('modalDescription').textContent = problem.description;
             document.getElementById('modalRegulation').textContent = problem.regulation;
-            document.getElementById('modalBudget').textContent = `£${game1State.budget.toLocaleString()}`;
+            
+            // Calculate available budget (add back cost if changing existing decision)
+            let availableBudget = game1State.budget;
+            if (existingDecision) {
+                availableBudget += existingDecision.cost;
+            }
+            document.getElementById('modalBudget').textContent = `£${availableBudget.toLocaleString()}`;
+            
+            // Show current selection if exists
+            const currentSelectionDiv = document.getElementById('currentSelection');
+            const currentSelectionText = document.getElementById('currentSelectionText');
+            if (existingDecision) {
+                currentSelectionDiv.classList.remove('hidden');
+                currentSelectionText.textContent = existingDecision.optionText;
+            } else {
+                currentSelectionDiv.classList.add('hidden');
+            }
 
             // Build options
             const optionsContainer = document.getElementById('modalOptions');
             optionsContainer.innerHTML = '';
 
             problem.options.forEach(opt => {
-                const canAfford = game1State.budget >= opt.cost;
+                const canAfford = availableBudget >= opt.cost;
+                const isCurrentChoice = existingDecision && existingDecision.optionId === opt.id;
                 const optionEl = document.createElement('div');
-                optionEl.className = `option-item ${!canAfford ? 'disabled' : ''}`;
+                optionEl.className = `option-item ${!canAfford ? 'disabled' : ''} ${isCurrentChoice ? 'current-choice' : ''}`;
                 optionEl.dataset.optionId = opt.id;
                 optionEl.onclick = canAfford ? () => selectOption(opt.id) : null;
 
@@ -8210,6 +9072,7 @@
                     <div class="option-content">
                         <span class="option-letter">${opt.id.toUpperCase()})</span>
                         <span class="option-text">${opt.text}</span>
+                        ${isCurrentChoice ? '<span class="current-badge">Current</span>' : ''}
                     </div>
                     <div class="option-cost">${opt.cost === 0 ? 'Free' : '£' + opt.cost.toLocaleString()}</div>
                 `;
@@ -8217,8 +9080,10 @@
                 optionsContainer.appendChild(optionEl);
             });
 
-            // Reset confirm button
-            document.getElementById('confirmBtn').disabled = true;
+            // Update confirm button text
+            const confirmBtn = document.getElementById('confirmBtn');
+            confirmBtn.textContent = existingDecision ? 'Change Selection' : 'Select This Option';
+            confirmBtn.disabled = true;
 
             // Show modal
             document.getElementById('problemModal').classList.remove('hidden');
@@ -8228,7 +9093,7 @@
             game1State.selectedOption = optionId;
 
             // Update UI
-            document.querySelectorAll('.option-item').forEach(el => {
+            document.querySelectorAll('#problemModal .option-item').forEach(el => {
                 el.classList.remove('selected');
                 if (el.dataset.optionId === optionId) {
                     el.classList.add('selected');
@@ -8251,11 +9116,8 @@
             const problem = game1State.currentProblem;
             const option = problem.options.find(o => o.id === game1State.selectedOption);
 
-            // Apply decision
-            game1State.budget -= option.cost;
-            game1State.score += option.score;
-            game1State.solved++;
-            game1State.decisions.push({
+            // Store decision (overwrites any existing)
+            game1State.decisions[problem.id] = {
                 problemId: problem.id,
                 problemTitle: problem.title,
                 optionId: option.id,
@@ -8264,158 +9126,139 @@
                 score: option.score,
                 feedback: option.feedback,
                 regulation: problem.regulation
-            });
-
-            // Mark hotspot as solved
-            document.getElementById(`hotspot${problem.id}`).classList.add('solved');
+            };
 
             // Close modal
             closeModal();
 
-            // Update stats
+            // Update stats and tracker
             updateGame1Stats();
-
-            // Show feedback toast
-            showFeedback(option);
-
-            // Check if game complete
-            if (game1State.solved >= 6) {
-                setTimeout(() => {
-                    completeGame1();
-                }, 2500);
-            }
+            updateDecisionTracker1();
         }
 
-        function showFeedback(option) {
-            const toast = document.getElementById('feedbackToast');
-            const toastIcon = document.getElementById('toastIcon');
-            const toastTitle = document.getElementById('toastTitle');
-            const toastMessage = document.getElementById('toastMessage');
-
-            // Determine feedback type
-            toast.classList.remove('warning', 'concern');
-            if (option.score >= 80) {
-                toastIcon.textContent = '✓';
-                toastTitle.textContent = 'Good Decision';
-            } else if (option.score >= 50) {
-                toast.classList.add('warning');
-                toastIcon.textContent = '⚠';
-                toastTitle.textContent = 'Acceptable Compromise';
-            } else {
-                toast.classList.add('concern');
-                toastIcon.textContent = '⚠';
-                toastTitle.textContent = 'ALARP Concern';
-            }
-
-            toastMessage.textContent = option.feedback;
-
-            // Show toast
-            toast.classList.remove('hidden');
-
-            // Hide after delay
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 4000);
-        }
-
-        function completeGame1() {
+        function submitToONR1() {
+            // Hide game area, show results
             document.getElementById('game1Area').classList.add('hidden');
             document.getElementById('game1Complete').classList.remove('hidden');
-
-            // Populate final stats
-            document.getElementById('finalScore1').textContent = game1State.score;
-            document.getElementById('finalBudget1').textContent = `£${(game1State.startBudget - game1State.budget).toLocaleString()}`;
-            document.getElementById('finalRemaining1').textContent = `£${game1State.budget.toLocaleString()}`;
-
-            // Build ALARP Documentation with optimal solution feedback
-            const alarpDocList = document.getElementById('alarpDocList1');
-            alarpDocList.innerHTML = '';
-
-            game1State.decisions.forEach(dec => {
-                // Find the optimal solution for this problem
-                const problem = game1Problems.find(p => p.id === dec.problemId);
-                const optimalOption = problem.options.reduce((best, opt) => opt.score > best.score ? opt : best, problem.options[0]);
-                
-                const statusClass = dec.score >= 80 ? 'implemented' : (dec.score >= 50 ? 'partial' : 'requires-justification');
-                const statusText = dec.score >= 80 ? '✓ Implemented' : (dec.score >= 50 ? '⚠ Partial Implementation' : '⚠ Requires Justification');
-                
-                const docItem = document.createElement('div');
-                docItem.className = 'alarp-doc-item';
-                
-                // Build justification text
-                let justificationHtml = '';
-                if (dec.score >= 80) {
-                    justificationHtml = `
-                        <div class="doc-justification">
-                            <div class="doc-justification-label">ALARP Justification</div>
-                            <div class="doc-justification-text">${dec.optionText} addresses the identified HF issue. Cost (£${dec.cost.toLocaleString()}) is not grossly disproportionate to safety benefit.</div>
-                        </div>
-                    `;
-                } else if (dec.score >= 50) {
-                    justificationHtml = `
-                        <div class="doc-justification">
-                            <div class="doc-justification-label">ALARP Justification</div>
-                            <div class="doc-justification-text">${dec.feedback.split('.')[0]}. Further risk reduction options were considered but deemed disproportionate to residual risk.</div>
-                        </div>
-                        <div class="doc-optimal">
-                            <div class="doc-optimal-label">💡 Optimal Solution</div>
-                            <div class="doc-optimal-text"><strong>${optimalOption.text}</strong> (£${optimalOption.cost.toLocaleString()}) — ${optimalOption.feedback.split('.')[0]}.</div>
-                        </div>
-                    `;
-                } else {
-                    justificationHtml = `
-                        <div class="doc-justification">
-                            <div class="doc-justification-label">ALARP Justification</div>
-                            <div class="doc-justification-text doc-justification-required">[REQUIRED] You must justify why engineering solutions were not reasonably practicable. Administrative controls alone may not satisfy ALARP requirements.</div>
-                        </div>
-                        <div class="doc-optimal">
-                            <div class="doc-optimal-label">💡 Optimal Solution</div>
-                            <div class="doc-optimal-text"><strong>${optimalOption.text}</strong> (£${optimalOption.cost.toLocaleString()}) — ${optimalOption.feedback.split('.')[0]}.</div>
-                        </div>
-                    `;
-                }
-                
-                docItem.innerHTML = `
-                    <div class="doc-item-header">
-                        <span class="doc-item-title">Decision ${dec.problemId}: ${dec.problemTitle}</span>
-                        <span class="doc-item-status ${statusClass}">${statusText}</span>
-                    </div>
-                    <div class="doc-item-body">
-                        <div class="doc-row">
-                            <span class="doc-label">Your Choice:</span>
-                            <span class="doc-value">${dec.optionText}</span>
-                        </div>
-                        <div class="doc-row">
-                            <span class="doc-label">Cost:</span>
-                            <span class="doc-value">£${dec.cost.toLocaleString()}</span>
-                        </div>
-                        <div class="doc-row">
-                            <span class="doc-label">Regulation:</span>
-                            <span class="doc-value">${dec.regulation}</span>
-                        </div>
-                        ${justificationHtml}
+            
+            // Calculate totals
+            const decisions = Object.values(game1State.decisions);
+            const totalScore = decisions.reduce((sum, d) => sum + d.score, 0);
+            const totalSpent = decisions.reduce((sum, d) => sum + d.cost, 0);
+            const concerns = decisions.filter(d => d.score < 50).length;
+            const partials = decisions.filter(d => d.score >= 50 && d.score < 80).length;
+            const excellent = decisions.filter(d => d.score >= 80).length;
+            
+            // Determine outcome
+            let outcome, outcomeTitle, outcomeSubtitle;
+            if (concerns === 0 && partials <= 1) {
+                outcome = 'approved';
+                outcomeTitle = 'ALARP DEMONSTRATION ACCEPTED';
+                outcomeSubtitle = 'No Regulatory Observations raised. Proceed to next design stage.';
+            } else if (concerns <= 1 && partials <= 3) {
+                outcome = 'conditional';
+                outcomeTitle = 'CONDITIONAL ACCEPTANCE';
+                outcomeSubtitle = `${concerns + partials} Regulatory Observation${concerns + partials > 1 ? 's' : ''} raised. Address before proceeding.`;
+            } else {
+                outcome = 'rejected';
+                outcomeTitle = 'ALARP DEMONSTRATION NOT ACCEPTED';
+                outcomeSubtitle = 'Significant concerns identified. Revised submission required.';
+            }
+            
+            // Populate outcome banner
+            const outcomeDiv = document.getElementById('assessmentOutcome1');
+            outcomeDiv.className = `assessment-outcome ${outcome}`;
+            outcomeDiv.innerHTML = `
+                <div class="outcome-badge">${outcomeTitle}</div>
+                <div class="outcome-title">${outcome === 'approved' ? 'Well Done' : outcome === 'conditional' ? 'Revisions Required' : 'Assessment Failed'}</div>
+                <div class="outcome-subtitle">${outcomeSubtitle}</div>
+            `;
+            
+            // Build narrative
+            const narrativeDiv = document.getElementById('assessmentNarrative1');
+            let narrativeHTML = '';
+            
+            if (outcome === 'approved') {
+                narrativeHTML = `
+                    <div class="narrative-section">
+                        <h5>Assessment Panel Feedback</h5>
+                        <p>The ONR Human Factors Inspector reviewed your ALARP demonstration for the maintenance cell modifications.</p>
+                        <div class="inspector-quote">Your decisions show a proper understanding of the ALARP principle. You've prioritised engineering solutions over administrative controls, and your safety case documentation would be straightforward to defend.</div>
+                        <p>Budget: £${totalSpent.toLocaleString()} of £75,000 spent. Remaining budget returned to project contingency.</p>
                     </div>
                 `;
-                
-                alarpDocList.appendChild(docItem);
-            });
-
-            // Generate ALARP assessment
-            const concerns = game1State.decisions.filter(d => d.score < 50).length;
-            const compromises = game1State.decisions.filter(d => d.score >= 50 && d.score < 80).length;
-            const excellent = game1State.decisions.filter(d => d.score >= 80).length;
-
-            const assessment = document.getElementById('assessmentContent1');
-            if (concerns === 0 && compromises <= 1) {
-                assessment.innerHTML = `<p><strong>Strong ALARP position.</strong> You prioritised safety-focused solutions and made sound engineering decisions. This approach will likely satisfy regulatory expectations with minimal challenge.</p>
-                <p>Documentation should be straightforward — the decisions align with Relevant Good Practice.</p>`;
-            } else if (concerns <= 2) {
-                assessment.innerHTML = `<p><strong>Mixed ALARP position.</strong> Some decisions may require additional justification during assessment. You have ${concerns} decision(s) that could be challenged as not ALARP.</p>
-                <p>Consider whether budget constraints truly made better options "grossly disproportionate" — remember, affordability is not an ALARP factor.</p>`;
+            } else if (outcome === 'conditional') {
+                narrativeHTML = `
+                    <div class="narrative-section">
+                        <h5>Assessment Panel Feedback</h5>
+                        <p>The ONR Human Factors Inspector has reviewed your submission. While some decisions are acceptable, others require further justification.</p>
+                        <div class="inspector-quote">I'm concerned about ${concerns > 0 ? 'decisions where administrative controls are substituting for engineering solutions' : 'some compromises that may not fully address the identified risks'}. Remember — "reasonably practicable" is not the same as "reasonably affordable". Budget constraints alone don't justify accepting higher risk.</div>
+                        <p>You must address the Regulatory Observations below before design approval can be granted.</p>
+                    </div>
+                `;
             } else {
-                assessment.innerHTML = `<p><strong>Weak ALARP position.</strong> Multiple decisions rely on administrative controls or accept known non-compliances. This approach will likely generate assessment findings.</p>
-                <p>The safety case will need to demonstrate why engineering solutions were not reasonably practicable. "Training the operator" is not an acceptable substitute for good design.</p>`;
+                narrativeHTML = `
+                    <div class="narrative-section">
+                        <h5>Assessment Panel Feedback</h5>
+                        <p>The ONR Human Factors Inspector has serious concerns about your ALARP demonstration.</p>
+                        <div class="inspector-quote">This submission does not demonstrate that risks are As Low As Reasonably Practicable. Multiple decisions rely on procedural controls when engineering solutions are clearly available. The safety case as presented would not be acceptable.</div>
+                        <p>A revised submission addressing all Regulatory Observations is required before this design can proceed.</p>
+                    </div>
+                `;
             }
+            narrativeDiv.innerHTML = narrativeHTML;
+            
+            // Build Regulatory Observations
+            const roList = document.getElementById('roList1');
+            const problemsWithIssues = decisions.filter(d => d.score < 80);
+            
+            if (problemsWithIssues.length === 0) {
+                roList.innerHTML = '<div class="no-observations">No Regulatory Observations raised</div>';
+            } else {
+                roList.innerHTML = problemsWithIssues.map((dec, idx) => {
+                    const problem = game1Problems.find(p => p.id === dec.problemId);
+                    const optimalOption = problem.options.reduce((best, opt) => opt.score > best.score ? opt : best, problem.options[0]);
+                    const severity = dec.score < 50 ? 'high' : 'medium';
+                    
+                    return `
+                        <div class="ro-item">
+                            <div class="ro-header">
+                                <span class="ro-ref">RO-MC-${String(idx + 1).padStart(3, '0')}</span>
+                                <span class="ro-severity ${severity}">${severity === 'high' ? 'Category A' : 'Category B'}</span>
+                            </div>
+                            <div class="ro-title">${dec.problemTitle}</div>
+                            <div class="ro-description">
+                                ${dec.score < 50 
+                                    ? `The selected approach ("${dec.optionText}") does not adequately address the identified human factors issue. ${dec.feedback}`
+                                    : `The selected approach ("${dec.optionText}") partially addresses the issue but does not fully reduce risk ALARP. ${dec.feedback}`
+                                }
+                            </div>
+                            <div class="ro-action">
+                                <strong>Required Action:</strong> ${dec.score < 50 
+                                    ? `Implement engineering solution or provide detailed ALARP justification demonstrating why "${optimalOption.text}" is grossly disproportionate to the safety benefit.`
+                                    : `Document justification for why "${optimalOption.text}" was not selected, or revise design.`
+                                }
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            // Build decision summary table
+            const summaryTable = document.getElementById('summaryTable1');
+            summaryTable.innerHTML = decisions.sort((a, b) => a.problemId - b.problemId).map(dec => {
+                const statusClass = dec.score >= 80 ? 'good' : (dec.score >= 50 ? 'partial' : 'poor');
+                const statusText = dec.score >= 80 ? '✓ Accepted' : (dec.score >= 50 ? '⚠ RO Raised' : '⚠ RO Raised');
+                
+                return `
+                    <div class="summary-row">
+                        <div class="summary-num">${dec.problemId}</div>
+                        <div class="summary-problem">${dec.problemTitle}</div>
+                        <div class="summary-choice">${dec.optionText.substring(0, 40)}${dec.optionText.length > 40 ? '...' : ''}</div>
+                        <div class="summary-status ${statusClass}">${statusText}</div>
+                    </div>
+                `;
+            }).join('');
         }
 
         // ==================== GAME 2: CONTROL PANEL ====================
@@ -8503,9 +9346,7 @@
         let game2State = {
             budget: 50000,
             startBudget: 50000,
-            score: 0,
-            solved: 0,
-            decisions: [],
+            decisions: {},
             currentProblem: null,
             selectedOption: null
         };
@@ -8520,18 +9361,21 @@
             game2State = {
                 budget: 50000,
                 startBudget: 50000,
-                score: 0,
-                solved: 0,
-                decisions: [],
+                decisions: {},
                 currentProblem: null,
                 selectedOption: null
             };
             updateGame2Stats();
+            updateDecisionTracker2();
             
-            // Reset all hotspots
-            document.querySelectorAll('#game2Room .game-hotspot').forEach(h => {
-                h.classList.remove('solved');
+            // Reset all SVG hotspots
+            document.querySelectorAll('#game2Room .svg-hotspot-circle').forEach(circle => {
+                circle.style.fill = '#00b0f0';
+                circle.style.opacity = '0.8';
             });
+            
+            // Hide submit button
+            document.getElementById('submitArea2').classList.remove('visible');
         }
 
         function resetGame2() {
@@ -8542,9 +9386,15 @@
         }
 
         function updateGame2Stats() {
+            // Calculate current budget based on decisions
+            let spent = 0;
+            Object.values(game2State.decisions).forEach(dec => {
+                spent += dec.cost;
+            });
+            game2State.budget = game2State.startBudget - spent;
+            
             document.getElementById('game2Budget').textContent = `£${game2State.budget.toLocaleString()}`;
-            document.getElementById('game2Solved').textContent = game2State.solved;
-            document.getElementById('game2Score').textContent = game2State.score;
+            document.getElementById('game2Solved').textContent = Object.keys(game2State.decisions).length;
 
             // Update budget colour
             const budgetStat = document.querySelector('#game2Area .stat-budget');
@@ -8558,28 +9408,85 @@
             }
         }
 
+        function updateDecisionTracker2() {
+            const decisionCount = Object.keys(game2State.decisions).length;
+            
+            // Update decision dots
+            for (let i = 1; i <= 6; i++) {
+                const dot = document.getElementById(`decDot2_${i}`);
+                dot.classList.remove('decided', 'suboptimal', 'poor');
+                
+                if (game2State.decisions[i]) {
+                    dot.classList.add('decided');
+                    const score = game2State.decisions[i].score;
+                    if (score < 50) {
+                        dot.classList.add('poor');
+                    } else if (score < 80) {
+                        dot.classList.add('suboptimal');
+                    }
+                }
+            }
+            
+            // Update tracker hint
+            const hint = document.getElementById('trackerHint2');
+            if (decisionCount === 0) {
+                hint.textContent = 'Click problems to review and decide';
+            } else if (decisionCount < 6) {
+                hint.textContent = `${6 - decisionCount} decision${6 - decisionCount > 1 ? 's' : ''} remaining`;
+            } else {
+                hint.textContent = 'All decisions made — ready to submit';
+            }
+            
+            // Show/hide submit button
+            if (decisionCount >= 6) {
+                document.getElementById('submitArea2').classList.add('visible');
+            } else {
+                document.getElementById('submitArea2').classList.remove('visible');
+            }
+        }
+
         function showProblem2(problemId) {
             const problem = game2Problems.find(p => p.id === problemId);
             if (!problem) return;
 
             game2State.currentProblem = problem;
             game2State.selectedOption = null;
+            
+            // Check if there's an existing decision
+            const existingDecision = game2State.decisions[problemId];
 
             // Populate modal
             document.getElementById('modal2ProblemNum').textContent = problem.id;
             document.getElementById('modal2Title').textContent = problem.title;
             document.getElementById('modal2Description').textContent = problem.description;
             document.getElementById('modal2Regulation').textContent = problem.regulation;
-            document.getElementById('modal2Budget').textContent = `£${game2State.budget.toLocaleString()}`;
+            
+            // Calculate available budget (add back cost if changing existing decision)
+            let availableBudget = game2State.budget;
+            if (existingDecision) {
+                availableBudget += existingDecision.cost;
+            }
+            document.getElementById('modal2Budget').textContent = `£${availableBudget.toLocaleString()}`;
+            
+            // Show current selection if exists
+            const currentSelectionDiv = document.getElementById('currentSelection2');
+            const currentSelectionText = document.getElementById('currentSelectionText2');
+            if (existingDecision) {
+                currentSelectionDiv.classList.remove('hidden');
+                currentSelectionText.textContent = existingDecision.optionText;
+            } else {
+                currentSelectionDiv.classList.add('hidden');
+            }
 
             // Build options
             const optionsContainer = document.getElementById('modal2Options');
             optionsContainer.innerHTML = '';
 
             problem.options.forEach(opt => {
-                const canAfford = game2State.budget >= opt.cost;
+                const canAfford = availableBudget >= opt.cost;
+                const isCurrentChoice = existingDecision && existingDecision.optionId === opt.id;
                 const optionEl = document.createElement('div');
-                optionEl.className = `option-item ${!canAfford ? 'disabled' : ''}`;
+                optionEl.className = `option-item ${!canAfford ? 'disabled' : ''} ${isCurrentChoice ? 'current-choice' : ''}`;
                 optionEl.dataset.optionId = opt.id;
                 optionEl.onclick = canAfford ? () => selectOption2(opt.id) : null;
 
@@ -8588,6 +9495,7 @@
                     <div class="option-content">
                         <span class="option-letter">${opt.id.toUpperCase()})</span>
                         <span class="option-text">${opt.text}</span>
+                        ${isCurrentChoice ? '<span class="current-badge">Current</span>' : ''}
                     </div>
                     <div class="option-cost">${opt.cost === 0 ? 'Free' : '£' + opt.cost.toLocaleString()}</div>
                 `;
@@ -8595,8 +9503,10 @@
                 optionsContainer.appendChild(optionEl);
             });
 
-            // Reset confirm button
-            document.getElementById('confirm2Btn').disabled = true;
+            // Update confirm button text
+            const confirmBtn = document.getElementById('confirm2Btn');
+            confirmBtn.textContent = existingDecision ? 'Change Selection' : 'Select This Option';
+            confirmBtn.disabled = true;
 
             // Show modal
             document.getElementById('problemModal2').classList.remove('hidden');
@@ -8629,11 +9539,8 @@
             const problem = game2State.currentProblem;
             const option = problem.options.find(o => o.id === game2State.selectedOption);
 
-            // Apply decision
-            game2State.budget -= option.cost;
-            game2State.score += option.score;
-            game2State.solved++;
-            game2State.decisions.push({
+            // Store decision (overwrites any existing)
+            game2State.decisions[problem.id] = {
                 problemId: problem.id,
                 problemTitle: problem.title,
                 optionId: option.id,
@@ -8642,161 +9549,139 @@
                 score: option.score,
                 feedback: option.feedback,
                 regulation: problem.regulation
-            });
-
-            // Mark hotspot as solved (SVG circle)
-            const hotspotCircle = document.querySelector(`#game2Room circle[onclick="showProblem2(${problem.id})"]`);
-            if (hotspotCircle) {
-                hotspotCircle.classList.add('solved');
-                hotspotCircle.style.fill = '#92d050';
-                hotspotCircle.style.opacity = '0.5';
-            }
+            };
 
             // Close modal
             closeModal2();
 
-            // Update stats
+            // Update stats and tracker
             updateGame2Stats();
-
-            // Show feedback toast
-            showFeedback2(option);
-
-            // Check if game complete
-            if (game2State.solved >= 6) {
-                setTimeout(() => {
-                    completeGame2();
-                }, 2500);
-            }
+            updateDecisionTracker2();
         }
 
-        function showFeedback2(option) {
-            const toast = document.getElementById('feedbackToast2');
-            const toastIcon = document.getElementById('toast2Icon');
-            const toastTitle = document.getElementById('toast2Title');
-            const toastMessage = document.getElementById('toast2Message');
-
-            // Determine feedback type
-            toast.classList.remove('warning', 'concern');
-            if (option.score >= 80) {
-                toastIcon.textContent = '✓';
-                toastTitle.textContent = 'Good Decision';
-            } else if (option.score >= 50) {
-                toast.classList.add('warning');
-                toastIcon.textContent = '⚠';
-                toastTitle.textContent = 'Acceptable Compromise';
-            } else {
-                toast.classList.add('concern');
-                toastIcon.textContent = '⚠';
-                toastTitle.textContent = 'ALARP Concern';
-            }
-
-            toastMessage.textContent = option.feedback;
-
-            // Show toast
-            toast.classList.remove('hidden');
-
-            // Hide after delay
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 4000);
-        }
-
-        function completeGame2() {
+        function submitToONR2() {
+            // Hide game area, show results
             document.getElementById('game2Area').classList.add('hidden');
             document.getElementById('game2Complete').classList.remove('hidden');
-
-            // Populate final stats
-            document.getElementById('finalScore2').textContent = game2State.score;
-            document.getElementById('finalBudget2').textContent = `£${(game2State.startBudget - game2State.budget).toLocaleString()}`;
-            document.getElementById('finalRemaining2').textContent = `£${game2State.budget.toLocaleString()}`;
-
-            // Build ALARP Documentation
-            const alarpDocList = document.getElementById('alarpDocList');
-            alarpDocList.innerHTML = '';
-
-            game2State.decisions.forEach(dec => {
-                // Find the optimal solution for this problem
-                const problem = game2Problems.find(p => p.id === dec.problemId);
-                const optimalOption = problem.options.reduce((best, opt) => opt.score > best.score ? opt : best, problem.options[0]);
-                
-                const statusClass = dec.score >= 80 ? 'implemented' : (dec.score >= 50 ? 'partial' : 'requires-justification');
-                const statusText = dec.score >= 80 ? '✓ Implemented' : (dec.score >= 50 ? '⚠ Partial Implementation' : '⚠ Requires Justification');
-                
-                const docItem = document.createElement('div');
-                docItem.className = 'alarp-doc-item';
-                
-                let justificationHtml = '';
-                if (dec.score >= 80) {
-                    justificationHtml = `
-                        <div class="doc-justification">
-                            <div class="doc-justification-label">ALARP Justification</div>
-                            <div class="doc-justification-text">${dec.optionText} addresses the identified HF issue. Cost (£${dec.cost.toLocaleString()}) is not grossly disproportionate to safety benefit.</div>
-                        </div>
-                    `;
-                } else if (dec.score >= 50) {
-                    justificationHtml = `
-                        <div class="doc-justification">
-                            <div class="doc-justification-label">ALARP Justification</div>
-                            <div class="doc-justification-text">${dec.feedback.split('.')[0]}. Further risk reduction options were considered but deemed disproportionate to residual risk.</div>
-                        </div>
-                        <div class="doc-optimal">
-                            <div class="doc-optimal-label">💡 Optimal Solution</div>
-                            <div class="doc-optimal-text"><strong>${optimalOption.text}</strong> (£${optimalOption.cost.toLocaleString()}) — ${optimalOption.feedback.split('.')[0]}.</div>
-                        </div>
-                    `;
-                } else {
-                    justificationHtml = `
-                        <div class="doc-justification">
-                            <div class="doc-justification-label">ALARP Justification</div>
-                            <div class="doc-justification-text doc-justification-required">[REQUIRED] You must justify why engineering solutions were not reasonably practicable. Administrative controls alone may not satisfy ALARP requirements.</div>
-                        </div>
-                        <div class="doc-optimal">
-                            <div class="doc-optimal-label">💡 Optimal Solution</div>
-                            <div class="doc-optimal-text"><strong>${optimalOption.text}</strong> (£${optimalOption.cost.toLocaleString()}) — ${optimalOption.feedback.split('.')[0]}.</div>
-                        </div>
-                    `;
-                }
-                
-                docItem.innerHTML = `
-                    <div class="doc-item-header">
-                        <span class="doc-item-title">Decision ${dec.problemId}: ${dec.problemTitle}</span>
-                        <span class="doc-item-status ${statusClass}">${statusText}</span>
-                    </div>
-                    <div class="doc-item-body">
-                        <div class="doc-row">
-                            <span class="doc-label">Your Choice:</span>
-                            <span class="doc-value">${dec.optionText}</span>
-                        </div>
-                        <div class="doc-row">
-                            <span class="doc-label">Cost:</span>
-                            <span class="doc-value">£${dec.cost.toLocaleString()}</span>
-                        </div>
-                        <div class="doc-row">
-                            <span class="doc-label">Regulation:</span>
-                            <span class="doc-value">${dec.regulation}</span>
-                        </div>
-                        ${justificationHtml}
+            
+            // Calculate totals
+            const decisions = Object.values(game2State.decisions);
+            const totalScore = decisions.reduce((sum, d) => sum + d.score, 0);
+            const totalSpent = decisions.reduce((sum, d) => sum + d.cost, 0);
+            const concerns = decisions.filter(d => d.score < 50).length;
+            const partials = decisions.filter(d => d.score >= 50 && d.score < 80).length;
+            const excellent = decisions.filter(d => d.score >= 80).length;
+            
+            // Determine outcome (stricter for safety-related system)
+            let outcome, outcomeTitle, outcomeSubtitle;
+            if (concerns === 0 && partials === 0) {
+                outcome = 'approved';
+                outcomeTitle = 'ALARP DEMONSTRATION ACCEPTED';
+                outcomeSubtitle = 'No Regulatory Observations raised. Design approved for safety-related application.';
+            } else if (concerns === 0 && partials <= 2) {
+                outcome = 'conditional';
+                outcomeTitle = 'CONDITIONAL ACCEPTANCE';
+                outcomeSubtitle = `${partials} Regulatory Observation${partials > 1 ? 's' : ''} raised. Address before proceeding.`;
+            } else {
+                outcome = 'rejected';
+                outcomeTitle = 'ALARP DEMONSTRATION NOT ACCEPTED';
+                outcomeSubtitle = 'Safety-related system requires higher standards. Revised submission required.';
+            }
+            
+            // Populate outcome banner
+            const outcomeDiv = document.getElementById('assessmentOutcome2');
+            outcomeDiv.className = `assessment-outcome ${outcome}`;
+            outcomeDiv.innerHTML = `
+                <div class="outcome-badge">${outcomeTitle}</div>
+                <div class="outcome-title">${outcome === 'approved' ? 'Excellent Work' : outcome === 'conditional' ? 'Revisions Required' : 'Assessment Failed'}</div>
+                <div class="outcome-subtitle">${outcomeSubtitle}</div>
+            `;
+            
+            // Build narrative
+            const narrativeDiv = document.getElementById('assessmentNarrative2');
+            let narrativeHTML = '';
+            
+            if (outcome === 'approved') {
+                narrativeHTML = `
+                    <div class="narrative-section">
+                        <h5>Assessment Panel Feedback</h5>
+                        <p>The ONR Human Factors Inspector has completed their focused review of the safety-related control panel.</p>
+                        <div class="inspector-quote">This is exactly what we expect to see for a safety-related system. Every decision demonstrates proper application of ALARP principles, with engineering solutions taking priority over administrative controls. Your documentation will be straightforward to defend.</div>
+                        <p>Budget: £${totalSpent.toLocaleString()} of £50,000 spent. The design is approved for installation.</p>
                     </div>
                 `;
-                
-                alarpDocList.appendChild(docItem);
-            });
-
-            // Generate ALARP assessment
-            const concerns = game2State.decisions.filter(d => d.score < 50).length;
-            const compromises = game2State.decisions.filter(d => d.score >= 50 && d.score < 80).length;
-
-            const assessment = document.getElementById('assessmentContent2');
-            if (concerns === 0 && compromises <= 1) {
-                assessment.innerHTML = `<p><strong>Well-documented ALARP position.</strong> Your decisions demonstrate systematic consideration of HF improvements with appropriate implementation. The safety case documentation above shows clear alignment with Relevant Good Practice.</p>
-                <p>This approach should satisfy GDA/PSR assessment with minimal challenges.</p>`;
-            } else if (concerns <= 2) {
-                assessment.innerHTML = `<p><strong>Documentation gaps identified.</strong> You have ${concerns} decision(s) requiring formal ALARP justification. The documentation above highlights where additional evidence is needed.</p>
-                <p>Assessors will question why better options were not implemented. "Budget constraints" alone is insufficient — you must demonstrate gross disproportion.</p>`;
+            } else if (outcome === 'conditional') {
+                narrativeHTML = `
+                    <div class="narrative-section">
+                        <h5>Assessment Panel Feedback</h5>
+                        <p>The ONR Human Factors Inspector notes that while most decisions are acceptable, this is a safety-related system and standards are higher.</p>
+                        <div class="inspector-quote">For safety-related equipment, we expect to see best-practice solutions wherever practicable. Some of your compromises might be acceptable for non-safety systems, but here I need to see additional justification. The costs involved aren't grossly disproportionate to the safety benefit.</div>
+                        <p>The Regulatory Observations below must be addressed before installation can proceed.</p>
+                    </div>
+                `;
             } else {
-                assessment.innerHTML = `<p><strong>Significant documentation requirements.</strong> Multiple decisions rely on administrative controls without adequate justification. The ALARP documentation shows several "[REQUIRED]" entries that must be addressed.</p>
-                <p>This design is likely to generate assessment findings. Consider whether the approach can be defended when challenged on why engineering solutions were rejected.</p>`;
+                narrativeHTML = `
+                    <div class="narrative-section">
+                        <h5>Assessment Panel Feedback</h5>
+                        <p>The ONR Human Factors Inspector has serious concerns about the approach taken for this safety-related system.</p>
+                        <div class="inspector-quote">This panel controls a safety-related system. The decisions presented here do not meet the standard we require. Administrative controls are not an acceptable substitute for engineering solutions on safety-related equipment. The gross disproportion argument doesn't hold when the costs are this modest compared to the overall project.</div>
+                        <p>A substantially revised submission is required. Consider the project manager's pressure against regulatory expectations.</p>
+                    </div>
+                `;
             }
+            narrativeDiv.innerHTML = narrativeHTML;
+            
+            // Build Regulatory Observations
+            const roList = document.getElementById('roList2');
+            const problemsWithIssues = decisions.filter(d => d.score < 80);
+            
+            if (problemsWithIssues.length === 0) {
+                roList.innerHTML = '<div class="no-observations">No Regulatory Observations raised</div>';
+            } else {
+                roList.innerHTML = problemsWithIssues.map((dec, idx) => {
+                    const problem = game2Problems.find(p => p.id === dec.problemId);
+                    const optimalOption = problem.options.reduce((best, opt) => opt.score > best.score ? opt : best, problem.options[0]);
+                    const severity = dec.score < 50 ? 'high' : 'medium';
+                    
+                    return `
+                        <div class="ro-item">
+                            <div class="ro-header">
+                                <span class="ro-ref">RO-CP-${String(idx + 1).padStart(3, '0')}</span>
+                                <span class="ro-severity ${severity}">${severity === 'high' ? 'Category A' : 'Category B'}</span>
+                            </div>
+                            <div class="ro-title">${dec.problemTitle}</div>
+                            <div class="ro-description">
+                                ${dec.score < 50 
+                                    ? `The selected approach ("${dec.optionText}") does not adequately address the identified human factors issue for a safety-related system. ${dec.feedback}`
+                                    : `The selected approach ("${dec.optionText}") partially addresses the issue. For safety-related equipment, stronger justification is required. ${dec.feedback}`
+                                }
+                            </div>
+                            <div class="ro-action">
+                                <strong>Required Action:</strong> ${dec.score < 50 
+                                    ? `Implement "${optimalOption.text}" or provide detailed safety case demonstrating why this is grossly disproportionate for a safety-related system.`
+                                    : `Provide ALARP justification or implement "${optimalOption.text}".`
+                                }
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            // Build decision summary table
+            const summaryTable = document.getElementById('summaryTable2');
+            summaryTable.innerHTML = decisions.sort((a, b) => a.problemId - b.problemId).map(dec => {
+                const statusClass = dec.score >= 80 ? 'good' : (dec.score >= 50 ? 'partial' : 'poor');
+                const statusText = dec.score >= 80 ? '✓ Accepted' : (dec.score >= 50 ? '⚠ RO Raised' : '⚠ RO Raised');
+                
+                return `
+                    <div class="summary-row">
+                        <div class="summary-num">${dec.problemId}</div>
+                        <div class="summary-problem">${dec.problemTitle}</div>
+                        <div class="summary-choice">${dec.optionText.substring(0, 40)}${dec.optionText.length > 40 ? '...' : ''}</div>
+                        <div class="summary-status ${statusClass}">${statusText}</div>
+                    </div>
+                `;
+            }).join('');
         }
 
         // ==================== AUDIO PLAYER ====================
