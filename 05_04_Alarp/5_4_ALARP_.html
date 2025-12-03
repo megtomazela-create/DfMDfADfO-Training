@@ -3961,11 +3961,15 @@
 
         .game-hotspot.solved {
             background: var(--accent-green);
-            pointer-events: none;
+            border-color: white;
+        }
+
+        .game-hotspot.solved:hover {
+            box-shadow: 0 0 20px rgba(146, 208, 80, 0.6);
         }
 
         .game-hotspot.solved .hotspot-pulse {
-            display: none;
+            border-color: var(--accent-green);
         }
 
         .hotspot-pulse {
@@ -3992,6 +3996,23 @@
             font-size: 1rem;
             font-weight: 700;
             color: white;
+        }
+
+        /* Mobile hotspot sizing */
+        @media (max-width: 768px) {
+            .game-hotspot {
+                width: 32px;
+                height: 32px;
+                border-width: 2px;
+            }
+            
+            .hotspot-pulse {
+                inset: -6px;
+            }
+            
+            .hotspot-number {
+                font-size: 0.8rem;
+            }
         }
 
         .room-instruction {
@@ -7549,18 +7570,6 @@
                 </div>
             </div>
 
-            <!-- Decision Tracker -->
-            <div class="decisions-tracker" id="decisionsTracker1">
-                <div class="decision-dot" id="decDot1" data-problem="1" onclick="showProblem(1)">1</div>
-                <div class="decision-dot" id="decDot2" data-problem="2" onclick="showProblem(2)">2</div>
-                <div class="decision-dot" id="decDot3" data-problem="3" onclick="showProblem(3)">3</div>
-                <div class="decision-dot" id="decDot4" data-problem="4" onclick="showProblem(4)">4</div>
-                <div class="decision-dot" id="decDot5" data-problem="5" onclick="showProblem(5)">5</div>
-                <div class="decision-dot" id="decDot6" data-problem="6" onclick="showProblem(6)">6</div>
-                <div style="flex: 1;"></div>
-                <div class="tracker-hint" id="trackerHint1">Click problems to review and decide</div>
-            </div>
-
             <!-- Room Visualisation -->
             <div class="game-room" id="game1Room">
                 <div class="room-container">
@@ -7645,10 +7654,6 @@
                     <div class="modal-footer">
                         <div class="budget-remaining">
                             Budget remaining: <span id="modalBudget">£75,000</span>
-                        </div>
-                        <div class="current-selection hidden" id="currentSelection">
-                            <span class="current-label">Current choice:</span>
-                            <span class="current-value" id="currentSelectionText">None</span>
                         </div>
                         <button class="btn btn-primary" id="confirmBtn" onclick="confirmSelection()" disabled>
                             Select This Option
@@ -7865,18 +7870,6 @@
                 </div>
             </div>
 
-            <!-- Decision Tracker -->
-            <div class="decisions-tracker" id="decisionsTracker2">
-                <div class="decision-dot" id="decDot2_1" data-problem="1" onclick="showProblem2(1)">1</div>
-                <div class="decision-dot" id="decDot2_2" data-problem="2" onclick="showProblem2(2)">2</div>
-                <div class="decision-dot" id="decDot2_3" data-problem="3" onclick="showProblem2(3)">3</div>
-                <div class="decision-dot" id="decDot2_4" data-problem="4" onclick="showProblem2(4)">4</div>
-                <div class="decision-dot" id="decDot2_5" data-problem="5" onclick="showProblem2(5)">5</div>
-                <div class="decision-dot" id="decDot2_6" data-problem="6" onclick="showProblem2(6)">6</div>
-                <div style="flex: 1;"></div>
-                <div class="tracker-hint" id="trackerHint2">Click problems to review and decide</div>
-            </div>
-
             <!-- Panel Visualisation -->
             <div class="game-room" id="game2Room">
                 <div class="room-container panel-container">
@@ -7999,32 +7992,46 @@
                             </linearGradient>
                         </defs>
                         <rect x="20" y="20" width="360" height="200" rx="8" fill="url(#glareGradient)"/>
-                        
-                        <!-- ===== HOTSPOT CIRCLES - Clickable ===== -->
-                        <!-- Hotspot 1: E-stop too high -->
-                        <circle cx="260" cy="70" r="14" fill="#e94560" stroke="#ffffff" stroke-width="2" class="svg-hotspot-circle" onclick="showProblem2(1)" style="cursor:pointer"/>
-                        <text x="260" y="75" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold" style="pointer-events:none">1</text>
-                        
-                        <!-- Hotspot 2: Grouped by system not task -->
-                        <circle cx="360" cy="310" r="14" fill="#e94560" stroke="#ffffff" stroke-width="2" class="svg-hotspot-circle" onclick="showProblem2(2)" style="cursor:pointer"/>
-                        <text x="360" y="315" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold" style="pointer-events:none">2</text>
-                        
-                        <!-- Hotspot 3: Inconsistent colours -->
-                        <circle cx="365" cy="170" r="14" fill="#e94560" stroke="#ffffff" stroke-width="2" class="svg-hotspot-circle" onclick="showProblem2(3)" style="cursor:pointer"/>
-                        <text x="365" y="175" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold" style="pointer-events:none">3</text>
-                        
-                        <!-- Hotspot 4: Glare from angle -->
-                        <circle cx="55" cy="55" r="14" fill="#e94560" stroke="#ffffff" stroke-width="2" class="svg-hotspot-circle" onclick="showProblem2(4)" style="cursor:pointer"/>
-                        <text x="55" y="60" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold" style="pointer-events:none">4</text>
-                        
-                        <!-- Hotspot 5: Cryptic code labels -->
-                        <circle cx="40" cy="390" r="14" fill="#e94560" stroke="#ffffff" stroke-width="2" class="svg-hotspot-circle" onclick="showProblem2(5)" style="cursor:pointer"/>
-                        <text x="40" y="395" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold" style="pointer-events:none">5</text>
-                        
-                        <!-- Hotspot 6: No procedure holder -->
-                        <circle cx="360" cy="495" r="14" fill="#e94560" stroke="#ffffff" stroke-width="2" class="svg-hotspot-circle" onclick="showProblem2(6)" style="cursor:pointer"/>
-                        <text x="360" y="500" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold" style="pointer-events:none">6</text>
                     </svg>
+                    
+                    <!-- Clickable Hotspots (HTML overlay on SVG) -->
+                    <div class="hotspot-container">
+                        <!-- Problem 1: E-stop too high -->
+                        <button class="game-hotspot" id="hotspot2_1" style="top: 11.7%; left: 65%;" onclick="showProblem2(1)" data-problem="1">
+                            <span class="hotspot-pulse"></span>
+                            <span class="hotspot-number">1</span>
+                        </button>
+                        
+                        <!-- Problem 2: Grouped by system not task -->
+                        <button class="game-hotspot" id="hotspot2_2" style="top: 51.7%; left: 90%;" onclick="showProblem2(2)" data-problem="2">
+                            <span class="hotspot-pulse"></span>
+                            <span class="hotspot-number">2</span>
+                        </button>
+                        
+                        <!-- Problem 3: Inconsistent colours -->
+                        <button class="game-hotspot" id="hotspot2_3" style="top: 28.3%; left: 91.25%;" onclick="showProblem2(3)" data-problem="3">
+                            <span class="hotspot-pulse"></span>
+                            <span class="hotspot-number">3</span>
+                        </button>
+                        
+                        <!-- Problem 4: Glare from angle -->
+                        <button class="game-hotspot" id="hotspot2_4" style="top: 9.2%; left: 13.75%;" onclick="showProblem2(4)" data-problem="4">
+                            <span class="hotspot-pulse"></span>
+                            <span class="hotspot-number">4</span>
+                        </button>
+                        
+                        <!-- Problem 5: Cryptic code labels -->
+                        <button class="game-hotspot" id="hotspot2_5" style="top: 65%; left: 10%;" onclick="showProblem2(5)" data-problem="5">
+                            <span class="hotspot-pulse"></span>
+                            <span class="hotspot-number">5</span>
+                        </button>
+                        
+                        <!-- Problem 6: No procedure holder -->
+                        <button class="game-hotspot" id="hotspot2_6" style="top: 82.5%; left: 90%;" onclick="showProblem2(6)" data-problem="6">
+                            <span class="hotspot-pulse"></span>
+                            <span class="hotspot-number">6</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="room-instruction">
@@ -8065,10 +8072,6 @@
                     <div class="modal-footer">
                         <div class="budget-remaining">
                             Budget remaining: <span id="modal2Budget">£50,000</span>
-                        </div>
-                        <div class="current-selection hidden" id="currentSelection2">
-                            <span class="current-label">Current choice:</span>
-                            <span class="current-value" id="currentSelectionText2">None</span>
                         </div>
                         <button class="btn btn-primary" id="confirm2Btn" onclick="confirmSelection2()" disabled>
                             Select This Option
@@ -8988,30 +8991,16 @@
         function updateDecisionTracker1() {
             const decisionCount = Object.keys(game1State.decisions).length;
             
-            // Update decision dots
+            // Update hotspots - mark solved ones green
             for (let i = 1; i <= 6; i++) {
-                const dot = document.getElementById(`decDot${i}`);
-                dot.classList.remove('decided', 'suboptimal', 'poor');
-                
-                if (game1State.decisions[i]) {
-                    dot.classList.add('decided');
-                    const score = game1State.decisions[i].score;
-                    if (score < 50) {
-                        dot.classList.add('poor');
-                    } else if (score < 80) {
-                        dot.classList.add('suboptimal');
+                const hotspot = document.getElementById(`hotspot${i}`);
+                if (hotspot) {
+                    if (game1State.decisions[i]) {
+                        hotspot.classList.add('solved');
+                    } else {
+                        hotspot.classList.remove('solved');
                     }
                 }
-            }
-            
-            // Update tracker hint
-            const hint = document.getElementById('trackerHint1');
-            if (decisionCount === 0) {
-                hint.textContent = 'Click problems to review and decide';
-            } else if (decisionCount < 6) {
-                hint.textContent = `${6 - decisionCount} decision${6 - decisionCount > 1 ? 's' : ''} remaining`;
-            } else {
-                hint.textContent = 'All decisions made — ready to submit';
             }
             
             // Show/hide submit button
@@ -9044,16 +9033,6 @@
                 availableBudget += existingDecision.cost;
             }
             document.getElementById('modalBudget').textContent = `£${availableBudget.toLocaleString()}`;
-            
-            // Show current selection if exists
-            const currentSelectionDiv = document.getElementById('currentSelection');
-            const currentSelectionText = document.getElementById('currentSelectionText');
-            if (existingDecision) {
-                currentSelectionDiv.classList.remove('hidden');
-                currentSelectionText.textContent = existingDecision.optionText;
-            } else {
-                currentSelectionDiv.classList.add('hidden');
-            }
 
             // Build options
             const optionsContainer = document.getElementById('modalOptions');
@@ -9368,10 +9347,9 @@
             updateGame2Stats();
             updateDecisionTracker2();
             
-            // Reset all SVG hotspots
-            document.querySelectorAll('#game2Room .svg-hotspot-circle').forEach(circle => {
-                circle.style.fill = '#00b0f0';
-                circle.style.opacity = '0.8';
+            // Reset all hotspots
+            document.querySelectorAll('#game2Room .game-hotspot').forEach(h => {
+                h.classList.remove('solved');
             });
             
             // Hide submit button
@@ -9411,30 +9389,16 @@
         function updateDecisionTracker2() {
             const decisionCount = Object.keys(game2State.decisions).length;
             
-            // Update decision dots
+            // Update hotspots - mark solved ones green
             for (let i = 1; i <= 6; i++) {
-                const dot = document.getElementById(`decDot2_${i}`);
-                dot.classList.remove('decided', 'suboptimal', 'poor');
-                
-                if (game2State.decisions[i]) {
-                    dot.classList.add('decided');
-                    const score = game2State.decisions[i].score;
-                    if (score < 50) {
-                        dot.classList.add('poor');
-                    } else if (score < 80) {
-                        dot.classList.add('suboptimal');
+                const hotspot = document.getElementById(`hotspot2_${i}`);
+                if (hotspot) {
+                    if (game2State.decisions[i]) {
+                        hotspot.classList.add('solved');
+                    } else {
+                        hotspot.classList.remove('solved');
                     }
                 }
-            }
-            
-            // Update tracker hint
-            const hint = document.getElementById('trackerHint2');
-            if (decisionCount === 0) {
-                hint.textContent = 'Click problems to review and decide';
-            } else if (decisionCount < 6) {
-                hint.textContent = `${6 - decisionCount} decision${6 - decisionCount > 1 ? 's' : ''} remaining`;
-            } else {
-                hint.textContent = 'All decisions made — ready to submit';
             }
             
             // Show/hide submit button
@@ -9467,16 +9431,6 @@
                 availableBudget += existingDecision.cost;
             }
             document.getElementById('modal2Budget').textContent = `£${availableBudget.toLocaleString()}`;
-            
-            // Show current selection if exists
-            const currentSelectionDiv = document.getElementById('currentSelection2');
-            const currentSelectionText = document.getElementById('currentSelectionText2');
-            if (existingDecision) {
-                currentSelectionDiv.classList.remove('hidden');
-                currentSelectionText.textContent = existingDecision.optionText;
-            } else {
-                currentSelectionDiv.classList.add('hidden');
-            }
 
             // Build options
             const optionsContainer = document.getElementById('modal2Options');
