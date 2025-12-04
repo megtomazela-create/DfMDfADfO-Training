@@ -483,6 +483,48 @@
             margin: var(--space-lg) 0;
         }
 
+        /* Desktop styles for slide-5 (mission slide) - override .slide-content positioning */
+        .intro-slide[data-slide="5"] .slide-content.mission-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: var(--space-2xl);
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive scaling for mission slide - scales with viewport */
+        .mission-slide h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+        }
+
+        .mission-slide h2 {
+            font-size: clamp(0.9rem, 2vw, 1.5rem);
+            margin-bottom: clamp(1.5rem, 3vh, 3rem);
+        }
+
+        .mission-logo {
+            width: clamp(100px, 15vw, 180px);
+            margin-bottom: clamp(1rem, 2vh, 2rem);
+        }
+
+        .mission-brief p {
+            font-size: clamp(0.95rem, 1.5vw, 1.2rem);
+        }
+
+        .mission-brief .highlight {
+            font-size: clamp(1.1rem, 2vw, 1.6rem);
+        }
+
+        .mission-brief {
+            margin-bottom: clamp(1.5rem, 3vh, 3rem);
+        }
+
         /* Legacy intro styles for compatibility */
         .intro-container {
             max-width: 700px;
