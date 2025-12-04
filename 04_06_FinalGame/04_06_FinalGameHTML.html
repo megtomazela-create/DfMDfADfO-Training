@@ -556,6 +556,81 @@
             overflow-y: auto;
         }
 
+        /* Responsive scaling for main game screen on smaller desktops */
+        /* Make game-main leave space for collection panel */
+        .game-main {
+            height: calc(100vh - 70px); /* Account for collection panel */
+        }
+
+        /* Scale the investigation scene to fit within viewport on smaller screens */
+        @media (max-height: 800px) and (min-width: 701px) {
+            .game-main {
+                height: calc(100vh - 60px);
+            }
+
+            .investigation-scene {
+                transform-origin: center center;
+                transform: scale(0.95);
+            }
+
+            .collection-panel {
+                padding: var(--space-xs) var(--space-md);
+            }
+
+            .collection-slot {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @media (max-height: 700px) and (min-width: 701px) {
+            .game-main {
+                height: calc(100vh - 55px);
+            }
+
+            .investigation-scene {
+                transform: scale(0.88);
+            }
+
+            .collection-panel {
+                height: 52px;
+                padding: 4px var(--space-sm);
+            }
+
+            .collection-slot {
+                width: 44px;
+                height: 44px;
+            }
+
+            .collection-header h3 {
+                font-size: 0.6rem;
+            }
+
+            .collection-count {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-height: 600px) and (min-width: 701px) {
+            .game-main {
+                height: calc(100vh - 50px);
+            }
+
+            .investigation-scene {
+                transform: scale(0.78);
+            }
+
+            .collection-panel {
+                height: 48px;
+                padding: 3px var(--space-xs);
+            }
+
+            .collection-slot {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
         /* Legacy intro styles for compatibility */
         .intro-container {
             max-width: 700px;
