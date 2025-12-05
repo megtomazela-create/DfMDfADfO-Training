@@ -720,7 +720,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.5</div>
+<div class="version-tag">v0.6</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -940,9 +940,9 @@ const GAME_DATA = {
             stage1: {
                 description: 'How should the primary coolant pump be positioned?',
                 options: [
-                    { id: 'corner', name: 'Corner Position', desc: 'Tucked in corner to maximise floor space. 1.8m clearance.', cost: 120000, quality: 'poor' },
-                    { id: 'openBay', name: 'Open Bay', desc: '2m clearance all sides, under crane rails.', cost: 150000, quality: 'good' },
-                    { id: 'dedicated', name: 'Dedicated Shielded Room', desc: 'Separate room with airlock. Over-specified.', cost: 290000, quality: 'wasteful' }
+                    { id: 'corner', name: 'Corner Position', desc: 'Tucked in corner to maximise floor space. 1.8m clearance.', cost: 80000, quality: 'poor' },
+                    { id: 'openBay', name: 'Open Bay', desc: '2m clearance all sides, under crane rails.', cost: 120000, quality: 'good' },
+                    { id: 'dedicated', name: 'Dedicated Shielded Room', desc: 'Separate room with airlock. Maximum protection.', cost: 200000, quality: 'wasteful' }
                 ]
             },
             // STAGE 2: MAINTENANCE - Every design gets decisions, but difficulty varies
@@ -1091,9 +1091,9 @@ const GAME_DATA = {
             stage1: {
                 description: 'What clearance around pipe welds for inspection access?',
                 options: [
-                    { id: '50mm', name: '50mm (Code Minimum)', desc: 'Meets code but just barely.', cost: 90000, quality: 'poor' },
-                    { id: '150mm', name: '150mm Clearance', desc: 'Adequate for all standard probes.', cost: 95000, quality: 'good' },
-                    { id: '300mm', name: '300mm + Permanent Scaffolding', desc: 'Maximum clearance with fixed platforms.', cost: 180000, quality: 'wasteful' }
+                    { id: '50mm', name: '50mm (Code Minimum)', desc: 'Meets code but just barely.', cost: 60000, quality: 'poor' },
+                    { id: '150mm', name: '150mm Clearance', desc: 'Adequate for all standard probes.', cost: 90000, quality: 'good' },
+                    { id: '300mm', name: '300mm + Permanent Scaffolding', desc: 'Maximum clearance with fixed platforms.', cost: 160000, quality: 'wasteful' }
                 ]
             },
             stage2: {
@@ -1237,9 +1237,9 @@ const GAME_DATA = {
             stage1: {
                 description: 'How should the control panel be organised?',
                 options: [
-                    { id: 'system', name: 'System-Based Layout', desc: 'Grouped by system (all pump controls together).', cost: 85000, quality: 'poor' },
-                    { id: 'task', name: 'Task-Based Layout', desc: 'Grouped by workflow. Emergency sequence left-to-right.', cost: 95000, quality: 'good' },
-                    { id: 'touch', name: 'Touchscreen Interface', desc: 'Modern displays. Impressive in demos.', cost: 180000, quality: 'poor' }
+                    { id: 'system', name: 'System-Based Layout', desc: 'Grouped by system (all pump controls together).', cost: 70000, quality: 'poor' },
+                    { id: 'task', name: 'Task-Based Layout', desc: 'Grouped by workflow. Emergency sequence left-to-right.', cost: 100000, quality: 'good' },
+                    { id: 'touch', name: 'Touchscreen Interface', desc: 'Modern digital displays. Impressive technology.', cost: 150000, quality: 'poor' }
                 ]
             },
             stage2: {
@@ -1396,9 +1396,9 @@ const GAME_DATA = {
             stage1: {
                 description: 'How should pipe joints be designed?',
                 options: [
-                    { id: 'welded', name: 'All Welded', desc: 'Continuous welds. Maximum integrity.', cost: 180000, quality: 'poor' },
-                    { id: 'flanged', name: 'Flanged at Strategic Points', desc: 'Bolted flanges every 6m and at components.', cost: 160000, quality: 'good' },
-                    { id: 'excessive', name: 'Flanges Everywhere', desc: 'Flanged every 2m. Maximum flexibility.', cost: 220000, quality: 'wasteful' }
+                    { id: 'welded', name: 'All Welded', desc: 'Continuous welds throughout. No break points.', cost: 100000, quality: 'poor' },
+                    { id: 'flanged', name: 'Flanged at Strategic Points', desc: 'Bolted flanges every 6m and at components.', cost: 130000, quality: 'good' },
+                    { id: 'excessive', name: 'Flanges Everywhere', desc: 'Flanged every 2m. Maximum flexibility.', cost: 180000, quality: 'wasteful' }
                 ]
             },
             stage2: {
@@ -1527,9 +1527,9 @@ const GAME_DATA = {
             stage1: {
                 description: 'How should pipes run through concrete structure?',
                 options: [
-                    { id: 'embedded', name: 'Embedded in Concrete', desc: 'Cast directly into structural concrete.', cost: 140000, quality: 'poor' },
-                    { id: 'ducted', name: 'Accessible Ducts', desc: 'Removable duct covers.', cost: 165000, quality: 'good' },
-                    { id: 'tunnel', name: 'Walk-In Tunnel', desc: 'Large accessible tunnel.', cost: 280000, quality: 'wasteful' }
+                    { id: 'embedded', name: 'Embedded in Concrete', desc: 'Cast directly into structural concrete.', cost: 90000, quality: 'poor' },
+                    { id: 'ducted', name: 'Accessible Ducts', desc: 'Removable duct covers for access.', cost: 130000, quality: 'good' },
+                    { id: 'tunnel', name: 'Walk-In Tunnel', desc: 'Large accessible service tunnel.', cost: 220000, quality: 'wasteful' }
                 ]
             },
             stage2: {
@@ -1673,9 +1673,9 @@ const GAME_DATA = {
             stage1: {
                 description: 'What material for primary circuit pipework?',
                 options: [
-                    { id: 'standard', name: 'Standard Stainless Steel', desc: '304/316 with ~2,500ppm cobalt. Industry standard.', cost: 200000, quality: 'poor' },
-                    { id: 'lowCobalt', name: 'Low-Cobalt Stainless', desc: 'Cobalt <500ppm. 90% reduction in activation.', cost: 250000, quality: 'good' },
-                    { id: 'exotic', name: 'Exotic Nickel Alloy', desc: 'Premium alloy. Higher activation than standard SS.', cost: 400000, quality: 'poor' }
+                    { id: 'standard', name: 'Standard Stainless Steel', desc: '304/316 with ~2,500ppm cobalt. Industry standard.', cost: 110000, quality: 'poor' },
+                    { id: 'lowCobalt', name: 'Low-Cobalt Stainless', desc: 'Cobalt <500ppm. Reduced activation.', cost: 170000, quality: 'good' },
+                    { id: 'exotic', name: 'Exotic Nickel Alloy', desc: 'Premium aerospace-grade alloy. Top specification.', cost: 250000, quality: 'poor' }
                 ]
             },
             stage2: {
