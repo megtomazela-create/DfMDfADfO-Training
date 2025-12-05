@@ -770,6 +770,138 @@
             cursor: pointer;
         }
         
+        /* Story Transition Screen */
+        .story-transition {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, var(--deep-navy) 0%, #0a1628 100%);
+            z-index: 200;
+            overflow-y: auto;
+        }
+        
+        .story-transition.visible { display: block; }
+        
+        .story-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+        
+        .story-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .story-years {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--blue), var(--green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .story-title {
+            font-size: 1.5rem;
+            color: var(--white);
+            font-weight: 600;
+        }
+        
+        .story-narrative {
+            background: var(--dark-slate);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            line-height: 1.7;
+            color: var(--light-grey);
+        }
+        
+        .story-narrative p { margin-bottom: 15px; }
+        .story-narrative p:last-child { margin-bottom: 0; }
+        
+        .story-section { margin-bottom: 25px; }
+        
+        .story-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--blue);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .story-lessons {
+            background: rgba(146, 208, 80, 0.1);
+            border: 1px solid var(--green);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .story-lessons ul {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--light-grey);
+        }
+        
+        .story-lessons li { margin-bottom: 8px; }
+        .story-lessons li:last-child { margin-bottom: 0; }
+        
+        .story-regulatory {
+            background: rgba(0, 176, 240, 0.1);
+            border: 1px solid var(--blue);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .reg-reference {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--slate);
+        }
+        
+        .reg-reference:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .reg-code {
+            background: var(--blue);
+            color: var(--deep-navy);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            height: fit-content;
+        }
+        
+        .reg-text {
+            color: var(--light-grey);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .story-foreshadow {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid var(--amber);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: var(--light-grey);
+            font-style: italic;
+        }
+        
+        .story-continue { text-align: center; }
+        .story-continue .btn { padding: 15px 40px; font-size: 1.1rem; }
+        
         /* Results */
         .results-grade {
             font-size: 7rem;
@@ -822,7 +954,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.9</div>
+<div class="version-tag">v0.11</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -1017,7 +1149,30 @@
         <p class="summary-subtitle" id="sumSubtitle"></p>
         <div class="summary-stats" id="sumStats"></div>
         <div class="summary-decisions" id="sumDecisions"></div>
-        <button class="btn-next-phase" id="btnNextPhase">Next Stage →</button>
+        <button class="btn-next-phase" id="btnNextPhase">Continue →</button>
+    </div>
+</div>
+
+<!-- STORY TRANSITION SCREEN -->
+<div class="story-transition" id="storyTransition">
+    <div class="story-content">
+        <div class="story-header">
+            <div class="story-years" id="storyYears">2025 → 2040</div>
+            <div class="story-title" id="storyTitle">15 Years Pass...</div>
+        </div>
+        <div class="story-narrative" id="storyNarrative"></div>
+        <div class="story-section">
+            <div class="story-section-title">📚 Key Lessons</div>
+            <div class="story-lessons" id="storyLessons"></div>
+        </div>
+        <div class="story-section">
+            <div class="story-section-title">📋 Regulatory Framework</div>
+            <div class="story-regulatory" id="storyRegulatory"></div>
+        </div>
+        <div class="story-foreshadow" id="storyForeshadow"></div>
+        <div class="story-continue">
+            <button class="btn btn-primary" id="btnStoryNext">Begin Stage →</button>
+        </div>
     </div>
 </div>
 
@@ -1059,6 +1214,129 @@ const GAME_DATA = {
         3: { years: '15 YEARS LATER', year: '2055', text: ['Thirty years of operation.', 'Regulators want proof everything is still safe.', 'Every weld, every component needs inspection.'] },
         4: { years: '15 YEARS LATER', year: '2070', text: ['Forty-five years. The plant is showing its age.', 'Tonight, the alarms will test your control room design.'] },
         5: { years: '15 YEARS LATER', year: '2085', text: ['Sixty years. The reactor is shut down for good.', 'Now comes the hard part: taking it all apart safely.'] }
+    },
+    
+    storyTransitions: {
+        1: {
+            yearsLabel: '2025',
+            title: 'Design Phase Complete',
+            narrative: [
+                'Your design specifications have been approved and construction begins. Over the next decade, thousands of workers will transform your drawings into a functioning nuclear power station.',
+                'The choices you made about pump positions, weld clearances, control panel layouts, pipe connections, pipe routing, and material specifications are now literally set in concrete.',
+                'In 2026, Thornbury Point achieves first criticality. By 2027, it reaches full power operation and begins supplying electricity to millions of homes.',
+                'For the next 14 years, the plant runs smoothly. Operators become familiar with the control room layout. Maintenance teams learn the quirks of accessing equipment. Your design decisions fade from memory - but they remain embedded in every wall, every pipe, every component.'
+            ],
+            lessons: [
+                'Design decisions made today will affect workers for 60+ years',
+                'Saving money during design often creates larger costs during operation',
+                'Access for maintenance and inspection must be considered from day one',
+                'Human factors in control room design can mean the difference between safe response and disaster',
+                'Material specifications affect dose rates for the entire plant lifetime'
+            ],
+            regulatory: [
+                { code: 'LC 14', text: 'Safety Case - The design must demonstrate that risks are reduced As Low As Reasonably Practicable (ALARP). Your design choices form the basis of the safety case.' },
+                { code: 'LC 17', text: 'Quality Assurance - Design decisions must be documented and traceable. Future modifications will reference your original specifications.' },
+                { code: 'SAP EKP.2', text: 'Defence in Depth - Multiple barriers and safety systems must be incorporated at the design stage. Retrofit is difficult and expensive.' },
+                { code: 'SAP EHF.1', text: 'Human Factors Integration - The design must consider human capabilities and limitations throughout the facility lifecycle.' }
+            ],
+            foreshadow: 'It is now 2040. Dave Morton, Maintenance Supervisor, is preparing for the first major outage. He\'s about to discover whether your design choices made his job easy... or impossible.'
+        },
+        2: {
+            yearsLabel: '2025 → 2040',
+            title: '15 Years of Operation',
+            narrative: [
+                'The maintenance outage is complete. Dave Morton\'s team has replaced seals, repaired welds, and addressed 15 years of wear and tear.',
+                'Some jobs went smoothly - equipment was accessible, clearances were adequate, work could proceed efficiently. Other jobs were nightmares - pumps that didn\'t fit through access routes, welds in positions too tight for proper technique, contaminated scaffolding that should never have been installed.',
+                'The costs and doses from this outage are now part of the plant\'s permanent record. They will be reviewed by regulators, analysed by safety committees, and compared against predictions made during design.',
+                'As the plant returns to power generation, another 15 years of operation begins. Components continue to age. Corrosion advances. Fatigue cycles accumulate.'
+            ],
+            lessons: [
+                'Licence Condition 28 requires adequate arrangements for examination, inspection, and maintenance',
+                'Access constraints identified during design become real obstacles during maintenance',
+                'Dose expenditure during maintenance must be justified under ALARP principles',
+                'Temporary fixes and deferred work create future technical debt',
+                'Good design enables standard procedures; poor design forces expensive workarounds'
+            ],
+            regulatory: [
+                { code: 'LC 28', text: 'Examination, Inspection, Maintenance & Testing - The licensee must make adequate arrangements. Your design choices directly affect what "adequate" means in practice.' },
+                { code: 'LC 25', text: 'Operational Records - All maintenance work, dose uptake, and defects discovered must be recorded. These records inform future safety cases.' },
+                { code: 'SAP EMT.1', text: 'Maintenance Strategy - Facilities should be designed so that structures, systems and components can be maintained to preserve their safety functions.' },
+                { code: 'IRR17 Reg.9', text: 'Restriction of Exposure - Employers must ensure doses are kept As Low As Reasonably Practicable. Poor access = higher doses.' }
+            ],
+            foreshadow: 'It is now 2055. Sarah Okonkwo, Principal Inspector from ONR, is arriving for the 30-year Periodic Safety Review. She will examine every safety-critical component - if she can access them.'
+        },
+        3: {
+            yearsLabel: '2040 → 2055',
+            title: '30-Year Periodic Safety Review',
+            narrative: [
+                'The inspection programme is complete. Every pipe, weld, and component has been examined - or at least, every one that could be accessed.',
+                'Sarah Okonkwo\'s report will determine whether Thornbury Point can continue operating. Where inspections achieved full coverage, there is confidence in continued safe operation. Where access limitations prevented complete examination, there are regulatory findings and operational restrictions.',
+                'The inspection results reveal the true quality of your 2025 design. Good clearances enabled complete inspections. Embedded pipes and inadequate access have created zones of uncertainty that will require ongoing monitoring or costly retrofits.',
+                'Regulators have noted every inspection gap. Some will require enhanced surveillance. Others may limit future operating parameters. The worst cases could force early shutdown.'
+            ],
+            lessons: [
+                'In-Service Inspection requirements are defined by design codes and regulatory expectations',
+                'Inspection gaps create uncertainty in safety cases and regulatory concern',
+                'The Periodic Safety Review at 10-year intervals assesses continued safe operation',
+                'Materials that cannot be inspected create ongoing liability',
+                'Retrofitting access is extremely expensive compared to designing it correctly'
+            ],
+            regulatory: [
+                { code: 'LC 28', text: 'ONR expects in-service inspection programmes to demonstrate continued structural integrity. Gaps in coverage must be justified.' },
+                { code: 'SAP EAD.1', text: 'Ageing and Degradation - Structures, systems and components important to safety should be designed to minimise the effects of ageing and to facilitate inspection.' },
+                { code: 'SAP EMT.6', text: 'Inspectability - All structures, systems and components important to safety should be designed and located so they can be adequately inspected.' },
+                { code: 'NS-TAST-GD-026', text: 'ONR Technical Assessment Guide on In-Service Inspection - The design should ensure that ISI can be performed to relevant codes and standards.' }
+            ],
+            foreshadow: 'It is now 2070. Mike Brennan is the night Shift Operations Manager. At 3am, the alarms begin. Everything depends on whether operators can find the right controls, fast.'
+        },
+        4: {
+            yearsLabel: '2055 → 2070',
+            title: '45 Years: Operations Under Pressure',
+            narrative: [
+                'The emergency is over. Whether it was handled smoothly or chaotically depended on design decisions made 45 years ago.',
+                'A well-designed control panel meant operators found the right controls instantly. A poorly designed panel meant confusion, delay, and near-misses during the most critical moments.',
+                'The plant is now entering its final 15 years of operation. Equipment that has run for 45 years is showing its age. Dose rates from activated materials constrain work planning. Systems that were state-of-the-art in 2025 are now obsolete.',
+                'Every decision made during design, maintenance, and inspection is now compounded. Good decisions have built a safe, efficient operation. Poor decisions have accumulated into operational constraints, regulatory scrutiny, and additional risk.'
+            ],
+            lessons: [
+                'Human factors engineering in control rooms directly affects emergency response',
+                'Operator confusion during emergencies can be fatal - design must support rapid, correct action',
+                'Material activation affects operational flexibility for the entire plant life',
+                'Deferred maintenance and inspection gaps can culminate in operational emergencies',
+                'Long-term operation requires continuous demonstration that ageing is being managed'
+            ],
+            regulatory: [
+                { code: 'LC 23', text: 'Operating Rules - Operations must be conducted within approved limits. Design constraints become operating rule requirements.' },
+                { code: 'LC 24', text: 'Operating Instructions - Clear instructions must exist for all operations. Confusing control layouts make instructions harder to follow.' },
+                { code: 'SAP EHF.5', text: 'Human Reliability - Design should reduce opportunities for human error, particularly during abnormal conditions and emergencies.' },
+                { code: 'SAP SC.5', text: 'Safety Culture - A questioning attitude and conservative decision-making depend on operators having clear, unambiguous information.' }
+            ],
+            foreshadow: 'It is now 2085. The reactor is shut down for good. Janet Cole leads the decommissioning programme. Sixty years of neutron activation, contamination buildup, and ageing infrastructure await. The design choices of 2025 will determine whether decommissioning takes 10 years or 50.'
+        },
+        5: {
+            yearsLabel: '2085',
+            title: 'The 60-Year Journey Complete',
+            narrative: [
+                'Thornbury Point is being dismantled. The reactor that began as lines on your drawing board in 2025 is returning to the ground from which its materials came.',
+                'Every decision you made during design echoed through six decades of operation. Some choices saved millions of pounds and countless worker-hours. Others created problems that compounded across maintenance outages, inspection campaigns, operational emergencies, and now decommissioning.',
+                'The workers who lived with your decisions - Dave fixing pumps, Sarah inspecting welds, Mike responding to alarms, Janet cutting contaminated pipes - they all experienced the consequences of choices made before most of them were born.',
+                'This is the reality of nuclear engineering. The decisions made today will affect workers, communities, and the environment for generations. There are no shortcuts, no quick fixes, and no second chances once the concrete is poured.'
+            ],
+            lessons: [
+                'Nuclear facilities operate for 60+ years - design must consider the entire lifecycle',
+                'Short-term savings often become long-term costs multiplied many times over',
+                'Access, materials, and human factors affect every phase from construction to decommissioning',
+                'Regulatory requirements exist because lessons were learned from past failures',
+                'The true cost of design is not the construction budget - it is the total lifecycle cost'
+            ],
+            regulatory: [
+                { code: 'ONR Purpose', text: 'The Office for Nuclear Regulation exists to protect society by securing safe nuclear operations. Your design choices directly affect their ability to do this.' },
+                { code: 'ALARP', text: 'Risks must be reduced As Low As Reasonably Practicable. Good design makes ALARP achievable; poor design makes it expensive or impossible.' },
+                { code: 'Lifecycle', text: 'Modern regulatory frameworks require consideration of the full facility lifecycle at the design stage - construction, operation, and decommissioning.' },
+                { code: 'Future', text: 'Every new nuclear facility will face the same 60-year journey. The lessons from Thornbury Point should inform the designs of tomorrow.' }
+            ],
+            foreshadow: 'Your journey through 60 years of nuclear operations is complete. Let\'s see how your choices measured up across the full lifecycle of Thornbury Point.'
+        }
     },
     
     elements: {
@@ -1486,15 +1764,15 @@ const GAME_DATA = {
             stage1: {
                 description: 'How should pipe joints be designed?',
                 options: [
-                    { id: 'welded', name: 'All Welded', desc: 'Continuous welds throughout. No break points.', cost: 100000, quality: 'poor' },
-                    { id: 'flanged', name: 'Flanged at Strategic Points', desc: 'Bolted flanges every 6m and at components.', cost: 130000, quality: 'good' },
-                    { id: 'excessive', name: 'Flanges Everywhere', desc: 'Flanged every 2m. Maximum flexibility.', cost: 180000, quality: 'wasteful' }
+                    { id: 'welded', name: 'All Welded', desc: 'Continuous welds throughout. No break points. More welding labour.', cost: 140000, quality: 'poor' },
+                    { id: 'flanged', name: 'Flanged at Strategic Points', desc: 'Bolted flanges every 6m and at components. Optimised design.', cost: 100000, quality: 'good' },
+                    { id: 'excessive', name: 'Flanges Everywhere', desc: 'Flanged every 2m. Maximum flexibility but many potential leak paths.', cost: 180000, quality: 'wasteful' }
                 ]
             },
             stage2: {
                 welded: {
                     situation: 'A pipe section needs replacement. The all-welded design from 2025 means there are no break points - must cut and re-weld.',
-                    quote: "Need to replace a section of pipe. That all-welded design from 2025 - there's nowhere to unbolt. We have to cut it out and weld in the replacement. Time-consuming and high dose. How do you want to proceed?",
+                    quote: "Need to replace a section of pipe. That all-welded design from 2025 - cost more in welding labour AND there's nowhere to unbolt. We have to cut it out and weld in the replacement. Time-consuming and high dose. How do you want to proceed?",
                     options: [
                         { id: 'replace', name: 'Cut, replace, and re-weld', desc: 'Proper repair but significant work.', cost: 65000, time: 8, dose: 5 },
                         { id: 'overlay', name: 'Weld overlay repair', desc: 'Temporary fix. Will need revisiting eventually.', cost: 25000, time: 3, dose: 3, healthImpact: -5, trigger: 'weldOverlay' }
@@ -1502,7 +1780,7 @@ const GAME_DATA = {
                 },
                 flanged: {
                     situation: 'A pipe section needs replacement. The flanged connections from the 2025 design allow easy section removal.',
-                    quote: "Pipe section needs replacing. Good news - those flanged connections from 2025 mean we just unbolt, remove the section, and bolt in the new one. Clean and simple. Standard replacement or should we upgrade the gaskets while we're there?",
+                    quote: "Pipe section needs replacing. Those flanged connections from 2025 - cheapest option AND the smartest. Just unbolt, remove the section, and bolt in the new one. Clean and simple. Standard replacement or should we upgrade the gaskets while we're there?",
                     options: [
                         { id: 'standard', name: 'Standard flange replacement', desc: 'Unbolt, replace section, re-bolt.', cost: 30000, time: 3, dose: 1.5 },
                         { id: 'upgrade', name: 'Replace with upgraded gaskets', desc: 'Better gasket material for longer life.', cost: 40000, time: 4, dose: 2 }
@@ -1554,7 +1832,7 @@ const GAME_DATA = {
                 },
                 flanged: {
                     situation: 'Online maintenance needed. The flanged design from 2025 allows isolation and work at power.',
-                    quote: "Valve needs attention. That flanged design from 2025 - we can isolate the section and work while the plant runs. No shutdown needed. Do it now or schedule for the outage?",
+                    quote: "Valve needs attention. That flanged design from 2025 - saved money upfront AND we can isolate the section and work while the plant runs. No shutdown needed. Do it now or schedule for the outage?",
                     options: [
                         { id: 'online', name: 'Isolate and work at power', desc: 'Use the flexibility of flanged design.', cost: 15000, time: 1, dose: 0.5 },
                         { id: 'defer', name: 'Defer to outage', desc: 'Not urgent. Can wait.', cost: 5000, time: 0, dose: 0 }
@@ -1580,7 +1858,7 @@ const GAME_DATA = {
                 },
                 flanged: {
                     situation: 'Pipe removal for decommissioning. The flanged design from 2025 means unbolt and remove in sections.',
-                    quote: "Decommissioning the pipework. That flanged design from 2025 is paying off one last time - unbolt the flanges, lift out the sections. No cutting, minimal contamination. Standard removal or segregate for recycling?",
+                    quote: "Decommissioning the pipework. That flanged design from 2025 - cheapest to build and cheapest to remove. Unbolt the flanges, lift out the sections. No cutting, minimal contamination. Standard removal or segregate for recycling?",
                     options: [
                         { id: 'standard', name: 'Standard flange disassembly', desc: 'Unbolt and remove. Clean and simple.', cost: 40000, time: 6, dose: 2 },
                         { id: 'segregate', name: 'Segregate materials for recycling', desc: 'Extra effort to separate materials.', cost: 55000, time: 8, dose: 2.5 }
@@ -2369,14 +2647,58 @@ function showStageSummary() {
     });
     document.getElementById('sumDecisions').innerHTML = decHtml;
     
-    document.getElementById('btnNextPhase').textContent = STATE.stage === 5 ? 'View Final Results →' : 'Next Stage →';
+    document.getElementById('btnNextPhase').textContent = 'Continue →';
     document.getElementById('summaryScreen').classList.add('active');
 }
 
 document.getElementById('btnNextPhase').onclick = () => {
     document.getElementById('summaryScreen').classList.remove('active');
-    if (STATE.stage >= 5) showFinalResults();
-    else showTransition();
+    showStoryTransition();
+};
+
+function showStoryTransition() {
+    const currentStage = STATE.stage;
+    const story = GAME_DATA.storyTransitions[currentStage];
+    
+    // Header
+    document.getElementById('storyYears').textContent = story.yearsLabel;
+    document.getElementById('storyTitle').textContent = story.title;
+    
+    // Narrative paragraphs
+    document.getElementById('storyNarrative').innerHTML = story.narrative.map(p => `<p>${p}</p>`).join('');
+    
+    // Lessons
+    document.getElementById('storyLessons').innerHTML = '<ul>' + story.lessons.map(l => `<li>${l}</li>`).join('') + '</ul>';
+    
+    // Regulatory references
+    document.getElementById('storyRegulatory').innerHTML = story.regulatory.map(r => `
+        <div class="reg-reference">
+            <span class="reg-code">${r.code}</span>
+            <span class="reg-text">${r.text}</span>
+        </div>
+    `).join('');
+    
+    // Foreshadow
+    document.getElementById('storyForeshadow').innerHTML = story.foreshadow;
+    
+    // Button text
+    if (currentStage >= 5) {
+        document.getElementById('btnStoryNext').textContent = 'View Final Results →';
+    } else {
+        const nextStage = GAME_DATA.stages[currentStage + 1];
+        document.getElementById('btnStoryNext').textContent = `Begin ${nextStage.year}: ${nextStage.name} →`;
+    }
+    
+    document.getElementById('storyTransition').classList.add('visible');
+}
+
+document.getElementById('btnStoryNext').onclick = () => {
+    document.getElementById('storyTransition').classList.remove('visible');
+    if (STATE.stage >= 5) {
+        showFinalResults();
+    } else {
+        showTransition();
+    }
 };
 
 function showTransition() {
