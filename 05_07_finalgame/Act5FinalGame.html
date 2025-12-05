@@ -187,7 +187,8 @@
         
         .character-intro { background: var(--dark-slate); border-radius: var(--radius-lg); padding: var(--space-xl); max-width: 700px; margin: 0 auto var(--space-xl); border-left: 4px solid var(--blue); }
         .character-header { display: flex; gap: var(--space-lg); margin-bottom: var(--space-lg); }
-        .character-portrait { width: 80px; height: 80px; border-radius: var(--radius-md); background: var(--slate); display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; }
+        .character-portrait { width: 80px; height: 80px; border-radius: var(--radius-md); background: var(--slate); display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; overflow: hidden; }
+        .character-portrait img { width: 100%; height: 100%; object-fit: cover; }
         .character-info h3 { margin-bottom: var(--space-xs); }
         .character-role { color: var(--mid-grey); font-size: 0.875rem; }
         .character-dialogue { font-size: 1.125rem; font-style: italic; color: var(--white); line-height: 1.7; }
@@ -534,7 +535,9 @@
             justify-content: center;
             font-size: 1.5rem;
             flex-shrink: 0;
+            overflow: hidden;
         }
+        .comment-portrait img { width: 100%; height: 100%; object-fit: cover; }
         
         .comment-content {
             flex: 1;
@@ -705,7 +708,7 @@
                 
                 <div class="plant-diagram" id="plantDiagram">
                     <div class="plant-image-wrapper">
-                        <img src="gamebackground.png" alt="Section 4B Layout" class="plant-bg-image">
+                        <img src="images/gamebackground.png" alt="Section 4B Layout" class="plant-bg-image">
                         
                         <!-- Pump Access - on the blue pump -->
                         <div class="hotspot" data-element="pumpAccess" style="left: 18%; top: 52%;">
@@ -791,7 +794,7 @@
             <section class="screen" id="screenCharacter">
                 <div class="character-intro dave" id="characterIntro">
                     <div class="character-header">
-                        <div class="character-portrait" id="characterPortrait">👷</div>
+                        <div class="character-portrait" id="characterPortrait"><img src="images/dave.png" alt="Dave Morton"></div>
                         <div class="character-info"><h3 id="characterName">Dave Morton</h3><p class="character-role" id="characterRole">Maintenance Supervisor</p></div>
                     </div>
                     <p class="character-dialogue" id="characterDialogue">Right then. Section 4B. First major outage. Let's see what we're working with.</p>
@@ -833,7 +836,7 @@
                 <h2 class="outcome-title" id="outcomeTitle">Task Complete</h2>
                 
                 <div class="character-comment" id="outcomeComment">
-                    <div class="comment-portrait">👷</div>
+                    <div class="comment-portrait"><img src="images/dave.png" alt="Dave"></div>
                     <div class="comment-content">
                         <div class="comment-name">Dave Morton</div>
                         <div class="comment-text" id="outcomeCommentText">Well, that went about as well as could be expected.</div>
@@ -1050,7 +1053,7 @@
             <section class="screen" id="screenCharacter5">
                 <div class="character-intro janet" id="characterIntro5">
                     <div class="character-header">
-                        <div class="character-portrait">👩‍🔧</div>
+                        <div class="character-portrait"><img src="images/janet.png" alt="Janet Cole"></div>
                         <div class="character-info"><h3>Janet Cole</h3><p class="character-role">Decommissioning Project Lead</p></div>
                     </div>
                     <p class="character-dialogue" id="janetDialogue">Sixty years. Let's see what 2025 left us. I've been doing this long enough to know what to expect.</p>
@@ -1089,7 +1092,7 @@
                 <div class="outcome-icon" id="outcomeIcon5">✓</div>
                 <h2 class="outcome-title" id="outcomeTitle5">Task Complete</h2>
                 <div class="character-comment" style="border-color: var(--janet-colour);">
-                    <div class="comment-portrait">👩‍🔧</div>
+                    <div class="comment-portrait"><img src="images/janet.png" alt="Janet"></div>
                     <div class="comment-content">
                         <div class="comment-name">Janet Cole</div>
                         <div class="comment-text" id="outcomeComment5">Another day, another piece of history dismantled.</div>
