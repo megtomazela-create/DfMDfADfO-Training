@@ -174,43 +174,160 @@
         #gameScreen.active { display: flex; }
         
         .top-bar {
-            height: 60px;
+            height: auto;
             background: var(--deep-navy);
             border-bottom: 1px solid var(--dark-slate);
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
+            flex-direction: column;
+            padding: 10px 20px 0 20px;
             flex-shrink: 0;
         }
         
-        .top-bar-logo img { height: 36px; }
-        
-        .top-bar-phase {
-            background: var(--dark-slate);
-            padding: 8px 20px;
-            border-radius: 6px;
-            font-weight: 600;
+        .top-bar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
         }
         
-        .top-bar-phase .year { color: var(--blue); }
+        .top-bar-logo img { height: 32px; }
         
-        .top-bar-right { display: flex; align-items: center; gap: 15px; }
-        
-        .top-bar-stats { display: flex; gap: 20px; font-size: 0.9rem; }
+        .top-bar-stats { display: flex; gap: 20px; font-size: 0.85rem; }
         .stat { display: flex; align-items: center; gap: 5px; }
         .stat-value { color: var(--white); font-weight: 600; }
         .stat-value.warning { color: var(--amber); }
         .stat-value.danger { color: var(--red); }
         
+        /* Timeline */
+        .timeline-container {
+            position: relative;
+            padding: 0 40px 20px 40px;
+        }
+        
+        .timeline-track {
+            position: absolute;
+            top: 24px;
+            left: 60px;
+            right: 60px;
+            height: 3px;
+            background: var(--slate);
+            border-radius: 2px;
+        }
+        
+        .timeline-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--green), var(--blue));
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+        
+        .timeline-stages {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .timeline-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 100px;
+        }
+        
+        .timeline-node {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--dark-slate);
+            border: 3px solid var(--slate);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--mid-grey);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .timeline-stage.completed .timeline-node {
+            background: var(--green);
+            border-color: var(--green);
+            color: var(--deep-navy);
+        }
+        
+        .timeline-stage.completed .timeline-node::after {
+            content: '✓';
+            position: absolute;
+            font-size: 1.2rem;
+        }
+        
+        .timeline-stage.current .timeline-node {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: var(--deep-navy);
+            box-shadow: 0 0 0 6px rgba(0, 176, 240, 0.3);
+            animation: currentPulse 2s infinite;
+        }
+        
+        @keyframes currentPulse {
+            0%, 100% { box-shadow: 0 0 0 6px rgba(0, 176, 240, 0.3); }
+            50% { box-shadow: 0 0 0 12px rgba(0, 176, 240, 0.1); }
+        }
+        
+        .timeline-stage.future .timeline-node {
+            background: var(--dark-slate);
+            border-color: var(--slate);
+            color: var(--slate);
+        }
+        
+        .timeline-label {
+            margin-top: 8px;
+            text-align: center;
+        }
+        
+        .timeline-year {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--mid-grey);
+            transition: color 0.3s;
+        }
+        
+        .timeline-stage.completed .timeline-year,
+        .timeline-stage.current .timeline-year {
+            color: var(--white);
+        }
+        
+        .timeline-name {
+            font-size: 0.7rem;
+            color: var(--slate);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+            transition: color 0.3s;
+        }
+        
+        .timeline-stage.current .timeline-name {
+            color: var(--blue);
+        }
+        
+        .timeline-stage.completed .timeline-name {
+            color: var(--green);
+        }
+        
         .btn-next-stage {
             display: none;
-            padding: 10px 20px;
+            padding: 8px 16px;
             background: var(--green);
             color: var(--deep-navy);
             border: none;
             border-radius: 6px;
             font-weight: 600;
+            font-size: 0.85rem;
             cursor: pointer;
             animation: pulse 2s infinite;
         }
@@ -220,18 +337,6 @@
         @keyframes pulse {
             0%, 100% { box-shadow: 0 0 0 0 rgba(146, 208, 80, 0.4); }
             50% { box-shadow: 0 0 0 10px rgba(146, 208, 80, 0); }
-        }
-        
-        .progress-bar {
-            height: 6px;
-            background: var(--dark-slate);
-            flex-shrink: 0;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--blue), var(--green));
-            transition: width 0.5s ease;
         }
         
         .character-banner {
@@ -280,7 +385,7 @@
         .map-wrapper img {
             display: block;
             max-width: 100%;
-            max-height: calc(100vh - 180px);
+            max-height: calc(100vh - 250px);
             object-fit: contain;
         }
         
@@ -344,28 +449,16 @@
         }
         
         .bottom-bar {
-            height: 50px;
+            height: 40px;
             background: var(--deep-navy);
             border-top: 1px solid var(--dark-slate);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 30px;
             flex-shrink: 0;
         }
         
-        .progress-dots { display: flex; gap: 8px; }
-        
-        .progress-dot {
-            width: 12px; height: 12px;
-            border-radius: 50%;
-            background: var(--slate);
-        }
-        
-        .progress-dot.done { background: var(--green); }
-        .progress-dot.current { background: var(--blue); box-shadow: 0 0 0 3px rgba(0, 176, 240, 0.3); }
-        
-        .progress-label { color: var(--mid-grey); font-size: 0.9rem; }
+        .progress-label { color: var(--mid-grey); font-size: 0.85rem; }
         
         /* ============================================
            MODAL
@@ -710,17 +803,29 @@
         .results-total-label { font-size: 0.8rem; color: var(--mid-grey); }
         
         /* Mobile */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .top-bar-stats { display: none; }
             .summary-stats, .results-totals { grid-template-columns: repeat(2, 1fr); }
             .intro-title { font-size: 2rem; }
+            
+            .timeline-container { padding: 0 10px 15px 10px; }
+            .timeline-track { left: 30px; right: 30px; }
+            .timeline-stage { min-width: 60px; }
+            .timeline-node { width: 36px; height: 36px; font-size: 0.65rem; }
+            .timeline-year { font-size: 0.8rem; }
+            .timeline-name { font-size: 0.55rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .timeline-name { display: none; }
+            .timeline-node { width: 30px; height: 30px; font-size: 0.6rem; }
         }
     </style>
 </head>
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.6</div>
+<div class="version-tag">v0.7</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -786,20 +891,55 @@
 <!-- GAME SCREEN -->
 <div id="gameScreen">
     <div class="top-bar">
-        <div class="top-bar-logo">
-            <img src="../00_images/Logo_White_Nobackground.png" alt="Logo">
-        </div>
-        <div class="top-bar-phase">
-            <span id="phaseName">STAGE 1: DESIGN</span> — <span class="year" id="phaseYear">2025</span>
-        </div>
-        <div class="top-bar-right">
+        <div class="top-bar-header">
+            <div class="top-bar-logo">
+                <img src="../00_images/Logo_White_Nobackground.png" alt="Logo">
+            </div>
             <div class="top-bar-stats" id="topStats"></div>
             <button class="btn-next-stage" id="btnNextStage">Complete Stage →</button>
         </div>
-    </div>
-    
-    <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
+        <div class="timeline-container">
+            <div class="timeline-track">
+                <div class="timeline-progress" id="timelineProgress"></div>
+            </div>
+            <div class="timeline-stages" id="timelineStages">
+                <div class="timeline-stage current" data-stage="1">
+                    <div class="timeline-node">1</div>
+                    <div class="timeline-label">
+                        <div class="timeline-year">2025</div>
+                        <div class="timeline-name">Design</div>
+                    </div>
+                </div>
+                <div class="timeline-stage future" data-stage="2">
+                    <div class="timeline-node">2</div>
+                    <div class="timeline-label">
+                        <div class="timeline-year">2040</div>
+                        <div class="timeline-name">Maintenance</div>
+                    </div>
+                </div>
+                <div class="timeline-stage future" data-stage="3">
+                    <div class="timeline-node">3</div>
+                    <div class="timeline-label">
+                        <div class="timeline-year">2055</div>
+                        <div class="timeline-name">Inspection</div>
+                    </div>
+                </div>
+                <div class="timeline-stage future" data-stage="4">
+                    <div class="timeline-node">4</div>
+                    <div class="timeline-label">
+                        <div class="timeline-year">2070</div>
+                        <div class="timeline-name">Operations</div>
+                    </div>
+                </div>
+                <div class="timeline-stage future" data-stage="5">
+                    <div class="timeline-node">5</div>
+                    <div class="timeline-label">
+                        <div class="timeline-year">2085</div>
+                        <div class="timeline-name">Decommission</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     
     <div class="character-banner" id="characterBanner">
@@ -847,13 +987,6 @@
     </div>
     
     <div class="bottom-bar">
-        <div class="progress-dots" id="progressDots">
-            <div class="progress-dot current" data-stage="1"></div>
-            <div class="progress-dot" data-stage="2"></div>
-            <div class="progress-dot" data-stage="3"></div>
-            <div class="progress-dot" data-stage="4"></div>
-            <div class="progress-dot" data-stage="5"></div>
-        </div>
         <span class="progress-label" id="progressLabel">0 of 6 complete</span>
     </div>
 </div>
@@ -1892,8 +2025,8 @@ function startStage(stageNum) {
     
     const stage = GAME_DATA.stages[stageNum];
     
-    document.getElementById('phaseName').textContent = `STAGE ${stageNum}: ${stage.name}`;
-    document.getElementById('phaseYear').textContent = stage.year;
+    // Update timeline
+    updateTimeline(stageNum);
     
     updateStatsDisplay();
     
@@ -1911,20 +2044,31 @@ function startStage(stageNum) {
     
     // Reset hotspots
     document.querySelectorAll('.hotspot-dot').forEach(d => {
-        d.classList.remove('done', 'warning', 'issue');
+        d.classList.remove('done');
     });
     
-    // Update progress dots
-    document.querySelectorAll('.progress-dot').forEach((d, i) => {
-        d.classList.remove('current', 'done');
-        if (i + 1 === stageNum) d.classList.add('current');
-        else if (i + 1 < stageNum) d.classList.add('done');
-    });
-    
-    document.getElementById('progressFill').style.width = `${(stageNum - 1) * 25}%`;
     document.getElementById('btnNextStage').classList.remove('visible');
     
     updateProgressLabel();
+}
+
+function updateTimeline(currentStage) {
+    document.querySelectorAll('.timeline-stage').forEach(stage => {
+        const stageNum = parseInt(stage.dataset.stage);
+        stage.classList.remove('completed', 'current', 'future');
+        
+        if (stageNum < currentStage) {
+            stage.classList.add('completed');
+        } else if (stageNum === currentStage) {
+            stage.classList.add('current');
+        } else {
+            stage.classList.add('future');
+        }
+    });
+    
+    // Update progress bar (0% at stage 1, 100% at stage 5)
+    const progressPercent = ((currentStage - 1) / 4) * 100;
+    document.getElementById('timelineProgress').style.width = `${progressPercent}%`;
 }
 
 function updateStatsDisplay() {
