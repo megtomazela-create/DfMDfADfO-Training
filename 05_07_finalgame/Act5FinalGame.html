@@ -122,9 +122,19 @@
         .budget-value.remaining.warning { color: var(--amber); }
         .budget-value.remaining.critical { color: var(--red); }
         
-        .plant-diagram { background: var(--dark-slate); border-radius: var(--radius-lg); padding: var(--space-xl); min-height: 400px; }
-        .plant-svg-container { width: 100%; max-width: 800px; margin: 0 auto; }
-        .plant-svg-container svg { width: 100%; height: auto; }
+        .plant-diagram { background: var(--dark-slate); border-radius: var(--radius-lg); overflow: hidden; position: relative; }
+        .plant-image-wrapper { position: relative; width: 100%; }
+        .plant-bg-image { width: 100%; height: auto; display: block; }
+        
+        .hotspot { position: absolute; cursor: pointer; transform: translate(-50%, -50%); z-index: 10; }
+        .hotspot-marker { width: 48px; height: 48px; border-radius: 50%; background: rgba(0,176,240,0.25); border: 3px solid var(--blue); display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; animation: hotspotPulse 2s infinite; }
+        .hotspot-marker:hover { transform: scale(1.15); background: rgba(0,176,240,0.45); }
+        .hotspot-marker.selected { background: rgba(146,208,80,0.35); border-color: var(--green); animation: none; }
+        .hotspot-marker.selected::after { content: '✓'; color: var(--green); font-size: 1.2rem; font-weight: bold; }
+        .hotspot-label { position: absolute; top: 54px; left: 50%; transform: translateX(-50%); background: rgba(31,41,55,0.95); color: var(--white); padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; white-space: nowrap; pointer-events: none; border: 1px solid var(--slate); }
+        .hotspot-line { position: absolute; background: var(--blue); pointer-events: none; }
+        .hotspot-line.selected { background: var(--green); }
+        @keyframes hotspotPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(0,176,240,0.4); } 50% { box-shadow: 0 0 0 14px rgba(0,176,240,0); } }
         
         .design-elements-list { display: none; flex-direction: column; gap: var(--space-md); }
         .design-element-card { background: var(--slate); border-radius: var(--radius-md); padding: var(--space-md); display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 2px solid transparent; }
@@ -646,73 +656,44 @@
                 </div>
                 
                 <div class="plant-diagram" id="plantDiagram">
-                    <div class="plant-svg-container">
-                        <svg viewBox="0 0 800 500" id="plantSvg">
-                            <rect x="0" y="0" width="800" height="500" fill="#2d3a47"/>
-                            <g stroke="#3d4a57" stroke-width="1" opacity="0.5">
-                                <line x1="0" y1="100" x2="800" y2="100"/><line x1="0" y1="200" x2="800" y2="200"/>
-                                <line x1="0" y1="300" x2="800" y2="300"/><line x1="0" y1="400" x2="800" y2="400"/>
-                                <line x1="200" y1="0" x2="200" y2="500"/><line x1="400" y1="0" x2="400" y2="500"/>
-                                <line x1="600" y1="0" x2="600" y2="500"/>
-                            </g>
-                            <text x="400" y="30" text-anchor="middle" fill="#9babc2" font-size="14" font-weight="500">SECTION 4B - PRIMARY COOLANT AUXILIARY SYSTEMS</text>
-                            
-                            <g class="plant-element" data-element="pumpAccess" id="elementPump">
-                                <rect x="80" y="180" width="140" height="120" fill="transparent"/>
-                                <rect x="100" y="200" width="100" height="80" fill="#4a5d6b" stroke="#00b0f0" stroke-width="2" rx="4"/>
-                                <circle cx="150" cy="240" r="25" fill="#364451" stroke="#00b0f0" stroke-width="2"/>
-                                <rect x="130" y="280" width="40" height="15" fill="#364451" stroke="#00b0f0" stroke-width="1"/>
-                                <text x="150" y="320" text-anchor="middle" fill="#00b0f0" font-size="11" font-weight="500">PUMP</text>
-                                <circle cx="200" cy="185" r="8" fill="#4a5d6b" stroke="#9babc2" stroke-width="2" id="statusPump"/>
-                            </g>
-                            
-                            <g class="plant-element" data-element="weldClearance" id="elementWeld">
-                                <rect x="230" y="220" width="120" height="80" fill="transparent"/>
-                                <rect x="250" y="240" width="80" height="40" fill="#4a5d6b" stroke="#00b0f0" stroke-width="2" rx="2"/>
-                                <line x1="270" y1="240" x2="270" y2="280" stroke="#f59e0b" stroke-width="3"/>
-                                <line x1="310" y1="240" x2="310" y2="280" stroke="#f59e0b" stroke-width="3"/>
-                                <text x="290" y="310" text-anchor="middle" fill="#00b0f0" font-size="11" font-weight="500">WELDS</text>
-                                <circle cx="350" cy="225" r="8" fill="#4a5d6b" stroke="#9babc2" stroke-width="2" id="statusWeld"/>
-                            </g>
-                            
-                            <g class="plant-element" data-element="controlPanel" id="elementControl">
-                                <rect x="560" y="60" width="180" height="140" fill="transparent"/>
-                                <rect x="580" y="80" width="140" height="100" fill="#4a5d6b" stroke="#00b0f0" stroke-width="2" rx="4"/>
-                                <rect x="595" y="95" width="50" height="35" fill="#1f2937" stroke="#364451" stroke-width="1"/>
-                                <circle cx="670" cy="105" r="8" fill="#92d050"/><circle cx="695" cy="105" r="8" fill="#f59e0b"/>
-                                <circle cx="670" cy="130" r="8" fill="#dc2626"/><circle cx="695" cy="130" r="8" fill="#364451" stroke="#9babc2"/>
-                                <text x="650" y="205" text-anchor="middle" fill="#00b0f0" font-size="11" font-weight="500">CONTROL PANEL</text>
-                                <circle cx="740" cy="65" r="8" fill="#4a5d6b" stroke="#9babc2" stroke-width="2" id="statusControl"/>
-                            </g>
-                            
-                            <g class="plant-element" data-element="pipeConnections" id="elementConnections">
-                                <rect x="380" y="220" width="120" height="80" fill="transparent"/>
-                                <rect x="400" y="245" width="30" height="30" fill="#4a5d6b" stroke="#00b0f0" stroke-width="2"/>
-                                <rect x="430" y="240" width="10" height="40" fill="#9babc2"/>
-                                <rect x="440" y="245" width="40" height="30" fill="#4a5d6b" stroke="#00b0f0" stroke-width="2"/>
-                                <text x="440" y="310" text-anchor="middle" fill="#00b0f0" font-size="11" font-weight="500">CONNECTIONS</text>
-                                <circle cx="500" cy="225" r="8" fill="#4a5d6b" stroke="#9babc2" stroke-width="2" id="statusConnections"/>
-                            </g>
-                            
-                            <g class="plant-element" data-element="pipeRouting" id="elementRouting">
-                                <rect x="80" y="350" width="300" height="100" fill="transparent"/>
-                                <rect x="100" y="390" width="260" height="40" fill="#5a5a5a" stroke="#7a7a7a" stroke-width="1"/>
-                                <path d="M120 410 L200 410 L200 370 L280 370 L280 410 L340 410" stroke="#00b0f0" stroke-width="3" fill="none"/>
-                                <text x="230" y="460" text-anchor="middle" fill="#00b0f0" font-size="11" font-weight="500">PIPE ROUTING</text>
-                                <circle cx="380" cy="355" r="8" fill="#4a5d6b" stroke="#9babc2" stroke-width="2" id="statusRouting"/>
-                            </g>
-                            
-                            <g class="plant-element" data-element="materialSpec" id="elementMaterial">
-                                <rect x="500" y="320" width="200" height="130" fill="transparent"/>
-                                <rect x="520" y="340" width="160" height="90" fill="#4a5d6b" stroke="#00b0f0" stroke-width="2" rx="4"/>
-                                <line x1="535" y1="360" x2="615" y2="360" stroke="#9babc2" stroke-width="2"/>
-                                <line x1="535" y1="375" x2="595" y2="375" stroke="#9babc2" stroke-width="2"/>
-                                <line x1="535" y1="390" x2="640" y2="390" stroke="#9babc2" stroke-width="2"/>
-                                <text x="650" y="380" fill="#f59e0b" font-size="20">⚛</text>
-                                <text x="600" y="460" text-anchor="middle" fill="#00b0f0" font-size="11" font-weight="500">MATERIAL SPEC</text>
-                                <circle cx="700" cy="325" r="8" fill="#4a5d6b" stroke="#9babc2" stroke-width="2" id="statusMaterial"/>
-                            </g>
-                        </svg>
+                    <div class="plant-image-wrapper">
+                        <img src="gamebackground.png" alt="Section 4B Layout" class="plant-bg-image">
+                        
+                        <!-- Pump Access - on the blue pump -->
+                        <div class="hotspot" data-element="pumpAccess" style="left: 18%; top: 52%;">
+                            <div class="hotspot-marker" id="markerPump"></div>
+                            <span class="hotspot-label">Pump Access</span>
+                        </div>
+                        
+                        <!-- Weld Clearance - at the orange glow weld -->
+                        <div class="hotspot" data-element="weldClearance" style="left: 42%; top: 46%;">
+                            <div class="hotspot-marker" id="markerWeld"></div>
+                            <span class="hotspot-label">Weld Clearance</span>
+                        </div>
+                        
+                        <!-- Control Panel - on the panel on right wall -->
+                        <div class="hotspot" data-element="controlPanel" style="left: 85%; top: 42%;">
+                            <div class="hotspot-marker" id="markerControl"></div>
+                            <span class="hotspot-label">Control Panel</span>
+                        </div>
+                        
+                        <!-- Pipe Connections - at the flanged joint -->
+                        <div class="hotspot" data-element="pipeConnections" style="left: 56%; top: 52%;">
+                            <div class="hotspot-marker" id="markerConnections"></div>
+                            <span class="hotspot-label">Pipe Connections</span>
+                        </div>
+                        
+                        <!-- Pipe Routing - at floor duct -->
+                        <div class="hotspot" data-element="pipeRouting" style="left: 62%; top: 82%;">
+                            <div class="hotspot-marker" id="markerRouting"></div>
+                            <span class="hotspot-label">Pipe Routing</span>
+                        </div>
+                        
+                        <!-- Material Spec - on pipe body -->
+                        <div class="hotspot" data-element="materialSpec" style="left: 32%; top: 58%;">
+                            <div class="hotspot-marker" id="markerMaterial"></div>
+                            <span class="hotspot-label">Material Spec</span>
+                        </div>
                     </div>
                 </div>
                 
@@ -842,6 +823,267 @@
                     <button class="btn btn-secondary" id="btnRestart">← Restart Game</button>
                 </div>
             </section>
+            
+            <!-- Stage 3: Transition to 2055 -->
+            <section class="screen transition-screen" id="screenTransition3">
+                <p class="transition-years">15 YEARS LATER</p>
+                <h2 class="transition-year">2055</h2>
+                <div class="transition-text">
+                    <p>Thornbury Point is approaching mid-life.</p>
+                    <p>Thirty years of neutron bombardment. Thermal cycles. Chemical exposure.</p>
+                    <p>Time to look inside. Every weld. Every pressure boundary.</p>
+                    <p>The in-service inspection campaign begins.</p>
+                </div>
+                <button class="btn btn-primary" id="btnContinueTransition3">Continue →</button>
+            </section>
+            
+            <!-- Stage 3: Sarah Character -->
+            <section class="screen" id="screenCharacter3">
+                <div class="character-intro sarah" id="characterIntro3">
+                    <div class="character-header">
+                        <div class="character-portrait">👩‍🔬</div>
+                        <div class="character-info"><h3>Sarah Okonkwo</h3><p class="character-role">Principal Inspector</p></div>
+                    </div>
+                    <p class="character-dialogue" id="sarahDialogue">In-service inspection. Every weld, every pressure boundary. The safety case says we can reach them all. Let's find out.</p>
+                </div>
+                <div class="text-center"><button class="btn btn-primary" id="btnBeginStage3">Begin Inspection →</button></div>
+            </section>
+            
+            <!-- Stage 3: Mini-game -->
+            <section class="screen" id="screenMinigame3">
+                <div class="minigame-container">
+                    <div class="minigame-header">
+                        <h2>UT Weld Inspection</h2>
+                        <p class="text-muted" id="minigame3Instructions">Trace the probe along the weld to achieve full coverage</p>
+                        <div class="minigame-stats">
+                            <div class="minigame-stat"><span>📊</span><span class="minigame-stat-value" id="coverageDisplay">0%</span></div>
+                            <div class="minigame-stat"><span>☢️</span><span class="minigame-stat-value" id="minigame3Dose">+0.0 mSv</span></div>
+                        </div>
+                    </div>
+                    <div class="minigame-area">
+                        <div class="minigame-canvas" id="minigame3Canvas"></div>
+                        <div class="impossible-overlay" id="impossibleOverlay3" style="display: none;">
+                            <div class="impossible-icon">🚫</div>
+                            <div class="impossible-text">INSUFFICIENT CLEARANCE</div>
+                            <div class="impossible-detail" id="impossibleDetail3">The UT probe requires 80mm clearance. Only 50mm is available. Maximum achievable coverage: 60%.</div>
+                        </div>
+                    </div>
+                    <div class="decision-panel" id="decisionPanel3" style="display: none;">
+                        <h3>What do you want to do?</h3>
+                        <div class="decision-options" id="decisionOptions3"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Stage 3: Outcome -->
+            <section class="screen outcome-screen" id="screenOutcome3">
+                <div class="outcome-icon" id="outcomeIcon3">✓</div>
+                <h2 class="outcome-title" id="outcomeTitle3">Inspection Complete</h2>
+                <div class="character-comment" style="border-color: var(--sarah-colour);">
+                    <div class="comment-portrait">👩‍🔬</div>
+                    <div class="comment-content">
+                        <div class="comment-name">Sarah Okonkwo</div>
+                        <div class="comment-text" id="outcomeComment3">The welds are in acceptable condition.</div>
+                    </div>
+                </div>
+                <div class="outcome-description" id="outcomeDescription3"></div>
+                <div class="outcome-stats" id="outcomeStats3"></div>
+                <button class="btn btn-primary" id="btnContinueFromOutcome3">Continue →</button>
+            </section>
+            
+            <!-- Stage 3 Summary -->
+            <section class="screen stage-summary" id="screenStage3Summary">
+                <div class="stage-progress">
+                    <div class="stage-dot completed"></div><div class="stage-line completed"></div>
+                    <div class="stage-dot completed"></div><div class="stage-line completed"></div>
+                    <div class="stage-dot completed"></div><div class="stage-line"></div>
+                    <div class="stage-dot"></div><div class="stage-line"></div>
+                    <div class="stage-dot"></div>
+                </div>
+                <h2 class="summary-title">Inspection Complete</h2>
+                <div class="summary-meters" id="stage3SummaryMeters"></div>
+                <div class="summary-decisions"><h4>Inspection Results</h4><ul class="decision-list" id="stage3EventList"></ul></div>
+                <p class="text-muted mb-lg">The inspection campaign is complete. Plant returns to operation.</p>
+                <button class="btn btn-primary" id="btnContinueTo2070">Continue to 2070 →</button>
+            </section>
+            
+            <!-- Stage 4: Transition to 2070 -->
+            <section class="screen transition-screen" id="screenTransition4">
+                <p class="transition-years">15 YEARS LATER</p>
+                <h2 class="transition-year">2070</h2>
+                <div class="transition-text">
+                    <p>Forty-five years of operation.</p>
+                    <p>The control room has seen hundreds of shift handovers. Thousands of routine checks.</p>
+                    <p>Tonight is not routine.</p>
+                    <p>An alarm sounds in Section 4B.</p>
+                </div>
+                <button class="btn btn-primary" id="btnContinueTransition4">Continue →</button>
+            </section>
+            
+            <!-- Stage 4: Mike Character -->
+            <section class="screen" id="screenCharacter4">
+                <div class="character-intro mike" id="characterIntro4">
+                    <div class="character-header">
+                        <div class="character-portrait">👨‍💼</div>
+                        <div class="character-info"><h3>Mike Brennan</h3><p class="character-role">Shift Operations Manager</p></div>
+                    </div>
+                    <p class="character-dialogue" id="mikeDialogue">Alarm in Section 4B. Night shift, skeleton crew. Let's see what we're dealing with.</p>
+                </div>
+                <div class="text-center"><button class="btn btn-primary" id="btnBeginStage4">Begin Response →</button></div>
+            </section>
+            
+            <!-- Stage 4: Mini-game -->
+            <section class="screen" id="screenMinigame4">
+                <div class="minigame-container">
+                    <div class="minigame-header">
+                        <h2>Emergency Response</h2>
+                        <p class="text-muted" id="minigame4Instructions">Find and activate the correct controls in sequence</p>
+                        <div class="minigame-stats">
+                            <div class="minigame-stat"><span>⏱️</span><span class="minigame-stat-value" id="minigame4Timer">60s</span></div>
+                            <div class="minigame-stat"><span>📋</span><span class="minigame-stat-value" id="sequenceProgress">0/4</span></div>
+                        </div>
+                    </div>
+                    <div class="minigame-area">
+                        <div class="minigame-canvas" id="minigame4Canvas"></div>
+                    </div>
+                    <div class="decision-panel" id="decisionPanel4" style="display: none;">
+                        <h3>Time's up! What now?</h3>
+                        <div class="decision-options" id="decisionOptions4"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Stage 4: Outcome -->
+            <section class="screen outcome-screen" id="screenOutcome4">
+                <div class="outcome-icon" id="outcomeIcon4">✓</div>
+                <h2 class="outcome-title" id="outcomeTitle4">Event Resolved</h2>
+                <div class="character-comment" style="border-color: var(--mike-colour);">
+                    <div class="comment-portrait">👨‍💼</div>
+                    <div class="comment-content">
+                        <div class="comment-name">Mike Brennan</div>
+                        <div class="comment-text" id="outcomeComment4">That was close. But we handled it.</div>
+                    </div>
+                </div>
+                <div class="outcome-description" id="outcomeDescription4"></div>
+                <div class="outcome-stats" id="outcomeStats4"></div>
+                <button class="btn btn-primary" id="btnContinueFromOutcome4">Continue →</button>
+            </section>
+            
+            <!-- Stage 4 Summary -->
+            <section class="screen stage-summary" id="screenStage4Summary">
+                <div class="stage-progress">
+                    <div class="stage-dot completed"></div><div class="stage-line completed"></div>
+                    <div class="stage-dot completed"></div><div class="stage-line completed"></div>
+                    <div class="stage-dot completed"></div><div class="stage-line completed"></div>
+                    <div class="stage-dot completed"></div><div class="stage-line"></div>
+                    <div class="stage-dot"></div>
+                </div>
+                <h2 class="summary-title">Operations Complete</h2>
+                <div class="summary-meters" id="stage4SummaryMeters"></div>
+                <div class="summary-decisions"><h4>Stage Events</h4><ul class="decision-list" id="stage4EventList"></ul></div>
+                <p class="text-muted mb-lg">The emergency is resolved. But the plant's days are numbered.</p>
+                <button class="btn btn-primary" id="btnContinueTo2085">Continue to 2085 →</button>
+            </section>
+            
+            <!-- Stage 5: Transition to 2085 -->
+            <section class="screen transition-screen" id="screenTransition5">
+                <p class="transition-years">15 YEARS LATER</p>
+                <h2 class="transition-year">2085</h2>
+                <div class="transition-text">
+                    <p>The reactor is shut down for the final time.</p>
+                    <p>Sixty years of operation. Millions of megawatt-hours. Careers begun and ended.</p>
+                    <p>Now comes the long task of putting it all back the way it was.</p>
+                    <p>Decommissioning begins.</p>
+                </div>
+                <button class="btn btn-primary" id="btnContinueTransition5">Continue →</button>
+            </section>
+            
+            <!-- Stage 5: Janet Character -->
+            <section class="screen" id="screenCharacter5">
+                <div class="character-intro janet" id="characterIntro5">
+                    <div class="character-header">
+                        <div class="character-portrait">👩‍🔧</div>
+                        <div class="character-info"><h3>Janet Cole</h3><p class="character-role">Decommissioning Project Lead</p></div>
+                    </div>
+                    <p class="character-dialogue" id="janetDialogue">Sixty years. Let's see what 2025 left us. I've been doing this long enough to know what to expect.</p>
+                </div>
+                <div class="text-center"><button class="btn btn-primary" id="btnBeginStage5">Begin Decommissioning →</button></div>
+            </section>
+            
+            <!-- Stage 5: Mini-game (3 tasks) -->
+            <section class="screen" id="screenMinigame5">
+                <div class="minigame-container">
+                    <div class="minigame-header">
+                        <h2 id="minigame5Title">Pipe Disassembly</h2>
+                        <p class="text-muted" id="minigame5Instructions">Remove the pipe connections</p>
+                        <div class="minigame-stats">
+                            <div class="minigame-stat"><span>📦</span><span class="minigame-stat-value" id="wasteGenerated">0 tonnes</span></div>
+                            <div class="minigame-stat"><span>☢️</span><span class="minigame-stat-value" id="minigame5Dose">+0.0 mSv</span></div>
+                        </div>
+                    </div>
+                    <div class="minigame-area">
+                        <div class="minigame-canvas" id="minigame5Canvas"></div>
+                        <div class="impossible-overlay" id="impossibleOverlay5" style="display: none;">
+                            <div class="impossible-icon">🚫</div>
+                            <div class="impossible-text" id="impossibleText5">CANNOT PROCEED</div>
+                            <div class="impossible-detail" id="impossibleDetail5"></div>
+                        </div>
+                    </div>
+                    <div class="decision-panel" id="decisionPanel5" style="display: none;">
+                        <h3 id="decision5Title">What do you want to do?</h3>
+                        <div class="decision-options" id="decisionOptions5"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Stage 5: Outcome -->
+            <section class="screen outcome-screen" id="screenOutcome5">
+                <div class="outcome-icon" id="outcomeIcon5">✓</div>
+                <h2 class="outcome-title" id="outcomeTitle5">Task Complete</h2>
+                <div class="character-comment" style="border-color: var(--janet-colour);">
+                    <div class="comment-portrait">👩‍🔧</div>
+                    <div class="comment-content">
+                        <div class="comment-name">Janet Cole</div>
+                        <div class="comment-text" id="outcomeComment5">Another day, another piece of history dismantled.</div>
+                    </div>
+                </div>
+                <div class="outcome-description" id="outcomeDescription5"></div>
+                <div class="outcome-stats" id="outcomeStats5"></div>
+                <button class="btn btn-primary" id="btnContinueFromOutcome5">Continue →</button>
+            </section>
+            
+            <!-- Stage 5 Summary -->
+            <section class="screen stage-summary" id="screenStage5Summary">
+                <div class="stage-progress">
+                    <div class="stage-dot completed"></div><div class="stage-line completed"></div>
+                    <div class="stage-dot completed"></div><div class="stage-line completed"></div>
+                    <div class="stage-dot completed"></div><div class="stage-line completed"></div>
+                    <div class="stage-dot completed"></div><div class="stage-line completed"></div>
+                    <div class="stage-dot completed"></div>
+                </div>
+                <h2 class="summary-title">Decommissioning Complete</h2>
+                <div class="summary-meters" id="stage5SummaryMeters"></div>
+                <div class="summary-decisions"><h4>Decommissioning Tasks</h4><ul class="decision-list" id="stage5EventList"></ul></div>
+                <p class="text-muted mb-lg">Section 4B has been returned to greenfield status.</p>
+                <button class="btn btn-primary" id="btnViewResults">View Final Results →</button>
+            </section>
+            
+            <!-- Final Results -->
+            <section class="screen" id="screenResults">
+                <div class="text-center">
+                    <h2 class="mb-lg">The 60-Year Journey Complete</h2>
+                    <div class="outcome-icon" id="resultsStars">⭐⭐⭐</div>
+                    <h3 id="resultsRating" style="margin-bottom: 24px;">Competent Engineer</h3>
+                    
+                    <div class="outcome-description">
+                        <h4 style="margin-bottom: 16px;">Final Totals</h4>
+                        <div class="outcome-stats" id="finalStats"></div>
+                        <div id="resultsMessage" style="margin-top: 16px;"></div>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="btnPlayAgain" style="margin-top: 24px;">Play Again</button>
+                </div>
+            </section>
         </main>
     </div>
     
@@ -876,6 +1118,9 @@
                 plantHealth: 100
             },
             stage2: { budgetUsed: 0, doseAccrued: 0, timeUsed: 0, events: [], outcome: null },
+            stage3: { budgetUsed: 0, doseAccrued: 0, timeUsed: 0, events: [], coverage: 0 },
+            stage4: { budgetUsed: 0, doseAccrued: 0, timeUsed: 0, events: [], responseTime: 0 },
+            stage5: { budgetUsed: 0, doseAccrued: 0, wasteGenerated: 0, events: [], tasksCompleted: 0 },
             incidents: [],
             injuries: 0,
             fatalities: 0
@@ -983,12 +1228,12 @@
         
         function updateElementStatus(key, optionId) {
             const opt = DesignElements[key].options.find(o => o.id === optionId);
-            const statusMap = { pumpAccess: 'statusPump', weldClearance: 'statusWeld', controlPanel: 'statusControl', pipeConnections: 'statusConnections', pipeRouting: 'statusRouting', materialSpec: 'statusMaterial' };
+            const markerMap = { pumpAccess: 'markerPump', weldClearance: 'markerWeld', controlPanel: 'markerControl', pipeConnections: 'markerConnections', pipeRouting: 'markerRouting', materialSpec: 'markerMaterial' };
             const listStatusMap = { pumpAccess: 'listStatusPump', weldClearance: 'listStatusWeld', controlPanel: 'listStatusControl', pipeConnections: 'listStatusConnections', pipeRouting: 'listStatusRouting', materialSpec: 'listStatusMaterial' };
             const listCostMap = { pumpAccess: 'listCostPump', weldClearance: 'listCostWeld', controlPanel: 'listCostControl', pipeConnections: 'listCostConnections', pipeRouting: 'listCostRouting', materialSpec: 'listCostMaterial' };
             
-            const svgEl = $(statusMap[key]);
-            if (svgEl) { svgEl.setAttribute('fill', '#92d050'); svgEl.setAttribute('stroke', '#92d050'); }
+            const markerEl = $(markerMap[key]);
+            if (markerEl) { markerEl.classList.add('selected'); }
             
             const listEl = $(listStatusMap[key]);
             if (listEl) { listEl.classList.add('complete'); listEl.textContent = '✓'; }
@@ -1579,25 +1824,432 @@
         }
         
         function showStage2Summary() {
-            // Update global meters
             GameState.meters.budgetSpent += GameState.stage2.budgetUsed;
             GameState.meters.dose += GameState.stage2.doseAccrued;
             GameState.meters.time += GameState.stage2.timeUsed;
             
-            // Build summary
             $('stage2SummaryMeters').innerHTML = `
                 <div class="summary-meter"><div class="summary-meter-icon">💰</div><div class="summary-meter-value">${formatCurrency(GameState.stage2.budgetUsed)}</div><div class="summary-meter-label">Stage Cost</div></div>
                 <div class="summary-meter"><div class="summary-meter-icon">☢️</div><div class="summary-meter-value">+${GameState.stage2.doseAccrued.toFixed(1)} mSv</div><div class="summary-meter-label">Dose Accrued</div></div>
-                <div class="summary-meter"><div class="summary-meter-icon">⏱️</div><div class="summary-meter-value">${GameState.stage2.timeUsed} days</div><div class="summary-meter-label">Time Used</div></div>
                 <div class="summary-meter"><div class="summary-meter-icon">❤️</div><div class="summary-meter-value">${GameState.meters.plantHealth}%</div><div class="summary-meter-label">Plant Health</div></div>
             `;
             
-            $('stage2EventList').innerHTML = GameState.stage2.events.map(e => 
-                `<li><span class="decision-name">${e.desc}</span></li>`
-            ).join('');
-            
+            $('stage2EventList').innerHTML = GameState.stage2.events.map(e => `<li><span class="decision-name">${e.desc}</span></li>`).join('');
             updateMeters();
+            $('headerStage').innerHTML = '<strong>STAGE 2:</strong> COMPLETE';
             showScreen('stage2Summary');
+        }
+        
+        // ============================================
+        // STAGE 3: INSPECTION (Sarah)
+        // ============================================
+        function startStage3() {
+            $('headerStage').innerHTML = '<strong>STAGE 3:</strong> INSPECTION';
+            const weldChoice = GameState.designChoices.weldClearance;
+            let dialogue;
+            if (weldChoice === '50mm') {
+                dialogue = "In-service inspection. Every weld, every pressure boundary. The safety case says we can reach them all. But I'm looking at these drawings and... 50mm clearance? Someone's having a laugh.";
+            } else if (weldChoice === '150mm') {
+                dialogue = "In-service inspection. Every weld, every pressure boundary. Good clearances on the drawings. Let's see if reality matches the paperwork.";
+            } else {
+                dialogue = "In-service inspection. Every weld, every pressure boundary. 300mm clearance with permanent scaffolding? Generous. Though that scaffolding will be contaminated by now.";
+            }
+            $('sarahDialogue').textContent = dialogue;
+            showScreen('character3');
+        }
+        
+        function startInspectionGame() {
+            const choice = GameState.designChoices.weldClearance;
+            const canvas = $('minigame3Canvas');
+            
+            if (choice === '50mm') {
+                canvas.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;"><p style="font-size:1.2rem;color:var(--amber);margin-bottom:16px;">Attempting inspection with 50mm clearance...</p><p style="color:var(--light-grey);">The UT probe requires 80mm. You can only achieve partial coverage.</p></div>';
+                setTimeout(() => {
+                    $('impossibleOverlay3').style.display = 'flex';
+                    $('coverageDisplay').textContent = '60%';
+                    $('coverageDisplay').classList.add('warning');
+                    showInspectionDecision();
+                }, 2000);
+            } else if (choice === '150mm') {
+                canvas.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;"><div style="width:80%;height:30px;background:var(--slate);border-radius:4px;overflow:hidden;"><div id="coverageBar" style="width:0%;height:100%;background:var(--green);transition:width 0.1s;"></div></div><p style="margin-top:12px;color:var(--light-grey);">Scanning weld...</p></div>';
+                let coverage = 0;
+                const interval = setInterval(() => {
+                    coverage += 5;
+                    $('coverageBar').style.width = coverage + '%';
+                    $('coverageDisplay').textContent = coverage + '%';
+                    if (coverage >= 100) {
+                        clearInterval(interval);
+                        GameState.stage3.coverage = 100;
+                        GameState.stage3.doseAccrued = 0.8;
+                        GameState.stage3.events.push({ desc: 'Full weld coverage achieved' });
+                        showInspectionOutcome('success');
+                    }
+                }, 100);
+            } else {
+                canvas.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;"><p style="color:var(--amber);margin-bottom:16px;">Navigating contaminated scaffolding...</p><div style="width:80%;height:30px;background:var(--slate);border-radius:4px;overflow:hidden;"><div id="coverageBar" style="width:0%;height:100%;background:var(--green);transition:width 0.1s;"></div></div></div>';
+                let coverage = 0;
+                const interval = setInterval(() => {
+                    coverage += 3;
+                    $('coverageBar').style.width = coverage + '%';
+                    $('coverageDisplay').textContent = coverage + '%';
+                    $('minigame3Dose').textContent = '+' + (coverage * 0.02).toFixed(1) + ' mSv';
+                    if (coverage >= 100) {
+                        clearInterval(interval);
+                        GameState.stage3.coverage = 100;
+                        GameState.stage3.doseAccrued = 2.0;
+                        GameState.stage3.budgetUsed = 25000;
+                        GameState.stage3.events.push({ desc: 'Full coverage achieved (scaffolding decon required)' });
+                        showInspectionOutcome('wasteful');
+                    }
+                }, 120);
+            }
+            showScreen('minigame3');
+        }
+        
+        function showInspectionDecision() {
+            $('decisionPanel3').style.display = 'block';
+            $('decisionOptions3').innerHTML = `
+                <div class="decision-option" data-choice="accept">
+                    <div class="decision-option-header"><span class="decision-option-title">Accept Partial Coverage</span><span class="decision-option-cost">£0</span></div>
+                    <p class="decision-option-desc">Document the limitation and accept 60% coverage. Note in the safety case.</p>
+                    <div class="decision-option-risk"><span class="risk-indicator moderate">MODERATE RISK</span><span>Regulatory scrutiny possible</span></div>
+                </div>
+                <div class="decision-option" data-choice="specialist">
+                    <div class="decision-option-header"><span class="decision-option-title">Specialist Flexible Probe</span><span class="decision-option-cost">£40,000</span></div>
+                    <p class="decision-option-desc">Bring in specialist contractor with flexible phased-array probe.</p>
+                    <div class="decision-option-risk"><span class="risk-indicator safe">SAFE</span><span>+2 days, achieves 95% coverage</span></div>
+                </div>
+            `;
+            $$('#decisionOptions3 .decision-option').forEach(opt => {
+                opt.onclick = () => handleInspectionChoice(opt.dataset.choice);
+            });
+        }
+        
+        function handleInspectionChoice(choice) {
+            if (choice === 'accept') {
+                GameState.stage3.coverage = 60;
+                GameState.stage3.doseAccrued = 1.2;
+                GameState.stage3.events.push({ desc: 'Partial coverage accepted (60%)' });
+                GameState.incidents.push('Inspection limitation documented');
+                showInspectionOutcome('partial');
+            } else {
+                GameState.stage3.coverage = 95;
+                GameState.stage3.budgetUsed = 40000;
+                GameState.stage3.doseAccrued = 1.5;
+                GameState.stage3.events.push({ desc: 'Specialist contractor achieved 95% coverage' });
+                showInspectionOutcome('specialist');
+            }
+        }
+        
+        function showInspectionOutcome(type) {
+            const outcomes = {
+                success: { icon: '✓', title: 'Full Coverage', titleClass: 'success', comment: "Textbook inspection. Good clearances, full coverage, minimal dose. Whoever designed this knew what they were doing.", stats: [{ label: 'Coverage', value: '100%', class: 'positive' }, { label: 'Dose', value: '+0.8 mSv', class: 'positive' }, { label: 'Cost', value: '£0', class: 'positive' }] },
+                wasteful: { icon: '✓', title: 'Complete', titleClass: 'partial', comment: "Got full coverage, but that scaffolding was hot. My team took more dose than I'd like climbing around it. And we'll need to add decon costs.", stats: [{ label: 'Coverage', value: '100%', class: 'positive' }, { label: 'Dose', value: '+2.0 mSv', class: 'negative' }, { label: 'Cost', value: '£25,000', class: 'neutral' }] },
+                partial: { icon: '⚠️', title: 'Partial Coverage', titleClass: 'partial', comment: "60% coverage is what it is. I've documented the limitation. The regulator won't be happy, but we can't inspect what we can't reach.", stats: [{ label: 'Coverage', value: '60%', class: 'negative' }, { label: 'Dose', value: '+1.2 mSv', class: 'neutral' }, { label: 'Cost', value: '£0', class: 'positive' }] },
+                specialist: { icon: '✓', title: 'Near-Full Coverage', titleClass: 'success', comment: "The specialist probe got us to 95%. Cost us time and money, but at least we can sign off the safety case properly.", stats: [{ label: 'Coverage', value: '95%', class: 'positive' }, { label: 'Dose', value: '+1.5 mSv', class: 'neutral' }, { label: 'Cost', value: '£40,000', class: 'negative' }] }
+            };
+            const o = outcomes[type];
+            $('outcomeIcon3').textContent = o.icon;
+            $('outcomeTitle3').textContent = o.title;
+            $('outcomeTitle3').className = 'outcome-title ' + o.titleClass;
+            $('outcomeComment3').textContent = o.comment;
+            $('outcomeDescription3').innerHTML = '<p>The in-service inspection of Section 4B welds has been completed.</p>';
+            $('outcomeStats3').innerHTML = o.stats.map(s => `<div class="outcome-stat"><div class="outcome-stat-label">${s.label}</div><div class="outcome-stat-value ${s.class}">${s.value}</div></div>`).join('');
+            showScreen('outcome3');
+        }
+        
+        function showStage3Summary() {
+            GameState.meters.budgetSpent += GameState.stage3.budgetUsed;
+            GameState.meters.dose += GameState.stage3.doseAccrued;
+            $('stage3SummaryMeters').innerHTML = `
+                <div class="summary-meter"><div class="summary-meter-icon">📊</div><div class="summary-meter-value">${GameState.stage3.coverage}%</div><div class="summary-meter-label">Coverage</div></div>
+                <div class="summary-meter"><div class="summary-meter-icon">💰</div><div class="summary-meter-value">${formatCurrency(GameState.stage3.budgetUsed)}</div><div class="summary-meter-label">Cost</div></div>
+                <div class="summary-meter"><div class="summary-meter-icon">☢️</div><div class="summary-meter-value">+${GameState.stage3.doseAccrued.toFixed(1)} mSv</div><div class="summary-meter-label">Dose</div></div>
+            `;
+            $('stage3EventList').innerHTML = GameState.stage3.events.map(e => `<li><span class="decision-name">${e.desc}</span></li>`).join('');
+            updateMeters();
+            $('headerStage').innerHTML = '<strong>STAGE 3:</strong> COMPLETE';
+            showScreen('stage3Summary');
+        }
+        
+        // ============================================
+        // STAGE 4: OPERATIONS (Mike)
+        // ============================================
+        function startStage4() {
+            $('headerStage').innerHTML = '<strong>STAGE 4:</strong> OPERATIONS';
+            const panelChoice = GameState.designChoices.controlPanel;
+            let dialogue;
+            if (panelChoice === 'systemBased') {
+                dialogue = "Alarm in Section 4B. Night shift, skeleton crew. Right, where's the... wait, why are the pump controls over here and the isolation valves over there? Who designed this panel?";
+            } else if (panelChoice === 'taskBased') {
+                dialogue = "Alarm in Section 4B. Night shift, skeleton crew. Let's work the procedure. Isolation valves, pump trip, vent sequence... all in order on the panel. Good.";
+            } else {
+                dialogue = "Alarm in Section 4B. Night shift, skeleton crew. Right, touch the screen to... wait, it's not responding. The screen's frozen. Someone get me a torch, I can't see the backup switches!";
+            }
+            $('mikeDialogue').textContent = dialogue;
+            showScreen('character4');
+        }
+        
+        function startControlRoomGame() {
+            const choice = GameState.designChoices.controlPanel;
+            const canvas = $('minigame4Canvas');
+            
+            if (choice === 'taskBased') {
+                canvas.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;"><p style="color:var(--light-grey);">Execute emergency sequence: Click buttons 1→2→3→4</p><div style="display:flex;gap:12px;"><button class="seq-btn" data-seq="1" style="width:60px;height:60px;border-radius:8px;background:var(--slate);border:2px solid var(--blue);color:white;font-size:1.5rem;cursor:pointer;">1</button><button class="seq-btn" data-seq="2" style="width:60px;height:60px;border-radius:8px;background:var(--slate);border:2px solid var(--blue);color:white;font-size:1.5rem;cursor:pointer;">2</button><button class="seq-btn" data-seq="3" style="width:60px;height:60px;border-radius:8px;background:var(--slate);border:2px solid var(--blue);color:white;font-size:1.5rem;cursor:pointer;">3</button><button class="seq-btn" data-seq="4" style="width:60px;height:60px;border-radius:8px;background:var(--slate);border:2px solid var(--blue);color:white;font-size:1.5rem;cursor:pointer;">4</button></div></div>';
+                let current = 1;
+                canvas.querySelectorAll('.seq-btn').forEach(btn => {
+                    btn.onclick = () => {
+                        if (parseInt(btn.dataset.seq) === current) {
+                            btn.style.background = 'var(--green)';
+                            $('sequenceProgress').textContent = current + '/4';
+                            if (current === 4) {
+                                GameState.stage4.events.push({ desc: 'Emergency sequence completed successfully' });
+                                GameState.stage4.doseAccrued = 0.2;
+                                showControlOutcome('success');
+                            }
+                            current++;
+                        }
+                    };
+                });
+            } else if (choice === 'systemBased') {
+                canvas.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;"><p style="color:var(--amber);">Controls scattered! Find sequence: 1→2→3→4</p><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:300px;"><button class="seq-btn" data-seq="3" style="width:50px;height:50px;border-radius:8px;background:var(--slate);border:2px solid var(--mid-grey);color:white;font-size:1.2rem;cursor:pointer;">?</button><button class="seq-btn" data-seq="1" style="width:50px;height:50px;border-radius:8px;background:var(--slate);border:2px solid var(--mid-grey);color:white;font-size:1.2rem;cursor:pointer;">?</button><button class="seq-btn" data-seq="4" style="width:50px;height:50px;border-radius:8px;background:var(--slate);border:2px solid var(--mid-grey);color:white;font-size:1.2rem;cursor:pointer;">?</button><button class="seq-btn" data-seq="2" style="width:50px;height:50px;border-radius:8px;background:var(--slate);border:2px solid var(--mid-grey);color:white;font-size:1.2rem;cursor:pointer;">?</button></div><p style="color:var(--red);font-size:0.9rem;">Timer running - find controls quickly!</p></div>';
+                let current = 1, errors = 0, timer = 30;
+                const timerInt = setInterval(() => {
+                    timer--;
+                    $('minigame4Timer').textContent = timer + 's';
+                    if (timer <= 10) $('minigame4Timer').classList.add('warning');
+                    if (timer <= 0) { clearInterval(timerInt); showControlDecision(); }
+                }, 1000);
+                canvas.querySelectorAll('.seq-btn').forEach(btn => {
+                    btn.onclick = () => {
+                        btn.textContent = btn.dataset.seq;
+                        if (parseInt(btn.dataset.seq) === current) {
+                            btn.style.background = 'var(--green)';
+                            $('sequenceProgress').textContent = current + '/4';
+                            if (current === 4) { clearInterval(timerInt); GameState.stage4.events.push({ desc: 'Sequence completed with difficulty' }); GameState.stage4.doseAccrued = 0.5; showControlOutcome('delayed'); }
+                            current++;
+                        } else { btn.style.background = 'var(--red)'; errors++; setTimeout(() => { btn.style.background = 'var(--slate)'; btn.textContent = '?'; }, 500); }
+                    };
+                });
+            } else {
+                canvas.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;"><p style="color:var(--red);">TOUCHSCREEN FROZEN</p><p style="color:var(--light-grey);">Backup switches unlabelled in the dark...</p><div style="background:var(--deep-navy);padding:20px;border-radius:8px;"><p style="color:var(--amber);">⏱️ System unresponsive for 45 seconds...</p></div></div>';
+                setTimeout(() => {
+                    GameState.stage4.events.push({ desc: 'Touchscreen failure - delayed response' });
+                    GameState.stage4.budgetUsed = 100000;
+                    GameState.stage4.doseAccrued = 1.0;
+                    GameState.meters.plantHealth -= 10;
+                    showControlOutcome('failure');
+                }, 3000);
+            }
+            showScreen('minigame4');
+        }
+        
+        function showControlDecision() {
+            $('decisionPanel4').style.display = 'block';
+            $('decisionOptions4').innerHTML = `
+                <div class="decision-option" data-choice="manual">
+                    <div class="decision-option-header"><span class="decision-option-title">Manual Override</span><span class="decision-option-cost">+£50,000</span></div>
+                    <p class="decision-option-desc">Send operator into Section 4B to manually isolate. Higher dose but controlled shutdown.</p>
+                    <div class="decision-option-risk"><span class="risk-indicator moderate">MODERATE</span><span>+2.0 mSv to operator</span></div>
+                </div>
+            `;
+            $$('#decisionOptions4 .decision-option').forEach(opt => {
+                opt.onclick = () => { GameState.stage4.budgetUsed = 50000; GameState.stage4.doseAccrued = 2.0; GameState.stage4.events.push({ desc: 'Manual override required' }); showControlOutcome('manual'); };
+            });
+        }
+        
+        function showControlOutcome(type) {
+            const outcomes = {
+                success: { icon: '✓', title: 'Perfect Response', titleClass: 'success', comment: "Textbook. Sequence completed in good time, minimal fuss. That's what a well-designed panel gets you.", stats: [{ label: 'Response', value: 'Optimal', class: 'positive' }, { label: 'Dose', value: '+0.2 mSv', class: 'positive' }, { label: 'Plant', value: 'No damage', class: 'positive' }] },
+                delayed: { icon: '⚠️', title: 'Resolved', titleClass: 'partial', comment: "Got there in the end, but I shouldn't have to hunt for controls during an emergency. Wasted precious seconds.", stats: [{ label: 'Response', value: 'Delayed', class: 'neutral' }, { label: 'Dose', value: '+0.5 mSv', class: 'neutral' }, { label: 'Plant', value: 'No damage', class: 'positive' }] },
+                manual: { icon: '⚠️', title: 'Manual Override', titleClass: 'partial', comment: "Had to send someone in. They got dose they shouldn't have had to take. All because we couldn't find controls fast enough.", stats: [{ label: 'Response', value: 'Delayed', class: 'negative' }, { label: 'Dose', value: '+2.0 mSv', class: 'negative' }, { label: 'Cost', value: '£50,000', class: 'negative' }] },
+                failure: { icon: '❌', title: 'System Failure', titleClass: 'failure', comment: "Touchscreen died when we needed it most. Lost control for 45 seconds. Plant took damage. Unacceptable.", stats: [{ label: 'Response', value: 'Failed', class: 'negative' }, { label: 'Dose', value: '+1.0 mSv', class: 'negative' }, { label: 'Plant Health', value: '-10%', class: 'negative' }] }
+            };
+            const o = outcomes[type];
+            $('outcomeIcon4').textContent = o.icon;
+            $('outcomeTitle4').textContent = o.title;
+            $('outcomeTitle4').className = 'outcome-title ' + o.titleClass;
+            $('outcomeComment4').textContent = o.comment;
+            $('outcomeDescription4').innerHTML = '<p>The emergency in Section 4B has been resolved.</p>';
+            $('outcomeStats4').innerHTML = o.stats.map(s => `<div class="outcome-stat"><div class="outcome-stat-label">${s.label}</div><div class="outcome-stat-value ${s.class}">${s.value}</div></div>`).join('');
+            showScreen('outcome4');
+        }
+        
+        function showStage4Summary() {
+            GameState.meters.budgetSpent += GameState.stage4.budgetUsed;
+            GameState.meters.dose += GameState.stage4.doseAccrued;
+            $('stage4SummaryMeters').innerHTML = `
+                <div class="summary-meter"><div class="summary-meter-icon">💰</div><div class="summary-meter-value">${formatCurrency(GameState.stage4.budgetUsed)}</div><div class="summary-meter-label">Cost</div></div>
+                <div class="summary-meter"><div class="summary-meter-icon">☢️</div><div class="summary-meter-value">+${GameState.stage4.doseAccrued.toFixed(1)} mSv</div><div class="summary-meter-label">Dose</div></div>
+                <div class="summary-meter"><div class="summary-meter-icon">❤️</div><div class="summary-meter-value">${GameState.meters.plantHealth}%</div><div class="summary-meter-label">Plant Health</div></div>
+            `;
+            $('stage4EventList').innerHTML = GameState.stage4.events.map(e => `<li><span class="decision-name">${e.desc}</span></li>`).join('');
+            updateMeters();
+            $('headerStage').innerHTML = '<strong>STAGE 4:</strong> COMPLETE';
+            showScreen('stage4Summary');
+        }
+        
+        // ============================================
+        // STAGE 5: DECOMMISSIONING (Janet)
+        // ============================================
+        function startStage5() {
+            $('headerStage').innerHTML = '<strong>STAGE 5:</strong> DECOMMISSIONING';
+            const choices = GameState.designChoices;
+            let dialogue = "Sixty years. Let's see what 2025 left us. ";
+            if (choices.pipeConnections === 'welded') dialogue += "All welded joints? Going to be a lot of cutting. ";
+            if (choices.pipeRouting === 'embedded') dialogue += "Pipes in concrete? That's going to hurt. ";
+            if (choices.materialSpec === 'standardSS') dialogue += "Standard steel... high cobalt. We'll need remote handling. ";
+            dialogue += "Right then. Let's get to work.";
+            $('janetDialogue').textContent = dialogue;
+            showScreen('character5');
+        }
+        
+        function startDecommissioningGame() {
+            runDecomTask1();
+        }
+        
+        function runDecomTask1() {
+            const choice = GameState.designChoices.pipeConnections;
+            const canvas = $('minigame5Canvas');
+            $('minigame5Title').textContent = 'Pipe Disassembly';
+            
+            if (choice === 'flanged') {
+                canvas.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;"><p style="color:var(--light-grey);">Click bolts to remove flange</p><div style="display:flex;gap:8px;" id="bolts"></div></div>';
+                const boltsDiv = canvas.querySelector('#bolts');
+                for (let i = 0; i < 6; i++) { const b = document.createElement('button'); b.style.cssText = 'width:40px;height:40px;border-radius:50%;background:var(--slate);border:2px solid var(--mid-grey);cursor:pointer;'; b.onclick = () => { b.style.background = 'var(--green)'; b.disabled = true; if ([...boltsDiv.querySelectorAll('button')].every(x => x.disabled)) { GameState.stage5.events.push({ desc: 'Flanged pipes disassembled easily' }); GameState.stage5.doseAccrued += 0.5; setTimeout(runDecomTask2, 1000); } }; boltsDiv.appendChild(b); }
+            } else if (choice === 'welded') {
+                canvas.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;"><p style="color:var(--amber);">All welded joints - cutting required</p><p style="color:var(--light-grey);">This will take time and generate contaminated swarf...</p></div>';
+                setTimeout(() => { GameState.stage5.events.push({ desc: 'Welded joints cut with plasma torch' }); GameState.stage5.doseAccrued += 2.0; GameState.stage5.budgetUsed += 80000; GameState.stage5.wasteGenerated += 2; runDecomTask2(); }, 2500);
+            } else {
+                canvas.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;"><p style="color:var(--light-grey);">Mixed connections - some bolts, some cutting</p></div>';
+                setTimeout(() => { GameState.stage5.events.push({ desc: 'Mixed joints removed' }); GameState.stage5.doseAccrued += 1.0; GameState.stage5.budgetUsed += 30000; GameState.stage5.wasteGenerated += 1; runDecomTask2(); }, 2000);
+            }
+            showScreen('minigame5');
+        }
+        
+        function runDecomTask2() {
+            const choice = GameState.designChoices.pipeRouting;
+            const canvas = $('minigame5Canvas');
+            $('minigame5Title').textContent = 'Pipe Excavation';
+            $('wasteGenerated').textContent = GameState.stage5.wasteGenerated + ' tonnes';
+            $('minigame5Dose').textContent = '+' + GameState.stage5.doseAccrued.toFixed(1) + ' mSv';
+            
+            if (choice === 'ducted') {
+                canvas.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;"><p style="color:var(--green);">Accessible ducts - lift covers and remove</p><button id="liftBtn" style="padding:12px 24px;background:var(--blue);color:white;border:none;border-radius:8px;cursor:pointer;font-size:1rem;">Lift Cover</button></div>';
+                canvas.querySelector('#liftBtn').onclick = () => { GameState.stage5.events.push({ desc: 'Pipes removed from accessible ducts' }); GameState.stage5.doseAccrued += 0.3; setTimeout(runDecomTask3, 1000); };
+            } else if (choice === 'embedded') {
+                $('impossibleOverlay5').style.display = 'flex';
+                $('impossibleText5').textContent = 'PIPES EMBEDDED IN CONCRETE';
+                $('impossibleDetail5').textContent = 'No record of exact pipe locations. Must chip concrete to find them. Massive waste generation.';
+                $('decisionPanel5').style.display = 'block';
+                $('decision5Title').textContent = 'How to proceed?';
+                $('decisionOptions5').innerHTML = `
+                    <div class="decision-option" data-choice="chip"><div class="decision-option-header"><span class="decision-option-title">Chip Concrete Manually</span><span class="decision-option-cost">+£200,000</span></div><p class="decision-option-desc">Slow, high dose, generates 15+ tonnes ILW</p><div class="decision-option-risk"><span class="risk-indicator extreme">HIGH DOSE</span><span>+8.0 mSv</span></div></div>
+                    <div class="decision-option" data-choice="gpr"><div class="decision-option-header"><span class="decision-option-title">Ground Penetrating Radar</span><span class="decision-option-cost">+£400,000</span></div><p class="decision-option-desc">Locate pipes first, targeted removal, less waste</p><div class="decision-option-risk"><span class="risk-indicator moderate">MODERATE</span><span>+3.0 mSv, 8 tonnes ILW</span></div></div>
+                `;
+                $$('#decisionOptions5 .decision-option').forEach(opt => {
+                    opt.onclick = () => {
+                        $('impossibleOverlay5').style.display = 'none';
+                        $('decisionPanel5').style.display = 'none';
+                        if (opt.dataset.choice === 'chip') { GameState.stage5.budgetUsed += 200000; GameState.stage5.doseAccrued += 8.0; GameState.stage5.wasteGenerated += 15; GameState.stage5.events.push({ desc: 'Concrete chipped to find pipes (+15t ILW)' }); }
+                        else { GameState.stage5.budgetUsed += 400000; GameState.stage5.doseAccrued += 3.0; GameState.stage5.wasteGenerated += 8; GameState.stage5.events.push({ desc: 'GPR used for targeted excavation' }); }
+                        setTimeout(runDecomTask3, 1000);
+                    };
+                });
+            } else {
+                canvas.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;"><p style="color:var(--amber);">Walk-in tunnel - easy access but large void to fill</p></div>';
+                setTimeout(() => { GameState.stage5.events.push({ desc: 'Pipes removed from tunnel (void backfill needed)' }); GameState.stage5.doseAccrued += 0.5; GameState.stage5.budgetUsed += 50000; runDecomTask3(); }, 2000);
+            }
+        }
+        
+        function runDecomTask3() {
+            const choice = GameState.designChoices.materialSpec;
+            const canvas = $('minigame5Canvas');
+            $('minigame5Title').textContent = 'Final Handling';
+            $('wasteGenerated').textContent = GameState.stage5.wasteGenerated + ' tonnes';
+            $('minigame5Dose').textContent = '+' + GameState.stage5.doseAccrued.toFixed(1) + ' mSv';
+            $('impossibleOverlay5').style.display = 'none';
+            $('decisionPanel5').style.display = 'none';
+            
+            if (choice === 'lowCobalt') {
+                canvas.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;"><p style="color:var(--green);">Low-cobalt steel - hands-on work possible</p><p>Direct handling for final sizing and packaging</p></div>';
+                setTimeout(() => { GameState.stage5.events.push({ desc: 'Low-activity materials handled directly' }); GameState.stage5.doseAccrued += 0.5; GameState.stage5.wasteGenerated += 1; showDecomOutcome(); }, 2000);
+            } else {
+                canvas.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;"><p style="color:var(--red);">High-activity material - remote handling required</p><p style="color:var(--amber);">Robot arms with 0.5s delay...</p></div>';
+                setTimeout(() => {
+                    if (choice === 'exoticAlloy') { GameState.stage5.events.push({ desc: 'Exotic alloy required specialist disposal' }); GameState.stage5.budgetUsed += 200000; GameState.stage5.doseAccrued += 1.5; }
+                    else { GameState.stage5.events.push({ desc: 'High-cobalt steel required remote handling' }); GameState.stage5.budgetUsed += 150000; GameState.stage5.doseAccrued += 1.0; }
+                    GameState.stage5.wasteGenerated += 3;
+                    showDecomOutcome();
+                }, 2500);
+            }
+        }
+        
+        function showDecomOutcome() {
+            const totalWaste = GameState.stage5.wasteGenerated;
+            const totalDose = GameState.stage5.doseAccrued;
+            const totalCost = GameState.stage5.budgetUsed;
+            let icon, title, titleClass, comment;
+            
+            if (totalDose < 5 && totalWaste < 10) { icon = '✓'; title = 'Excellent Work'; titleClass = 'success'; comment = "Smooth decommissioning. Good design choices sixty years ago made my life a lot easier. Wish they were all like this."; }
+            else if (totalDose < 10 && totalWaste < 20) { icon = '⚠️'; title = 'Completed'; titleClass = 'partial'; comment = "Got there in the end. Some frustrations, some extra costs, but nothing we couldn't handle. Could've been better, could've been worse."; }
+            else { icon = '❌'; title = 'Difficult'; titleClass = 'failure'; comment = "That was hard. Embedded pipes, high-activity materials, waste everywhere. Someone in 2025 made my job a nightmare. At least it's over."; }
+            
+            $('outcomeIcon5').textContent = icon;
+            $('outcomeTitle5').textContent = title;
+            $('outcomeTitle5').className = 'outcome-title ' + titleClass;
+            $('outcomeComment5').textContent = comment;
+            $('outcomeDescription5').innerHTML = '<p>Section 4B decommissioning tasks are complete.</p>';
+            $('outcomeStats5').innerHTML = `
+                <div class="outcome-stat"><div class="outcome-stat-label">Total Cost</div><div class="outcome-stat-value ${totalCost > 300000 ? 'negative' : 'neutral'}">${formatCurrency(totalCost)}</div></div>
+                <div class="outcome-stat"><div class="outcome-stat-label">Total Dose</div><div class="outcome-stat-value ${totalDose > 8 ? 'negative' : totalDose > 4 ? 'neutral' : 'positive'}">+${totalDose.toFixed(1)} mSv</div></div>
+                <div class="outcome-stat"><div class="outcome-stat-label">Waste Generated</div><div class="outcome-stat-value ${totalWaste > 15 ? 'negative' : totalWaste > 8 ? 'neutral' : 'positive'}">${totalWaste} tonnes</div></div>
+            `;
+            showScreen('outcome5');
+        }
+        
+        function showStage5Summary() {
+            GameState.meters.budgetSpent += GameState.stage5.budgetUsed;
+            GameState.meters.dose += GameState.stage5.doseAccrued;
+            $('stage5SummaryMeters').innerHTML = `
+                <div class="summary-meter"><div class="summary-meter-icon">💰</div><div class="summary-meter-value">${formatCurrency(GameState.stage5.budgetUsed)}</div><div class="summary-meter-label">Cost</div></div>
+                <div class="summary-meter"><div class="summary-meter-icon">☢️</div><div class="summary-meter-value">+${GameState.stage5.doseAccrued.toFixed(1)} mSv</div><div class="summary-meter-label">Dose</div></div>
+                <div class="summary-meter"><div class="summary-meter-icon">📦</div><div class="summary-meter-value">${GameState.stage5.wasteGenerated}t</div><div class="summary-meter-label">Waste</div></div>
+            `;
+            $('stage5EventList').innerHTML = GameState.stage5.events.map(e => `<li><span class="decision-name">${e.desc}</span></li>`).join('');
+            updateMeters();
+            $('headerStage').innerHTML = '<strong>STAGE 5:</strong> COMPLETE';
+            showScreen('stage5Summary');
+        }
+        
+        // ============================================
+        // FINAL RESULTS
+        // ============================================
+        function showFinalResults() {
+            const totalBudget = 2850000;
+            const spent = GameState.meters.budgetSpent;
+            const dose = GameState.meters.dose;
+            const health = GameState.meters.plantHealth;
+            const injuries = GameState.injuries;
+            const incidents = GameState.incidents.length;
+            
+            let stars = 3, rating = 'Competent Engineer';
+            if (injuries > 0 || GameState.fatalities > 0) { stars = 1; rating = 'Lessons to Learn'; }
+            else if (dose > 20 || spent > totalBudget * 1.3) { stars = 2; rating = 'Needs Improvement'; }
+            else if (dose < 10 && spent < totalBudget && health > 80 && incidents === 0) { stars = 5; rating = 'Master Designer'; }
+            else if (dose < 15 && spent <= totalBudget && health > 60) { stars = 4; rating = 'Senior Engineer'; }
+            
+            $('resultsStars').textContent = '⭐'.repeat(stars) + '☆'.repeat(5 - stars);
+            $('resultsRating').textContent = rating;
+            $('finalStats').innerHTML = `
+                <div class="outcome-stat"><div class="outcome-stat-label">Total Spent</div><div class="outcome-stat-value ${spent > totalBudget ? 'bad' : 'good'}">${formatCurrency(spent)}</div></div>
+                <div class="outcome-stat"><div class="outcome-stat-label">Budget</div><div class="outcome-stat-value">${formatCurrency(totalBudget)}</div></div>
+                <div class="outcome-stat"><div class="outcome-stat-label">Total Dose</div><div class="outcome-stat-value ${dose > 15 ? 'bad' : dose > 10 ? 'ok' : 'good'}">${dose.toFixed(1)} mSv</div></div>
+                <div class="outcome-stat"><div class="outcome-stat-label">Plant Health</div><div class="outcome-stat-value ${health < 70 ? 'bad' : 'good'}">${health}%</div></div>
+            `;
+            $('resultsMessage').innerHTML = `<p><strong>The 60-Year Journey is complete.</strong></p><p>Your design decisions in 2025 echoed through six decades, affecting every worker who touched Section 4B.</p><p>${rating === 'Master Designer' ? 'You demonstrated true design for decommissioning principles.' : 'Every choice matters. Every millimetre of clearance. Every material specification. The future remembers.'}</p>`;
+            $('headerStage').innerHTML = '<strong>COMPLETE</strong>';
+            showScreen('results');
         }
         
         // ============================================
@@ -1610,7 +2262,20 @@
         $('btnContinueTransition').onclick = showCharacterIntro;
         $('btnBeginStage').onclick = startPumpGame;
         $('btnContinueFromOutcome').onclick = showStage2Summary;
-        $('btnContinueTo2055').onclick = () => showScreen('placeholder');
+        $('btnContinueTo2055').onclick = () => showScreen('transition3');
+        $('btnContinueTransition3').onclick = startStage3;
+        $('btnBeginStage3').onclick = startInspectionGame;
+        $('btnContinueFromOutcome3').onclick = showStage3Summary;
+        $('btnContinueTo2070').onclick = () => showScreen('transition4');
+        $('btnContinueTransition4').onclick = startStage4;
+        $('btnBeginStage4').onclick = startControlRoomGame;
+        $('btnContinueFromOutcome4').onclick = showStage4Summary;
+        $('btnContinueTo2085').onclick = () => showScreen('transition5');
+        $('btnContinueTransition5').onclick = startStage5;
+        $('btnBeginStage5').onclick = startDecommissioningGame;
+        $('btnContinueFromOutcome5').onclick = showStage5Summary;
+        $('btnViewResults').onclick = showFinalResults;
+        $('btnPlayAgain').onclick = () => location.reload();
         $('btnRestart').onclick = () => location.reload();
         
         $('modalClose').onclick = closeModal;
@@ -1620,7 +2285,7 @@
         
         $('mobileMenuBtn').onclick = () => $('mobileMeters').classList.toggle('active');
         
-        $$('.plant-element').forEach(el => el.onclick = () => { if (el.dataset.element) openModal(el.dataset.element); });
+        $$('.hotspot').forEach(el => el.onclick = () => { if (el.dataset.element) openModal(el.dataset.element); });
         $$('.design-element-card').forEach(c => c.onclick = () => { if (c.dataset.element) openModal(c.dataset.element); });
         
         document.onkeydown = e => { if (e.key === 'Escape' && $('modalOverlay').classList.contains('active')) closeModal(); };
