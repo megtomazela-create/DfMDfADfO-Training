@@ -29,6 +29,19 @@
             color: var(--light-grey);
         }
         
+        /* Version tag */
+        .version-tag {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.5);
+            color: var(--mid-grey);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            z-index: 9999;
+        }
+        
         /* ============================================
            CINEMATIC INTRO
            ============================================ */
@@ -437,9 +450,6 @@
             border-left: 4px solid var(--blue);
         }
         
-        .situation-box.warning { border-left-color: var(--amber); }
-        .situation-box.danger { border-left-color: var(--red); }
-        
         .situation-box p {
             color: var(--light-grey);
             line-height: 1.6;
@@ -464,6 +474,18 @@
         .char-quote .char-portrait { width: 45px; height: 45px; flex-shrink: 0; }
         .char-quote-text { font-style: italic; color: var(--light-grey); line-height: 1.5; }
         .char-quote-name { color: var(--white); font-weight: 500; font-size: 0.85rem; margin-bottom: 5px; font-style: normal; }
+        
+        /* Design recall */
+        .design-recall {
+            background: var(--deep-navy);
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--mid-grey);
+            margin-bottom: 15px;
+        }
+        
+        .design-recall strong { color: var(--white); }
         
         /* Options list */
         .options-list { display: flex; flex-direction: column; gap: 10px; }
@@ -491,18 +513,22 @@
         
         .option-cost {
             background: var(--deep-navy);
-            color: var(--amber);
             padding: 3px 8px;
             border-radius: 4px;
             font-size: 0.8rem;
             font-weight: 600;
         }
         
+        .option-cost.cheap { color: var(--green); }
+        .option-cost.medium { color: var(--amber); }
+        .option-cost.expensive { color: var(--red); }
+        
         .option-desc { color: var(--light-grey); font-size: 0.9rem; margin-bottom: 10px; }
         
         .option-impacts {
             display: flex;
-            gap: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
             font-size: 0.8rem;
         }
         
@@ -524,18 +550,6 @@
             color: var(--mid-grey);
             font-size: 0.75rem;
         }
-        
-        /* Recall what was chosen */
-        .design-recall {
-            background: var(--deep-navy);
-            padding: 10px 15px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            color: var(--mid-grey);
-            margin-bottom: 15px;
-        }
-        
-        .design-recall strong { color: var(--white); }
         
         .modal-footer {
             padding: 15px 20px;
@@ -656,6 +670,8 @@
             border-radius: 4px;
             font-size: 0.7rem;
             font-weight: 600;
+            max-width: 200px;
+            text-align: right;
         }
         
         .decision-tag.good { background: var(--green); color: var(--deep-navy); }
@@ -712,6 +728,9 @@
 </head>
 <body>
 
+<!-- VERSION TAG -->
+<div class="version-tag">v0.3</div>
+
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -733,7 +752,7 @@
             <h2 class="intro-year">2025</h2>
             <div class="intro-text-box">
                 <p><strong>Thornbury Point Nuclear Power Station.</strong></p>
-                <p>Sixty years of operation ahead. And someone needs to design it right.</p>
+                <p>Sixty years of operation ahead. Someone needs to design it right.</p>
             </div>
         </div>
     </div>
@@ -754,7 +773,7 @@
         <div class="intro-content">
             <div class="intro-text-box" style="text-align: center; border-left: none; border: 2px solid var(--blue);">
                 <p><strong>Six design decisions. Each has consequences.</strong></p>
-                <p>Budget, dose, time, plant health — every choice matters.</p>
+                <p>Good choices make future decisions easier and cheaper.<br>Poor choices force compromises for decades.</p>
                 <div class="intro-budget">Design Budget: £800,000</div>
             </div>
         </div>
@@ -894,11 +913,13 @@
 
 <script>
 // ============================================
-// MASTER GAME DATA (from Logic Document)
+// GAME DATA - ALL STAGES HAVE DECISIONS
+// Good design = easy/cheap options
+// Poor design = hard/expensive options
 // ============================================
 const GAME_DATA = {
     stages: {
-        1: { name: 'DESIGN', year: 2025, budget: 800000, time: null },
+        1: { name: 'DESIGN', year: 2025, budget: 800000 },
         2: { name: 'MAINTENANCE', year: 2040, budget: 400000, time: 30, char: 'dave' },
         3: { name: 'INSPECTION', year: 2055, budget: 250000, time: 21, char: 'sarah' },
         4: { name: 'OPERATIONS', year: 2070, budget: 200000, time: 7, char: 'mike' },
@@ -906,761 +927,886 @@ const GAME_DATA = {
     },
     
     characters: {
-        dave: { name: 'Dave Morton', role: 'Maintenance Supervisor', portrait: 'images/dave.png', emoji: '👷' },
-        sarah: { name: 'Sarah Okonkwo', role: 'Principal Inspector', portrait: null, emoji: '🔍' },
-        mike: { name: 'Mike Brennan', role: 'Shift Operations Manager', portrait: null, emoji: '👨‍💼' },
-        janet: { name: 'Janet Cole', role: 'Decommissioning Lead', portrait: 'images/janet.png', emoji: '👩‍🔧' }
+        dave: { name: 'Dave Morton', role: 'Maintenance Supervisor', emoji: '👷' },
+        sarah: { name: 'Sarah Okonkwo', role: 'Principal Inspector', emoji: '🔍' },
+        mike: { name: 'Mike Brennan', role: 'Shift Operations Manager', emoji: '👨‍💼' },
+        janet: { name: 'Janet Cole', role: 'Decommissioning Lead', emoji: '👩‍🔧' }
     },
     
     transitions: {
-        2: {
-            years: '15 YEARS LATER', year: '2040',
-            text: ['Thornbury Point has been generating power for 14 years.', 'Your design drawings are yellowed paper in a filing cabinet.', 'It\'s time for the first major maintenance outage.']
-        },
-        3: {
-            years: '15 YEARS LATER', year: '2055',
-            text: ['Thirty years of operation.', 'Regulators want proof everything is still safe.', 'Time for detailed in-service inspection.']
-        },
-        4: {
-            years: '15 YEARS LATER', year: '2070',
-            text: ['Forty-five years. The plant is showing its age.', 'Tonight, alarms will test your control room design.']
-        },
-        5: {
-            years: '15 YEARS LATER', year: '2085',
-            text: ['Sixty years. The reactor is shut down for good.', 'Now comes the hard part: taking it all apart safely.', 'Every 2025 decision has led to this moment.']
-        }
+        2: { years: '15 YEARS LATER', year: '2040', text: ['Thornbury Point has been generating power for 14 years.', 'Your design drawings are yellowed paper in a filing cabinet.', 'It\'s time for the first major maintenance outage.'] },
+        3: { years: '15 YEARS LATER', year: '2055', text: ['Thirty years of operation.', 'Regulators want proof everything is still safe.', 'Every weld, every component needs inspection.'] },
+        4: { years: '15 YEARS LATER', year: '2070', text: ['Forty-five years. The plant is showing its age.', 'Tonight, the alarms will test your control room design.'] },
+        5: { years: '15 YEARS LATER', year: '2085', text: ['Sixty years. The reactor is shut down for good.', 'Now comes the hard part: taking it all apart safely.'] }
     },
     
-    // ELEMENT DEFINITIONS WITH ALL STAGE DATA
     elements: {
+        // ==========================================
+        // ELEMENT 1: PUMP ACCESS
+        // ==========================================
         pumpAccess: {
             title: 'Pump Location/Access',
-            // Stage 1: Design choices
             stage1: {
-                description: 'How should the primary coolant pump be positioned within Section 4B?',
+                description: 'How should the primary coolant pump be positioned?',
                 options: [
-                    { id: 'corner', name: 'Corner Position', desc: 'Pump tucked in corner to maximise floor space for other equipment.', cost: 120000, quality: 'poor' },
-                    { id: 'openBay', name: 'Open Bay', desc: 'Pump in open bay with 2m clearance all sides, under crane rails.', cost: 150000, quality: 'good' },
-                    { id: 'dedicated', name: 'Dedicated Shielded Room', desc: 'Pump in dedicated shielded room with airlock. Over-specified for this application.', cost: 290000, quality: 'wasteful' }
+                    { id: 'corner', name: 'Corner Position', desc: 'Tucked in corner to maximise floor space. 1.8m clearance.', cost: 120000, quality: 'poor' },
+                    { id: 'openBay', name: 'Open Bay', desc: '2m clearance all sides, under crane rails.', cost: 150000, quality: 'good' },
+                    { id: 'dedicated', name: 'Dedicated Shielded Room', desc: 'Separate room with airlock. Over-specified.', cost: 290000, quality: 'wasteful' }
                 ]
             },
-            // Stage 2: Maintenance - depends on design choice
+            // STAGE 2: MAINTENANCE - Every design gets decisions, but difficulty varies
             stage2: {
                 corner: {
-                    type: 'decision',
-                    situation: 'RCP seal replacement required. Pump must be removed from position. <strong>The gap between the structural beam and wall is 1.8m. The pump assembly is 2.1m wide.</strong>',
-                    charQuote: "Who signed off on this? The pump's in a corner. What were they thinking?",
-                    impossible: true,
+                    situation: 'RCP seal replacement required. <strong>The pump is 2.1m wide. The gap to remove it is only 1.8m.</strong> It physically cannot fit through the access route.',
+                    quote: "Who signed off on this? The pump doesn't fit through the gap!",
+                    boxType: 'danger',
                     options: [
-                        { id: 'subcontract', name: 'Subcontract specialist rigging team', desc: 'Bring in experts with specialist equipment.', cost: 180000, time: 18, dose: 3, result: 'Task completed safely by specialists.' },
-                        { id: 'force', name: 'Force it - attempt to tilt and squeeze', desc: 'Risky attempt to manoeuvre pump through gap.', cost: 40000, time: 5, dose: 6, risk: { success: 30, fail: 70 }, failResult: { cost: 220000, time: 8, dose: 8, injury: 25, desc: 'Pump casing cracked during removal.' } }
+                        { id: 'subcontract', name: 'Hire specialist rigging team', desc: 'Experts with hydraulic jacks and custom rigging.', cost: 180000, time: 18, dose: 3 },
+                        { id: 'force', name: 'Attempt to tilt and squeeze through', desc: 'Risky. May damage pump casing.', cost: 40000, time: 5, dose: 6, risk: 70 },
+                        { id: 'modify', name: 'Cut access opening in wall', desc: 'Permanent structural modification.', cost: 120000, time: 14, dose: 4 }
                     ]
                 },
                 openBay: {
-                    type: 'text',
-                    situation: 'RCP seal replacement required. Pump positioned in open bay with crane coverage.',
-                    charQuote: 'Full crane coverage. Lovely. In and out, job done.',
-                    result: 'Pump removed and replaced efficiently.',
-                    cost: 0, time: 3, dose: 1
+                    situation: 'RCP seal replacement required. Pump is positioned in open bay with full crane coverage.',
+                    quote: 'Full crane access. Textbook lift. This is how it should be done.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard crane lift', desc: 'Routine operation. Lift, move, replace seals.', cost: 25000, time: 3, dose: 1 },
+                        { id: 'enhanced', name: 'Enhanced procedure with extra checks', desc: 'Additional inspections while pump is out.', cost: 40000, time: 4, dose: 1.5 }
+                    ]
                 },
                 dedicated: {
-                    type: 'text',
-                    situation: 'RCP seal replacement required. Pump is accessible but the airlock system adds complexity.',
-                    charQuote: 'Nice room, but did we really need all this for a standard pump?',
-                    result: 'Task completed with additional airlock protocols.',
-                    cost: 20000, time: 5, dose: 1.5
+                    situation: 'RCP seal replacement required. Pump is accessible but airlock system adds complexity.',
+                    quote: 'Nice room, but did we really need an airlock for this pump?',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'airlock', name: 'Full airlock protocol', desc: 'Follow all airlock procedures.', cost: 45000, time: 6, dose: 2 },
+                        { id: 'bypass', name: 'Temporary airlock bypass', desc: 'Faster but creates contamination control paperwork.', cost: 35000, time: 4, dose: 2.5 }
+                    ]
                 }
             },
-            // Stage 3: Inspection
+            // STAGE 3: INSPECTION
             stage3: {
                 corner: {
-                    type: 'decision',
-                    situation: 'Pump casing and mounting bolts require inspection. <strong>Inspector cannot access the pump casing for UT inspection. Clearance is insufficient for probe positioning.</strong>',
-                    charQuote: "I cannot access the pump casing for UT inspection. The clearance is insufficient.",
+                    situation: 'Pump casing and mounting bolts require UT inspection. <strong>Clearance is insufficient for standard probe positioning.</strong>',
+                    quote: "I can't get the probe in at the right angle. Clearance is too tight.",
+                    boxType: 'danger',
                     options: [
-                        { id: 'scaffold', name: 'Erect temporary scaffolding', desc: 'Use angled probes for partial coverage.', cost: 45000, time: 5, dose: 3, healthImpact: 0, result: 'Partial coverage achieved.' },
-                        { id: 'accept', name: 'Accept inspection limitation', desc: 'Document as "inaccessible" in report.', cost: 0, time: 1, dose: 0.5, healthImpact: -10, trigger: 'pumpInspectionGap', result: 'Regulatory note on file. Plant health reduced.' },
-                        { id: 'retrofit', name: 'Install permanent access platform', desc: 'Full inspection now and future.', cost: 120000, time: 12, dose: 2, healthImpact: 0, result: 'Full inspection achieved. Permanent improvement.' }
+                        { id: 'scaffold', name: 'Erect scaffolding, use angled probes', desc: 'Partial coverage only. Document limitations.', cost: 45000, time: 5, dose: 3, trigger: 'pumpInspectionGap' },
+                        { id: 'accept', name: 'Accept inspection limitation', desc: 'Mark as "inaccessible" in report. Regulatory note.', cost: 5000, time: 1, dose: 0.5, healthImpact: -10, trigger: 'pumpInspectionGap' },
+                        { id: 'retrofit', name: 'Install permanent access platform', desc: 'Expensive but enables full inspection forever.', cost: 120000, time: 12, dose: 2 }
                     ]
                 },
                 openBay: {
-                    type: 'text',
-                    situation: 'Pump casing and mounting bolts require inspection.',
-                    charQuote: 'Full access. This is how it should be done.',
-                    result: 'Inspection completed on schedule. Full UT coverage. No defects.',
-                    cost: 0, time: 2, dose: 1
+                    situation: 'Pump casing and mounting bolts require UT inspection. Full access available.',
+                    quote: 'Textbook access. Full probe coverage. No limitations.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard UT inspection', desc: 'Full coverage with standard equipment.', cost: 15000, time: 2, dose: 1 },
+                        { id: 'enhanced', name: 'Enhanced inspection with TOFD', desc: 'Additional technique for better defect sizing.', cost: 25000, time: 3, dose: 1.5 }
+                    ]
                 },
                 dedicated: {
-                    type: 'text',
-                    situation: 'Pump casing inspection required. Airlock adds some complexity.',
-                    charQuote: 'Good access, though the airlock slows things down.',
-                    result: 'Inspection completed with additional decontamination protocols.',
-                    cost: 15000, time: 3, dose: 1
+                    situation: 'Pump inspection required. Airlock protocols apply. Contamination controls add time.',
+                    quote: 'Good access once you get in. The airlock just slows everything down.',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'standard', name: 'Standard inspection with airlock', desc: 'Follow full protocols.', cost: 25000, time: 4, dose: 1.5 },
+                        { id: 'extended', name: 'Extended inspection during access', desc: 'Do extra work while in there to minimise entries.', cost: 35000, time: 5, dose: 2 }
+                    ]
                 }
             },
-            // Stage 4: Operations
+            // STAGE 4: OPERATIONS
             stage4: {
                 corner: {
-                    type: 'conditional',
-                    trigger: 'pumpInspectionGap',
-                    ifTriggered: {
-                        type: 'decision',
-                        situation: '<strong>Night shift. Pump vibration readings have been trending upward for 6 months. Tonight they spike.</strong> The area of concern is the uninspected section of the casing.',
-                        charQuote: 'The vibrations are coming from the section we could never inspect properly.',
+                    checkTrigger: 'pumpInspectionGap',
+                    triggered: {
+                        situation: '<strong>Night shift. Pump vibrations spiking.</strong> The problem is in the area that couldn\'t be inspected.',
+                        quote: 'Vibrations from exactly where we couldn\'t inspect. What a surprise.',
+                        boxType: 'danger',
                         options: [
-                            { id: 'shutdown', name: 'Emergency shutdown for inspection', desc: 'Stop and investigate properly.', cost: 150000, time: 5, dose: 2, healthImpact: 5, result: 'Problem identified and fixed.' },
-                            { id: 'reduce', name: 'Reduce power and monitor', desc: 'Lower output, watch closely.', cost: 50000, time: 0, dose: 0, risk: { success: 50, fail: 50 }, failResult: { cost: 300000, time: 5, dose: 5, healthImpact: -15, injury: 10, desc: 'Pump failed catastrophically.' } },
-                            { id: 'continue', name: 'Continue normal operation', desc: 'Hope for the best.', cost: 0, time: 0, dose: 0, risk: { success: 30, fail: 70 }, failResult: { cost: 300000, time: 5, dose: 5, healthImpact: -15, injury: 10, desc: 'Pump failed during operation.' } }
+                            { id: 'shutdown', name: 'Emergency shutdown for inspection', desc: 'Safe but expensive revenue loss.', cost: 150000, time: 5, dose: 2 },
+                            { id: 'reduce', name: 'Reduce power to 50%', desc: 'Monitor closely. Hope it stabilises.', cost: 50000, time: 0, dose: 0, risk: 50, healthImpact: -5 },
+                            { id: 'continue', name: 'Continue operation', desc: 'It might be fine. Or not.', cost: 0, time: 0, dose: 0, risk: 70, healthImpact: -15 }
                         ]
                     },
-                    ifNotTriggered: {
-                        type: 'text',
-                        situation: 'Year 45 operational review of pump systems.',
-                        charQuote: 'Pump operating within normal parameters. Predictive maintenance indicates seals due at next outage.',
-                        result: 'No action needed this stage.',
-                        cost: 0, time: 0, dose: 0
+                    notTriggered: {
+                        situation: 'Pump operational review. Vibrations within normal range despite access limitations.',
+                        quote: 'Running okay for now, but that corner position still worries me.',
+                        boxType: 'warning',
+                        options: [
+                            { id: 'monitor', name: 'Enhanced monitoring programme', desc: 'Extra vibration sensors and analysis.', cost: 30000, time: 1, dose: 0 },
+                            { id: 'continue', name: 'Standard monitoring', desc: 'Normal surveillance.', cost: 10000, time: 0, dose: 0 }
+                        ]
                     }
                 },
                 openBay: {
-                    type: 'text',
-                    situation: 'Year 45 operational review of pump systems.',
-                    charQuote: 'Pump operating within normal parameters. Good access for monitoring.',
-                    result: 'No issues identified.',
-                    cost: 0, time: 0, dose: 0
+                    situation: 'Pump operational review. All parameters nominal. Good access for any needed interventions.',
+                    quote: 'Pump running like a dream. If we need to touch it, we can.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard monitoring', desc: 'Normal surveillance programme.', cost: 5000, time: 0, dose: 0 },
+                        { id: 'predictive', name: 'Predictive maintenance analysis', desc: 'Advanced analytics to optimise next outage.', cost: 15000, time: 0, dose: 0 }
+                    ]
                 },
                 dedicated: {
-                    type: 'text',
-                    situation: 'Year 45 operational review.',
-                    charQuote: 'Airlock is overkill but at least it\'s accessible.',
-                    result: 'No issues identified.',
-                    cost: 0, time: 0, dose: 0
+                    situation: 'Pump operational review. Running well but airlock maintenance is due.',
+                    quote: 'Pump is fine. The airlock servicing is the headache.',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'service', name: 'Full airlock service', desc: 'Maintain the unnecessary system.', cost: 25000, time: 2, dose: 0.5 },
+                        { id: 'defer', name: 'Defer airlock maintenance', desc: 'Not strictly required yet.', cost: 5000, time: 0, dose: 0, healthImpact: -3 }
+                    ]
                 }
             },
-            // Stage 5: Decommissioning
+            // STAGE 5: DECOMMISSIONING
             stage5: {
                 corner: {
-                    type: 'decision',
-                    situation: 'Remove pump for disposal/recycling. <strong>Pump removal requires structural modification. The access route designed in 2025 was never adequate.</strong>',
-                    charQuote: 'Sixty years later, still paying for that corner position.',
+                    situation: 'Pump removal required. <strong>Same problem as 2040: it doesn\'t fit through the access route.</strong>',
+                    quote: "Sixty years later and we're still dealing with that corner position.",
+                    boxType: 'danger',
                     options: [
-                        { id: 'demolish', name: 'Demolish section of wall', desc: 'Create access by removing concrete.', cost: 80000, time: 15, dose: 4, wasteExtra: 5, result: 'Pump removed. Additional concrete waste created.' },
-                        { id: 'cut', name: 'Cut pump into sections in-situ', desc: 'Manual cutting in confined space.', cost: 60000, time: 20, dose: 8, result: 'High dose work. Complex waste streams.' },
-                        { id: 'robot', name: 'Robotic cutting and removal', desc: 'Expensive but lowest dose.', cost: 200000, time: 8, dose: 1, result: 'Clean removal with minimal dose.' }
+                        { id: 'demolish', name: 'Demolish wall section', desc: 'Create access by removing concrete.', cost: 80000, time: 15, dose: 4 },
+                        { id: 'cut', name: 'Cut pump into pieces in-situ', desc: 'Manual cutting in confined space.', cost: 60000, time: 20, dose: 8 },
+                        { id: 'robot', name: 'Robotic cutting and removal', desc: 'Expensive but minimises dose.', cost: 200000, time: 8, dose: 1 }
                     ]
                 },
                 openBay: {
-                    type: 'text',
-                    situation: 'Standard pump removal. Reverse of installation.',
-                    charQuote: 'Straight lift out. This is coming apart clean.',
-                    result: 'Pump removed efficiently.',
-                    cost: 20000, time: 3, dose: 1
+                    situation: 'Pump removal. Reverse of installation. Full crane access.',
+                    quote: 'Hook on, lift out, job done. This is how decommissioning should work.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard crane removal', desc: 'Lift and containerise.', cost: 20000, time: 3, dose: 1 },
+                        { id: 'segmented', name: 'Segmented removal for recycling', desc: 'More work but enables material segregation.', cost: 35000, time: 5, dose: 1.5 }
+                    ]
                 },
                 dedicated: {
-                    type: 'decision',
-                    situation: 'Pump easily accessible, but the dedicated room\'s shielding and airlock must also be decommissioned.',
-                    charQuote: 'Easy pump removal, but now we\'ve got this whole room to deal with.',
+                    situation: 'Pump easily removed, but <strong>the entire shielded room must also be decommissioned.</strong>',
+                    quote: 'Pump out in a day. Room decontamination? That\'s weeks.',
+                    boxType: 'warning',
                     options: [
-                        { id: 'fullDecom', name: 'Full room decommissioning', desc: 'Pump plus unnecessary room.', cost: 150000, time: 12, dose: 2, result: 'Unnecessary waste created by over-design.' }
+                        { id: 'full', name: 'Full room decommissioning', desc: 'Pump plus unnecessary room structures.', cost: 150000, time: 12, dose: 2 },
+                        { id: 'seal', name: 'Remove pump, seal room for later', desc: 'Defer room work but creates future liability.', cost: 60000, time: 5, dose: 1, healthImpact: -5 }
                     ]
                 }
             }
         },
         
+        // ==========================================
+        // ELEMENT 2: WELD CLEARANCE
+        // ==========================================
         weldClearance: {
             title: 'Weld Access Clearance',
             stage1: {
-                description: 'What clearance should be provided around pipe welds for inspection access?',
+                description: 'What clearance around pipe welds for inspection access?',
                 options: [
-                    { id: '50mm', name: '50mm (Code Minimum)', desc: 'Minimum clearance permitted by design code.', cost: 90000, quality: 'poor' },
-                    { id: '150mm', name: '150mm Clearance', desc: 'Adequate clearance for all standard inspection probes.', cost: 95000, quality: 'good' },
-                    { id: '300mm', name: '300mm + Scaffolding', desc: 'Maximum clearance with permanent scaffolding installation.', cost: 180000, quality: 'wasteful' }
+                    { id: '50mm', name: '50mm (Code Minimum)', desc: 'Meets code but just barely.', cost: 90000, quality: 'poor' },
+                    { id: '150mm', name: '150mm Clearance', desc: 'Adequate for all standard probes.', cost: 95000, quality: 'good' },
+                    { id: '300mm', name: '300mm + Permanent Scaffolding', desc: 'Maximum clearance with fixed platforms.', cost: 180000, quality: 'wasteful' }
                 ]
             },
             stage2: {
                 '50mm': {
-                    type: 'decision',
-                    situation: 'Weld defect identified during construction needs repair. <strong>Clearance is too tight for comfortable welding position.</strong>',
-                    charQuote: "50mm clearance. Just because you can doesn't mean you should.",
+                    situation: 'Weld repair needed. <strong>50mm clearance too tight for comfortable welding position.</strong>',
+                    quote: "50mm. The absolute minimum. And now we're paying for it.",
+                    boxType: 'danger',
                     options: [
-                        { id: 'awkward', name: 'Proceed with awkward position', desc: 'Welder works in cramped space.', cost: 0, time: 4, dose: 4, risk: { success: 80, fail: 20 }, failResult: { healthImpact: -5, desc: 'Poor weld quality will cause issues later.' } },
-                        { id: 'platform', name: 'Install temporary access platform', desc: 'Better position for quality work.', cost: 25000, time: 6, dose: 2, result: 'Proper repair completed.' },
-                        { id: 'defer', name: 'Defer repair to next outage', desc: 'Leave it for now.', cost: 0, time: 0, dose: 0, healthImpact: -5, trigger: 'weldDeferred', result: 'Issue grows over time.' }
+                        { id: 'awkward', name: 'Weld in awkward position', desc: 'Possible but poor quality risk.', cost: 15000, time: 4, dose: 4, risk: 20, healthImpact: -5 },
+                        { id: 'platform', name: 'Install temporary platform', desc: 'Better position, better weld.', cost: 35000, time: 6, dose: 2 },
+                        { id: 'defer', name: 'Defer repair to next outage', desc: 'Risk leaving defect in place.', cost: 0, time: 0, dose: 0, healthImpact: -5, trigger: 'weldDeferred' }
                     ]
                 },
                 '150mm': {
-                    type: 'text',
-                    situation: 'Weld defect needs repair. Standard clearance available.',
-                    charQuote: 'Proper clearance. Makes the job straightforward.',
-                    result: 'Weld repair completed in normal working position.',
-                    cost: 0, time: 2, dose: 1
+                    situation: 'Weld repair needed. Standard clearance available.',
+                    quote: 'Proper clearance. Welder can get in comfortably.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard weld repair', desc: 'Normal procedure.', cost: 20000, time: 2, dose: 1 },
+                        { id: 'enhanced', name: 'Enhanced repair with PWHT', desc: 'Post-weld heat treatment for longevity.', cost: 30000, time: 3, dose: 1.5 }
+                    ]
                 },
                 '300mm': {
-                    type: 'decision',
-                    situation: 'Weld repair needed. <strong>The permanent scaffolding has surface contamination and must be decontaminated first.</strong>',
-                    charQuote: 'Plenty of room, but that scaffolding\'s got contamination now.',
+                    situation: 'Weld repair needed. <strong>Permanent scaffolding has surface contamination.</strong>',
+                    quote: 'Plenty of room, but that scaffolding is now contaminated.',
+                    boxType: 'warning',
                     options: [
-                        { id: 'decon', name: 'Decontaminate scaffolding', desc: 'Clean it then do repair.', cost: 20000, time: 3, dose: 2, result: 'Repair completed after decon.' },
-                        { id: 'remove', name: 'Remove scaffolding, work without', desc: 'Take it out entirely.', cost: 15000, time: 4, dose: 1, wasteExtra: 1, result: 'Scaffolding becomes waste.' }
+                        { id: 'decon', name: 'Decontaminate scaffolding first', desc: 'Clean before repair work.', cost: 30000, time: 4, dose: 2 },
+                        { id: 'remove', name: 'Remove contaminated scaffolding', desc: 'Creates waste but clears the area.', cost: 25000, time: 3, dose: 1.5 }
                     ]
                 }
             },
             stage3: {
                 '50mm': {
-                    type: 'decision',
-                    situation: 'In-Service Inspection of primary system welds required. <strong>Probe requires 80mm clearance for proper angle. Available clearance is 50mm.</strong>',
-                    charQuote: "I'm going to have to write 'limited coverage' on this report.",
-                    impossible: true,
+                    situation: 'In-Service Inspection required. <strong>UT probe needs 80mm clearance. You have 50mm.</strong>',
+                    quote: "Can't get proper probe angle. I'll have to document 'limited coverage'.",
+                    boxType: 'danger',
                     options: [
-                        { id: 'partial', name: 'Accept partial inspection (60%)', desc: 'Document the limitation.', cost: 0, time: 3, dose: 3, healthImpact: -10, trigger: 'weldInspectionGap', result: 'Regulatory note. Trigger created.' },
-                        { id: 'miniProbe', name: 'Use specialist miniature probe', desc: 'Reduced accuracy but better coverage.', cost: 40000, time: 5, dose: 4, healthImpact: -5, result: '80% coverage achieved.' },
-                        { id: 'excavate', name: 'Excavate wall to create access', desc: 'Permanent improvement.', cost: 90000, time: 10, dose: 3, result: 'Full inspection achieved.' }
+                        { id: 'partial', name: 'Accept 60% coverage', desc: 'Document limitation. Regulatory note.', cost: 5000, time: 3, dose: 3, healthImpact: -10, trigger: 'weldInspectionGap' },
+                        { id: 'miniprobe', name: 'Specialist miniature probes', desc: 'Reduced accuracy but better coverage.', cost: 40000, time: 5, dose: 4, healthImpact: -5 },
+                        { id: 'excavate', name: 'Excavate wall for access', desc: 'Permanent improvement.', cost: 90000, time: 10, dose: 3 }
                     ]
                 },
                 '150mm': {
-                    type: 'text',
-                    situation: 'In-Service Inspection of welds. Full access available.',
-                    charQuote: 'Adequate clearance. Full probe positioning. No issues.',
-                    result: 'Full inspection coverage achieved.',
-                    cost: 0, time: 2, dose: 1
+                    situation: 'In-Service Inspection. Full probe access available.',
+                    quote: 'Full coverage. Every weld scanned properly.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard UT examination', desc: '100% coverage achieved.', cost: 15000, time: 2, dose: 1 },
+                        { id: 'phased', name: 'Phased array for enhanced detection', desc: 'Better defect characterisation.', cost: 25000, time: 3, dose: 1.5 }
+                    ]
                 },
                 '300mm': {
-                    type: 'text',
-                    situation: 'Weld inspection required. Scaffolding is in the way of some angles.',
-                    charQuote: 'Easy access, but the scaffolding blocks some probe angles.',
-                    result: 'Inspection completed, scaffolding survey added.',
-                    cost: 10000, time: 4, dose: 2
+                    situation: 'Weld inspection. Scaffolding partially blocks some probe angles.',
+                    quote: 'Scaffolding is in the way of some shots. We can work around it.',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'workaround', name: 'Work around scaffolding', desc: 'Some awkward angles but achievable.', cost: 20000, time: 4, dose: 2 },
+                        { id: 'survey', name: 'Add scaffolding contamination survey', desc: 'Check the scaffolding condition too.', cost: 30000, time: 5, dose: 2.5 }
+                    ]
                 }
             },
             stage4: {
                 '50mm': {
-                    type: 'conditional',
-                    trigger: 'weldInspectionGap',
-                    ifTriggered: {
-                        type: 'decision',
-                        situation: '<strong>Small leak detected at weld location that could not be fully inspected. Activity detected in secondary system.</strong>',
-                        charQuote: 'Leak at the exact spot we could never properly inspect. Surprise surprise.',
+                    checkTrigger: 'weldInspectionGap',
+                    triggered: {
+                        situation: '<strong>Leak detected at weld location that couldn\'t be inspected.</strong> Activity in secondary system.',
+                        quote: 'Leak exactly where we couldn\'t see. Who could have predicted this?',
+                        boxType: 'danger',
                         options: [
-                            { id: 'shutdown', name: 'Immediate shutdown and repair', desc: 'Fix it properly.', cost: 200000, time: 14, dose: 5, healthImpact: 5, result: 'Problem fixed.' },
-                            { id: 'seal', name: 'Online leak sealing (temporary)', desc: 'Quick fix, may not hold.', cost: 50000, time: 2, dose: 2, risk: { success: 60, fail: 40 }, failResult: { cost: 250000, time: 6, dose: 6, healthImpact: -10, desc: 'Seal failed. Forced shutdown.' } },
-                            { id: 'monitor', name: 'Reduce power and monitor', desc: 'Live with it for now.', cost: 80000, time: 0, dose: 0, result: 'Leak stable but ongoing concern.' }
+                            { id: 'shutdown', name: 'Immediate shutdown and repair', desc: 'Fix it properly.', cost: 200000, time: 14, dose: 5 },
+                            { id: 'seal', name: 'Online leak sealing', desc: 'Temporary fix. May not hold.', cost: 50000, time: 2, dose: 2, risk: 40, healthImpact: -10 },
+                            { id: 'reduce', name: 'Reduce power and monitor', desc: 'Live with it until next outage.', cost: 80000, time: 0, dose: 0, healthImpact: -5 }
                         ]
                     },
-                    ifNotTriggered: {
-                        type: 'text',
-                        situation: 'Welds inspected at Year 30 remain within criteria.',
-                        charQuote: 'All welds behaving as expected.',
-                        result: 'No action needed.',
-                        cost: 0, time: 0, dose: 0
+                    notTriggered: {
+                        situation: 'Weld operational review. No indications from the areas that could be inspected.',
+                        quote: 'What we could see looks fine. What we couldn\'t see... who knows.',
+                        boxType: 'warning',
+                        options: [
+                            { id: 'monitor', name: 'Enhanced leak monitoring', desc: 'Extra detection equipment.', cost: 25000, time: 1, dose: 0 },
+                            { id: 'standard', name: 'Standard monitoring', desc: 'Normal programme.', cost: 10000, time: 0, dose: 0 }
+                        ]
                     }
                 },
                 '150mm': {
-                    type: 'text',
-                    situation: 'Operational review of weld integrity.',
-                    charQuote: 'All welds inspected properly, all behaving normally.',
-                    result: 'No issues.',
-                    cost: 0, time: 0, dose: 0
+                    situation: 'Weld operational review. All welds fully inspected at Year 30. No concerns.',
+                    quote: 'Full inspection history. Full confidence. No surprises.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'maintain', name: 'Maintain inspection programme', desc: 'Continue proven approach.', cost: 5000, time: 0, dose: 0 },
+                        { id: 'extend', name: 'Extend to additional welds', desc: 'Broaden the programme.', cost: 15000, time: 1, dose: 0.5 }
+                    ]
                 },
                 '300mm': {
-                    type: 'text',
-                    situation: 'Operational review.',
-                    charQuote: 'Welds fine. Scaffolding still contaminated.',
-                    result: 'No operational issues.',
-                    cost: 0, time: 0, dose: 0
+                    situation: 'Welds fine. Scaffolding contamination increasing. Annual surveys required.',
+                    quote: 'Welds okay. That scaffolding keeps getting hotter though.',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'survey', name: 'Annual scaffolding survey', desc: 'Track contamination build-up.', cost: 15000, time: 1, dose: 0.5 },
+                        { id: 'remove', name: 'Remove scaffolding now', desc: 'Deal with it before it gets worse.', cost: 40000, time: 3, dose: 2 }
+                    ]
                 }
             },
             stage5: {
                 '50mm': {
-                    type: 'decision',
-                    situation: 'Cut welds to remove pipe sections. <strong>Limited space for cutting tool.</strong>',
-                    charQuote: "Can't get proper cutting equipment in. Manual work required.",
+                    situation: 'Weld cutting for pipe removal. <strong>No room for proper cutting equipment.</strong>',
+                    quote: 'Tight clearance for cutting. Contamination spread is likely.',
+                    boxType: 'danger',
                     options: [
-                        { id: 'careful', name: 'Careful manual cutting', desc: 'Slow and precise.', cost: 30000, time: 5, dose: 3, risk: { success: 60, fail: 40 }, failResult: { cost: 80000, time: 10, dose: 5, desc: 'Contamination spread to concrete.' } },
-                        { id: 'contractor', name: 'Specialist cutting contractor', desc: 'Guaranteed clean cuts.', cost: 100000, time: 3, dose: 1, result: 'Clean removal.' }
+                        { id: 'manual', name: 'Manual cutting in confined space', desc: 'High dose, contamination risk.', cost: 30000, time: 8, dose: 5, risk: 40 },
+                        { id: 'specialist', name: 'Specialist confined space contractor', desc: 'Experts with proper equipment.', cost: 100000, time: 5, dose: 2 }
                     ]
                 },
                 '150mm': {
-                    type: 'text',
-                    situation: 'Standard weld cutting. Full access.',
-                    charQuote: 'Standard job. Full access.',
-                    result: 'Clean removal.',
-                    cost: 25000, time: 3, dose: 1
+                    situation: 'Weld cutting for removal. Standard access.',
+                    quote: 'Clean cuts. In and out. Professional job.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard cutting and removal', desc: 'Normal procedures.', cost: 25000, time: 3, dose: 1 },
+                        { id: 'segregate', name: 'Cut with material segregation', desc: 'Separate for recycling.', cost: 35000, time: 4, dose: 1.5 }
+                    ]
                 },
                 '300mm': {
-                    type: 'decision',
-                    situation: '<strong>The permanent scaffolding is now ILW due to 30 years of contamination.</strong> Must be disposed as waste.',
-                    charQuote: 'Scaffolding\'s been soaking up contamination for 30 years. It\'s ILW now.',
+                    situation: 'Weld cutting easy. <strong>Scaffolding is now ILW after 30 years of contamination.</strong>',
+                    quote: 'Easy weld access. But now we have ILW scaffolding to dispose of.',
+                    boxType: 'warning',
                     options: [
-                        { id: 'dispose', name: 'Scaffolding + weld disposal', desc: 'Deal with unnecessary waste.', cost: 85000, time: 8, dose: 3, result: 'Wasteful design adds cost.' }
+                        { id: 'both', name: 'Remove welds and scaffolding together', desc: 'Deal with unnecessary waste.', cost: 85000, time: 8, dose: 3 },
+                        { id: 'defer', name: 'Welds now, scaffolding later', desc: 'Split the work but extends project.', cost: 50000, time: 5, dose: 2, healthImpact: -3 }
                     ]
                 }
             }
         },
         
+        // ==========================================
+        // ELEMENT 3: CONTROL PANEL
+        // ==========================================
         controlPanel: {
             title: 'Control Panel Layout',
             stage1: {
-                description: 'How should the Section 4B control panel be organised?',
+                description: 'How should the control panel be organised?',
                 options: [
-                    { id: 'system', name: 'System-Based Layout', desc: 'Controls grouped by system (all pump controls together, all valve controls together).', cost: 85000, quality: 'poor' },
-                    { id: 'task', name: 'Task-Based Layout', desc: 'Controls grouped by operational sequence. Emergency sequence flows left-to-right.', cost: 95000, quality: 'good' },
-                    { id: 'touch', name: 'Touchscreen Interface', desc: 'Modern touchscreen displays. Impressive in demonstrations.', cost: 180000, quality: 'poor' }
+                    { id: 'system', name: 'System-Based Layout', desc: 'Grouped by system (all pump controls together).', cost: 85000, quality: 'poor' },
+                    { id: 'task', name: 'Task-Based Layout', desc: 'Grouped by workflow. Emergency sequence left-to-right.', cost: 95000, quality: 'good' },
+                    { id: 'touch', name: 'Touchscreen Interface', desc: 'Modern displays. Impressive in demos.', cost: 180000, quality: 'poor' }
                 ]
             },
             stage2: {
                 system: {
-                    type: 'decision',
-                    situation: 'Operators have submitted <strong>15 "human factors concerns" reports</strong> in the past year. They report confusion during abnormal conditions.',
-                    charQuote: 'The operators are complaining about the panel layout. Again.',
+                    situation: 'Operators submitted <strong>15 "human factors concern" reports</strong> citing confusion during abnormal conditions.',
+                    quote: 'The operators can\'t find controls during emergencies. That\'s a problem.',
+                    boxType: 'danger',
                     options: [
-                        { id: 'redesign', name: 'Commission HF review and partial redesign', desc: 'Improve the layout.', cost: 60000, time: 0, dose: 0, setPanelImproved: true, result: 'Panel improved to medium difficulty.' },
-                        { id: 'labels', name: 'Add additional labelling and procedures', desc: 'Cheap fix, minimal improvement.', cost: 15000, time: 0, dose: 0, result: 'No real improvement.' },
-                        { id: 'nothing', name: 'Note concerns, no action', desc: 'Ignore the complaints.', cost: 0, time: 0, dose: 0, result: 'Operator frustration continues.' }
+                        { id: 'redesign', name: 'Commission HF review and redesign', desc: 'Fix the layout properly.', cost: 60000, time: 0, dose: 0, setFlag: 'panelRedesigned' },
+                        { id: 'labels', name: 'Add labels and colour coding', desc: 'Cheap fix. Limited improvement.', cost: 15000, time: 0, dose: 0 },
+                        { id: 'nothing', name: 'Issue reminder to operators', desc: 'Training will fix it. Maybe.', cost: 5000, time: 0, dose: 0 }
                     ]
                 },
                 task: {
-                    type: 'text',
-                    situation: 'Control room operating review.',
-                    charQuote: 'Operators report intuitive layout. No issues.',
-                    result: 'Panel working well.',
-                    cost: 0, time: 0, dose: 0
+                    situation: 'Control room operations review. Operators report intuitive layout.',
+                    quote: 'Panel works well. Operators find what they need.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'maintain', name: 'Standard maintenance', desc: 'Keep it running.', cost: 10000, time: 0, dose: 0 },
+                        { id: 'enhance', name: 'Add status display enhancements', desc: 'Minor improvements.', cost: 20000, time: 0, dose: 0 }
+                    ]
                 },
                 touch: {
-                    type: 'decision',
-                    situation: 'Touchscreen system has <strong>experienced 3 failures</strong> in first 15 years. Operators report difficulty with gloved operations.',
-                    charQuote: 'Touchscreens with gloves? In a nuclear plant? Brilliant.',
+                    situation: '<strong>3 touchscreen failures</strong> in 15 years. Operators report issues with gloves and low-light.',
+                    quote: 'Touchscreens in a control room. With gloves. Brilliant idea.',
+                    boxType: 'danger',
                     options: [
-                        { id: 'backup', name: 'Install backup hardwired panel', desc: 'Safety backup available.', cost: 70000, time: 0, dose: 0, setBackupPanel: true, result: 'Backup installed. Primary still problematic.' },
-                        { id: 'upgrade', name: 'Upgrade to industrial touchscreens', desc: 'Better but still touchscreen.', cost: 50000, time: 0, dose: 0, result: 'Reliability improved marginally.' },
-                        { id: 'train', name: 'Train operators more', desc: 'Blame the users.', cost: 10000, time: 0, dose: 0, result: 'No real improvement.' }
+                        { id: 'backup', name: 'Install hardwired backup panel', desc: 'Safety backup for when screens fail.', cost: 70000, time: 0, dose: 0, setFlag: 'backupPanel' },
+                        { id: 'upgrade', name: 'Upgrade to industrial touchscreens', desc: 'Better screens. Still touchscreens.', cost: 50000, time: 0, dose: 0 },
+                        { id: 'train', name: 'Additional operator training', desc: 'Train them to use broken equipment.', cost: 10000, time: 0, dose: 0 }
                     ]
                 }
             },
             stage3: {
                 system: {
-                    type: 'text',
-                    situation: 'Control systems periodic safety review.',
-                    charQuote: 'Functionality confirmed. Design still awkward.',
-                    result: 'Standard review completed.',
-                    cost: 5000, time: 1, dose: 0
+                    situation: 'Control systems safety review. HMI assessment required.',
+                    quote: 'The layout still causes confusion. Regulators are noting it.',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'review', name: 'Full HMI review with recommendations', desc: 'Detailed assessment.', cost: 20000, time: 2, dose: 0 },
+                        { id: 'minimal', name: 'Minimal compliance review', desc: 'Do the minimum.', cost: 8000, time: 1, dose: 0 }
+                    ]
                 },
                 task: {
-                    type: 'text',
-                    situation: 'Control systems periodic safety review.',
-                    charQuote: 'Clear indication of system status. Good design.',
-                    result: 'Standard review completed.',
-                    cost: 5000, time: 1, dose: 0
+                    situation: 'Control systems safety review. Good human factors ratings.',
+                    quote: 'Operators rate the panel highly. No issues.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard review', desc: 'Confirm continued performance.', cost: 10000, time: 1, dose: 0 },
+                        { id: 'benchmark', name: 'Benchmark against best practice', desc: 'Compare to industry leaders.', cost: 18000, time: 2, dose: 0 }
+                    ]
                 },
                 touch: {
-                    type: 'text',
-                    situation: 'Control systems review. Display showing artifacts.',
-                    charQuote: 'Software update needed. Again.',
-                    result: 'Review completed with software issues noted.',
-                    cost: 10000, time: 1, dose: 0
+                    situation: 'Safety review. Display artifacts and software issues noted.',
+                    quote: 'Software showing its age. More glitches every year.',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'software', name: 'Full software update', desc: 'Update the system.', cost: 35000, time: 2, dose: 0 },
+                        { id: 'patch', name: 'Critical patches only', desc: 'Fix the worst bugs.', cost: 15000, time: 1, dose: 0, healthImpact: -3 }
+                    ]
                 }
             },
             stage4: {
                 system: {
-                    type: 'decision',
-                    situation: '<strong>ALARMS: Multiple alarms sounding.</strong> Loss of Coolant indication. You must respond quickly. Controls are scattered across panel by system.',
-                    charQuote: "3am, alarms everywhere, and I can't find the isolation valve!",
-                    options: [
-                        { id: 'struggle', name: 'Search for correct controls', desc: 'Try to manage the emergency.', cost: 0, time: 2, dose: 3, risk: { success: 40, fail: 60 }, failResult: { cost: 200000, time: 5, dose: 5, healthImpact: -20, desc: 'Delayed response. Regulatory investigation.' } },
-                        { id: 'senior', name: 'Call senior operator', desc: 'Get help from experience.', cost: 0, time: 1, dose: 1, result: 'Event managed. Your failure recorded.' }
-                    ],
-                    checkImproved: true,
-                    improvedOptions: [
-                        { id: 'manage', name: 'Respond using improved panel', desc: 'Panel was upgraded in Stage 2.', cost: 0, time: 1, dose: 1, result: 'Event managed with minor delay.' }
-                    ]
+                    checkFlag: 'panelRedesigned',
+                    hasFlag: {
+                        situation: 'ALARMS: Loss of Coolant indication. Panel was redesigned - improved layout.',
+                        quote: 'Found the controls. Good thing we fixed that panel.',
+                        boxType: 'warning',
+                        options: [
+                            { id: 'respond', name: 'Respond using improved panel', desc: 'Minor delay but manageable.', cost: 20000, time: 1, dose: 1 },
+                            { id: 'senior', name: 'Call shift supervisor backup', desc: 'Extra support for complex event.', cost: 5000, time: 1, dose: 0.5 }
+                        ]
+                    },
+                    noFlag: {
+                        situation: '<strong>ALARMS: Loss of Coolant indication.</strong> Controls scattered across panel. You can\'t find the isolation valve.',
+                        quote: "3am, alarms everywhere, where's that valve?!",
+                        boxType: 'danger',
+                        options: [
+                            { id: 'search', name: 'Search for correct controls', desc: 'Delayed response. Possible errors.', cost: 50000, time: 2, dose: 3, risk: 40, healthImpact: -10 },
+                            { id: 'senior', name: 'Call senior operator immediately', desc: 'Get help. Your failure recorded.', cost: 10000, time: 1, dose: 1, trigger: 'operatorFailure' },
+                            { id: 'procedure', name: 'Follow procedure step by step', desc: 'Slow but reduces error chance.', cost: 30000, time: 3, dose: 2 }
+                        ]
+                    }
                 },
                 task: {
-                    type: 'text',
-                    situation: 'ALARMS: Loss of Coolant indication. Emergency response required.',
-                    charQuote: 'Found the right controls immediately. That\'s what good design looks like.',
-                    result: 'Textbook response. Event managed efficiently.',
-                    cost: 0, time: 0, dose: 0.5
+                    situation: 'ALARMS: Loss of Coolant indication. Panel layout matches emergency procedure.',
+                    quote: 'Reactor trip, safety injection, isolation. All in sequence. Perfect.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'respond', name: 'Follow emergency procedure', desc: 'Textbook response.', cost: 5000, time: 0, dose: 0.5 },
+                        { id: 'verify', name: 'Respond with extra verification', desc: 'Additional checks.', cost: 8000, time: 0, dose: 0.5 }
+                    ]
                 },
                 touch: {
-                    type: 'decision',
-                    situation: '<strong>ALARMS sounding. Touchscreen is lagging under processor load. Gloved fingers not registering.</strong> Screen glare from emergency lighting.',
-                    charQuote: "Touchscreen's frozen! In the middle of an event!",
-                    options: [
-                        { id: 'persist', name: 'Keep trying touchscreen', desc: 'Tap harder, tap faster.', cost: 0, time: 3, dose: 4, risk: { success: 30, fail: 70 }, failResult: { cost: 150000, time: 3, dose: 4, healthImpact: -15, desc: 'System freeze during event.' } },
-                        { id: 'backup', name: 'Switch to backup panel', desc: 'Use hardwired backup if installed.', cost: 0, time: 0, dose: 1, checkBackup: true, result: 'Event managed via backup.' }
-                    ]
+                    checkFlag: 'backupPanel',
+                    hasFlag: {
+                        situation: 'ALARMS: Touchscreen lagging under load. Switch to backup panel.',
+                        quote: 'Screen frozen again. Thank God for the backup.',
+                        boxType: 'warning',
+                        options: [
+                            { id: 'backup', name: 'Use hardwired backup', desc: 'Reliable manual controls.', cost: 15000, time: 1, dose: 1 },
+                            { id: 'wait', name: 'Wait for screen to recover', desc: 'Risky delay.', cost: 0, time: 2, dose: 0, risk: 30, healthImpact: -5 }
+                        ]
+                    },
+                    noFlag: {
+                        situation: '<strong>ALARMS: Touchscreen frozen.</strong> Gloved fingers not registering. No backup panel.',
+                        quote: 'Screen\'s frozen! We have nothing else!',
+                        boxType: 'danger',
+                        options: [
+                            { id: 'reboot', name: 'Attempt system reboot', desc: 'Fast but risky.', cost: 0, time: 2, dose: 0, risk: 50, healthImpact: -15 },
+                            { id: 'manual', name: 'Manual field operation', desc: 'Send operators to local panels.', cost: 30000, time: 4, dose: 4 },
+                            { id: 'scram', name: 'Manual reactor trip', desc: 'Safe shutdown. Full investigation.', cost: 100000, time: 5, dose: 1 }
+                        ]
+                    }
                 }
             },
             stage5: {
                 system: {
-                    type: 'text',
-                    situation: 'Control panel decommissioning.',
-                    charQuote: 'Standard panel removal.',
-                    result: 'Non-radiological waste.',
-                    cost: 10000, time: 2, dose: 0.5
+                    situation: 'Control panel decommissioning. Standard electrical removal.',
+                    quote: 'Panel comes out. Wish the operators had had something better.',
+                    boxType: 'neutral',
+                    options: [
+                        { id: 'standard', name: 'Standard removal', desc: 'Normal decommissioning.', cost: 10000, time: 2, dose: 0.5 },
+                        { id: 'preserve', name: 'Preserve for training museum', desc: 'Educational purposes.', cost: 20000, time: 3, dose: 0.5 }
+                    ]
                 },
                 task: {
-                    type: 'text',
-                    situation: 'Control panel decommissioning.',
-                    charQuote: 'Standard panel removal.',
-                    result: 'Non-radiological waste.',
-                    cost: 10000, time: 2, dose: 0.5
+                    situation: 'Control panel decommissioning. Well-designed panel served well.',
+                    quote: 'Sixty years of good service. Panel did its job.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard removal', desc: 'Normal decommissioning.', cost: 10000, time: 2, dose: 0.5 },
+                        { id: 'document', name: 'Document as best practice example', desc: 'Capture lessons for future.', cost: 15000, time: 2, dose: 0.5 }
+                    ]
                 },
                 touch: {
-                    type: 'text',
-                    situation: 'Touchscreen system decommissioning.',
-                    charQuote: 'Electronic waste. Special disposal required.',
-                    result: 'E-waste stream.',
-                    cost: 30000, time: 2, dose: 0
+                    situation: 'Touchscreen decommissioning. Electronic waste requiring special disposal.',
+                    quote: 'E-waste. Special handling. Of course.',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'ewaste', name: 'Specialist e-waste disposal', desc: 'Proper handling of electronics.', cost: 30000, time: 3, dose: 0 },
+                        { id: 'strip', name: 'Strip valuable components first', desc: 'Recovery before disposal.', cost: 20000, time: 4, dose: 0.5 }
+                    ]
                 }
             }
         },
         
+        // ==========================================
+        // ELEMENT 4: PIPE CONNECTIONS
+        // ==========================================
         pipeConnections: {
             title: 'Pipe Connections',
             stage1: {
                 description: 'How should pipe joints be designed?',
                 options: [
-                    { id: 'welded', name: 'All Welded Joints', desc: 'Continuous welded construction. Maximum integrity.', cost: 180000, quality: 'poor' },
-                    { id: 'flanged', name: 'Flanged Connections', desc: 'Bolted flanges at all joints. Easy to disassemble.', cost: 160000, quality: 'good' },
-                    { id: 'excessive', name: 'Flanges Everywhere', desc: 'Flanged connections every 2m. Maximum flexibility.', cost: 220000, quality: 'wasteful' }
+                    { id: 'welded', name: 'All Welded', desc: 'Continuous welds. Maximum integrity.', cost: 180000, quality: 'poor' },
+                    { id: 'flanged', name: 'Flanged at Strategic Points', desc: 'Bolted flanges every 6m and at components.', cost: 160000, quality: 'good' },
+                    { id: 'excessive', name: 'Flanges Everywhere', desc: 'Flanged every 2m. Maximum flexibility.', cost: 220000, quality: 'wasteful' }
                 ]
             },
             stage2: {
                 welded: {
-                    type: 'decision',
-                    situation: 'Section of pipe requires replacement due to erosion. <strong>No flanged joints available - must cut and re-weld.</strong>',
-                    charQuote: "All welded. So we're cutting and re-welding then. Brilliant.",
+                    situation: 'Pipe section replacement needed. <strong>All welded - must cut and re-weld.</strong>',
+                    quote: 'All welded. So we\'re cutting, grinding, and re-welding then.',
+                    boxType: 'danger',
                     options: [
-                        { id: 'replace', name: 'Cut, replace section, re-weld', desc: 'Proper replacement.', cost: 65000, time: 8, dose: 5, result: 'Pipe replaced. New welds need future inspection.' },
-                        { id: 'overlay', name: 'Weld overlay repair (temporary)', desc: 'Patch it for now.', cost: 25000, time: 3, dose: 3, healthImpact: -5, trigger: 'weldOverlay', result: 'Temporary fix. Revisit in 10 years.' }
+                        { id: 'replace', name: 'Cut, replace, re-weld', desc: 'Proper repair. High dose.', cost: 65000, time: 8, dose: 5 },
+                        { id: 'overlay', name: 'Weld overlay repair', desc: 'Temporary patch. May need revisiting.', cost: 25000, time: 3, dose: 3, healthImpact: -5, trigger: 'weldOverlay' }
                     ]
                 },
                 flanged: {
-                    type: 'text',
-                    situation: 'Pipe section requires replacement. Flanged connections available.',
-                    charQuote: 'Flanged connections. Someone was thinking ahead.',
-                    result: 'Section unbolted, replaced, reconnected.',
-                    cost: 30000, time: 3, dose: 1.5
+                    situation: 'Pipe section replacement. Flanged connections available.',
+                    quote: 'Unbolt, remove, replace. Someone thought ahead.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard flange replacement', desc: 'Unbolt and replace section.', cost: 30000, time: 3, dose: 1.5 },
+                        { id: 'upgrade', name: 'Upgrade gaskets while open', desc: 'Better gasket material.', cost: 40000, time: 4, dose: 2 }
+                    ]
                 },
                 excessive: {
-                    type: 'decision',
-                    situation: '<strong>Three flange gaskets have failed</strong> in the past 5 years. More leak paths = more failures.',
-                    charQuote: 'Too many flanges means too many gaskets to fail.',
+                    situation: '<strong>Three gasket failures</strong> this outage. Too many flanges means too many leak paths.',
+                    quote: 'Another gasket gone. That\'s the third this week.',
+                    boxType: 'warning',
                     options: [
-                        { id: 'preventive', name: 'Replace all gaskets (preventive)', desc: 'Replace them all now.', cost: 45000, time: 5, dose: 2, result: 'Reliable for next period.' },
-                        { id: 'reactive', name: 'Replace failed gaskets only', desc: 'Just fix what\'s broken.', cost: 15000, time: 2, dose: 1, healthImpact: -3, result: 'More failures likely.' }
+                        { id: 'replace', name: 'Replace all gaskets preventively', desc: 'Do them all now.', cost: 45000, time: 5, dose: 2 },
+                        { id: 'reactive', name: 'Replace only failed gaskets', desc: 'Fix what\'s broken.', cost: 15000, time: 2, dose: 1, healthImpact: -3 }
                     ]
                 }
             },
             stage3: {
                 welded: {
-                    type: 'decision',
-                    situation: 'All welds require inspection. <strong>Large number of weld inspections required.</strong>',
-                    charQuote: 'Every joint is a weld. Every weld needs inspection.',
+                    situation: 'All welds require inspection. <strong>Large number of weld examinations.</strong>',
+                    quote: 'Every joint is a weld. Every weld needs UT.',
+                    boxType: 'warning',
                     options: [
-                        { id: 'full', name: 'Full inspection programme', desc: 'Inspect all welds.', cost: 50000, time: 7, dose: 4, result: 'All welds verified.' },
-                        { id: 'sample', name: 'Sample inspection (50%)', desc: 'Inspect half, hope for best.', cost: 25000, time: 4, dose: 2, healthImpact: -5, result: 'Risk of missed defect.' }
+                        { id: 'full', name: 'Full inspection programme', desc: 'Examine every weld.', cost: 50000, time: 7, dose: 4 },
+                        { id: 'sample', name: 'Sample 50% of welds', desc: 'Risk missing defects.', cost: 25000, time: 4, dose: 2, healthImpact: -5 }
                     ]
                 },
                 flanged: {
-                    type: 'text',
-                    situation: 'Flanged connections visually inspected. Limited weld inspections needed.',
-                    charQuote: 'Flanges to inspect, not welds to probe. Much easier.',
-                    result: 'Inspection completed efficiently.',
-                    cost: 20000, time: 3, dose: 1.5
+                    situation: 'Limited weld inspections. Flanges visually checked.',
+                    quote: 'Few welds to check. Flanges look fine.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard inspection programme', desc: 'Welds and flange checks.', cost: 20000, time: 3, dose: 1.5 },
+                        { id: 'torque', name: 'Add bolt torque verification', desc: 'Extra flange checks.', cost: 28000, time: 4, dose: 2 }
+                    ]
                 },
                 excessive: {
-                    type: 'text',
-                    situation: 'All 47 flanged connections require bolt inspection and gasket assessment.',
-                    charQuote: 'Forty-seven flanges. That\'s a lot of bolts to check.',
-                    result: 'Time-consuming but thorough.',
-                    cost: 35000, time: 5, dose: 2
+                    situation: '47 flanged connections to inspect. Many gaskets showing wear.',
+                    quote: 'Forty-seven flanges. I\'ll be checking bolts all week.',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'all', name: 'Inspect all 47 connections', desc: 'Thorough but time-consuming.', cost: 35000, time: 6, dose: 2.5 },
+                        { id: 'sample', name: 'Sample inspection', desc: 'Check high-risk locations.', cost: 20000, time: 3, dose: 1.5, healthImpact: -3 }
+                    ]
                 }
             },
             stage4: {
                 welded: {
-                    type: 'text',
-                    situation: 'Piping system operational review.',
-                    charQuote: 'Welds holding. No isolation flexibility though.',
-                    result: 'No immediate issues.',
-                    cost: 0, time: 0, dose: 0
+                    situation: 'Piping operational review. No isolation flexibility for online work.',
+                    quote: 'Need to do online maintenance. Can\'t isolate without shutdown.',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'defer', name: 'Defer work to next outage', desc: 'Wait for full shutdown.', cost: 10000, time: 0, dose: 0 },
+                        { id: 'partial', name: 'Partial shutdown for access', desc: 'Reduced power for maintenance.', cost: 40000, time: 2, dose: 1 }
+                    ]
                 },
                 flanged: {
-                    type: 'text',
-                    situation: 'Piping system operational review.',
-                    charQuote: 'Quick isolation possible in emergencies. Good design.',
-                    result: 'Operational flexibility confirmed.',
-                    cost: 0, time: 0, dose: 0
+                    situation: 'Piping review. Quick isolation possible for online work.',
+                    quote: 'Need to check that valve. No problem, we can isolate.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'online', name: 'Online maintenance', desc: 'Isolate and work at power.', cost: 15000, time: 1, dose: 0.5 },
+                        { id: 'defer', name: 'Defer to outage', desc: 'Not urgent. Can wait.', cost: 5000, time: 0, dose: 0 }
+                    ]
                 },
                 excessive: {
-                    type: 'text',
-                    situation: 'Piping operational review. Two more gasket failures this period.',
-                    charQuote: 'Another gasket gone. Too many joints.',
-                    result: 'Ongoing maintenance burden.',
-                    cost: 20000, time: 2, dose: 0.5
+                    situation: 'Two more gasket failures this operating period.',
+                    quote: 'More gaskets leaking. This is getting old.',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'repair', name: 'Repair during short outage', desc: 'Fix the leaks.', cost: 30000, time: 3, dose: 1 },
+                        { id: 'monitor', name: 'Monitor and manage', desc: 'Live with minor seepage.', cost: 10000, time: 0, dose: 0, healthImpact: -3 }
+                    ]
                 }
             },
             stage5: {
                 welded: {
-                    type: 'decision',
-                    situation: 'Disassemble pipe system. <strong>12 welds to cut. Each must be clean to avoid contamination spread.</strong>',
-                    charQuote: 'Every joint needs cutting. This is going to take forever.',
+                    situation: '<strong>12 welds to cut for removal.</strong> Each cut risks contamination spread.',
+                    quote: 'Cutting all day. Every joint needs the saw.',
+                    boxType: 'danger',
                     options: [
-                        { id: 'careful', name: 'Careful cutting in-house', desc: 'Do it ourselves, slowly.', cost: 80000, time: 15, dose: 8, risk: { success: 50, fail: 50 }, failResult: { cost: 140000, time: 22, dose: 12, desc: 'Contamination events during cutting.' } },
-                        { id: 'specialist', name: 'Specialist cutting contractor', desc: 'Experts with proper equipment.', cost: 180000, time: 10, dose: 3, result: 'Clean cuts guaranteed.' }
+                        { id: 'careful', name: 'Careful cutting programme', desc: 'Slow and controlled.', cost: 80000, time: 15, dose: 8, risk: 30 },
+                        { id: 'specialist', name: 'Specialist cutting contractor', desc: 'Experts guarantee clean cuts.', cost: 180000, time: 10, dose: 3 }
                     ]
                 },
                 flanged: {
-                    type: 'text',
-                    situation: 'Unbolt flanges at connection points. Lift sections out.',
-                    charQuote: 'Unbolt, remove, done. This is how it should be.',
-                    result: 'Clean disassembly.',
-                    cost: 40000, time: 6, dose: 2
+                    situation: 'Unbolt flanges. Lift sections out.',
+                    quote: 'Unbolt, remove, done. Decommissioning the way it should be.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard disassembly', desc: 'Unbolt and remove.', cost: 40000, time: 6, dose: 2 },
+                        { id: 'segregate', name: 'Segregate for recycling', desc: 'Separate materials.', cost: 55000, time: 8, dose: 2.5 }
+                    ]
                 },
                 excessive: {
-                    type: 'text',
-                    situation: '47 flanged connections to unbolt. None difficult, just many.',
-                    charQuote: 'So many flanges. So many gaskets to dispose.',
-                    result: 'Tedious but achievable.',
-                    cost: 55000, time: 10, dose: 3
+                    situation: '47 connections to unbolt. Many contaminated gaskets.',
+                    quote: 'So many flanges. So many gaskets to dispose of.',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'full', name: 'Full disassembly', desc: 'All 47 connections.', cost: 55000, time: 10, dose: 3 },
+                        { id: 'bulk', name: 'Cut into larger sections', desc: 'Fewer disconnections.', cost: 45000, time: 8, dose: 2.5 }
+                    ]
                 }
             }
         },
         
+        // ==========================================
+        // ELEMENT 5: PIPE ROUTING
+        // ==========================================
         pipeRouting: {
             title: 'Pipe Routing',
             stage1: {
-                description: 'How should pipes be routed through the concrete structure?',
+                description: 'How should pipes run through concrete structure?',
                 options: [
-                    { id: 'embedded', name: 'Embedded in Concrete', desc: 'Pipes cast directly into structural concrete for "protection".', cost: 140000, quality: 'poor' },
-                    { id: 'ducted', name: 'Accessible Ducts', desc: 'Pipes run through removable duct covers.', cost: 165000, quality: 'good' },
-                    { id: 'tunnel', name: 'Walk-In Tunnel', desc: 'Large accessible tunnel for all services.', cost: 280000, quality: 'wasteful' }
+                    { id: 'embedded', name: 'Embedded in Concrete', desc: 'Cast directly into structural concrete.', cost: 140000, quality: 'poor' },
+                    { id: 'ducted', name: 'Accessible Ducts', desc: 'Removable duct covers.', cost: 165000, quality: 'good' },
+                    { id: 'tunnel', name: 'Walk-In Tunnel', desc: 'Large accessible tunnel.', cost: 280000, quality: 'wasteful' }
                 ]
             },
             stage2: {
                 embedded: {
-                    type: 'decision',
-                    situation: '<strong>Suspected leak in embedded pipe section. Cannot be visually confirmed.</strong>',
-                    charQuote: "Can't access these pipes. Hope nothing goes wrong. Oh wait, it did.",
+                    situation: '<strong>Suspected leak in embedded section. Cannot visually confirm.</strong>',
+                    quote: "There's a leak somewhere in that concrete. Good luck finding it.",
+                    boxType: 'danger',
                     options: [
-                        { id: 'excavate', name: 'Excavate concrete to investigate', desc: 'Dig it out.', cost: 70000, time: 12, dose: 4, result: 'Leak found and repaired. Concrete damaged.' },
-                        { id: 'bypass', name: 'Install bypass line', desc: 'Route around the problem.', cost: 90000, time: 8, dose: 2, result: 'Embedded section isolated and abandoned.' },
-                        { id: 'defer', name: 'Increase monitoring, defer', desc: 'Watch and wait.', cost: 10000, time: 0, dose: 0, healthImpact: -10, trigger: 'embeddedLeak', result: 'Problem deferred. Risk increased.' }
+                        { id: 'excavate', name: 'Excavate concrete to find leak', desc: 'Dig until you find it.', cost: 70000, time: 12, dose: 4 },
+                        { id: 'bypass', name: 'Install bypass line', desc: 'Route around the problem.', cost: 90000, time: 8, dose: 2 },
+                        { id: 'defer', name: 'Increase monitoring, defer', desc: 'Hope it stabilises.', cost: 10000, time: 0, dose: 0, healthImpact: -10, trigger: 'embeddedLeak' }
                     ]
                 },
                 ducted: {
-                    type: 'text',
-                    situation: 'Minor leak at joint identified via duct access.',
-                    charQuote: 'Duct covers off, full access. Proper design.',
-                    result: 'Leak identified and repaired quickly.',
-                    cost: 15000, time: 2, dose: 1
+                    situation: 'Minor leak at joint. Visible through duct access.',
+                    quote: 'Pulled the duct cover. There\'s the leak. Easy fix.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'repair', name: 'Standard repair', desc: 'Fix the joint.', cost: 15000, time: 2, dose: 1 },
+                        { id: 'inspect', name: 'Repair and inspect neighbouring joints', desc: 'Check while you\'re there.', cost: 25000, time: 3, dose: 1.5 }
+                    ]
                 },
                 tunnel: {
-                    type: 'text',
-                    situation: 'Leak repaired easily. However, tunnel surfaces show contamination migration.',
-                    charQuote: 'Walk-in access is nice, but did we need this much space?',
-                    result: 'Repair done. Decontamination required.',
-                    cost: 35000, time: 4, dose: 2
+                    situation: 'Leak repaired. <strong>Tunnel surfaces showing contamination migration.</strong>',
+                    quote: 'Easy access for repair. But the tunnel walls are contaminated now.',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'repair', name: 'Repair and decontaminate', desc: 'Clean the surfaces.', cost: 35000, time: 4, dose: 2 },
+                        { id: 'seal', name: 'Repair and seal contamination', desc: 'Contain it for now.', cost: 25000, time: 3, dose: 1.5, healthImpact: -3 }
+                    ]
                 }
             },
             stage3: {
                 embedded: {
-                    type: 'decision',
-                    situation: '<strong>Embedded pipe sections cannot be inspected by conventional means.</strong>',
-                    charQuote: 'Embedded in concrete. We\'re guessing what\'s in there.',
+                    situation: '<strong>Embedded sections cannot be inspected by conventional means.</strong>',
+                    quote: 'How do I inspect pipes inside concrete? I can\'t.',
+                    boxType: 'danger',
                     options: [
-                        { id: 'accept', name: 'Accept inspection gap', desc: 'Document the risk.', cost: 0, time: 1, dose: 0, healthImpact: -10, trigger: 'embeddedInspectionGap', result: 'Regulatory concern noted.' },
-                        { id: 'guided', name: 'Install guided wave UT', desc: 'Partial monitoring capability.', cost: 60000, time: 5, dose: 1, result: 'Some monitoring available.' },
-                        { id: 'excavate', name: 'Excavate sample locations', desc: 'Dig out inspection points.', cost: 100000, time: 14, dose: 5, result: 'Limited inspection. Structural damage.' }
+                        { id: 'accept', name: 'Document inspection gap', desc: 'Accept the limitation.', cost: 5000, time: 1, dose: 0, healthImpact: -10, trigger: 'embeddedInspectionGap' },
+                        { id: 'guided', name: 'Install guided wave monitoring', desc: 'Some detection capability.', cost: 60000, time: 5, dose: 1 },
+                        { id: 'excavate', name: 'Excavate sample locations', desc: 'Physically expose sections.', cost: 100000, time: 14, dose: 5 }
                     ]
                 },
                 ducted: {
-                    type: 'text',
-                    situation: 'Full inspection via duct access.',
-                    charQuote: 'Full visual and probe access. No issues.',
-                    result: 'Complete inspection achieved.',
-                    cost: 15000, time: 3, dose: 1.5
+                    situation: 'Full pipe inspection via duct access.',
+                    quote: 'Covers off, full access, complete inspection.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard inspection', desc: 'Visual and UT.', cost: 15000, time: 3, dose: 1.5 },
+                        { id: 'coating', name: 'Inspect and assess coating', desc: 'Check protective layers.', cost: 22000, time: 4, dose: 2 }
+                    ]
                 },
                 tunnel: {
-                    type: 'text',
-                    situation: 'Tunnel surfaces contaminated. Full PPE required.',
-                    charQuote: 'Tunnel surfaces contaminated. Workers need full suits.',
-                    result: 'Inspection completed with higher dose.',
-                    cost: 25000, time: 5, dose: 3
+                    situation: 'Pipe inspection in contaminated tunnel. Full PPE required.',
+                    quote: 'Easy access but hot in here. Full suits required.',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'suited', name: 'Full inspection in PPE', desc: 'Longer due to suit restrictions.', cost: 25000, time: 5, dose: 3 },
+                        { id: 'remote', name: 'Remote camera inspection', desc: 'Limited but lower dose.', cost: 30000, time: 4, dose: 1, healthImpact: -2 }
+                    ]
                 }
             },
             stage4: {
                 embedded: {
-                    type: 'conditional',
-                    trigger: 'embeddedLeak',
-                    ifTriggered: {
-                        type: 'decision',
-                        situation: '<strong>Groundwater monitoring detects activity. Source traced to embedded pipe section.</strong>',
-                        charQuote: 'Contamination in the groundwater. The leak we ignored.',
+                    checkTrigger: 'embeddedLeak',
+                    triggered: {
+                        situation: '<strong>Groundwater monitoring detects activity. Source: embedded pipe section.</strong>',
+                        quote: 'Contamination in the groundwater. The leak we couldn\'t fix.',
+                        boxType: 'danger',
+                        additionalCosts: { regulatory: 50000, environmental: 100000, healthImpact: -15 },
                         options: [
-                            { id: 'emergency', name: 'Emergency excavation and repair', desc: 'Dig it out now.', cost: 200000, time: 21, dose: 8, result: 'Environmental report required. Fixed.' },
-                            { id: 'treatment', name: 'Groundwater treatment + isolation', desc: 'Treat the water, abandon the pipe.', cost: 150000, time: 7, dose: 2, result: 'Pipe abandoned. Long-term monitoring.' }
-                        ],
-                        additionalCosts: { regulatory: 50000, environmental: 100000, healthImpact: -15 }
+                            { id: 'excavate', name: 'Emergency excavation', desc: 'Dig out and repair now.', cost: 200000, time: 21, dose: 8 },
+                            { id: 'treat', name: 'Groundwater treatment + isolation', desc: 'Treat water, abandon pipe.', cost: 150000, time: 7, dose: 2 }
+                        ]
                     },
-                    ifNotTriggered: {
-                        type: 'text',
-                        situation: 'Embedded sections monitored. No issues detected.',
-                        charQuote: 'Monitoring shows nothing wrong. For now.',
-                        result: 'No action needed.',
-                        cost: 0, time: 0, dose: 0
+                    notTriggered: {
+                        situation: 'Embedded section monitoring. No activity detected.',
+                        quote: 'Monitoring shows nothing. For now.',
+                        boxType: 'warning',
+                        options: [
+                            { id: 'maintain', name: 'Continue monitoring programme', desc: 'Keep watching.', cost: 15000, time: 0, dose: 0 },
+                            { id: 'enhance', name: 'Enhanced groundwater monitoring', desc: 'More detection points.', cost: 30000, time: 1, dose: 0 }
+                        ]
                     }
                 },
                 ducted: {
-                    type: 'text',
-                    situation: 'Quick visual check via duct access.',
-                    charQuote: 'Quick visual confirms system status.',
-                    result: 'No issues.',
-                    cost: 0, time: 0, dose: 0
+                    situation: 'Duct access enables quick visual checks during operation.',
+                    quote: 'Quick look through the duct cover. All good.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'visual', name: 'Routine visual inspection', desc: 'Standard checks.', cost: 5000, time: 0, dose: 0 },
+                        { id: 'thermal', name: 'Add thermal imaging', desc: 'Early leak detection.', cost: 15000, time: 1, dose: 0 }
+                    ]
                 },
                 tunnel: {
-                    type: 'text',
-                    situation: 'Tunnel walkthrough inspection.',
-                    charQuote: 'Easy walkthrough. Tunnel still contaminated.',
-                    result: 'No operational issues.',
-                    cost: 0, time: 0, dose: 0
+                    situation: 'Tunnel access maintained. Contamination levels stable.',
+                    quote: 'Tunnel still accessible. Still contaminated.',
+                    boxType: 'warning',
+                    options: [
+                        { id: 'maintain', name: 'Routine monitoring', desc: 'Track contamination levels.', cost: 10000, time: 0, dose: 0.5 },
+                        { id: 'decon', name: 'Partial decontamination', desc: 'Reduce hot spots.', cost: 35000, time: 3, dose: 2 }
+                    ]
                 }
             },
             stage5: {
                 embedded: {
-                    type: 'decision',
-                    situation: '<strong>Pipes encased in concrete. Contamination has migrated into surrounding structure.</strong>',
-                    charQuote: 'Embedded in concrete. That\'s another six months and half a million.',
+                    situation: '<strong>Pipes encased in concrete. Contamination has migrated into structure.</strong>',
+                    quote: 'Six months extra work. Half a million more. Thanks, 2025.',
+                    boxType: 'danger',
                     options: [
-                        { id: 'demolish', name: 'Full concrete excavation', desc: 'Break it all out.', cost: 350000, time: 40, dose: 20, result: 'Massive ILW concrete waste.' },
-                        { id: 'specialist', name: 'Specialist demolition contractor', desc: 'Controlled demolition.', cost: 400000, time: 25, dose: 8, result: 'Controlled but still expensive.' }
+                        { id: 'excavate', name: 'Full excavation programme', desc: 'Break out all concrete.', cost: 350000, time: 40, dose: 20 },
+                        { id: 'specialist', name: 'Specialist demolition contractor', desc: 'Controlled approach.', cost: 400000, time: 25, dose: 8 }
                     ]
                 },
                 ducted: {
-                    type: 'text',
-                    situation: 'Remove duct covers, lift pipes from ducts.',
-                    charQuote: 'Pull the covers, extract the pipes. Straightforward.',
-                    result: 'Ducts can be demolished as clean concrete.',
-                    cost: 50000, time: 8, dose: 2
+                    situation: 'Remove covers, lift pipes from ducts. Ducts remain clean.',
+                    quote: 'Covers off, pipes out. Ducts can be demolished as clean concrete.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard duct removal', desc: 'Remove pipes, demolish clean ducts.', cost: 50000, time: 8, dose: 2 },
+                        { id: 'reuse', name: 'Assess duct reuse', desc: 'Check if ducts can be kept.', cost: 40000, time: 6, dose: 1.5 }
+                    ]
                 },
                 tunnel: {
-                    type: 'decision',
-                    situation: 'Pipes easily removed, but <strong>tunnel itself is contaminated ILW. Large volume of waste.</strong>',
-                    charQuote: 'Easy pipe removal. But now we\'ve got this huge tunnel to decontaminate.',
+                    situation: 'Pipes easy to remove. <strong>Tunnel is contaminated ILW. Large waste volume.</strong>',
+                    quote: 'Pipes out quick. Tunnel decon? That\'s the real job.',
+                    boxType: 'warning',
                     options: [
-                        { id: 'full', name: 'Pipe removal + tunnel decom', desc: 'Deal with the whole thing.', cost: 220000, time: 25, dose: 8, result: 'Large ILW void to fill.' }
+                        { id: 'full', name: 'Full tunnel decommissioning', desc: 'Decontaminate and demolish.', cost: 220000, time: 25, dose: 8 },
+                        { id: 'fill', name: 'Grout fill and entomb', desc: 'Seal it in place.', cost: 150000, time: 15, dose: 4, healthImpact: -5 }
                     ]
                 }
             }
         },
         
+        // ==========================================
+        // ELEMENT 6: MATERIAL SPEC
+        // ==========================================
         materialSpec: {
             title: 'Material Specification',
             stage1: {
                 description: 'What material for primary circuit pipework?',
                 options: [
-                    { id: 'standard', name: 'Standard Stainless Steel', desc: 'Type 304/316, ~2,500ppm cobalt. Industry standard.', cost: 200000, quality: 'poor' },
-                    { id: 'lowCobalt', name: 'Low-Cobalt Stainless', desc: 'Cobalt below 500ppm. Reduces activation.', cost: 250000, quality: 'good' },
-                    { id: 'exotic', name: 'Exotic Nickel Alloy', desc: 'High-performance nickel alloy. Premium specification.', cost: 400000, quality: 'poor' }
+                    { id: 'standard', name: 'Standard Stainless Steel', desc: '304/316 with ~2,500ppm cobalt. Industry standard.', cost: 200000, quality: 'poor' },
+                    { id: 'lowCobalt', name: 'Low-Cobalt Stainless', desc: 'Cobalt <500ppm. 90% reduction in activation.', cost: 250000, quality: 'good' },
+                    { id: 'exotic', name: 'Exotic Nickel Alloy', desc: 'Premium alloy. Higher activation than standard SS.', cost: 400000, quality: 'poor' }
                 ]
             },
             stage2: {
                 standard: {
-                    type: 'text',
-                    situation: 'Maintenance in activated area. Standard steel dose rates.',
-                    charQuote: 'Standard steel. Hot to work on but expected.',
-                    result: 'Higher dose for all maintenance tasks.',
-                    cost: 0, time: 2, dose: 3, isModifier: true
+                    situation: '<strong>Dose rates higher than predicted.</strong> Maintenance taking longer due to ALARP controls.',
+                    quote: 'Standard steel. Running hot. Every job takes longer.',
+                    boxType: 'warning',
+                    isModifier: true,
+                    options: [
+                        { id: 'accept', name: 'Accept higher doses', desc: 'Work with what we have.', cost: 0, time: 2, dose: 3 },
+                        { id: 'shield', name: 'Install temporary shielding', desc: 'Reduce dose for this outage.', cost: 25000, time: 3, dose: 1.5 }
+                    ]
                 },
                 lowCobalt: {
-                    type: 'text',
-                    situation: 'Maintenance in activated area. Low dose rates.',
-                    charQuote: 'Low-cobalt. Noticeably lower dose rates.',
-                    result: 'Dose rates as predicted. Good ALARP.',
-                    cost: 0, time: 0, dose: 0
+                    situation: 'Dose rates as predicted. ALARP working well.',
+                    quote: 'Low-cobalt steel. Clean to work on. Makes everything easier.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard procedures', desc: 'Normal approach.', cost: 0, time: 0, dose: 0.5 },
+                        { id: 'optimise', name: 'Optimise future dose budgets', desc: 'Bank the savings.', cost: 5000, time: 0, dose: 0.5 }
+                    ]
                 },
                 exotic: {
-                    type: 'text',
-                    situation: 'Maintenance requires special procedures for exotic alloy.',
-                    charQuote: 'Special procedures for this alloy. Slower work. Higher dose.',
-                    result: 'Significantly higher dose rates.',
-                    cost: 0, time: 4, dose: 5, isModifier: true
+                    situation: '<strong>Dose rates significantly higher than predicted.</strong> Nickel-63 creating problems.',
+                    quote: 'Exotic alloy. Exotic dose rates. Should have stuck with normal steel.',
+                    boxType: 'danger',
+                    isModifier: true,
+                    options: [
+                        { id: 'accept', name: 'Work with enhanced controls', desc: 'More restrictions, slower work.', cost: 0, time: 4, dose: 5 },
+                        { id: 'remote', name: 'Use remote tooling', desc: 'Reduce direct exposure.', cost: 40000, time: 5, dose: 3 }
+                    ]
                 }
             },
             stage3: {
                 standard: {
-                    type: 'text',
-                    situation: 'Inspection in elevated dose rate area.',
-                    charQuote: 'Standard material. Higher background.',
-                    result: 'Extended stand-off techniques required.',
-                    cost: 15000, time: 3, dose: 4, isModifier: true
+                    situation: 'Elevated dose rates require stand-off techniques for inspection.',
+                    quote: 'Need to keep distance. Limits what we can see.',
+                    boxType: 'warning',
+                    isModifier: true,
+                    options: [
+                        { id: 'standoff', name: 'Extended reach inspection', desc: 'Longer probes, less accuracy.', cost: 15000, time: 3, dose: 4 },
+                        { id: 'shielded', name: 'Shielded inspection equipment', desc: 'Better but expensive.', cost: 35000, time: 4, dose: 2 }
+                    ]
                 },
                 lowCobalt: {
-                    type: 'text',
-                    situation: 'Inspection with manageable dose rates.',
-                    charQuote: 'Clean material, easy to work around.',
-                    result: 'Standard techniques applied.',
-                    cost: 0, time: 0, dose: 0
+                    situation: 'Manageable dose rates. Standard inspection techniques apply.',
+                    quote: 'Clean material. Normal inspection. No drama.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'standard', name: 'Standard inspection', desc: 'Normal techniques.', cost: 10000, time: 2, dose: 1 },
+                        { id: 'baseline', name: 'Establish detailed baseline', desc: 'Reference for future.', cost: 18000, time: 3, dose: 1.5 }
+                    ]
                 },
                 exotic: {
-                    type: 'text',
-                    situation: 'Inspection requires shielded equipment.',
-                    charQuote: 'Dose rates require specialist contractor.',
-                    result: 'Specialist inspection required.',
-                    cost: 40000, time: 5, dose: 6, isModifier: true
+                    situation: 'Very high dose rates. <strong>Specialist contractor required.</strong>',
+                    quote: 'Too hot for our teams. Need specialists.',
+                    boxType: 'danger',
+                    isModifier: true,
+                    options: [
+                        { id: 'specialist', name: 'Specialist inspection contractor', desc: 'Experts with special equipment.', cost: 50000, time: 5, dose: 3 },
+                        { id: 'limited', name: 'Accept limited inspection', desc: 'Do what we can safely.', cost: 20000, time: 3, dose: 4, healthImpact: -5 }
+                    ]
                 }
             },
             stage4: {
                 standard: {
-                    type: 'decision',
-                    situation: '<strong>Cumulative workforce dose approaching administrative limits.</strong>',
-                    charQuote: 'Dose budget is tight. Standard steel not helping.',
+                    situation: 'Cumulative workforce dose approaching limits. Scheduling constrained.',
+                    quote: 'Running out of dose budget. Need more workers or less work.',
+                    boxType: 'warning',
                     options: [
-                        { id: 'contractors', name: 'Bring in additional contractors', desc: 'More workers = more dose available.', cost: 80000, time: 0, dose: 0, result: 'Dose spread across more workers.' },
-                        { id: 'shielding', name: 'Install temporary shielding', desc: 'One-time improvement.', cost: 50000, time: 5, dose: -2, result: 'Future task doses reduced.' },
-                        { id: 'slow', name: 'Accept constraints, slow down', desc: 'Work proceeds slower.', cost: 0, time: 10, dose: 0, result: 'Schedule impact.' }
+                        { id: 'contractors', name: 'Bring in additional contractors', desc: 'More workers to share dose.', cost: 80000, time: 0, dose: 0 },
+                        { id: 'shielding', name: 'Install permanent shielding', desc: 'Long-term improvement.', cost: 50000, time: 5, dose: 0 },
+                        { id: 'slow', name: 'Accept schedule extension', desc: 'Work slower, spread dose.', cost: 20000, time: 10, dose: 0 }
                     ]
                 },
                 lowCobalt: {
-                    type: 'text',
-                    situation: 'Dose rates remain low.',
-                    charQuote: 'Low dose rates. Full operational flexibility.',
-                    result: 'No dose constraints.',
-                    cost: 0, time: 0, dose: 0
+                    situation: 'Dose rates remain low. Full operational flexibility.',
+                    quote: 'Plenty of dose budget. No constraints.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'maintain', name: 'Standard operations', desc: 'Continue normal approach.', cost: 5000, time: 0, dose: 0.5 },
+                        { id: 'bank', name: 'Bank dose savings', desc: 'Reserve for contingencies.', cost: 5000, time: 0, dose: 0 }
+                    ]
                 },
                 exotic: {
-                    type: 'decision',
-                    situation: '<strong>Dose rates severely limiting work time.</strong>',
-                    charQuote: 'Nickel alloy activation is brutal.',
+                    situation: '<strong>Severe dose constraints.</strong> Work significantly limited.',
+                    quote: 'Can barely get near it. Work windows are minutes, not hours.',
+                    boxType: 'danger',
                     options: [
-                        { id: 'contractors', name: 'Bring in additional contractors', desc: 'More workers needed.', cost: 100000, time: 0, dose: 0, result: 'Dose spread, expensive.' },
-                        { id: 'remote', name: 'Remote operations where possible', desc: 'Minimise human proximity.', cost: 60000, time: 8, dose: -3, result: 'Reduced direct exposure.' }
+                        { id: 'contractors', name: 'Large contractor team', desc: 'Many workers, short exposures.', cost: 120000, time: 5, dose: 0 },
+                        { id: 'remote', name: 'Remote operations only', desc: 'No direct access.', cost: 80000, time: 8, dose: 0 },
+                        { id: 'restrict', name: 'Severely restrict operations', desc: 'Accept limitations.', cost: 30000, time: 0, dose: 0, healthImpact: -10 }
                     ]
                 }
             },
             stage5: {
                 standard: {
-                    type: 'decision',
-                    situation: 'Components remain <strong>highly active after 5-year decay storage.</strong> Remote handling required.',
-                    charQuote: '2,500 ppm cobalt. Waiting decades for it to cool down.',
+                    situation: '<strong>Components still highly active after 5-year decay.</strong> Remote handling required.',
+                    quote: '2,500 ppm cobalt. Still hot after 5 years. Decades to cool.',
+                    boxType: 'danger',
                     options: [
-                        { id: 'remote', name: 'Remote handling operations', desc: 'Difficult but manageable.', cost: 120000, time: 18, dose: 6, risk: { success: 70, fail: 30 }, failResult: { cost: 180000, time: 25, dose: 10, desc: 'Errors during remote handling.' } },
-                        { id: 'specialist', name: 'Specialist remote handling contractor', desc: 'Expert operators.', cost: 200000, time: 12, dose: 2, result: 'Clean removal by experts.' }
+                        { id: 'remote', name: 'Remote handling operations', desc: 'Difficult but necessary.', cost: 120000, time: 18, dose: 6, risk: 30 },
+                        { id: 'specialist', name: 'Specialist remote contractor', desc: 'Expert operators.', cost: 200000, time: 12, dose: 2 }
                     ]
                 },
                 lowCobalt: {
-                    type: 'text',
-                    situation: 'After 5-year decay, dose rates allow hands-on work.',
-                    charQuote: 'Low activation. Can handle it much sooner.',
-                    result: 'LLW disposal possible for some items.',
-                    cost: 60000, time: 8, dose: 2
+                    situation: 'After 5-year decay, dose rates allow hands-on work with standard PPE.',
+                    quote: 'Low activation. Can handle it now. Some LLW possible.',
+                    boxType: 'good',
+                    options: [
+                        { id: 'handson', name: 'Hands-on removal', desc: 'Direct handling possible.', cost: 60000, time: 8, dose: 2 },
+                        { id: 'segregate', name: 'Segregate for recycling', desc: 'Maximise material recovery.', cost: 80000, time: 10, dose: 2.5 }
+                    ]
                 },
                 exotic: {
-                    type: 'decision',
-                    situation: '<strong>Nickel-63 half-life is 100 years.</strong> Components will remain active for centuries.',
-                    charQuote: 'This alloy will be hot for a hundred years.',
+                    situation: '<strong>Nickel-63 half-life is 100 years.</strong> Components will be active for centuries.',
+                    quote: 'Hundred-year half-life. This stuff will outlive everyone here.',
+                    boxType: 'danger',
                     options: [
-                        { id: 'extended', name: 'Extended remote operations', desc: 'Very difficult work.', cost: 250000, time: 30, dose: 15, result: 'Long-term storage required.' },
-                        { id: 'specialist', name: 'Specialist + extended storage', desc: 'Experts plus waiting.', cost: 300000, time: 20, dose: 5, result: 'Still expensive.' }
+                        { id: 'extended', name: 'Extended remote operations', desc: 'Very difficult work.', cost: 250000, time: 30, dose: 15 },
+                        { id: 'storage', name: 'Long-term interim storage', desc: 'Store and wait decades.', cost: 200000, time: 10, dose: 3 },
+                        { id: 'specialist', name: 'Specialist handling + storage', desc: 'Experts plus waiting.', cost: 300000, time: 20, dose: 5 }
                     ]
                 }
             }
@@ -1673,11 +1819,11 @@ const GAME_DATA = {
 // ============================================
 const STATE = {
     stage: 1,
-    choices: {},           // Stage 1 design choices
-    stageChoices: {},      // Choices made in stages 2-5
-    completed: {},         // Completed elements per stage
+    designChoices: {},     // Stage 1 choices
+    stageChoices: {},      // Choices per stage per element
+    completed: {},         // Elements completed per stage
     triggers: {},          // Active triggers
-    flags: {},             // Special flags (panelImproved, backupPanel, etc.)
+    flags: {},             // Boolean flags
     totals: { cost: 0, dose: 0, time: 0 },
     stageTotals: {},
     plantHealth: 100,
@@ -1685,7 +1831,18 @@ const STATE = {
 };
 
 // ============================================
-// INTRO CONTROLLER
+// UTILITY FUNCTIONS
+// ============================================
+function formatMoney(n) { return '£' + n.toLocaleString(); }
+
+function getCostClass(cost) {
+    if (cost <= 20000) return 'cheap';
+    if (cost <= 60000) return 'medium';
+    return 'expensive';
+}
+
+// ============================================
+// INTRO
 // ============================================
 let currentSlide = 1;
 const totalSlides = 4;
@@ -1726,11 +1883,9 @@ function startStage(stageNum) {
     
     const stage = GAME_DATA.stages[stageNum];
     
-    // Update header
     document.getElementById('phaseName').textContent = `STAGE ${stageNum}: ${stage.name}`;
     document.getElementById('phaseYear').textContent = stage.year;
     
-    // Update stats display
     updateStatsDisplay();
     
     // Character banner
@@ -1738,9 +1893,7 @@ function startStage(stageNum) {
     if (stageNum > 1 && stage.char) {
         const char = GAME_DATA.characters[stage.char];
         banner.className = `character-banner visible ${stage.char}`;
-        document.getElementById('charPortrait').innerHTML = char.portrait 
-            ? `<img src="${char.portrait}" alt="${char.name}">` 
-            : char.emoji;
+        document.getElementById('charPortrait').textContent = char.emoji;
         document.getElementById('charName').textContent = char.name;
         document.getElementById('charRole').textContent = char.role;
     } else {
@@ -1752,7 +1905,7 @@ function startStage(stageNum) {
         d.classList.remove('done', 'warning', 'issue');
     });
     
-    // Update progress
+    // Update progress dots
     document.querySelectorAll('.progress-dot').forEach((d, i) => {
         d.classList.remove('current', 'done');
         if (i + 1 === stageNum) d.classList.add('current');
@@ -1772,9 +1925,8 @@ function updateStatsDisplay() {
     if (STATE.stage === 1) {
         const spent = STATE.totals.cost;
         const remaining = stage.budget - spent;
-        html = `
-            <div class="stat">💰 Remaining: <span class="stat-value ${remaining < 100000 ? 'warning' : ''}">${formatMoney(remaining)}</span></div>
-        `;
+        const cls = remaining < 100000 ? (remaining < 0 ? 'danger' : 'warning') : '';
+        html = `<div class="stat">💰 Remaining: <span class="stat-value ${cls}">${formatMoney(remaining)}</span></div>`;
     } else {
         const st = STATE.stageTotals[STATE.stage] || { cost: 0, dose: 0, time: 0 };
         html = `
@@ -1784,7 +1936,6 @@ function updateStatsDisplay() {
             <div class="stat">❤️ <span class="stat-value ${STATE.plantHealth < 60 ? 'danger' : ''}">${STATE.plantHealth}%</span></div>
         `;
     }
-    
     document.getElementById('topStats').innerHTML = html;
 }
 
@@ -1796,18 +1947,14 @@ function updateProgressLabel() {
     }
 }
 
-function formatMoney(amount) {
-    return '£' + amount.toLocaleString();
-}
-
 // ============================================
 // HOTSPOT CLICKS
 // ============================================
 document.querySelectorAll('.hotspot').forEach(h => {
     h.onclick = () => {
-        const el = h.dataset.element;
-        if (STATE.completed[STATE.stage]?.[el]) return;
-        openElementModal(el);
+        const elId = h.dataset.element;
+        if (STATE.completed[STATE.stage]?.[elId]) return;
+        openElementModal(elId);
     };
 });
 
@@ -1822,36 +1969,36 @@ document.getElementById('modalOverlay').onclick = (e) => {
     if (e.target.id === 'modalOverlay') closeModal();
 };
 
-function openElementModal(elementId) {
-    const element = GAME_DATA.elements[elementId];
+function openElementModal(elId) {
+    const element = GAME_DATA.elements[elId];
     document.getElementById('modalTitle').textContent = element.title;
     
     if (STATE.stage === 1) {
-        renderDesignChoiceModal(elementId, element);
+        renderDesignModal(elId, element);
     } else {
-        renderStageInteractionModal(elementId, element);
+        renderDecisionModal(elId, element);
     }
     
     openModal();
 }
 
 // ============================================
-// STAGE 1: DESIGN CHOICES
+// STAGE 1: DESIGN
 // ============================================
-function renderDesignChoiceModal(elementId, element) {
+function renderDesignModal(elId, element) {
     const data = element.stage1;
     
     let html = `<div class="situation-box"><p>${data.description}</p></div>`;
     html += '<div class="options-list">';
     
     data.options.forEach(opt => {
-        const selected = STATE.choices[elementId] === opt.id ? 'selected' : '';
+        const sel = STATE.designChoices[elId] === opt.id ? 'selected' : '';
         html += `
-            <div class="option-card ${selected}" data-id="${opt.id}">
+            <div class="option-card ${sel}" data-id="${opt.id}">
                 <div class="choice-image">[Image: ${opt.name}]</div>
                 <div class="option-header">
                     <span class="option-name">${opt.name}</span>
-                    <span class="option-cost">${formatMoney(opt.cost)}</span>
+                    <span class="option-cost ${getCostClass(opt.cost)}">${formatMoney(opt.cost)}</span>
                 </div>
                 <p class="option-desc">${opt.desc}</p>
             </div>
@@ -1861,7 +2008,7 @@ function renderDesignChoiceModal(elementId, element) {
     
     document.getElementById('modalBody').innerHTML = html;
     
-    let selected = STATE.choices[elementId] || null;
+    let selected = STATE.designChoices[elId] || null;
     document.querySelectorAll('.option-card').forEach(card => {
         card.onclick = () => {
             document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
@@ -1873,152 +2020,90 @@ function renderDesignChoiceModal(elementId, element) {
     document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirm">Confirm Selection</button>';
     document.getElementById('btnConfirm').onclick = () => {
         if (!selected) return;
-        confirmDesignChoice(elementId, element, selected);
+        
+        const opt = data.options.find(o => o.id === selected);
+        
+        // Refund old if changing
+        if (STATE.designChoices[elId]) {
+            const old = data.options.find(o => o.id === STATE.designChoices[elId]);
+            STATE.totals.cost -= old.cost;
+        }
+        
+        STATE.designChoices[elId] = selected;
+        STATE.completed[1][elId] = true;
+        STATE.totals.cost += opt.cost;
+        
+        document.querySelector(`[data-element="${elId}"] .hotspot-dot`).classList.add('done');
+        
+        updateStatsDisplay();
+        updateProgressLabel();
+        closeModal();
     };
 }
 
-function confirmDesignChoice(elementId, element, choiceId) {
-    const opt = element.stage1.options.find(o => o.id === choiceId);
-    
-    // Refund old choice if changing
-    if (STATE.choices[elementId]) {
-        const old = element.stage1.options.find(o => o.id === STATE.choices[elementId]);
-        STATE.totals.cost -= old.cost;
-    }
-    
-    STATE.choices[elementId] = choiceId;
-    STATE.completed[1][elementId] = true;
-    STATE.totals.cost += opt.cost;
-    
-    // Update hotspot
-    const dot = document.querySelector(`[data-element="${elementId}"] .hotspot-dot`);
-    dot.classList.add('done');
-    
-    updateStatsDisplay();
-    updateProgressLabel();
-    closeModal();
-}
-
 // ============================================
-// STAGES 2-5: INTERACTIONS
+// STAGES 2-5: DECISIONS
 // ============================================
-function renderStageInteractionModal(elementId, element) {
+function renderDecisionModal(elId, element) {
     const stageKey = `stage${STATE.stage}`;
-    const designChoice = STATE.choices[elementId];
+    const designChoice = STATE.designChoices[elId];
+    const designOpt = element.stage1.options.find(o => o.id === designChoice);
+    
     let stageData = element[stageKey]?.[designChoice];
     
     if (!stageData) {
-        // Fallback if no specific data
-        document.getElementById('modalBody').innerHTML = '<p>No specific interaction for this element at this stage.</p>';
-        document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirm">Continue</button>';
-        document.getElementById('btnConfirm').onclick = () => {
-            STATE.completed[STATE.stage][elementId] = true;
-            document.querySelector(`[data-element="${elementId}"] .hotspot-dot`).classList.add('done');
-            updateProgressLabel();
-            closeModal();
-        };
+        document.getElementById('modalBody').innerHTML = '<p>No data for this element.</p>';
+        document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" onclick="closeModal()">Close</button>';
         return;
     }
     
-    // Handle conditional type
-    if (stageData.type === 'conditional') {
-        const triggerActive = STATE.triggers[stageData.trigger];
-        stageData = triggerActive ? stageData.ifTriggered : stageData.ifNotTriggered;
+    // Handle conditional (trigger-based or flag-based)
+    if (stageData.checkTrigger) {
+        stageData = STATE.triggers[stageData.checkTrigger] ? stageData.triggered : stageData.notTriggered;
+    } else if (stageData.checkFlag) {
+        stageData = STATE.flags[stageData.checkFlag] ? stageData.hasFlag : stageData.noFlag;
     }
     
     const char = GAME_DATA.characters[GAME_DATA.stages[STATE.stage].char];
-    const designOpt = element.stage1.options.find(o => o.id === designChoice);
     
-    if (stageData.type === 'text') {
-        renderTextOutcome(elementId, stageData, char, designOpt);
-    } else if (stageData.type === 'decision') {
-        renderDecisionPoint(elementId, stageData, char, designOpt);
-    }
-}
-
-function renderTextOutcome(elementId, data, char, designOpt) {
     let html = '';
     
-    // Design recall
-    html += `<div class="design-recall"><strong>Your 2025 choice:</strong> ${designOpt.name}</div>`;
+    // Design recall - just show what they chose, no judgment
+    html += `
+        <div class="design-recall">
+            <strong>2025 Design:</strong> ${designOpt.name}
+        </div>
+    `;
     
-    // Situation
-    html += `<div class="situation-box"><p>${data.situation}</p></div>`;
+    // Situation box - neutral styling, let content speak for itself
+    html += `<div class="situation-box"><p>${stageData.situation}</p></div>`;
     
     // Character quote
     html += `
         <div class="char-quote">
-            <div class="char-portrait">${char.portrait ? `<img src="${char.portrait}">` : char.emoji}</div>
+            <div class="char-portrait">${char.emoji}</div>
             <div>
                 <div class="char-quote-name">${char.name}</div>
-                <p class="char-quote-text">"${data.charQuote}"</p>
+                <p class="char-quote-text">"${stageData.quote}"</p>
             </div>
         </div>
     `;
     
-    // Result
-    html += `<div class="situation-box" style="border-left-color: var(--green);"><p><strong>Result:</strong> ${data.result}</p></div>`;
-    
-    // Impacts preview
-    html += `<div class="option-impacts" style="justify-content: center; padding: 10px 0;">`;
-    if (data.cost) html += `<span class="impact negative">💰 ${formatMoney(data.cost)}</span>`;
-    if (data.time) html += `<span class="impact negative">⏱️ +${data.time} days</span>`;
-    if (data.dose) html += `<span class="impact negative">☢️ +${data.dose} mSv</span>`;
-    if (!data.cost && !data.time && !data.dose) html += `<span class="impact positive">No additional impact</span>`;
-    html += `</div>`;
-    
-    document.getElementById('modalBody').innerHTML = html;
-    document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirm">Continue</button>';
-    
-    document.getElementById('btnConfirm').onclick = () => {
-        applyOutcome(elementId, data);
-    };
-}
-
-function renderDecisionPoint(elementId, data, char, designOpt) {
-    let html = '';
-    
-    // Design recall
-    html += `<div class="design-recall"><strong>Your 2025 choice:</strong> ${designOpt.name}</div>`;
-    
-    // Situation
-    const boxClass = data.impossible ? 'warning' : '';
-    html += `<div class="situation-box ${boxClass}"><p>${data.situation}</p></div>`;
-    
-    // Character quote
-    html += `
-        <div class="char-quote">
-            <div class="char-portrait">${char.portrait ? `<img src="${char.portrait}">` : char.emoji}</div>
-            <div>
-                <div class="char-quote-name">${char.name}</div>
-                <p class="char-quote-text">"${data.charQuote}"</p>
-            </div>
-        </div>
-    `;
-    
-    // Options
-    let options = data.options;
-    
-    // Check for improved panel options
-    if (data.checkImproved && STATE.flags.panelImproved) {
-        options = data.improvedOptions;
-    }
-    
+    // Options - no hints about which is "better"
     html += '<div class="options-list">';
-    options.forEach(opt => {
+    stageData.options.forEach(opt => {
         html += `
             <div class="option-card" data-id="${opt.id}">
                 <div class="option-header">
                     <span class="option-name">${opt.name}</span>
-                    ${opt.cost ? `<span class="option-cost">${formatMoney(opt.cost)}</span>` : ''}
+                    <span class="option-cost ${getCostClass(opt.cost || 0)}">${formatMoney(opt.cost || 0)}</span>
                 </div>
                 <p class="option-desc">${opt.desc}</p>
                 <div class="option-impacts">
-                    ${opt.cost ? `<span class="impact negative">💰 ${formatMoney(opt.cost)}</span>` : ''}
                     ${opt.time ? `<span class="impact negative">⏱️ +${opt.time} days</span>` : ''}
-                    ${opt.dose ? `<span class="impact ${opt.dose > 0 ? 'negative' : 'positive'}">☢️ ${opt.dose > 0 ? '+' : ''}${opt.dose} mSv</span>` : ''}
+                    ${opt.dose ? `<span class="impact negative">☢️ +${opt.dose} mSv</span>` : ''}
                     ${opt.healthImpact ? `<span class="impact ${opt.healthImpact > 0 ? 'positive' : 'negative'}">❤️ ${opt.healthImpact > 0 ? '+' : ''}${opt.healthImpact}%</span>` : ''}
-                    ${opt.risk ? `<span class="impact neutral">⚠️ ${opt.risk.success}% success</span>` : ''}
+                    ${opt.risk ? `<span class="impact neutral">⚠️ ${opt.risk}% failure risk</span>` : ''}
                 </div>
             </div>
         `;
@@ -2038,124 +2123,112 @@ function renderDecisionPoint(elementId, data, char, designOpt) {
     
     document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirm" disabled>Select an Option</button>';
     
-    // Enable button when option selected
     const observer = new MutationObserver(() => {
         const hasSelection = document.querySelector('.option-card.selected');
         const btn = document.getElementById('btnConfirm');
-        btn.disabled = !hasSelection;
-        btn.textContent = hasSelection ? 'Confirm Decision' : 'Select an Option';
+        if (btn) {
+            btn.disabled = !hasSelection;
+            btn.textContent = hasSelection ? 'Confirm Decision' : 'Select an Option';
+        }
     });
     observer.observe(document.getElementById('modalBody'), { subtree: true, attributes: true, attributeFilter: ['class'] });
     
     document.getElementById('btnConfirm').onclick = () => {
         if (!selected) return;
-        const opt = options.find(o => o.id === selected);
+        
+        const opt = stageData.options.find(o => o.id === selected);
         
         // Handle risk
-        if (opt.risk) {
-            const roll = Math.random() * 100;
-            if (roll > opt.risk.success) {
-                // Failed!
-                showRiskResult(elementId, opt, false);
-                return;
-            }
+        if (opt.risk && Math.random() * 100 < opt.risk) {
+            showFailure(elId, opt, stageData);
+            return;
         }
         
-        // Success
-        applyDecision(elementId, opt, data);
+        applyDecision(elId, opt, stageData);
     };
 }
 
-function showRiskResult(elementId, opt, success) {
-    if (!success && opt.failResult) {
-        const fail = opt.failResult;
+function showFailure(elId, opt, stageData) {
+    let html = `
+        <div class="situation-box danger">
+            <p><strong>Attempt Failed!</strong></p>
+            <p>The risky approach didn't work. Consequences apply.</p>
+        </div>
+    `;
+    
+    const extraCost = opt.cost || 0;
+    const extraDose = (opt.dose || 0) + 2;
+    const extraTime = (opt.time || 0) + 5;
+    
+    html += `
+        <div class="option-impacts" style="justify-content: center; padding: 20px;">
+            <span class="impact negative">💰 ${formatMoney(extraCost + 50000)}</span>
+            <span class="impact negative">⏱️ +${extraTime} days</span>
+            <span class="impact negative">☢️ +${extraDose} mSv</span>
+            <span class="impact negative">❤️ -10%</span>
+        </div>
+    `;
+    
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('modalFooter').innerHTML = '<button class="btn btn-danger" id="btnConfirm">Accept Consequences</button>';
+    
+    document.getElementById('btnConfirm').onclick = () => {
+        // Apply failure
+        STATE.stageTotals[STATE.stage].cost += extraCost + 50000;
+        STATE.stageTotals[STATE.stage].dose += extraDose;
+        STATE.stageTotals[STATE.stage].time += extraTime;
+        STATE.totals.cost += extraCost + 50000;
+        STATE.totals.dose += extraDose;
+        STATE.totals.time += extraTime;
+        STATE.plantHealth = Math.max(0, STATE.plantHealth - 10);
         
-        let html = `<div class="situation-box danger"><p><strong>Attempt Failed!</strong></p><p>${fail.desc}</p></div>`;
+        STATE.completed[STATE.stage][elId] = true;
+        document.querySelector(`[data-element="${elId}"] .hotspot-dot`).classList.add('issue');
         
-        html += `<div class="option-impacts" style="justify-content: center; padding: 15px 0; flex-wrap: wrap; gap: 10px;">`;
-        if (fail.cost) html += `<span class="impact negative">💰 ${formatMoney(fail.cost)}</span>`;
-        if (fail.time) html += `<span class="impact negative">⏱️ +${fail.time} days</span>`;
-        if (fail.dose) html += `<span class="impact negative">☢️ +${fail.dose} mSv</span>`;
-        if (fail.healthImpact) html += `<span class="impact negative">❤️ ${fail.healthImpact}%</span>`;
-        if (fail.injury) html += `<span class="impact negative">🚑 ${fail.injury}% injury risk</span>`;
-        html += `</div>`;
-        
-        document.getElementById('modalBody').innerHTML = html;
-        document.getElementById('modalFooter').innerHTML = '<button class="btn btn-danger" id="btnConfirm">Accept Consequences</button>';
-        
-        document.getElementById('btnConfirm').onclick = () => {
-            // Apply failure consequences
-            const outcome = {
-                cost: fail.cost || 0,
-                time: fail.time || 0,
-                dose: fail.dose || 0,
-                healthImpact: fail.healthImpact || 0
-            };
-            
-            // Check for injury
-            if (fail.injury && Math.random() * 100 < fail.injury) {
-                STATE.injuries++;
-                outcome.cost += 50000;
-                outcome.time += 10;
-            }
-            
-            applyOutcome(elementId, outcome, 'issue');
-        };
-    }
+        updateStatsDisplay();
+        updateProgressLabel();
+        closeModal();
+    };
 }
 
-function applyDecision(elementId, opt, data) {
-    // Set triggers
+function applyDecision(elId, opt, stageData) {
+    const cost = opt.cost || 0;
+    const dose = opt.dose || 0;
+    const time = opt.time || 0;
+    const healthImpact = opt.healthImpact || 0;
+    
+    // Additional costs from triggered scenarios
+    if (stageData.additionalCosts) {
+        STATE.stageTotals[STATE.stage].cost += (stageData.additionalCosts.regulatory || 0) + (stageData.additionalCosts.environmental || 0);
+        STATE.totals.cost += (stageData.additionalCosts.regulatory || 0) + (stageData.additionalCosts.environmental || 0);
+        if (stageData.additionalCosts.healthImpact) {
+            STATE.plantHealth = Math.max(0, STATE.plantHealth + stageData.additionalCosts.healthImpact);
+        }
+    }
+    
+    STATE.stageTotals[STATE.stage].cost += cost;
+    STATE.stageTotals[STATE.stage].dose += dose;
+    STATE.stageTotals[STATE.stage].time += time;
+    STATE.totals.cost += cost;
+    STATE.totals.dose += dose;
+    STATE.totals.time += time;
+    
+    if (healthImpact) {
+        STATE.plantHealth = Math.max(0, Math.min(100, STATE.plantHealth + healthImpact));
+    }
+    
     if (opt.trigger) STATE.triggers[opt.trigger] = true;
+    if (opt.setFlag) STATE.flags[opt.setFlag] = true;
     
-    // Set flags
-    if (opt.setPanelImproved) STATE.flags.panelImproved = true;
-    if (opt.setBackupPanel) STATE.flags.backupPanel = true;
+    STATE.completed[STATE.stage][elId] = true;
+    STATE.stageChoices[`${STATE.stage}_${elId}`] = opt.id;
     
-    // Apply outcome
-    const outcome = {
-        cost: opt.cost || 0,
-        time: opt.time || 0,
-        dose: opt.dose || 0,
-        healthImpact: opt.healthImpact || 0,
-        result: opt.result
-    };
+    // Determine hotspot status based on actual outcome severity
+    let status = 'done';
+    if (cost >= 100000 || dose >= 5 || opt.healthImpact <= -10) status = 'issue';
+    else if (cost >= 40000 || dose >= 3 || opt.healthImpact < 0) status = 'warning';
     
-    // Add any additional costs from the data
-    if (data.additionalCosts) {
-        outcome.cost += (data.additionalCosts.regulatory || 0) + (data.additionalCosts.environmental || 0);
-        if (data.additionalCosts.healthImpact) outcome.healthImpact += data.additionalCosts.healthImpact;
-    }
-    
-    applyOutcome(elementId, outcome);
-}
-
-function applyOutcome(elementId, outcome, status = 'done') {
-    // Apply to stage totals
-    STATE.stageTotals[STATE.stage].cost += outcome.cost || 0;
-    STATE.stageTotals[STATE.stage].dose += outcome.dose || 0;
-    STATE.stageTotals[STATE.stage].time += outcome.time || 0;
-    
-    // Apply to overall totals
-    STATE.totals.cost += outcome.cost || 0;
-    STATE.totals.dose += outcome.dose || 0;
-    STATE.totals.time += outcome.time || 0;
-    
-    // Apply health impact
-    if (outcome.healthImpact) {
-        STATE.plantHealth = Math.max(0, Math.min(100, STATE.plantHealth + outcome.healthImpact));
-    }
-    
-    // Set triggers
-    if (outcome.trigger) STATE.triggers[outcome.trigger] = true;
-    
-    // Mark complete
-    STATE.completed[STATE.stage][elementId] = true;
-    STATE.stageChoices[`${STATE.stage}_${elementId}`] = outcome;
-    
-    // Update hotspot visual
-    const dot = document.querySelector(`[data-element="${elementId}"] .hotspot-dot`);
-    dot.classList.add(status);
+    document.querySelector(`[data-element="${elId}"] .hotspot-dot`).classList.add(status);
     
     updateStatsDisplay();
     updateProgressLabel();
@@ -2174,15 +2247,12 @@ function showStageSummary() {
     document.getElementById('sumTitle').textContent = `${stage.name} Complete`;
     document.getElementById('sumSubtitle').textContent = `Year ${stage.year}`;
     
-    // Stats
     let statsHtml = '';
     if (STATE.stage === 1) {
-        const budget = stage.budget;
-        const spent = STATE.totals.cost;
-        const over = spent > budget;
+        const over = STATE.totals.cost > stage.budget;
         statsHtml = `
-            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value ${over ? 'over' : ''}">${formatMoney(spent)}</div><div class="summary-stat-label">Spent</div></div>
-            <div class="summary-stat"><div class="summary-stat-icon">📊</div><div class="summary-stat-value">${formatMoney(budget)}</div><div class="summary-stat-label">Budget</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value ${over ? 'over' : ''}">${formatMoney(STATE.totals.cost)}</div><div class="summary-stat-label">Spent</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">📊</div><div class="summary-stat-value">${formatMoney(stage.budget)}</div><div class="summary-stat-label">Budget</div></div>
             <div class="summary-stat"><div class="summary-stat-icon">📋</div><div class="summary-stat-value">6</div><div class="summary-stat-label">Decisions</div></div>
             <div class="summary-stat"><div class="summary-stat-icon">❤️</div><div class="summary-stat-value">${STATE.plantHealth}%</div><div class="summary-stat-label">Health</div></div>
         `;
@@ -2196,36 +2266,29 @@ function showStageSummary() {
     }
     document.getElementById('sumStats').innerHTML = statsHtml;
     
-    // Decisions list
-    let decHtml = '<h4>Decisions Made</h4>';
+    // Decisions summary - just list choices, no quality judgment yet
+    let decHtml = '<h4>Your 2025 Decisions</h4>';
     Object.keys(GAME_DATA.elements).forEach(elId => {
         const el = GAME_DATA.elements[elId];
-        const choice = STATE.choices[elId];
+        const choice = STATE.designChoices[elId];
         const opt = el.stage1.options.find(o => o.id === choice);
-        const tagClass = opt.quality === 'good' ? 'good' : opt.quality === 'ok' ? 'ok' : 'poor';
         decHtml += `
             <div class="decision-row">
                 <span class="decision-element">${el.title}</span>
-                <span class="decision-tag ${tagClass}">${opt.quality.toUpperCase()}</span>
+                <span style="color: var(--white);">${opt.name}</span>
             </div>
         `;
     });
     document.getElementById('sumDecisions').innerHTML = decHtml;
     
-    // Button
     document.getElementById('btnNextPhase').textContent = STATE.stage === 5 ? 'View Final Results →' : 'Next Stage →';
-    
     document.getElementById('summaryScreen').classList.add('active');
 }
 
 document.getElementById('btnNextPhase').onclick = () => {
     document.getElementById('summaryScreen').classList.remove('active');
-    
-    if (STATE.stage >= 5) {
-        showFinalResults();
-    } else {
-        showTransition();
-    }
+    if (STATE.stage >= 5) showFinalResults();
+    else showTransition();
 };
 
 function showTransition() {
@@ -2245,22 +2308,38 @@ document.getElementById('btnTransContinue').onclick = () => {
 };
 
 function showFinalResults() {
-    // Calculate grade
     let good = 0;
+    let lessonsHtml = '';
+    
     Object.keys(GAME_DATA.elements).forEach(elId => {
-        const opt = GAME_DATA.elements[elId].stage1.options.find(o => o.id === STATE.choices[elId]);
+        const el = GAME_DATA.elements[elId];
+        const opt = el.stage1.options.find(o => o.id === STATE.designChoices[elId]);
         if (opt.quality === 'good') good++;
+        
+        // Build lessons learned
+        let lessonClass = opt.quality === 'good' ? 'good' : (opt.quality === 'wasteful' ? 'ok' : 'poor');
+        let lessonText = '';
+        if (opt.quality === 'good') lessonText = 'Good choice - minimised lifecycle costs';
+        else if (opt.quality === 'wasteful') lessonText = 'Over-specified - unnecessary expense';
+        else lessonText = 'Poor choice - caused problems throughout';
+        
+        lessonsHtml += `
+            <div class="decision-row">
+                <span class="decision-element">${el.title}: ${opt.name}</span>
+                <span class="decision-tag ${lessonClass}">${lessonText}</span>
+            </div>
+        `;
     });
     
     let grade, verdict;
-    if (good >= 5 && STATE.plantHealth >= 80 && STATE.totals.dose < 25) {
-        grade = 'A'; verdict = 'Master Designer';
+    if (good >= 5 && STATE.plantHealth >= 80 && STATE.totals.dose < 30) {
+        grade = 'A'; verdict = 'Master Designer - Your choices made life easier for everyone';
     } else if (good >= 4 && STATE.plantHealth >= 60) {
-        grade = 'B'; verdict = 'Competent Engineer';
-    } else if (good >= 2) {
-        grade = 'C'; verdict = 'Needs Improvement';
+        grade = 'B'; verdict = 'Competent Engineer - Mostly good decisions';
+    } else if (good >= 2 && STATE.plantHealth >= 40) {
+        grade = 'C'; verdict = 'Needs Improvement - Several choices caused problems';
     } else {
-        grade = 'D'; verdict = 'Lessons to Learn';
+        grade = 'D'; verdict = 'Lessons Learned - Your design created decades of difficulties';
     }
     
     document.getElementById('resGrade').textContent = grade;
@@ -2273,6 +2352,12 @@ function showFinalResults() {
         <div class="results-total"><div class="results-total-value">${STATE.totals.time} days</div><div class="results-total-label">Total Time</div></div>
         <div class="results-total"><div class="results-total-value">${STATE.plantHealth}%</div><div class="results-total-label">Plant Health</div></div>
     `;
+    
+    // Add lessons learned section
+    const lessonsSection = document.createElement('div');
+    lessonsSection.className = 'summary-decisions';
+    lessonsSection.innerHTML = '<h4>Lessons Learned</h4>' + lessonsHtml;
+    document.getElementById('resTotals').after(lessonsSection);
     
     document.getElementById('resultsScreen').classList.add('active');
 }
