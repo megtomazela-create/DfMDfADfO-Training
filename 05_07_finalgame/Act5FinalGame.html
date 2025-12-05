@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The 60-Year Journey | The Nuclear House</title>
+    <title>The 60-Year Journey</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         :root {
             --white: #f7f8fa;
             --light-grey: #d0d9e0;
@@ -17,1650 +19,1587 @@
             --orange: #cc5500;
             --red: #dc2626;
             --amber: #f59e0b;
-            --dave-colour: #cc5500;
-            --sarah-colour: #00b0f0;
-            --mike-colour: #92d050;
-            --janet-colour: #9babc2;
-            --space-xs: 4px;
-            --space-sm: 8px;
-            --space-md: 16px;
-            --space-lg: 24px;
-            --space-xl: 32px;
-            --space-2xl: 48px;
-            --radius-sm: 4px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-            --radius-xl: 16px;
-            --shadow-card: 0 4px 6px rgba(0, 0, 0, 0.3);
-            --shadow-modal: 0 10px 25px rgba(0, 0, 0, 0.5);
-            --shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.4);
-            --transition-fast: 0.15s ease;
-            --transition-normal: 0.3s ease;
         }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
+        html, body {
+            height: 100%;
+            overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--deep-navy);
+            background: var(--deep-navy);
             color: var(--light-grey);
-            line-height: 1.6;
-            min-height: 100vh;
-            overflow-x: hidden;
         }
-        
-        h1, h2, h3, h4 { color: var(--white); font-weight: 600; }
-        button { font-family: inherit; cursor: pointer; border: none; transition: all var(--transition-fast); }
         
         /* ============================================
            CINEMATIC INTRO
            ============================================ */
-        .cinematic-container {
+        #cinematicIntro {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            inset: 0;
             z-index: 1000;
             background: #000;
-            overflow: hidden;
         }
         
-        .cinematic-container.hidden { display: none; }
+        #cinematicIntro.hidden { display: none; }
         
-        .cinematic-slide {
+        .intro-slide {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
+            inset: 0;
             display: flex;
             align-items: center;
             justify-content: center;
+            opacity: 0;
+            transition: opacity 0.8s ease;
         }
         
-        .cinematic-slide.active { opacity: 1; visibility: visible; }
+        .intro-slide.active { opacity: 1; }
         
-        .slide-background {
+        .intro-slide .bg {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            inset: 0;
             background-size: cover;
             background-position: center;
-            filter: brightness(0.4);
+            filter: brightness(0.35);
         }
         
-        .slide-background.no-image {
-            background: linear-gradient(135deg, #0a1628 0%, #1a2a3a 50%, #0d1a2d 100%);
+        .intro-slide .bg.dark {
+            background: linear-gradient(135deg, #0a1628, #1a2a3a, #0d1a2d);
             filter: none;
         }
         
-        .slide-content {
+        .intro-content {
             position: relative;
-            z-index: 10;
-            max-width: 800px;
-            padding: var(--space-2xl);
+            z-index: 2;
             text-align: center;
+            max-width: 700px;
+            padding: 40px;
         }
         
-        .cinematic-logo { margin-bottom: var(--space-xl); animation: fadeInUp 1s ease 0.3s both; }
-        .cinematic-logo img { max-width: 280px; height: auto; filter: drop-shadow(0 0 20px rgba(255,255,255,0.2)); }
+        .intro-logo img { max-width: 250px; margin-bottom: 30px; }
+        .intro-company { color: var(--blue); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 20px; }
+        .intro-title { font-size: 3rem; color: var(--white); margin-bottom: 20px; }
+        .intro-subtitle { font-size: 1.2rem; color: var(--light-grey); }
         
-        .cinematic-company {
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--blue);
-            margin-bottom: var(--space-lg);
-            animation: fadeInUp 1s ease 0.5s both;
-        }
-        
-        .cinematic-title {
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: var(--white);
-            margin-bottom: var(--space-lg);
-            line-height: 1.1;
-            text-shadow: 0 4px 30px rgba(0,0,0,0.5);
-            animation: fadeInUp 1s ease 0.7s both;
-        }
-        
-        .cinematic-subtitle {
-            font-size: 1.25rem;
-            color: var(--light-grey);
-            line-height: 1.6;
-            margin-bottom: var(--space-xl);
-            animation: fadeInUp 1s ease 0.9s both;
-        }
-        
-        .narrative-text {
-            background: rgba(31, 41, 55, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: var(--radius-lg);
-            padding: var(--space-xl) var(--space-2xl);
+        .intro-text-box {
+            background: rgba(31, 41, 55, 0.9);
             border-left: 4px solid var(--blue);
+            padding: 30px;
             text-align: left;
-            max-width: 650px;
-            margin: 0 auto;
-            animation: fadeInUp 1s ease 0.5s both;
+            border-radius: 8px;
         }
         
-        .narrative-text p { font-size: 1.125rem; line-height: 1.8; color: var(--light-grey); margin-bottom: var(--space-md); }
-        .narrative-text p:last-child { margin-bottom: 0; }
-        .narrative-text strong { color: var(--white); }
-        .narrative-text .highlight { color: var(--green); font-weight: 600; }
+        .intro-text-box p { margin-bottom: 15px; font-size: 1.1rem; line-height: 1.7; }
+        .intro-text-box p:last-child { margin-bottom: 0; }
+        .intro-text-box strong { color: var(--white); }
+        .intro-text-box .highlight { color: var(--green); }
         
-        .narrative-year {
-            font-size: 4rem;
-            font-weight: 700;
-            color: var(--blue);
-            margin-bottom: var(--space-lg);
-            text-shadow: 0 0 40px rgba(0, 176, 240, 0.3);
-            animation: fadeInUp 1s ease 0.3s both;
-        }
+        .intro-year { font-size: 4rem; color: var(--blue); margin-bottom: 20px; }
+        .intro-location { color: var(--mid-grey); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; }
         
-        .narrative-location {
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--mid-grey);
-            margin-bottom: var(--space-md);
-            animation: fadeInUp 1s ease 0.4s both;
-        }
-        
-        .budget-display {
+        .intro-budget {
             display: inline-block;
-            background: linear-gradient(135deg, var(--green), #6ab82e);
+            background: var(--green);
             color: var(--deep-navy);
-            padding: var(--space-md) var(--space-xl);
-            border-radius: var(--radius-md);
+            padding: 15px 30px;
+            border-radius: 8px;
             font-size: 1.5rem;
             font-weight: 700;
-            margin-top: var(--space-lg);
-            animation: pulseGlow 2s ease-in-out infinite, fadeInUp 1s ease 1.1s both;
+            margin-top: 20px;
         }
         
-        .slide-indicators {
+        .intro-nav {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 10;
+        }
+        
+        .intro-nav button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .intro-nav .btn-skip { background: transparent; color: var(--mid-grey); border: 1px solid var(--slate); }
+        .intro-nav .btn-skip:hover { color: var(--white); border-color: var(--white); }
+        .intro-nav .btn-next { background: var(--blue); color: var(--deep-navy); }
+        .intro-nav .btn-next:hover { background: #33c0f5; }
+        
+        .intro-dots {
             position: absolute;
             bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: var(--space-sm);
-            z-index: 20;
+            gap: 8px;
         }
         
-        .slide-indicator {
-            width: 40px; height: 4px;
+        .intro-dot {
+            width: 40px;
+            height: 4px;
             background: var(--slate);
             border-radius: 2px;
-            transition: all 0.3s ease;
             cursor: pointer;
+            transition: background 0.3s;
         }
         
-        .slide-indicator.active { background: var(--blue); box-shadow: 0 0 10px rgba(0, 176, 240, 0.5); }
-        .slide-indicator.completed { background: var(--green); }
+        .intro-dot.active { background: var(--blue); }
+        .intro-dot.done { background: var(--green); }
         
-        .cinematic-nav {
-            position: absolute;
-            bottom: 40px;
-            left: 0; right: 0;
+        /* ============================================
+           GAME SCREEN (FIXED VIEWPORT)
+           ============================================ */
+        #gameScreen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            flex-direction: column;
+        }
+        
+        #gameScreen.active { display: flex; }
+        
+        /* Top Bar */
+        .top-bar {
+            height: 60px;
+            background: var(--deep-navy);
+            border-bottom: 1px solid var(--dark-slate);
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: var(--space-lg);
-            z-index: 20;
+            justify-content: space-between;
+            padding: 0 20px;
+            flex-shrink: 0;
         }
         
-        .cinematic-btn {
-            padding: var(--space-md) var(--space-2xl);
-            font-size: 1rem;
+        .top-bar-logo img { height: 36px; }
+        
+        .top-bar-phase {
+            background: var(--dark-slate);
+            padding: 8px 20px;
+            border-radius: 6px;
             font-weight: 600;
-            border-radius: var(--radius-md);
-            transition: all 0.3s ease;
         }
         
-        .cinematic-btn.primary { background: var(--blue); color: var(--deep-navy); }
-        .cinematic-btn.primary:hover { background: #33c0f5; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 176, 240, 0.4); }
-        .cinematic-btn.secondary { background: transparent; color: var(--mid-grey); border: 1px solid var(--slate); }
-        .cinematic-btn.secondary:hover { color: var(--white); border-color: var(--white); }
+        .top-bar-phase .year { color: var(--blue); }
         
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 20px rgba(0, 176, 240, 0.3); } 50% { box-shadow: 0 0 40px rgba(0, 176, 240, 0.6); } }
+        .top-bar-right { display: flex; align-items: center; gap: 15px; }
         
-        /* ============================================
-           HEADER & LAYOUT
-           ============================================ */
-        .app-container { display: flex; flex-direction: column; min-height: 100vh; }
-        
-        .header {
-            position: fixed; top: 0; left: 0; right: 0; height: 60px;
-            background: var(--deep-navy); border-bottom: 1px solid var(--dark-slate);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 var(--space-lg); z-index: 100;
+        .top-bar-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
         }
         
-        .header-logo img { height: 36px; width: auto; }
+        .stat { display: flex; align-items: center; gap: 5px; }
+        .stat-value { color: var(--white); font-weight: 600; }
         
-        .header-stage { font-size: 0.875rem; color: var(--mid-grey); text-transform: uppercase; letter-spacing: 0.5px; }
-        .header-stage strong { color: var(--white); }
-        
-        .meters-bar { display: flex; gap: var(--space-lg); font-size: 0.875rem; }
-        .meter { display: flex; align-items: center; gap: var(--space-xs); }
-        .meter-value { color: var(--white); font-weight: 500; font-variant-numeric: tabular-nums; }
-        .meter-value.good { color: var(--green); }
-        .meter-value.warning { color: var(--amber); }
-        .meter-value.critical { color: var(--red); }
-        
-        .main-content { flex: 1; margin-top: 60px; padding: var(--space-xl); display: flex; flex-direction: column; align-items: center; }
-        
-        /* Timeline */
-        .timeline-bar {
-            position: fixed; top: 60px; left: 0; right: 0; height: 8px;
-            background: var(--dark-slate); z-index: 99;
+        .btn-next-stage {
+            display: none;
+            padding: 10px 20px;
+            background: var(--green);
+            color: var(--deep-navy);
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            animation: pulse 2s infinite;
         }
         
-        .timeline-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--green)); width: 0%; transition: width 0.5s ease; }
+        .btn-next-stage:hover { background: #a2e060; }
+        .btn-next-stage.visible { display: block; }
         
-        .timeline-markers {
-            position: absolute; top: 0; left: 0; right: 0; height: 100%;
-            display: flex; justify-content: space-between; padding: 0 10%;
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(146, 208, 80, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(146, 208, 80, 0); }
         }
         
-        .timeline-marker {
-            width: 16px; height: 16px; border-radius: 50%;
-            background: var(--slate); border: 3px solid var(--deep-navy);
-            transform: translateY(-4px);
-            transition: all 0.3s ease;
+        /* Progress Bar */
+        .progress-bar {
+            height: 6px;
+            background: var(--dark-slate);
+            flex-shrink: 0;
         }
         
-        .timeline-marker.active { background: var(--blue); box-shadow: 0 0 10px rgba(0, 176, 240, 0.5); }
-        .timeline-marker.completed { background: var(--green); }
-        
-        /* ============================================
-           MAIN GAME SCREEN
-           ============================================ */
-        .screen { display: none; width: 100%; max-width: 1200px; animation: fadeIn 0.5s ease; }
-        .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .stage-header { text-align: center; margin-bottom: var(--space-xl); }
-        .stage-header h2 { margin-bottom: var(--space-sm); }
-        .stage-header p { color: var(--mid-grey); }
-        
-        .stage-info-bar {
-            display: flex; justify-content: center; align-items: center; gap: var(--space-xl);
-            background: var(--dark-slate); padding: var(--space-md) var(--space-xl);
-            border-radius: var(--radius-md); margin-bottom: var(--space-xl);
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--blue), var(--green));
+            transition: width 0.5s ease;
         }
         
-        .info-item { text-align: center; }
-        .info-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mid-grey); }
-        .info-value { font-size: 1.25rem; font-weight: 600; color: var(--white); }
-        .info-value.good { color: var(--green); }
-        .info-value.warning { color: var(--amber); }
-        .info-value.critical { color: var(--red); }
-        
-        /* Character Banner */
+        /* Character Banner (for stages 2-5) */
         .character-banner {
-            display: flex; align-items: center; gap: var(--space-lg);
-            background: var(--dark-slate); border-radius: var(--radius-lg);
-            padding: var(--space-lg); margin-bottom: var(--space-xl);
-            border-left: 4px solid var(--blue);
+            display: none;
+            align-items: center;
+            gap: 15px;
+            background: var(--dark-slate);
+            padding: 12px 20px;
+            border-left: 4px solid var(--orange);
+            flex-shrink: 0;
         }
         
-        .character-banner.dave { border-left-color: var(--dave-colour); }
-        .character-banner.sarah { border-left-color: var(--sarah-colour); }
-        .character-banner.mike { border-left-color: var(--mike-colour); }
-        .character-banner.janet { border-left-color: var(--janet-colour); }
+        .character-banner.visible { display: flex; }
+        .character-banner.dave { border-color: var(--orange); }
+        .character-banner.sarah { border-color: var(--blue); }
+        .character-banner.mike { border-color: var(--green); }
+        .character-banner.janet { border-color: var(--mid-grey); }
         
-        .character-portrait {
-            width: 70px; height: 70px; border-radius: var(--radius-md);
-            background: var(--slate); display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; flex-shrink: 0; overflow: hidden;
+        .char-portrait {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: var(--slate);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            overflow: hidden;
         }
         
-        .character-portrait img { width: 100%; height: 100%; object-fit: cover; }
+        .char-portrait img { width: 100%; height: 100%; object-fit: cover; }
         
-        .character-info h3 { margin-bottom: var(--space-xs); font-size: 1.125rem; }
-        .character-role { color: var(--mid-grey); font-size: 0.875rem; margin-bottom: var(--space-sm); }
-        .character-quote { font-style: italic; color: var(--light-grey); }
+        .char-info h4 { color: var(--white); margin-bottom: 2px; }
+        .char-role { font-size: 0.85rem; color: var(--mid-grey); }
         
-        /* Plant Diagram */
-        .plant-diagram {
-            background: var(--dark-slate); border-radius: var(--radius-lg);
-            overflow: hidden; position: relative;
+        /* Map Container */
+        .map-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #1a1a2e;
         }
         
-        .plant-image-wrapper { position: relative; width: 100%; }
-        .plant-bg-image { width: 100%; height: auto; display: block; }
+        .map-wrapper {
+            position: relative;
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .map-wrapper img {
+            display: block;
+            max-width: 100%;
+            max-height: calc(100vh - 150px);
+            object-fit: contain;
+        }
         
         /* Hotspots */
         .hotspot {
-            position: absolute; cursor: pointer;
-            transform: translate(-50%, -50%); z-index: 10;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            z-index: 10;
         }
         
-        .hotspot-marker {
-            width: 48px; height: 48px; border-radius: 50%;
-            background: rgba(0,176,240,0.25); border: 3px solid var(--blue);
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s ease; animation: hotspotPulse 2s infinite;
+        .hotspot-dot {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(0, 176, 240, 0.3);
+            border: 3px solid var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            animation: hotspotPulse 2s infinite;
         }
         
-        .hotspot-marker:hover { transform: scale(1.15); background: rgba(0,176,240,0.45); }
+        .hotspot:hover .hotspot-dot {
+            transform: scale(1.15);
+            background: rgba(0, 176, 240, 0.5);
+        }
         
-        .hotspot-marker.completed {
-            background: rgba(146,208,80,0.35); border-color: var(--green);
+        .hotspot-dot.done {
+            background: rgba(146, 208, 80, 0.3);
+            border-color: var(--green);
             animation: none;
         }
         
-        .hotspot-marker.completed::after { content: '✓'; color: var(--green); font-size: 1.2rem; font-weight: bold; }
+        .hotspot-dot.done::after {
+            content: '✓';
+            color: var(--green);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
         
-        .hotspot-marker.problem {
-            background: rgba(220, 38, 38, 0.35); border-color: var(--red);
+        .hotspot-dot.issue {
+            background: rgba(220, 38, 38, 0.3);
+            border-color: var(--red);
             animation: none;
         }
         
-        .hotspot-marker.problem::after { content: '!'; color: var(--red); font-size: 1.2rem; font-weight: bold; }
+        .hotspot-dot.issue::after {
+            content: '!';
+            color: var(--red);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
         
         .hotspot-label {
-            position: absolute; top: 54px; left: 50%; transform: translateX(-50%);
-            background: rgba(31,41,55,0.95); color: var(--white);
-            padding: 4px 10px; border-radius: 4px; font-size: 0.75rem;
-            font-weight: 500; white-space: nowrap; pointer-events: none;
-            border: 1px solid var(--slate);
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(31, 41, 55, 0.95);
+            color: var(--white);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
         }
         
-        @keyframes hotspotPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(0,176,240,0.4); } 50% { box-shadow: 0 0 0 14px rgba(0,176,240,0); } }
+        .hotspot:hover .hotspot-label { opacity: 1; }
         
-        /* Progress Footer */
-        .stage-footer {
-            text-align: center; margin-top: var(--space-xl);
+        @keyframes hotspotPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 176, 240, 0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(0, 176, 240, 0); }
         }
         
-        .progress-text { color: var(--mid-grey); margin-bottom: var(--space-md); }
-        
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: var(--space-sm); padding: var(--space-md) var(--space-xl);
-            border-radius: var(--radius-md); font-size: 1rem; font-weight: 500;
+        /* Bottom Info */
+        .bottom-bar {
+            height: 50px;
+            background: var(--deep-navy);
+            border-top: 1px solid var(--dark-slate);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            flex-shrink: 0;
         }
         
-        .btn-primary { background: var(--blue); color: var(--deep-navy); }
-        .btn-primary:hover { background: #33c0f5; box-shadow: var(--shadow-hover); transform: translateY(-1px); }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .btn-success { background: var(--green); color: var(--deep-navy); }
+        .progress-dots {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--slate);
+            transition: all 0.3s;
+        }
+        
+        .progress-dot.done { background: var(--green); }
+        .progress-dot.current { background: var(--blue); box-shadow: 0 0 0 3px rgba(0, 176, 240, 0.3); }
+        
+        .progress-label { color: var(--mid-grey); font-size: 0.9rem; }
         
         /* ============================================
-           MODAL
+           MODAL (POPUP)
            ============================================ */
         .modal-overlay {
-            display: none; position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.7); z-index: 200;
-            align-items: center; justify-content: center;
-            padding: var(--space-md);
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
         }
         
         .modal-overlay.active { display: flex; }
         
         .modal {
-            background: var(--dark-slate); border-radius: var(--radius-xl);
-            max-width: 650px; width: 100%; max-height: 90vh; overflow-y: auto;
-            box-shadow: var(--shadow-modal); animation: slideUp 0.3s ease;
+            background: var(--dark-slate);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 550px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: modalIn 0.3s ease;
         }
         
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
         
         .modal-header {
-            padding: var(--space-lg); border-bottom: 1px solid var(--slate);
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--slate);
         }
         
-        .modal-header h3 { font-size: 1.25rem; }
-        .modal-close { background: transparent; color: var(--mid-grey); font-size: 1.5rem; padding: var(--space-xs); line-height: 1; }
+        .modal-header h3 { color: var(--white); font-size: 1.2rem; }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--mid-grey);
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+        
         .modal-close:hover { color: var(--white); }
         
-        .modal-body { padding: var(--space-lg); }
-        .modal-description { margin-bottom: var(--space-lg); color: var(--light-grey); }
+        .modal-body { padding: 20px; }
         
-        /* Design Choices (Stage 1) */
-        .choice-cards { display: flex; flex-direction: column; gap: var(--space-md); }
+        .modal-description { color: var(--light-grey); margin-bottom: 20px; }
         
-        .choice-card {
-            background: var(--slate); border-radius: var(--radius-md);
-            padding: var(--space-md); cursor: pointer; border: 2px solid transparent;
-            transition: all 0.2s ease;
+        /* Design Choices */
+        .choice-list { display: flex; flex-direction: column; gap: 12px; }
+        
+        .choice-item {
+            background: var(--slate);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
         }
         
-        .choice-card:hover { border-color: var(--blue); box-shadow: var(--shadow-hover); }
-        .choice-card.selected { border-color: var(--green); background: rgba(146, 208, 80, 0.1); }
+        .choice-item:hover { border-color: var(--blue); }
+        .choice-item.selected { border-color: var(--green); background: rgba(146, 208, 80, 0.1); }
         
-        .choice-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-sm); }
+        .choice-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
         .choice-name { color: var(--white); font-weight: 500; }
-        .choice-cost { background: var(--dark-slate); padding: var(--space-xs) var(--space-sm); border-radius: var(--radius-sm); font-weight: 600; color: var(--amber); font-size: 0.875rem; }
-        .choice-description { color: var(--light-grey); font-size: 0.875rem; }
         
-        .choice-image-placeholder {
-            width: 100%; height: 80px; background: var(--dark-slate);
-            border-radius: var(--radius-sm); margin-bottom: var(--space-sm);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--mid-grey); font-size: 0.75rem;
+        .choice-cost {
+            background: var(--deep-navy);
+            color: var(--amber);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
         
-        .modal-footer {
-            padding: var(--space-lg); border-top: 1px solid var(--slate);
-            display: flex; justify-content: flex-end; gap: var(--space-md);
+        .choice-desc { color: var(--light-grey); font-size: 0.9rem; }
+        
+        .choice-image {
+            width: 100%;
+            height: 60px;
+            background: var(--deep-navy);
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--mid-grey);
+            font-size: 0.75rem;
         }
         
-        /* Outcome Display (Stages 2-5) */
-        .outcome-display { text-align: center; }
+        /* Outcome Display */
+        .outcome-section { margin-bottom: 20px; }
         
         .outcome-character {
-            display: flex; align-items: center; gap: var(--space-md);
-            background: var(--slate); border-radius: var(--radius-md);
-            padding: var(--space-md); margin-bottom: var(--space-lg);
-            text-align: left;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: var(--slate);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
         }
         
-        .outcome-character .character-portrait { width: 60px; height: 60px; }
-        .outcome-character .character-name { color: var(--white); font-weight: 500; }
-        .outcome-dialogue { font-style: italic; color: var(--light-grey); margin-top: var(--space-xs); }
+        .outcome-character .char-portrait { flex-shrink: 0; }
         
-        .outcome-result {
-            background: var(--slate); border-radius: var(--radius-md);
-            padding: var(--space-lg); margin-bottom: var(--space-lg);
-        }
-        
-        .outcome-result h4 { margin-bottom: var(--space-md); }
+        .outcome-name { color: var(--white); font-weight: 500; margin-bottom: 5px; }
+        .outcome-quote { font-style: italic; color: var(--light-grey); line-height: 1.5; }
         
         .outcome-stats {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-md);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: var(--slate);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
         }
         
         .outcome-stat { text-align: center; }
-        .outcome-stat-value { font-size: 1.25rem; font-weight: 600; color: var(--white); }
-        .outcome-stat-value.good { color: var(--green); }
+        .outcome-stat-value { font-size: 1.3rem; font-weight: 600; color: var(--white); }
         .outcome-stat-value.bad { color: var(--red); }
         .outcome-stat-label { font-size: 0.75rem; color: var(--mid-grey); text-transform: uppercase; }
         
-        .design-recall {
-            background: var(--dark-slate); border-radius: var(--radius-sm);
-            padding: var(--space-sm) var(--space-md); margin-top: var(--space-md);
-            font-size: 0.875rem; color: var(--mid-grey);
+        .outcome-recall {
+            background: var(--deep-navy);
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: var(--mid-grey);
         }
         
-        .design-recall strong { color: var(--white); }
+        .outcome-recall strong { color: var(--white); }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--slate);
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .modal-footer button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-confirm { background: var(--blue); color: var(--deep-navy); }
+        .btn-confirm:hover { background: #33c0f5; }
+        .btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
         
         /* ============================================
            TRANSITION SCREEN
            ============================================ */
-        .transition-screen {
-            text-align: center; padding: var(--space-2xl) 0;
-            max-width: 700px; margin: 0 auto;
+        #transitionScreen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 600;
+            align-items: center;
+            justify-content: center;
         }
         
-        .transition-years { font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; color: var(--mid-grey); margin-bottom: var(--space-md); }
-        .transition-year { font-size: 4rem; font-weight: 700; color: var(--white); margin-bottom: var(--space-xl); }
+        #transitionScreen.active { display: flex; }
+        
+        .transition-content {
+            text-align: center;
+            max-width: 600px;
+            padding: 40px;
+        }
+        
+        .transition-years {
+            color: var(--mid-grey);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+        
+        .transition-year {
+            font-size: 5rem;
+            color: var(--white);
+            margin-bottom: 30px;
+        }
         
         .transition-text {
-            background: var(--dark-slate); border-radius: var(--radius-lg);
-            padding: var(--space-xl); margin-bottom: var(--space-xl); text-align: left;
+            background: var(--dark-slate);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: left;
+            margin-bottom: 30px;
         }
         
-        .transition-text p { margin-bottom: var(--space-md); }
+        .transition-text p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        
         .transition-text p:last-child { margin-bottom: 0; }
+        
+        .btn-continue {
+            padding: 12px 30px;
+            background: var(--blue);
+            color: var(--deep-navy);
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .btn-continue:hover { background: #33c0f5; }
         
         /* ============================================
            SUMMARY SCREEN
            ============================================ */
-        .summary-screen { max-width: 800px; margin: 0 auto; }
-        .summary-header { text-align: center; margin-bottom: var(--space-xl); }
+        #summaryScreen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--deep-navy);
+            z-index: 600;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
+        
+        #summaryScreen.active { display: flex; }
+        
+        .summary-content {
+            max-width: 700px;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .summary-title { font-size: 2rem; color: var(--white); margin-bottom: 10px; }
+        .summary-subtitle { color: var(--mid-grey); margin-bottom: 30px; }
         
         .summary-stats {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-md);
-            margin-bottom: var(--space-xl);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
         }
         
         .summary-stat {
-            background: var(--dark-slate); border-radius: var(--radius-md);
-            padding: var(--space-lg); text-align: center;
+            background: var(--dark-slate);
+            padding: 20px 10px;
+            border-radius: 8px;
         }
         
-        .summary-stat-icon { font-size: 1.5rem; margin-bottom: var(--space-sm); }
-        .summary-stat-value { font-size: 1.5rem; font-weight: 600; color: var(--white); }
-        .summary-stat-label { font-size: 0.75rem; color: var(--mid-grey); text-transform: uppercase; }
+        .summary-stat-icon { font-size: 1.5rem; margin-bottom: 8px; }
+        .summary-stat-value { font-size: 1.3rem; font-weight: 600; color: var(--white); }
+        .summary-stat-label { font-size: 0.7rem; color: var(--mid-grey); text-transform: uppercase; margin-top: 5px; }
         
         .summary-decisions {
-            background: var(--dark-slate); border-radius: var(--radius-lg);
-            padding: var(--space-xl); margin-bottom: var(--space-xl);
+            background: var(--dark-slate);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
         }
         
-        .summary-decisions h3 { margin-bottom: var(--space-lg); }
+        .summary-decisions h4 { color: var(--white); margin-bottom: 15px; }
         
-        .decision-list { list-style: none; }
-        .decision-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: var(--space-md) 0; border-bottom: 1px solid var(--slate);
+        .decision-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--slate);
         }
-        .decision-item:last-child { border-bottom: none; }
-        .decision-name { color: var(--white); }
-        .decision-result { display: flex; align-items: center; gap: var(--space-sm); }
+        
+        .decision-row:last-child { border-bottom: none; }
+        
+        .decision-element { color: var(--white); }
+        
+        .decision-result {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
         
         .result-tag {
-            padding: 2px var(--space-sm); border-radius: var(--radius-sm);
-            font-size: 0.75rem; font-weight: 500; text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
         }
+        
         .result-tag.good { background: var(--green); color: var(--deep-navy); }
         .result-tag.ok { background: var(--amber); color: var(--deep-navy); }
         .result-tag.poor { background: var(--red); color: var(--white); }
         
-        .summary-footer { text-align: center; }
+        .btn-next-phase {
+            padding: 12px 30px;
+            background: var(--green);
+            color: var(--deep-navy);
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .btn-next-phase:hover { background: #a2e060; }
         
         /* ============================================
-           RESULTS SCREEN
+           FINAL RESULTS
            ============================================ */
-        .results-screen { max-width: 900px; margin: 0 auto; text-align: center; }
+        #resultsScreen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--deep-navy);
+            z-index: 600;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #resultsScreen.active { display: flex; }
+        
+        .results-content { text-align: center; max-width: 600px; padding: 40px; }
         
         .results-grade {
-            font-size: 6rem; font-weight: 700; margin-bottom: var(--space-lg);
+            font-size: 8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
         }
         
-        .results-grade.excellent { color: var(--green); }
-        .results-grade.good { color: var(--blue); }
-        .results-grade.average { color: var(--amber); }
-        .results-grade.poor { color: var(--red); }
+        .results-grade.A { color: var(--green); }
+        .results-grade.B { color: var(--blue); }
+        .results-grade.C { color: var(--amber); }
+        .results-grade.D { color: var(--red); }
         
-        .results-title { margin-bottom: var(--space-xl); }
-        
-        .results-summary {
-            background: var(--dark-slate); border-radius: var(--radius-lg);
-            padding: var(--space-xl); margin-bottom: var(--space-xl); text-align: left;
-        }
+        .results-title { font-size: 1.5rem; color: var(--white); margin-bottom: 30px; }
         
         .results-totals {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-lg);
-            margin-bottom: var(--space-xl);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            background: var(--dark-slate);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
         }
         
-        .total-item { text-align: center; }
-        .total-value { font-size: 1.75rem; font-weight: 600; color: var(--white); }
-        .total-label { font-size: 0.875rem; color: var(--mid-grey); }
+        .results-total { text-align: center; }
+        .results-total-value { font-size: 1.5rem; font-weight: 600; color: var(--white); }
+        .results-total-label { font-size: 0.8rem; color: var(--mid-grey); }
+        
+        .btn-restart {
+            padding: 12px 30px;
+            background: var(--blue);
+            color: var(--deep-navy);
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
         
         /* Mobile */
-        @media (max-width: 768px) {
-            .cinematic-title { font-size: 2rem; }
-            .narrative-text { padding: var(--space-lg); margin: 0 var(--space-md); }
-            .meters-bar { display: none; }
-            .stage-info-bar { flex-wrap: wrap; }
+        @media (max-width: 600px) {
+            .top-bar-stats { display: none; }
             .summary-stats { grid-template-columns: repeat(2, 1fr); }
-            .results-totals { grid-template-columns: repeat(2, 1fr); }
             .outcome-stats { grid-template-columns: 1fr; }
+            .intro-title { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
-    <!-- ============================================
-         CINEMATIC INTRO
-         ============================================ -->
-    <div class="cinematic-container" id="cinematicIntro">
-        <div class="cinematic-slide active" id="slide1">
-            <div class="slide-background no-image"></div>
-            <div class="slide-content">
-                <div class="cinematic-logo">
-                    <img src="../00_images/Logo_White_Nobackground.png" alt="The Nuclear House">
-                </div>
-                <p class="cinematic-company">Presents</p>
-                <h1 class="cinematic-title">The 60-Year Journey</h1>
-                <p class="cinematic-subtitle">An interactive experience in design for decommissioning</p>
-            </div>
-        </div>
-        
-        <div class="cinematic-slide" id="slide2">
-            <div class="slide-background" style="background-image: url('images/gamebackground.png');"></div>
-            <div class="slide-content">
-                <p class="narrative-location">Somerset Coast, United Kingdom</p>
-                <h2 class="narrative-year">2025</h2>
-                <div class="narrative-text">
-                    <p><strong>Thornbury Point Nuclear Power Station.</strong></p>
-                    <p>A new generation of clean energy. Sixty years of operation ahead.</p>
-                    <p>And someone needs to design it right.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="cinematic-slide" id="slide3">
-            <div class="slide-background" style="background-image: url('images/gamebackground.png');"></div>
-            <div class="slide-content">
-                <div class="narrative-text">
-                    <p><strong>Welcome to The Nuclear House.</strong></p>
-                    <p>You've just been assigned your first major project: <span class="highlight">Section 4B</span> of Thornbury Point.</p>
-                    <p>Primary coolant system auxiliaries. Pumps, pipes, welds, and a control room interface.</p>
-                    <p>It's not glamorous. But it's important.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="cinematic-slide" id="slide4">
-            <div class="slide-background" style="background-image: url('images/gamebackground.png');"></div>
-            <div class="slide-content">
-                <div class="narrative-text">
-                    <p>Your design will be built, operated, inspected, and eventually decommissioned over the next <strong>sixty years</strong>.</p>
-                    <p>The decisions you make today will affect people you'll never meet, solving problems you can't yet imagine.</p>
-                    <p>Four people will inherit your choices. Their success — or failure — depends on what you decide now.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="cinematic-slide" id="slide5">
-            <div class="slide-background no-image"></div>
-            <div class="slide-content">
-                <div class="narrative-text" style="text-align: center; border-left: none; border: 2px solid var(--blue);">
-                    <p><strong>Your assignment:</strong></p>
-                    <p>Six design decisions. Each one has consequences — some obvious, some hidden.</p>
-                    <p>The plant will operate for sixty years. Your drawings will be here long after you've gone.</p>
-                    <div class="budget-display">Your Budget: £800,000</div>
-                    <p style="margin-top: var(--space-lg);"><strong>Choose wisely.</strong></p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="slide-indicators" id="slideIndicators">
-            <div class="slide-indicator active" data-slide="1"></div>
-            <div class="slide-indicator" data-slide="2"></div>
-            <div class="slide-indicator" data-slide="3"></div>
-            <div class="slide-indicator" data-slide="4"></div>
-            <div class="slide-indicator" data-slide="5"></div>
-        </div>
-        
-        <div class="cinematic-nav">
-            <button class="cinematic-btn secondary" id="btnSkipIntro">Skip Intro</button>
-            <button class="cinematic-btn primary" id="btnNextSlide">Continue →</button>
-        </div>
-    </div>
-    
-    <!-- ============================================
-         MAIN APP
-         ============================================ -->
-    <div class="app-container">
-        <header class="header">
-            <div class="header-logo">
+
+<!-- ============================================
+     CINEMATIC INTRO
+     ============================================ -->
+<div id="cinematicIntro">
+    <div class="intro-slide active" data-slide="1">
+        <div class="bg dark"></div>
+        <div class="intro-content">
+            <div class="intro-logo">
                 <img src="../00_images/Logo_White_Nobackground.png" alt="The Nuclear House">
             </div>
-            <div class="header-stage" id="headerStage"><strong>STAGE 1:</strong> DESIGN</div>
-            <div class="meters-bar" id="metersBar">
-                <div class="meter"><span>💰</span><span class="meter-value" id="meterBudget">£800,000</span></div>
-                <div class="meter"><span>☢️</span><span class="meter-value" id="meterDose">0 mSv</span></div>
-                <div class="meter"><span>⏱️</span><span class="meter-value" id="meterTime">0 days</span></div>
-            </div>
-        </header>
-        
-        <div class="timeline-bar" id="timelineBar">
-            <div class="timeline-fill" id="timelineFill"></div>
-            <div class="timeline-markers">
-                <div class="timeline-marker active" data-stage="1" title="2025 Design"></div>
-                <div class="timeline-marker" data-stage="2" title="2040 Maintenance"></div>
-                <div class="timeline-marker" data-stage="3" title="2055 Inspection"></div>
-                <div class="timeline-marker" data-stage="4" title="2070 Operations"></div>
-                <div class="timeline-marker" data-stage="5" title="2085 Decommissioning"></div>
-            </div>
+            <p class="intro-company">Presents</p>
+            <h1 class="intro-title">The 60-Year Journey</h1>
+            <p class="intro-subtitle">An interactive experience in design for decommissioning</p>
         </div>
-        
-        <main class="main-content">
-            <!-- MAIN GAME SCREEN (used for all stages) -->
-            <section class="screen active" id="screenGame">
-                <div class="stage-header">
-                    <h2 id="stageTitle">Section 4B Design Phase</h2>
-                    <p id="stageSubtitle">Click on each element to make your design selection</p>
-                </div>
-                
-                <div class="stage-info-bar" id="stageInfoBar">
-                    <div class="info-item">
-                        <div class="info-label">Budget</div>
-                        <div class="info-value" id="infoBudget">£800,000</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Spent</div>
-                        <div class="info-value" id="infoSpent">£0</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Remaining</div>
-                        <div class="info-value good" id="infoRemaining">£800,000</div>
-                    </div>
-                </div>
-                
-                <!-- Character banner (shown in stages 2-5) -->
-                <div class="character-banner" id="characterBanner" style="display: none;">
-                    <div class="character-portrait" id="charPortrait">👷</div>
-                    <div class="character-details">
-                        <div class="character-info">
-                            <h3 id="charName">Dave Morton</h3>
-                            <p class="character-role" id="charRole">Maintenance Supervisor</p>
-                        </div>
-                        <p class="character-quote" id="charQuote">"Right then. Section 4B. Let's see what we're working with."</p>
-                    </div>
-                </div>
-                
-                <!-- Plant Diagram with Hotspots -->
-                <div class="plant-diagram" id="plantDiagram">
-                    <div class="plant-image-wrapper">
-                        <img src="images/gamebackground.png" alt="Section 4B Layout" class="plant-bg-image">
-                        
-                        <div class="hotspot" data-element="pumpAccess" style="left: 18%; top: 52%;">
-                            <div class="hotspot-marker" id="markerPump"></div>
-                            <span class="hotspot-label">Pump Access</span>
-                        </div>
-                        
-                        <div class="hotspot" data-element="weldClearance" style="left: 42%; top: 46%;">
-                            <div class="hotspot-marker" id="markerWeld"></div>
-                            <span class="hotspot-label">Weld Clearance</span>
-                        </div>
-                        
-                        <div class="hotspot" data-element="controlPanel" style="left: 85%; top: 42%;">
-                            <div class="hotspot-marker" id="markerControl"></div>
-                            <span class="hotspot-label">Control Panel</span>
-                        </div>
-                        
-                        <div class="hotspot" data-element="pipeConnections" style="left: 56%; top: 52%;">
-                            <div class="hotspot-marker" id="markerConnections"></div>
-                            <span class="hotspot-label">Pipe Connections</span>
-                        </div>
-                        
-                        <div class="hotspot" data-element="pipeRouting" style="left: 62%; top: 82%;">
-                            <div class="hotspot-marker" id="markerRouting"></div>
-                            <span class="hotspot-label">Pipe Routing</span>
-                        </div>
-                        
-                        <div class="hotspot" data-element="materialSpec" style="left: 32%; top: 58%;">
-                            <div class="hotspot-marker" id="markerMaterial"></div>
-                            <span class="hotspot-label">Material Spec</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="stage-footer">
-                    <p class="progress-text" id="progressText">0 of 6 elements completed</p>
-                    <button class="btn btn-primary" id="btnCompleteStage" disabled>Complete Stage →</button>
-                </div>
-            </section>
-            
-            <!-- TRANSITION SCREEN -->
-            <section class="screen transition-screen" id="screenTransition">
-                <p class="transition-years" id="transitionYears">15 YEARS LATER</p>
-                <h2 class="transition-year" id="transitionYear">2040</h2>
-                <div class="transition-text" id="transitionText">
-                    <p>Thornbury Point has been generating power for 14 years.</p>
-                    <p>Your design drawings are yellowed paper in a filing cabinet somewhere.</p>
-                    <p>But your decisions? Those are very much alive.</p>
-                </div>
-                <button class="btn btn-primary" id="btnContinueTransition">Continue →</button>
-            </section>
-            
-            <!-- SUMMARY SCREEN -->
-            <section class="screen summary-screen" id="screenSummary">
-                <div class="summary-header">
-                    <h2 id="summaryTitle">Design Phase Complete</h2>
-                    <p id="summarySubtitle">Your decisions have been submitted</p>
-                </div>
-                
-                <div class="summary-stats" id="summaryStats">
-                    <div class="summary-stat">
-                        <div class="summary-stat-icon">💰</div>
-                        <div class="summary-stat-value" id="sumBudgetUsed">£0</div>
-                        <div class="summary-stat-label">Spent</div>
-                    </div>
-                    <div class="summary-stat">
-                        <div class="summary-stat-icon">☢️</div>
-                        <div class="summary-stat-value" id="sumDose">0 mSv</div>
-                        <div class="summary-stat-label">Dose</div>
-                    </div>
-                    <div class="summary-stat">
-                        <div class="summary-stat-icon">⏱️</div>
-                        <div class="summary-stat-value" id="sumTime">0 days</div>
-                        <div class="summary-stat-label">Time</div>
-                    </div>
-                    <div class="summary-stat">
-                        <div class="summary-stat-icon">⚠️</div>
-                        <div class="summary-stat-value" id="sumIssues">0</div>
-                        <div class="summary-stat-label">Issues</div>
-                    </div>
-                </div>
-                
-                <div class="summary-decisions">
-                    <h3>Decisions Made</h3>
-                    <ul class="decision-list" id="summaryDecisions"></ul>
-                </div>
-                
-                <div class="summary-footer">
-                    <button class="btn btn-primary" id="btnNextStage">Continue to Next Stage →</button>
-                </div>
-            </section>
-            
-            <!-- FINAL RESULTS SCREEN -->
-            <section class="screen results-screen" id="screenResults">
-                <div class="results-grade" id="resultsGrade">B+</div>
-                <h2 class="results-title">Journey Complete</h2>
-                
-                <div class="results-summary">
-                    <h3>60 Years of Consequences</h3>
-                    <div class="results-totals">
-                        <div class="total-item">
-                            <div class="total-value" id="totalBudget">£0</div>
-                            <div class="total-label">Total Spent</div>
-                        </div>
-                        <div class="total-item">
-                            <div class="total-value" id="totalDose">0 mSv</div>
-                            <div class="total-label">Total Dose</div>
-                        </div>
-                        <div class="total-item">
-                            <div class="total-value" id="totalTime">0 days</div>
-                            <div class="total-label">Total Time</div>
-                        </div>
-                        <div class="total-item">
-                            <div class="total-value" id="totalIncidents">0</div>
-                            <div class="total-label">Incidents</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <button class="btn btn-primary" onclick="location.reload()">Play Again</button>
-            </section>
-        </main>
     </div>
     
-    <!-- ============================================
-         MODAL
-         ============================================ -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal" id="modal">
-            <div class="modal-header">
-                <h3 id="modalTitle">Element Title</h3>
-                <button class="modal-close" id="modalClose">×</button>
-            </div>
-            <div class="modal-body" id="modalBody">
-                <!-- Content injected by JS -->
-            </div>
-            <div class="modal-footer" id="modalFooter">
-                <button class="btn btn-primary" id="modalConfirm">Confirm</button>
+    <div class="intro-slide" data-slide="2">
+        <div class="bg" style="background-image: url('images/gamebackground.png');"></div>
+        <div class="intro-content">
+            <p class="intro-location">Somerset Coast, UK</p>
+            <h2 class="intro-year">2025</h2>
+            <div class="intro-text-box">
+                <p><strong>Thornbury Point Nuclear Power Station.</strong></p>
+                <p>A new generation of clean energy. Sixty years of operation ahead.</p>
+                <p>And someone needs to design it right.</p>
             </div>
         </div>
     </div>
+    
+    <div class="intro-slide" data-slide="3">
+        <div class="bg" style="background-image: url('images/gamebackground.png');"></div>
+        <div class="intro-content">
+            <div class="intro-text-box">
+                <p>You've just been assigned your first major project: <span class="highlight">Section 4B</span> of Thornbury Point.</p>
+                <p>Primary coolant system auxiliaries. Pumps, pipes, welds, and control interfaces.</p>
+                <p>Your design will be built, operated, inspected, and eventually decommissioned over <strong>sixty years</strong>.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="intro-slide" data-slide="4">
+        <div class="bg dark"></div>
+        <div class="intro-content">
+            <div class="intro-text-box" style="text-align: center; border-left: none; border: 2px solid var(--blue);">
+                <p><strong>Six design decisions. Each has consequences.</strong></p>
+                <p>Four people will inherit your choices over the decades.</p>
+                <p>Their success — or failure — depends on what you decide now.</p>
+                <div class="intro-budget">Budget: £800,000</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="intro-dots">
+        <div class="intro-dot active" data-dot="1"></div>
+        <div class="intro-dot" data-dot="2"></div>
+        <div class="intro-dot" data-dot="3"></div>
+        <div class="intro-dot" data-dot="4"></div>
+    </div>
+    
+    <div class="intro-nav">
+        <button class="btn-skip" id="btnSkip">Skip</button>
+        <button class="btn-next" id="btnIntroNext">Continue →</button>
+    </div>
+</div>
 
-    <script>
-        // ============================================
-        // GAME DATA
-        // ============================================
-        const GameData = {
-            stages: {
-                1: { name: 'DESIGN', year: 2025, budget: 800000 },
-                2: { name: 'MAINTENANCE', year: 2040, budget: 400000, character: 'dave' },
-                3: { name: 'INSPECTION', year: 2055, budget: 250000, character: 'sarah' },
-                4: { name: 'OPERATIONS', year: 2070, budget: 200000, character: 'mike' },
-                5: { name: 'DECOMMISSIONING', year: 2085, budget: 1200000, character: 'janet' }
-            },
+<!-- ============================================
+     MAIN GAME SCREEN
+     ============================================ -->
+<div id="gameScreen">
+    <div class="top-bar">
+        <div class="top-bar-logo">
+            <img src="../00_images/Logo_White_Nobackground.png" alt="Logo">
+        </div>
+        <div class="top-bar-phase">
+            <span id="phaseName">PHASE 1: DESIGN</span> — <span class="year" id="phaseYear">2025</span>
+        </div>
+        <div class="top-bar-right">
+            <div class="top-bar-stats" id="topStats">
+                <div class="stat">💰 <span class="stat-value" id="statBudget">£800,000</span></div>
+            </div>
+            <button class="btn-next-stage" id="btnNextStage">Next Stage →</button>
+        </div>
+    </div>
+    
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+    </div>
+    
+    <div class="character-banner" id="characterBanner">
+        <div class="char-portrait" id="charPortrait">👷</div>
+        <div class="char-info">
+            <h4 id="charName">Dave Morton</h4>
+            <p class="char-role" id="charRole">Maintenance Supervisor</p>
+        </div>
+    </div>
+    
+    <div class="map-container">
+        <div class="map-wrapper">
+            <img src="images/gamebackground.png" alt="Section 4B">
             
-            characters: {
-                dave: {
-                    name: 'Dave Morton',
-                    role: 'Maintenance Supervisor',
-                    portrait: 'images/dave.png',
-                    introQuote: "Right then. Section 4B. First major outage. Let's see what we're working with."
-                },
-                sarah: {
-                    name: 'Sarah Okonkwo',
-                    role: 'Principal Inspector',
-                    portrait: '🔍',
-                    introQuote: "In-service inspection time. Let's see if I can actually reach what needs examining."
-                },
-                mike: {
-                    name: 'Mike Brennan',
-                    role: 'Shift Operations Manager',
-                    portrait: '👨‍💼',
-                    introQuote: "3am alarm scenario. Let's hope this panel layout makes sense."
-                },
-                janet: {
-                    name: 'Janet Cole',
-                    role: 'Decommissioning Project Lead',
-                    portrait: 'images/janet.png',
-                    introQuote: "Sixty years. Let's see what 2025 left us to deal with."
-                }
-            },
+            <div class="hotspot" data-element="pumpAccess" style="left: 18%; top: 52%;">
+                <div class="hotspot-dot" id="dotPump"></div>
+                <span class="hotspot-label">Pump Access</span>
+            </div>
             
-            elements: {
-                pumpAccess: {
-                    title: 'Pump Access',
-                    description: 'How should the primary coolant pump be positioned within Section 4B?',
-                    options: [
-                        { 
-                            id: 'corner', 
-                            name: 'Corner Position', 
-                            description: 'Pump tucked in corner to maximise floor space. 1.8m clearance.',
-                            cost: 120000, 
-                            quality: 'poor',
-                            // Future: image placeholder
-                        },
-                        { 
-                            id: 'openBay', 
-                            name: 'Open Bay', 
-                            description: 'Pump in open bay with 2m clearance all sides, under crane rails.',
-                            cost: 150000, 
-                            quality: 'good'
-                        },
-                        { 
-                            id: 'dedicatedRoom', 
-                            name: 'Dedicated Shielded Room', 
-                            description: 'Pump in dedicated shielded room with airlock. Over-specified.',
-                            cost: 290000, 
-                            quality: 'wasteful'
-                        }
-                    ],
-                    outcomes: {
-                        2: { // Maintenance
-                            corner: { time: 8, dose: 4, cost: 80000, comment: "Who signed off on this? The pump's in a corner. What were they thinking?" },
-                            openBay: { time: 3, dose: 1, cost: 30000, comment: "Full crane coverage. Lovely. In and out, job done." },
-                            dedicatedRoom: { time: 4, dose: 0.5, cost: 40000, comment: "Nice room, but did we really need all this for a standard pump?" }
-                        },
-                        3: { // Inspection
-                            corner: { time: 4, dose: 2, cost: 40000, comment: "Can barely fit the equipment in here. Limited coverage." },
-                            openBay: { time: 2, dose: 0.5, cost: 20000, comment: "Full access. This is how it should be done." },
-                            dedicatedRoom: { time: 2, dose: 0.3, cost: 25000, comment: "Good access, though the airlock slows things down." }
-                        },
-                        4: { // Operations
-                            corner: { time: 2, dose: 1, cost: 20000, comment: "Emergency access is tight. Adds precious seconds in a crisis." },
-                            openBay: { time: 1, dose: 0.2, cost: 10000, comment: "Clear sightlines, easy access. Good for emergencies." },
-                            dedicatedRoom: { time: 1, dose: 0.1, cost: 15000, comment: "The airlock is overkill but at least it's accessible." }
-                        },
-                        5: { // Decommissioning
-                            corner: { time: 12, dose: 5, cost: 200000, comment: "Tight space means manual cutting. This will take months." },
-                            openBay: { time: 5, dose: 2, cost: 80000, comment: "Straight lift out. This is coming apart clean." },
-                            dedicatedRoom: { time: 6, dose: 1, cost: 100000, comment: "Easy removal, but now we've got this room to decontaminate too." }
-                        }
-                    }
-                },
-                weldClearance: {
-                    title: 'Weld Clearance',
-                    description: 'What clearance should be provided around pipe welds for inspection access?',
-                    options: [
-                        { id: '50mm', name: '50mm (Code Minimum)', description: 'Minimum clearance permitted by design code.', cost: 90000, quality: 'poor' },
-                        { id: '150mm', name: '150mm Clearance', description: 'Adequate clearance for all standard inspection probes.', cost: 95000, quality: 'good' },
-                        { id: '300mm', name: '300mm + Scaffolding', description: 'Generous clearance with permanent scaffolding.', cost: 180000, quality: 'wasteful' }
-                    ],
-                    outcomes: {
-                        2: {
-                            '50mm': { time: 6, dose: 3, cost: 60000, comment: "50mm clearance. Just because you can doesn't mean you should." },
-                            '150mm': { time: 2, dose: 1, cost: 20000, comment: "Proper clearance. Makes the job straightforward." },
-                            '300mm': { time: 2, dose: 0.5, cost: 25000, comment: "Plenty of room, but that scaffolding's got contamination now." }
-                        },
-                        3: {
-                            '50mm': { time: 5, dose: 3, cost: 50000, comment: "I'm going to have to write 'limited coverage' on this report." },
-                            '150mm': { time: 2, dose: 0.5, cost: 20000, comment: "150mm clearance. Adequate probe positioning. No issues." },
-                            '300mm': { time: 1, dose: 0.3, cost: 15000, comment: "Easy access, but the scaffolding is in the way of some angles." }
-                        },
-                        4: {
-                            '50mm': { time: 1, dose: 0.5, cost: 10000, comment: "Hard to see the weld indicators on the panel." },
-                            '150mm': { time: 0, dose: 0, cost: 5000, comment: "Good visibility of the inspection points." },
-                            '300mm': { time: 0, dose: 0, cost: 5000, comment: "No operational issues." }
-                        },
-                        5: {
-                            '50mm': { time: 8, dose: 4, cost: 150000, comment: "Can't get cutting equipment in. Manual removal required." },
-                            '150mm': { time: 3, dose: 1, cost: 50000, comment: "Standard removal. No surprises." },
-                            '300mm': { time: 4, dose: 2, cost: 80000, comment: "Now we've got contaminated scaffolding to deal with too." }
-                        }
-                    }
-                },
-                controlPanel: {
-                    title: 'Control Panel Layout',
-                    description: 'How should the Section 4B control panel be organised?',
-                    options: [
-                        { id: 'systemBased', name: 'System-Based Layout', description: 'Controls grouped by system. Logical for engineers.', cost: 85000, quality: 'poor' },
-                        { id: 'taskBased', name: 'Task-Based Layout', description: 'Controls grouped by operator workflow. Emergency sequence flows left-to-right.', cost: 95000, quality: 'good' },
-                        { id: 'touchscreen', name: 'Touchscreen Interface', description: 'Sleek touchscreen displays. Impressive in demonstrations.', cost: 180000, quality: 'poor' }
-                    ],
-                    outcomes: {
-                        2: {
-                            systemBased: { time: 1, dose: 0, cost: 5000, comment: "Panel's fine for routine work." },
-                            taskBased: { time: 0, dose: 0, cost: 5000, comment: "Easy to isolate systems. Logical layout." },
-                            touchscreen: { time: 2, dose: 0, cost: 15000, comment: "Touch screens need calibration. Again." }
-                        },
-                        3: {
-                            systemBased: { time: 0, dose: 0, cost: 5000, comment: "No inspection issues with the panel." },
-                            taskBased: { time: 0, dose: 0, cost: 5000, comment: "Clear indication of system status." },
-                            touchscreen: { time: 1, dose: 0, cost: 10000, comment: "Display showing artifacts. Software update needed." }
-                        },
-                        4: {
-                            systemBased: { time: 3, dose: 0, cost: 30000, comment: "3am, alarms everywhere, and I can't find the isolation valve." },
-                            taskBased: { time: 0, dose: 0, cost: 5000, comment: "Found the right controls immediately. That's good design." },
-                            touchscreen: { time: 5, dose: 0, cost: 50000, comment: "Touchscreen's frozen. Again. In the middle of an event." }
-                        },
-                        5: {
-                            systemBased: { time: 1, dose: 0, cost: 10000, comment: "Panel removal is straightforward." },
-                            taskBased: { time: 1, dose: 0, cost: 10000, comment: "Standard panel removal." },
-                            touchscreen: { time: 2, dose: 0, cost: 30000, comment: "Electronic waste. Special disposal required." }
-                        }
-                    }
-                },
-                pipeConnections: {
-                    title: 'Pipe Connections',
-                    description: 'How should pipe joints be designed?',
-                    options: [
-                        { id: 'flanged', name: 'Flanged Connections', description: 'Bolted flanges at all joints. Easy to disassemble.', cost: 160000, quality: 'good' },
-                        { id: 'mixed', name: 'Mixed Flanged/Welded', description: 'Flanges at accessible points, welded elsewhere.', cost: 170000, quality: 'ok' },
-                        { id: 'welded', name: 'All Welded Joints', description: 'Continuous welded construction. Maximum integrity.', cost: 180000, quality: 'poor' }
-                    ],
-                    outcomes: {
-                        2: {
-                            flanged: { time: 2, dose: 1, cost: 20000, comment: "Flanged connections. Someone was thinking ahead." },
-                            mixed: { time: 4, dose: 2, cost: 40000, comment: "Some flanges, some welds. Could be worse." },
-                            welded: { time: 8, dose: 4, cost: 80000, comment: "All welded. So we're cutting and re-welding then. Brilliant." }
-                        },
-                        3: {
-                            flanged: { time: 1, dose: 0.5, cost: 10000, comment: "Can remove sections for detailed inspection." },
-                            mixed: { time: 2, dose: 1, cost: 20000, comment: "Some joints accessible, others not." },
-                            welded: { time: 3, dose: 2, cost: 35000, comment: "In-situ inspection only. Limited coverage." }
-                        },
-                        4: {
-                            flanged: { time: 0, dose: 0, cost: 5000, comment: "Quick isolation possible in emergencies." },
-                            mixed: { time: 1, dose: 0, cost: 10000, comment: "Most isolation points accessible." },
-                            welded: { time: 2, dose: 0, cost: 20000, comment: "Can't isolate quickly. Had to shut down more than necessary." }
-                        },
-                        5: {
-                            flanged: { time: 3, dose: 1, cost: 40000, comment: "Unbolt, remove, done. This is how it should be." },
-                            mixed: { time: 6, dose: 3, cost: 100000, comment: "Flanges easy, welds need cutting. Mixed bag." },
-                            welded: { time: 10, dose: 5, cost: 180000, comment: "Every joint needs cutting. This is going to take forever." }
-                        }
-                    }
-                },
-                pipeRouting: {
-                    title: 'Pipe Routing',
-                    description: 'How should pipes be routed through the concrete structure?',
-                    options: [
-                        { id: 'embedded', name: 'Embedded in Concrete', description: 'Pipes cast directly into structural concrete.', cost: 140000, quality: 'poor' },
-                        { id: 'ducted', name: 'Accessible Ducts', description: 'Pipes run through removable duct covers.', cost: 165000, quality: 'good' },
-                        { id: 'tunnel', name: 'Walk-In Tunnel', description: 'Large accessible tunnel for all services.', cost: 280000, quality: 'wasteful' }
-                    ],
-                    outcomes: {
-                        2: {
-                            embedded: { time: 0, dose: 0, cost: 5000, comment: "Can't access these pipes. Hope nothing goes wrong." },
-                            ducted: { time: 2, dose: 1, cost: 20000, comment: "Duct covers off, full access. Proper design." },
-                            tunnel: { time: 1, dose: 0.5, cost: 15000, comment: "Walk-in access is nice, but did we need this much space?" }
-                        },
-                        3: {
-                            embedded: { time: 0, dose: 0, cost: 5000, comment: "Embedded in concrete. So we're guessing what's in there." },
-                            ducted: { time: 2, dose: 0.5, cost: 15000, comment: "Full visual and probe access. No issues." },
-                            tunnel: { time: 1, dose: 0.3, cost: 12000, comment: "Easy inspection access." }
-                        },
-                        4: {
-                            embedded: { time: 2, dose: 0, cost: 20000, comment: "Leak detected. Can't find it. It's in the concrete somewhere." },
-                            ducted: { time: 0, dose: 0, cost: 5000, comment: "Quick visual check confirms system status." },
-                            tunnel: { time: 0, dose: 0, cost: 5000, comment: "Easy walkthrough inspection." }
-                        },
-                        5: {
-                            embedded: { time: 15, dose: 8, cost: 300000, comment: "Embedded in concrete. That's another six months and half a million." },
-                            ducted: { time: 4, dose: 2, cost: 60000, comment: "Pull the covers, extract the pipes. Straightforward." },
-                            tunnel: { time: 3, dose: 1, cost: 50000, comment: "Easy access, but now we've got this tunnel to decontaminate." }
-                        }
-                    }
-                },
-                materialSpec: {
-                    title: 'Material Specification',
-                    description: 'What material for primary circuit pipework?',
-                    options: [
-                        { id: 'standardSS', name: 'Standard Stainless Steel', description: 'Type 304/316, ~2,500 ppm cobalt. Industry standard.', cost: 200000, quality: 'poor' },
-                        { id: 'lowCobalt', name: 'Low-Cobalt Stainless', description: 'Cobalt below 500 ppm. Reduces activation.', cost: 250000, quality: 'good' },
-                        { id: 'exoticAlloy', name: 'Exotic Nickel Alloy', description: 'High-performance nickel alloy. Premium specification.', cost: 400000, quality: 'poor' }
-                    ],
-                    outcomes: {
-                        2: {
-                            standardSS: { time: 1, dose: 2, cost: 15000, comment: "Standard steel. Hot to work on but expected." },
-                            lowCobalt: { time: 1, dose: 0.5, cost: 12000, comment: "Low-cobalt. Noticeably lower dose rates." },
-                            exoticAlloy: { time: 2, dose: 1, cost: 25000, comment: "Special procedures for this alloy. Slower work." }
-                        },
-                        3: {
-                            standardSS: { time: 1, dose: 1.5, cost: 12000, comment: "Standard material. Higher background." },
-                            lowCobalt: { time: 1, dose: 0.3, cost: 10000, comment: "Clean material, easy to work around." },
-                            exoticAlloy: { time: 1, dose: 0.5, cost: 15000, comment: "Good material properties but finicky to inspect." }
-                        },
-                        4: {
-                            standardSS: { time: 0, dose: 0.5, cost: 5000, comment: "No operational difference." },
-                            lowCobalt: { time: 0, dose: 0.1, cost: 5000, comment: "Lower dose during operator rounds." },
-                            exoticAlloy: { time: 0, dose: 0.2, cost: 5000, comment: "Performs well operationally." }
-                        },
-                        5: {
-                            standardSS: { time: 8, dose: 10, cost: 200000, comment: "2,500 ppm cobalt. Waiting decades for it to cool down." },
-                            lowCobalt: { time: 4, dose: 2, cost: 80000, comment: "Low activation. Can handle it much sooner." },
-                            exoticAlloy: { time: 6, dose: 3, cost: 150000, comment: "Special disposal requirements for this alloy." }
-                        }
-                    }
-                }
-            },
+            <div class="hotspot" data-element="weldClearance" style="left: 42%; top: 46%;">
+                <div class="hotspot-dot" id="dotWeld"></div>
+                <span class="hotspot-label">Weld Clearance</span>
+            </div>
             
-            transitions: {
+            <div class="hotspot" data-element="controlPanel" style="left: 85%; top: 42%;">
+                <div class="hotspot-dot" id="dotControl"></div>
+                <span class="hotspot-label">Control Panel</span>
+            </div>
+            
+            <div class="hotspot" data-element="pipeConnections" style="left: 56%; top: 52%;">
+                <div class="hotspot-dot" id="dotConnections"></div>
+                <span class="hotspot-label">Pipe Connections</span>
+            </div>
+            
+            <div class="hotspot" data-element="pipeRouting" style="left: 62%; top: 82%;">
+                <div class="hotspot-dot" id="dotRouting"></div>
+                <span class="hotspot-label">Pipe Routing</span>
+            </div>
+            
+            <div class="hotspot" data-element="materialSpec" style="left: 32%; top: 58%;">
+                <div class="hotspot-dot" id="dotMaterial"></div>
+                <span class="hotspot-label">Material Spec</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bottom-bar">
+        <div class="progress-dots" id="progressDots">
+            <div class="progress-dot current" data-stage="1"></div>
+            <div class="progress-dot" data-stage="2"></div>
+            <div class="progress-dot" data-stage="3"></div>
+            <div class="progress-dot" data-stage="4"></div>
+            <div class="progress-dot" data-stage="5"></div>
+        </div>
+        <span class="progress-label" id="progressLabel">0 of 6 complete</span>
+    </div>
+</div>
+
+<!-- ============================================
+     MODAL POPUP
+     ============================================ -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Element</h3>
+            <button class="modal-close" id="modalClose">×</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+            <button class="btn-confirm" id="modalConfirm">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     TRANSITION SCREEN
+     ============================================ -->
+<div id="transitionScreen">
+    <div class="transition-content">
+        <p class="transition-years" id="transYears">15 YEARS LATER</p>
+        <h2 class="transition-year" id="transYear">2040</h2>
+        <div class="transition-text" id="transText"></div>
+        <button class="btn-continue" id="btnTransContinue">Continue →</button>
+    </div>
+</div>
+
+<!-- ============================================
+     SUMMARY SCREEN
+     ============================================ -->
+<div id="summaryScreen">
+    <div class="summary-content">
+        <h2 class="summary-title" id="sumTitle">Phase Complete</h2>
+        <p class="summary-subtitle" id="sumSubtitle">Year 2025</p>
+        
+        <div class="summary-stats" id="sumStats"></div>
+        
+        <div class="summary-decisions">
+            <h4>Decisions</h4>
+            <div id="sumDecisions"></div>
+        </div>
+        
+        <button class="btn-next-phase" id="btnNextPhase">Next Phase →</button>
+    </div>
+</div>
+
+<!-- ============================================
+     FINAL RESULTS
+     ============================================ -->
+<div id="resultsScreen">
+    <div class="results-content">
+        <div class="results-grade" id="resGrade">B</div>
+        <h2 class="results-title">60 Years Complete</h2>
+        
+        <div class="results-totals">
+            <div class="results-total">
+                <div class="results-total-value" id="resTotalCost">£0</div>
+                <div class="results-total-label">Total Cost</div>
+            </div>
+            <div class="results-total">
+                <div class="results-total-value" id="resTotalDose">0 mSv</div>
+                <div class="results-total-label">Total Dose</div>
+            </div>
+            <div class="results-total">
+                <div class="results-total-value" id="resTotalTime">0 days</div>
+                <div class="results-total-label">Total Time</div>
+            </div>
+        </div>
+        
+        <button class="btn-restart" onclick="location.reload()">Play Again</button>
+    </div>
+</div>
+
+<script>
+// ============================================
+// DATA
+// ============================================
+const DATA = {
+    phases: {
+        1: { name: 'DESIGN', year: 2025, budget: 800000 },
+        2: { name: 'MAINTENANCE', year: 2040, char: 'dave' },
+        3: { name: 'INSPECTION', year: 2055, char: 'sarah' },
+        4: { name: 'OPERATIONS', year: 2070, char: 'mike' },
+        5: { name: 'DECOMMISSIONING', year: 2085, char: 'janet' }
+    },
+    
+    characters: {
+        dave: { name: 'Dave Morton', role: 'Maintenance Supervisor', portrait: 'images/dave.png', emoji: '👷' },
+        sarah: { name: 'Sarah Okonkwo', role: 'Principal Inspector', portrait: null, emoji: '🔍' },
+        mike: { name: 'Mike Brennan', role: 'Shift Operations Manager', portrait: null, emoji: '👨‍💼' },
+        janet: { name: 'Janet Cole', role: 'Decommissioning Lead', portrait: 'images/janet.png', emoji: '👩‍🔧' }
+    },
+    
+    elements: {
+        pumpAccess: {
+            title: 'Pump Access',
+            desc: 'How should the primary coolant pump be positioned?',
+            options: [
+                { id: 'corner', name: 'Corner Position', desc: 'Tucked in corner. 1.8m clearance.', cost: 120000, quality: 'poor' },
+                { id: 'openBay', name: 'Open Bay', desc: '2m clearance all sides, under crane.', cost: 150000, quality: 'good' },
+                { id: 'dedicated', name: 'Dedicated Room', desc: 'Shielded room with airlock. Over-spec.', cost: 290000, quality: 'wasteful' }
+            ],
+            outcomes: {
                 2: {
-                    years: '15 YEARS LATER',
-                    year: '2040',
-                    text: [
-                        'Thornbury Point has been generating power for 14 years.',
-                        'Your design drawings are yellowed paper in a filing cabinet somewhere. Your name is in a title block nobody reads anymore.',
-                        'But your decisions? Those are very much alive.',
-                        'It\'s time for the first major maintenance outage.'
-                    ]
+                    corner: { time: 8, dose: 4, cost: 80000, quote: "Who signed off on this? The pump's in a corner." },
+                    openBay: { time: 3, dose: 1, cost: 30000, quote: "Full crane coverage. In and out, job done." },
+                    dedicated: { time: 4, dose: 0.5, cost: 40000, quote: "Nice room, but overkill for a standard pump." }
                 },
                 3: {
-                    years: '15 YEARS LATER',
-                    year: '2055',
-                    text: [
-                        'Thirty years of operation. The plant is middle-aged now.',
-                        'Regulators want proof that everything is still safe. Every weld, every pipe, every component.',
-                        'Time for a detailed in-service inspection.'
-                    ]
+                    corner: { time: 4, dose: 2, cost: 40000, quote: "Can barely fit equipment in. Limited coverage." },
+                    openBay: { time: 2, dose: 0.5, cost: 20000, quote: "Full access. This is how it should be." },
+                    dedicated: { time: 2, dose: 0.3, cost: 25000, quote: "Good access, airlock slows things down." }
                 },
                 4: {
-                    years: '15 YEARS LATER',
-                    year: '2070',
-                    text: [
-                        'Forty-five years. The plant is showing its age.',
-                        'But it\'s still generating power, still earning its keep.',
-                        'Tonight, the alarms will test whether your control room design was worth it.'
-                    ]
+                    corner: { time: 2, dose: 1, cost: 20000, quote: "Emergency access is tight. Precious seconds lost." },
+                    openBay: { time: 1, dose: 0.2, cost: 10000, quote: "Clear sightlines, easy access." },
+                    dedicated: { time: 1, dose: 0.1, cost: 15000, quote: "Airlock is overkill but accessible." }
                 },
                 5: {
-                    years: '15 YEARS LATER',
-                    year: '2085',
-                    text: [
-                        'Sixty years. The reactor has been shut down for good.',
-                        'Now comes the hard part: taking it all apart safely.',
-                        'Every decision you made in 2025 has led to this moment.'
-                    ]
+                    corner: { time: 12, dose: 5, cost: 200000, quote: "Tight space means manual cutting. Months of work." },
+                    openBay: { time: 5, dose: 2, cost: 80000, quote: "Straight lift out. Coming apart clean." },
+                    dedicated: { time: 6, dose: 1, cost: 100000, quote: "Easy removal, but the room needs decon too." }
                 }
             }
-        };
-        
-        // ============================================
-        // GAME STATE
-        // ============================================
-        const GameState = {
-            currentStage: 1,
-            designChoices: {},
-            completedElements: {},
-            totals: {
-                budget: 0,
-                dose: 0,
-                time: 0,
-                incidents: 0
-            },
-            stageTotals: {}
-        };
-        
-        // ============================================
-        // CINEMATIC CONTROLLER
-        // ============================================
-        const CinematicController = {
-            currentSlide: 1,
-            totalSlides: 5,
-            
-            init() {
-                document.getElementById('btnNextSlide').addEventListener('click', () => this.nextSlide());
-                document.getElementById('btnSkipIntro').addEventListener('click', () => this.endIntro());
-                
-                document.querySelectorAll('.slide-indicator').forEach(ind => {
-                    ind.addEventListener('click', () => this.goToSlide(parseInt(ind.dataset.slide)));
-                });
-                
-                document.addEventListener('keydown', (e) => {
-                    if (!document.getElementById('cinematicIntro').classList.contains('hidden')) {
-                        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
-                            e.preventDefault();
-                            this.nextSlide();
-                        } else if (e.key === 'Escape') {
-                            this.endIntro();
-                        }
-                    }
-                });
-                
-                document.querySelector('.header').style.display = 'none';
-                document.querySelector('.timeline-bar').style.display = 'none';
-            },
-            
-            goToSlide(num) {
-                document.getElementById(`slide${this.currentSlide}`).classList.remove('active');
-                this.currentSlide = num;
-                document.getElementById(`slide${this.currentSlide}`).classList.add('active');
-                this.updateIndicators();
-                this.updateButton();
-            },
-            
-            nextSlide() {
-                if (this.currentSlide >= this.totalSlides) {
-                    this.endIntro();
-                } else {
-                    this.goToSlide(this.currentSlide + 1);
+        },
+        weldClearance: {
+            title: 'Weld Clearance',
+            desc: 'What clearance around pipe welds for inspection?',
+            options: [
+                { id: '50mm', name: '50mm (Code Min)', desc: 'Minimum code clearance.', cost: 90000, quality: 'poor' },
+                { id: '150mm', name: '150mm Clearance', desc: 'Good for all inspection probes.', cost: 95000, quality: 'good' },
+                { id: '300mm', name: '300mm + Scaffold', desc: 'Generous with permanent scaffold.', cost: 180000, quality: 'wasteful' }
+            ],
+            outcomes: {
+                2: {
+                    '50mm': { time: 6, dose: 3, cost: 60000, quote: "50mm. Just because you can doesn't mean you should." },
+                    '150mm': { time: 2, dose: 1, cost: 20000, quote: "Proper clearance. Job's straightforward." },
+                    '300mm': { time: 2, dose: 0.5, cost: 25000, quote: "Plenty of room, but scaffold's contaminated now." }
+                },
+                3: {
+                    '50mm': { time: 5, dose: 3, cost: 50000, quote: "Writing 'limited coverage' on this report." },
+                    '150mm': { time: 2, dose: 0.5, cost: 20000, quote: "Adequate probe positioning. No issues." },
+                    '300mm': { time: 1, dose: 0.3, cost: 15000, quote: "Easy access, scaffold blocks some angles." }
+                },
+                4: {
+                    '50mm': { time: 1, dose: 0.5, cost: 10000, quote: "Hard to see weld indicators." },
+                    '150mm': { time: 0, dose: 0, cost: 5000, quote: "Good visibility of inspection points." },
+                    '300mm': { time: 0, dose: 0, cost: 5000, quote: "No operational issues." }
+                },
+                5: {
+                    '50mm': { time: 8, dose: 4, cost: 150000, quote: "Can't get cutting equipment in. Manual job." },
+                    '150mm': { time: 3, dose: 1, cost: 50000, quote: "Standard removal. No surprises." },
+                    '300mm': { time: 4, dose: 2, cost: 80000, quote: "Contaminated scaffolding to deal with too." }
                 }
-            },
-            
-            updateIndicators() {
-                document.querySelectorAll('.slide-indicator').forEach((ind, i) => {
-                    ind.classList.remove('active', 'completed');
-                    if (i + 1 === this.currentSlide) ind.classList.add('active');
-                    else if (i + 1 < this.currentSlide) ind.classList.add('completed');
-                });
-            },
-            
-            updateButton() {
-                const btn = document.getElementById('btnNextSlide');
-                btn.textContent = this.currentSlide >= this.totalSlides ? 'Begin Design →' : 'Continue →';
-            },
-            
-            endIntro() {
-                const container = document.getElementById('cinematicIntro');
-                container.style.opacity = '0';
-                container.style.transition = 'opacity 0.5s ease';
-                setTimeout(() => {
-                    container.classList.add('hidden');
-                    document.querySelector('.header').style.display = 'flex';
-                    document.querySelector('.timeline-bar').style.display = 'block';
-                    GameController.startStage(1);
-                }, 500);
             }
-        };
-        
-        // ============================================
-        // GAME CONTROLLER
-        // ============================================
-        const GameController = {
-            init() {
-                // Hotspot clicks
-                document.querySelectorAll('.hotspot').forEach(hotspot => {
-                    hotspot.addEventListener('click', () => {
-                        const element = hotspot.dataset.element;
-                        this.handleHotspotClick(element);
-                    });
-                });
-                
-                // Modal close
-                document.getElementById('modalClose').addEventListener('click', () => this.closeModal());
-                document.getElementById('modalOverlay').addEventListener('click', (e) => {
-                    if (e.target.id === 'modalOverlay') this.closeModal();
-                });
-                
-                // Stage complete button
-                document.getElementById('btnCompleteStage').addEventListener('click', () => this.completeStage());
-                
-                // Transition continue
-                document.getElementById('btnContinueTransition').addEventListener('click', () => {
-                    this.showScreen('screenGame');
-                    this.startStage(GameState.currentStage);
-                });
-                
-                // Next stage from summary
-                document.getElementById('btnNextStage').addEventListener('click', () => this.goToNextStage());
-            },
-            
-            startStage(stageNum) {
-                GameState.currentStage = stageNum;
-                GameState.completedElements[stageNum] = {};
-                GameState.stageTotals[stageNum] = { budget: 0, dose: 0, time: 0 };
-                
-                const stage = GameData.stages[stageNum];
-                
-                // Update header
-                document.getElementById('headerStage').innerHTML = `<strong>STAGE ${stageNum}:</strong> ${stage.name}`;
-                
-                // Update timeline
-                document.querySelectorAll('.timeline-marker').forEach((marker, i) => {
-                    marker.classList.remove('active', 'completed');
-                    if (i + 1 === stageNum) marker.classList.add('active');
-                    else if (i + 1 < stageNum) marker.classList.add('completed');
-                });
-                document.getElementById('timelineFill').style.width = `${(stageNum - 1) * 25}%`;
-                
-                // Update stage header
-                if (stageNum === 1) {
-                    document.getElementById('stageTitle').textContent = 'Section 4B Design Phase';
-                    document.getElementById('stageSubtitle').textContent = 'Click on each element to make your design selection';
-                    document.getElementById('characterBanner').style.display = 'none';
-                    
-                    // Show budget info
-                    document.getElementById('stageInfoBar').innerHTML = `
-                        <div class="info-item"><div class="info-label">Budget</div><div class="info-value">£${stage.budget.toLocaleString()}</div></div>
-                        <div class="info-item"><div class="info-label">Spent</div><div class="info-value" id="infoSpent">£0</div></div>
-                        <div class="info-item"><div class="info-label">Remaining</div><div class="info-value good" id="infoRemaining">£${stage.budget.toLocaleString()}</div></div>
-                    `;
-                } else {
-                    const char = GameData.characters[stage.character];
-                    document.getElementById('stageTitle').textContent = `${stage.year} ${stage.name.charAt(0) + stage.name.slice(1).toLowerCase()}`;
-                    document.getElementById('stageSubtitle').textContent = 'Click on each element to see how your design decisions play out';
-                    
-                    // Show character banner
-                    const banner = document.getElementById('characterBanner');
-                    banner.style.display = 'flex';
-                    banner.className = `character-banner ${stage.character}`;
-                    document.getElementById('charPortrait').innerHTML = char.portrait.startsWith('images/') 
-                        ? `<img src="${char.portrait}" alt="${char.name}">` 
-                        : char.portrait;
-                    document.getElementById('charName').textContent = char.name;
-                    document.getElementById('charRole').textContent = char.role;
-                    document.getElementById('charQuote').textContent = `"${char.introQuote}"`;
-                    
-                    // Show stage info
-                    document.getElementById('stageInfoBar').innerHTML = `
-                        <div class="info-item"><div class="info-label">Budget</div><div class="info-value">£${stage.budget.toLocaleString()}</div></div>
-                        <div class="info-item"><div class="info-label">Time</div><div class="info-value" id="infoTime">0 days</div></div>
-                        <div class="info-item"><div class="info-label">Dose</div><div class="info-value" id="infoDose">0 mSv</div></div>
-                    `;
+        },
+        controlPanel: {
+            title: 'Control Panel',
+            desc: 'How should the control panel be organised?',
+            options: [
+                { id: 'system', name: 'System-Based', desc: 'Grouped by system. Logical for engineers.', cost: 85000, quality: 'poor' },
+                { id: 'task', name: 'Task-Based', desc: 'Grouped by workflow. Emergency left-to-right.', cost: 95000, quality: 'good' },
+                { id: 'touch', name: 'Touchscreen', desc: 'Sleek displays. Impressive in demos.', cost: 180000, quality: 'poor' }
+            ],
+            outcomes: {
+                2: {
+                    system: { time: 1, dose: 0, cost: 5000, quote: "Panel's fine for routine work." },
+                    task: { time: 0, dose: 0, cost: 5000, quote: "Easy to isolate systems. Logical layout." },
+                    touch: { time: 2, dose: 0, cost: 15000, quote: "Touch screens need calibration. Again." }
+                },
+                3: {
+                    system: { time: 0, dose: 0, cost: 5000, quote: "No inspection issues." },
+                    task: { time: 0, dose: 0, cost: 5000, quote: "Clear system status indication." },
+                    touch: { time: 1, dose: 0, cost: 10000, quote: "Display artifacts. Software update needed." }
+                },
+                4: {
+                    system: { time: 3, dose: 0, cost: 30000, quote: "3am, alarms everywhere, can't find isolation valve." },
+                    task: { time: 0, dose: 0, cost: 5000, quote: "Found controls immediately. Good design." },
+                    touch: { time: 5, dose: 0, cost: 50000, quote: "Touchscreen's frozen. Again. Mid-event." }
+                },
+                5: {
+                    system: { time: 1, dose: 0, cost: 10000, quote: "Panel removal straightforward." },
+                    task: { time: 1, dose: 0, cost: 10000, quote: "Standard panel removal." },
+                    touch: { time: 2, dose: 0, cost: 30000, quote: "Electronic waste. Special disposal." }
                 }
-                
-                // Reset hotspots
-                document.querySelectorAll('.hotspot-marker').forEach(marker => {
-                    marker.classList.remove('completed', 'problem');
-                });
-                
-                this.updateProgress();
-                this.showScreen('screenGame');
-            },
-            
-            handleHotspotClick(elementId) {
-                if (GameState.completedElements[GameState.currentStage][elementId]) return;
-                
-                if (GameState.currentStage === 1) {
-                    this.showDesignModal(elementId);
-                } else {
-                    this.showOutcomeModal(elementId);
-                }
-            },
-            
-            showDesignModal(elementId) {
-                const element = GameData.elements[elementId];
-                
-                document.getElementById('modalTitle').textContent = element.title;
-                
-                let html = `<p class="modal-description">${element.description}</p>`;
-                html += '<div class="choice-cards">';
-                
-                element.options.forEach(opt => {
-                    const selected = GameState.designChoices[elementId] === opt.id ? 'selected' : '';
-                    html += `
-                        <div class="choice-card ${selected}" data-choice="${opt.id}">
-                            <div class="choice-image-placeholder">Image: ${opt.name}</div>
-                            <div class="choice-header">
-                                <span class="choice-name">${opt.name}</span>
-                                <span class="choice-cost">£${opt.cost.toLocaleString()}</span>
-                            </div>
-                            <p class="choice-description">${opt.description}</p>
-                        </div>
-                    `;
-                });
-                
-                html += '</div>';
-                document.getElementById('modalBody').innerHTML = html;
-                
-                // Choice selection
-                let selectedChoice = GameState.designChoices[elementId] || null;
-                document.querySelectorAll('.choice-card').forEach(card => {
-                    card.addEventListener('click', () => {
-                        document.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected'));
-                        card.classList.add('selected');
-                        selectedChoice = card.dataset.choice;
-                    });
-                });
-                
-                // Confirm button
-                document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="modalConfirm">Confirm Selection</button>';
-                document.getElementById('modalConfirm').addEventListener('click', () => {
-                    if (selectedChoice) {
-                        this.confirmDesignChoice(elementId, selectedChoice);
-                    }
-                });
-                
-                this.openModal();
-            },
-            
-            confirmDesignChoice(elementId, choiceId) {
-                const element = GameData.elements[elementId];
-                const option = element.options.find(o => o.id === choiceId);
-                
-                // If changing choice, refund old cost
-                if (GameState.designChoices[elementId]) {
-                    const oldOption = element.options.find(o => o.id === GameState.designChoices[elementId]);
-                    GameState.totals.budget -= oldOption.cost;
-                }
-                
-                GameState.designChoices[elementId] = choiceId;
-                GameState.completedElements[1][elementId] = true;
-                GameState.totals.budget += option.cost;
-                
-                // Update hotspot
-                const marker = document.querySelector(`[data-element="${elementId}"] .hotspot-marker`);
-                marker.classList.add('completed');
-                
-                // Update budget display
-                const spent = GameState.totals.budget;
-                const remaining = GameData.stages[1].budget - spent;
-                document.getElementById('infoSpent').textContent = `£${spent.toLocaleString()}`;
-                const remEl = document.getElementById('infoRemaining');
-                remEl.textContent = `£${remaining.toLocaleString()}`;
-                remEl.className = 'info-value ' + (remaining < 0 ? 'critical' : remaining < 100000 ? 'warning' : 'good');
-                
-                this.updateProgress();
-                this.closeModal();
-            },
-            
-            showOutcomeModal(elementId) {
-                const element = GameData.elements[elementId];
-                const stage = GameState.currentStage;
-                const char = GameData.characters[GameData.stages[stage].character];
-                const designChoice = GameState.designChoices[elementId];
-                const outcome = element.outcomes[stage][designChoice];
-                const designOption = element.options.find(o => o.id === designChoice);
-                
-                document.getElementById('modalTitle').textContent = element.title;
-                
-                let html = `
-                    <div class="outcome-display">
-                        <div class="outcome-character">
-                            <div class="character-portrait">${char.portrait.startsWith('images/') ? `<img src="${char.portrait}" alt="${char.name}">` : char.portrait}</div>
-                            <div>
-                                <div class="character-name">${char.name}</div>
-                                <p class="outcome-dialogue">"${outcome.comment}"</p>
-                            </div>
-                        </div>
-                        
-                        <div class="outcome-result">
-                            <h4>Impact</h4>
-                            <div class="outcome-stats">
-                                <div class="outcome-stat">
-                                    <div class="outcome-stat-value ${outcome.time > 5 ? 'bad' : ''}">${outcome.time} days</div>
-                                    <div class="outcome-stat-label">Time</div>
-                                </div>
-                                <div class="outcome-stat">
-                                    <div class="outcome-stat-value ${outcome.dose > 3 ? 'bad' : ''}">${outcome.dose} mSv</div>
-                                    <div class="outcome-stat-label">Dose</div>
-                                </div>
-                                <div class="outcome-stat">
-                                    <div class="outcome-stat-value ${outcome.cost > 100000 ? 'bad' : ''}">£${outcome.cost.toLocaleString()}</div>
-                                    <div class="outcome-stat-label">Cost</div>
-                                </div>
-                            </div>
-                            <div class="design-recall">
-                                <strong>Your 2025 decision:</strong> ${designOption.name}
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                document.getElementById('modalBody').innerHTML = html;
-                document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="modalConfirm">Continue</button>';
-                document.getElementById('modalConfirm').addEventListener('click', () => {
-                    this.confirmOutcome(elementId, outcome);
-                });
-                
-                this.openModal();
-            },
-            
-            confirmOutcome(elementId, outcome) {
-                const stage = GameState.currentStage;
-                
-                GameState.completedElements[stage][elementId] = true;
-                GameState.stageTotals[stage].budget += outcome.cost;
-                GameState.stageTotals[stage].dose += outcome.dose;
-                GameState.stageTotals[stage].time += outcome.time;
-                
-                GameState.totals.budget += outcome.cost;
-                GameState.totals.dose += outcome.dose;
-                GameState.totals.time += outcome.time;
-                
-                // Update hotspot appearance based on outcome severity
-                const marker = document.querySelector(`[data-element="${elementId}"] .hotspot-marker`);
-                if (outcome.time > 5 || outcome.dose > 3 || outcome.cost > 100000) {
-                    marker.classList.add('problem');
-                } else {
-                    marker.classList.add('completed');
-                }
-                
-                // Update info bar
-                if (document.getElementById('infoTime')) {
-                    document.getElementById('infoTime').textContent = `${GameState.stageTotals[stage].time} days`;
-                }
-                if (document.getElementById('infoDose')) {
-                    document.getElementById('infoDose').textContent = `${GameState.stageTotals[stage].dose} mSv`;
-                }
-                
-                this.updateProgress();
-                this.closeModal();
-            },
-            
-            updateProgress() {
-                const stage = GameState.currentStage;
-                const completed = Object.keys(GameState.completedElements[stage] || {}).length;
-                document.getElementById('progressText').textContent = `${completed} of 6 elements completed`;
-                document.getElementById('btnCompleteStage').disabled = completed < 6;
-            },
-            
-            completeStage() {
-                this.showSummary();
-            },
-            
-            showSummary() {
-                const stage = GameState.currentStage;
-                const stageData = GameData.stages[stage];
-                
-                document.getElementById('summaryTitle').textContent = `${stageData.name.charAt(0) + stageData.name.slice(1).toLowerCase()} Complete`;
-                document.getElementById('summarySubtitle').textContent = `Year ${stageData.year}`;
-                
-                // Stats
-                if (stage === 1) {
-                    document.getElementById('sumBudgetUsed').textContent = `£${GameState.totals.budget.toLocaleString()}`;
-                    document.getElementById('sumDose').textContent = '-';
-                    document.getElementById('sumTime').textContent = '-';
-                    document.getElementById('sumIssues').textContent = '-';
-                } else {
-                    const st = GameState.stageTotals[stage];
-                    document.getElementById('sumBudgetUsed').textContent = `£${st.budget.toLocaleString()}`;
-                    document.getElementById('sumDose').textContent = `${st.dose} mSv`;
-                    document.getElementById('sumTime').textContent = `${st.time} days`;
-                    
-                    // Count issues (high values)
-                    let issues = 0;
-                    Object.keys(GameData.elements).forEach(elId => {
-                        const outcome = GameData.elements[elId].outcomes[stage][GameState.designChoices[elId]];
-                        if (outcome.time > 5 || outcome.dose > 3 || outcome.cost > 100000) issues++;
-                    });
-                    document.getElementById('sumIssues').textContent = issues;
-                }
-                
-                // Decision list
-                let decisionsHtml = '';
-                Object.keys(GameData.elements).forEach(elId => {
-                    const el = GameData.elements[elId];
-                    const choiceId = GameState.designChoices[elId];
-                    const option = el.options.find(o => o.id === choiceId);
-                    
-                    let tagClass = option.quality === 'good' ? 'good' : option.quality === 'ok' ? 'ok' : 'poor';
-                    
-                    decisionsHtml += `
-                        <li class="decision-item">
-                            <span class="decision-name">${el.title}</span>
-                            <div class="decision-result">
-                                <span>${option.name}</span>
-                                <span class="result-tag ${tagClass}">${option.quality.toUpperCase()}</span>
-                            </div>
-                        </li>
-                    `;
-                });
-                document.getElementById('summaryDecisions').innerHTML = decisionsHtml;
-                
-                // Button text
-                if (stage === 5) {
-                    document.getElementById('btnNextStage').textContent = 'View Final Results →';
-                } else {
-                    document.getElementById('btnNextStage').textContent = 'Continue to Next Stage →';
-                }
-                
-                this.showScreen('screenSummary');
-            },
-            
-            goToNextStage() {
-                if (GameState.currentStage >= 5) {
-                    this.showFinalResults();
-                } else {
-                    GameState.currentStage++;
-                    this.showTransition();
-                }
-            },
-            
-            showTransition() {
-                const trans = GameData.transitions[GameState.currentStage];
-                document.getElementById('transitionYears').textContent = trans.years;
-                document.getElementById('transitionYear').textContent = trans.year;
-                document.getElementById('transitionText').innerHTML = trans.text.map(t => `<p>${t}</p>`).join('');
-                this.showScreen('screenTransition');
-            },
-            
-            showFinalResults() {
-                // Calculate grade
-                let goodChoices = 0;
-                Object.keys(GameData.elements).forEach(elId => {
-                    const option = GameData.elements[elId].options.find(o => o.id === GameState.designChoices[elId]);
-                    if (option.quality === 'good') goodChoices++;
-                });
-                
-                let grade, gradeClass;
-                if (goodChoices >= 5) { grade = 'A'; gradeClass = 'excellent'; }
-                else if (goodChoices >= 4) { grade = 'B'; gradeClass = 'good'; }
-                else if (goodChoices >= 3) { grade = 'C'; gradeClass = 'average'; }
-                else { grade = 'D'; gradeClass = 'poor'; }
-                
-                document.getElementById('resultsGrade').textContent = grade;
-                document.getElementById('resultsGrade').className = `results-grade ${gradeClass}`;
-                
-                document.getElementById('totalBudget').textContent = `£${GameState.totals.budget.toLocaleString()}`;
-                document.getElementById('totalDose').textContent = `${GameState.totals.dose.toFixed(1)} mSv`;
-                document.getElementById('totalTime').textContent = `${GameState.totals.time} days`;
-                document.getElementById('totalIncidents').textContent = GameState.totals.incidents;
-                
-                this.showScreen('screenResults');
-            },
-            
-            showScreen(screenId) {
-                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-                document.getElementById(screenId).classList.add('active');
-            },
-            
-            openModal() {
-                document.getElementById('modalOverlay').classList.add('active');
-            },
-            
-            closeModal() {
-                document.getElementById('modalOverlay').classList.remove('active');
             }
-        };
+        },
+        pipeConnections: {
+            title: 'Pipe Connections',
+            desc: 'How should pipe joints be designed?',
+            options: [
+                { id: 'flanged', name: 'Flanged', desc: 'Bolted flanges. Easy disassembly.', cost: 160000, quality: 'good' },
+                { id: 'mixed', name: 'Mixed', desc: 'Flanges accessible, welded elsewhere.', cost: 170000, quality: 'ok' },
+                { id: 'welded', name: 'All Welded', desc: 'Continuous welds. Max integrity.', cost: 180000, quality: 'poor' }
+            ],
+            outcomes: {
+                2: {
+                    flanged: { time: 2, dose: 1, cost: 20000, quote: "Flanged connections. Someone thought ahead." },
+                    mixed: { time: 4, dose: 2, cost: 40000, quote: "Some flanges, some welds. Could be worse." },
+                    welded: { time: 8, dose: 4, cost: 80000, quote: "All welded. Cutting and re-welding then." }
+                },
+                3: {
+                    flanged: { time: 1, dose: 0.5, cost: 10000, quote: "Can remove sections for detailed inspection." },
+                    mixed: { time: 2, dose: 1, cost: 20000, quote: "Some joints accessible, others not." },
+                    welded: { time: 3, dose: 2, cost: 35000, quote: "In-situ only. Limited coverage." }
+                },
+                4: {
+                    flanged: { time: 0, dose: 0, cost: 5000, quote: "Quick isolation possible in emergencies." },
+                    mixed: { time: 1, dose: 0, cost: 10000, quote: "Most isolation points accessible." },
+                    welded: { time: 2, dose: 0, cost: 20000, quote: "Can't isolate quickly. Shut down more than needed." }
+                },
+                5: {
+                    flanged: { time: 3, dose: 1, cost: 40000, quote: "Unbolt, remove, done. How it should be." },
+                    mixed: { time: 6, dose: 3, cost: 100000, quote: "Flanges easy, welds need cutting. Mixed bag." },
+                    welded: { time: 10, dose: 5, cost: 180000, quote: "Every joint needs cutting. Takes forever." }
+                }
+            }
+        },
+        pipeRouting: {
+            title: 'Pipe Routing',
+            desc: 'How should pipes run through concrete?',
+            options: [
+                { id: 'embedded', name: 'Embedded', desc: 'Cast into structural concrete.', cost: 140000, quality: 'poor' },
+                { id: 'ducted', name: 'Accessible Ducts', desc: 'Removable duct covers.', cost: 165000, quality: 'good' },
+                { id: 'tunnel', name: 'Walk-In Tunnel', desc: 'Large tunnel for all services.', cost: 280000, quality: 'wasteful' }
+            ],
+            outcomes: {
+                2: {
+                    embedded: { time: 0, dose: 0, cost: 5000, quote: "Can't access these pipes. Hope nothing fails." },
+                    ducted: { time: 2, dose: 1, cost: 20000, quote: "Duct covers off, full access. Proper design." },
+                    tunnel: { time: 1, dose: 0.5, cost: 15000, quote: "Walk-in is nice. Did we need this much?" }
+                },
+                3: {
+                    embedded: { time: 0, dose: 0, cost: 5000, quote: "Embedded in concrete. Guessing what's in there." },
+                    ducted: { time: 2, dose: 0.5, cost: 15000, quote: "Full visual and probe access." },
+                    tunnel: { time: 1, dose: 0.3, cost: 12000, quote: "Easy inspection access." }
+                },
+                4: {
+                    embedded: { time: 2, dose: 0, cost: 20000, quote: "Leak detected. Can't find it. Somewhere in concrete." },
+                    ducted: { time: 0, dose: 0, cost: 5000, quote: "Quick visual confirms system status." },
+                    tunnel: { time: 0, dose: 0, cost: 5000, quote: "Easy walkthrough." }
+                },
+                5: {
+                    embedded: { time: 15, dose: 8, cost: 300000, quote: "Embedded. Six months extra, half a million more." },
+                    ducted: { time: 4, dose: 2, cost: 60000, quote: "Pull covers, extract pipes. Straightforward." },
+                    tunnel: { time: 3, dose: 1, cost: 50000, quote: "Easy access. Tunnel needs decon though." }
+                }
+            }
+        },
+        materialSpec: {
+            title: 'Material Spec',
+            desc: 'What material for primary circuit pipes?',
+            options: [
+                { id: 'standard', name: 'Standard SS', desc: '2,500 ppm cobalt. Industry standard.', cost: 200000, quality: 'poor' },
+                { id: 'lowCobalt', name: 'Low-Cobalt SS', desc: '<500 ppm cobalt. Less activation.', cost: 250000, quality: 'good' },
+                { id: 'exotic', name: 'Exotic Alloy', desc: 'High-performance nickel alloy.', cost: 400000, quality: 'poor' }
+            ],
+            outcomes: {
+                2: {
+                    standard: { time: 1, dose: 2, cost: 15000, quote: "Standard steel. Hot to work on but expected." },
+                    lowCobalt: { time: 1, dose: 0.5, cost: 12000, quote: "Low-cobalt. Noticeably lower dose rates." },
+                    exotic: { time: 2, dose: 1, cost: 25000, quote: "Special procedures for this alloy." }
+                },
+                3: {
+                    standard: { time: 1, dose: 1.5, cost: 12000, quote: "Standard material. Higher background." },
+                    lowCobalt: { time: 1, dose: 0.3, cost: 10000, quote: "Clean material, easy to work around." },
+                    exotic: { time: 1, dose: 0.5, cost: 15000, quote: "Good properties but finicky to inspect." }
+                },
+                4: {
+                    standard: { time: 0, dose: 0.5, cost: 5000, quote: "No operational difference." },
+                    lowCobalt: { time: 0, dose: 0.1, cost: 5000, quote: "Lower dose during rounds." },
+                    exotic: { time: 0, dose: 0.2, cost: 5000, quote: "Performs well operationally." }
+                },
+                5: {
+                    standard: { time: 8, dose: 10, cost: 200000, quote: "2,500 ppm cobalt. Decades to cool down." },
+                    lowCobalt: { time: 4, dose: 2, cost: 80000, quote: "Low activation. Can handle it sooner." },
+                    exotic: { time: 6, dose: 3, cost: 150000, quote: "Special disposal for this alloy." }
+                }
+            }
+        }
+    },
+    
+    transitions: {
+        2: { years: '15 YEARS LATER', year: '2040', text: ['Thornbury Point has been generating power for 14 years.', 'Your design drawings are yellowed paper in a filing cabinet.', 'But your decisions are very much alive.', 'Time for the first major maintenance outage.'] },
+        3: { years: '15 YEARS LATER', year: '2055', text: ['Thirty years of operation.', 'Regulators want proof everything is still safe.', 'Every weld, every pipe needs inspection.'] },
+        4: { years: '15 YEARS LATER', year: '2070', text: ['Forty-five years. The plant shows its age.', 'Tonight, alarms will test your control room design.'] },
+        5: { years: '15 YEARS LATER', year: '2085', text: ['Sixty years. Reactor shut down for good.', 'Now comes the hard part: taking it apart safely.', 'Every 2025 decision led to this moment.'] }
+    }
+};
+
+// ============================================
+// STATE
+// ============================================
+const STATE = {
+    phase: 1,
+    choices: {},      // Design choices from phase 1
+    completed: {},    // Completed elements per phase
+    totals: { cost: 0, dose: 0, time: 0 }
+};
+
+// ============================================
+// INTRO
+// ============================================
+let currentSlide = 1;
+const totalSlides = 4;
+
+function updateSlide() {
+    document.querySelectorAll('.intro-slide').forEach(s => s.classList.remove('active'));
+    document.querySelector(`.intro-slide[data-slide="${currentSlide}"]`).classList.add('active');
+    
+    document.querySelectorAll('.intro-dot').forEach((d, i) => {
+        d.classList.remove('active', 'done');
+        if (i + 1 === currentSlide) d.classList.add('active');
+        else if (i + 1 < currentSlide) d.classList.add('done');
+    });
+    
+    document.getElementById('btnIntroNext').textContent = currentSlide === totalSlides ? 'Begin →' : 'Continue →';
+}
+
+function nextSlide() {
+    if (currentSlide < totalSlides) {
+        currentSlide++;
+        updateSlide();
+    } else {
+        endIntro();
+    }
+}
+
+function endIntro() {
+    document.getElementById('cinematicIntro').classList.add('hidden');
+    document.getElementById('gameScreen').classList.add('active');
+    startPhase(1);
+}
+
+document.getElementById('btnIntroNext').onclick = nextSlide;
+document.getElementById('btnSkip').onclick = endIntro;
+document.querySelectorAll('.intro-dot').forEach(d => {
+    d.onclick = () => { currentSlide = parseInt(d.dataset.dot); updateSlide(); };
+});
+
+// ============================================
+// GAME
+// ============================================
+function startPhase(phaseNum) {
+    STATE.phase = phaseNum;
+    STATE.completed[phaseNum] = {};
+    
+    const phase = DATA.phases[phaseNum];
+    
+    // Update header
+    document.getElementById('phaseName').textContent = `PHASE ${phaseNum}: ${phase.name}`;
+    document.getElementById('phaseYear').textContent = phase.year;
+    
+    // Stats display
+    if (phaseNum === 1) {
+        document.getElementById('topStats').innerHTML = `<div class="stat">💰 <span class="stat-value" id="statBudget">£${phase.budget.toLocaleString()}</span></div>`;
+    } else {
+        document.getElementById('topStats').innerHTML = `
+            <div class="stat">💰 <span class="stat-value">£0</span></div>
+            <div class="stat">☢️ <span class="stat-value">0 mSv</span></div>
+            <div class="stat">⏱️ <span class="stat-value">0 days</span></div>
+        `;
+    }
+    
+    // Character banner
+    const banner = document.getElementById('characterBanner');
+    if (phaseNum > 1 && phase.char) {
+        const char = DATA.characters[phase.char];
+        banner.className = `character-banner visible ${phase.char}`;
+        document.getElementById('charPortrait').innerHTML = char.portrait 
+            ? `<img src="${char.portrait}" alt="${char.name}">` 
+            : char.emoji;
+        document.getElementById('charName').textContent = char.name;
+        document.getElementById('charRole').textContent = char.role;
+    } else {
+        banner.classList.remove('visible');
+    }
+    
+    // Reset hotspots
+    document.querySelectorAll('.hotspot-dot').forEach(d => {
+        d.classList.remove('done', 'issue');
+    });
+    
+    // Update progress
+    document.querySelectorAll('.progress-dot').forEach((d, i) => {
+        d.classList.remove('current', 'done');
+        if (i + 1 === phaseNum) d.classList.add('current');
+        else if (i + 1 < phaseNum) d.classList.add('done');
+    });
+    
+    document.getElementById('progressFill').style.width = `${(phaseNum - 1) * 25}%`;
+    
+    // Hide next stage button
+    document.getElementById('btnNextStage').classList.remove('visible');
+    
+    updateProgressLabel();
+}
+
+function updateProgressLabel() {
+    const done = Object.keys(STATE.completed[STATE.phase] || {}).length;
+    document.getElementById('progressLabel').textContent = `${done} of 6 complete`;
+    
+    if (done === 6) {
+        document.getElementById('btnNextStage').classList.add('visible');
+    }
+}
+
+// ============================================
+// HOTSPOT CLICKS
+// ============================================
+document.querySelectorAll('.hotspot').forEach(h => {
+    h.onclick = () => {
+        const el = h.dataset.element;
+        if (STATE.completed[STATE.phase]?.[el]) return;
         
-        // ============================================
-        // INIT
-        // ============================================
-        document.addEventListener('DOMContentLoaded', () => {
-            CinematicController.init();
-            GameController.init();
-        });
-    </script>
+        if (STATE.phase === 1) {
+            showDesignModal(el);
+        } else {
+            showOutcomeModal(el);
+        }
+    };
+});
+
+// ============================================
+// MODALS
+// ============================================
+function openModal() {
+    document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+}
+
+document.getElementById('modalClose').onclick = closeModal;
+document.getElementById('modalOverlay').onclick = (e) => {
+    if (e.target.id === 'modalOverlay') closeModal();
+};
+
+function showDesignModal(elementId) {
+    const el = DATA.elements[elementId];
+    document.getElementById('modalTitle').textContent = el.title;
+    
+    let html = `<p class="modal-description">${el.desc}</p><div class="choice-list">`;
+    el.options.forEach(opt => {
+        const sel = STATE.choices[elementId] === opt.id ? 'selected' : '';
+        html += `
+            <div class="choice-item ${sel}" data-id="${opt.id}">
+                <div class="choice-image">[Image: ${opt.name}]</div>
+                <div class="choice-top">
+                    <span class="choice-name">${opt.name}</span>
+                    <span class="choice-cost">£${opt.cost.toLocaleString()}</span>
+                </div>
+                <p class="choice-desc">${opt.desc}</p>
+            </div>
+        `;
+    });
+    html += '</div>';
+    
+    document.getElementById('modalBody').innerHTML = html;
+    
+    let selected = STATE.choices[elementId] || null;
+    document.querySelectorAll('.choice-item').forEach(item => {
+        item.onclick = () => {
+            document.querySelectorAll('.choice-item').forEach(i => i.classList.remove('selected'));
+            item.classList.add('selected');
+            selected = item.dataset.id;
+        };
+    });
+    
+    const btn = document.getElementById('modalConfirm');
+    btn.textContent = 'Confirm';
+    btn.onclick = () => {
+        if (!selected) return;
+        
+        const opt = el.options.find(o => o.id === selected);
+        
+        // Refund old if changing
+        if (STATE.choices[elementId]) {
+            const old = el.options.find(o => o.id === STATE.choices[elementId]);
+            STATE.totals.cost -= old.cost;
+        }
+        
+        STATE.choices[elementId] = selected;
+        STATE.completed[1][elementId] = true;
+        STATE.totals.cost += opt.cost;
+        
+        // Update hotspot
+        const dot = document.querySelector(`[data-element="${elementId}"] .hotspot-dot`);
+        dot.classList.add('done');
+        
+        // Update budget
+        const remaining = DATA.phases[1].budget - STATE.totals.cost;
+        document.getElementById('statBudget').textContent = `£${remaining.toLocaleString()}`;
+        
+        updateProgressLabel();
+        closeModal();
+    };
+    
+    openModal();
+}
+
+function showOutcomeModal(elementId) {
+    const el = DATA.elements[elementId];
+    const choice = STATE.choices[elementId];
+    const outcome = el.outcomes[STATE.phase][choice];
+    const opt = el.options.find(o => o.id === choice);
+    const char = DATA.characters[DATA.phases[STATE.phase].char];
+    
+    document.getElementById('modalTitle').textContent = el.title;
+    
+    const html = `
+        <div class="outcome-section">
+            <div class="outcome-character">
+                <div class="char-portrait">${char.portrait ? `<img src="${char.portrait}">` : char.emoji}</div>
+                <div>
+                    <div class="outcome-name">${char.name}</div>
+                    <p class="outcome-quote">"${outcome.quote}"</p>
+                </div>
+            </div>
+            
+            <div class="outcome-stats">
+                <div class="outcome-stat">
+                    <div class="outcome-stat-value ${outcome.time > 5 ? 'bad' : ''}">${outcome.time} days</div>
+                    <div class="outcome-stat-label">Time</div>
+                </div>
+                <div class="outcome-stat">
+                    <div class="outcome-stat-value ${outcome.dose > 3 ? 'bad' : ''}">${outcome.dose} mSv</div>
+                    <div class="outcome-stat-label">Dose</div>
+                </div>
+                <div class="outcome-stat">
+                    <div class="outcome-stat-value ${outcome.cost > 80000 ? 'bad' : ''}">£${outcome.cost.toLocaleString()}</div>
+                    <div class="outcome-stat-label">Cost</div>
+                </div>
+            </div>
+            
+            <div class="outcome-recall">
+                <strong>Your 2025 choice:</strong> ${opt.name}
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('modalBody').innerHTML = html;
+    
+    const btn = document.getElementById('modalConfirm');
+    btn.textContent = 'Continue';
+    btn.onclick = () => {
+        STATE.completed[STATE.phase][elementId] = true;
+        STATE.totals.cost += outcome.cost;
+        STATE.totals.dose += outcome.dose;
+        STATE.totals.time += outcome.time;
+        
+        // Update hotspot
+        const dot = document.querySelector(`[data-element="${elementId}"] .hotspot-dot`);
+        if (outcome.time > 5 || outcome.dose > 3 || outcome.cost > 80000) {
+            dot.classList.add('issue');
+        } else {
+            dot.classList.add('done');
+        }
+        
+        updateProgressLabel();
+        closeModal();
+    };
+    
+    openModal();
+}
+
+// ============================================
+// NEXT STAGE
+// ============================================
+document.getElementById('btnNextStage').onclick = showSummary;
+
+function showSummary() {
+    const phase = DATA.phases[STATE.phase];
+    
+    document.getElementById('sumTitle').textContent = `${phase.name} Complete`;
+    document.getElementById('sumSubtitle').textContent = `Year ${phase.year}`;
+    
+    // Stats
+    let statsHtml = '';
+    if (STATE.phase === 1) {
+        statsHtml = `
+            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value">£${STATE.totals.cost.toLocaleString()}</div><div class="summary-stat-label">Spent</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">📋</div><div class="summary-stat-value">6</div><div class="summary-stat-label">Decisions</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">📅</div><div class="summary-stat-value">60 yrs</div><div class="summary-stat-label">Ahead</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">👥</div><div class="summary-stat-value">4</div><div class="summary-stat-label">People</div></div>
+        `;
+    } else {
+        statsHtml = `
+            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value">£${STATE.totals.cost.toLocaleString()}</div><div class="summary-stat-label">Total Cost</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">☢️</div><div class="summary-stat-value">${STATE.totals.dose.toFixed(1)} mSv</div><div class="summary-stat-label">Total Dose</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">⏱️</div><div class="summary-stat-value">${STATE.totals.time} days</div><div class="summary-stat-label">Total Time</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">📊</div><div class="summary-stat-value">${STATE.phase}/5</div><div class="summary-stat-label">Phase</div></div>
+        `;
+    }
+    document.getElementById('sumStats').innerHTML = statsHtml;
+    
+    // Decisions
+    let decHtml = '';
+    Object.keys(DATA.elements).forEach(elId => {
+        const el = DATA.elements[elId];
+        const choiceId = STATE.choices[elId];
+        const opt = el.options.find(o => o.id === choiceId);
+        const tagClass = opt.quality === 'good' ? 'good' : opt.quality === 'ok' ? 'ok' : 'poor';
+        decHtml += `
+            <div class="decision-row">
+                <span class="decision-element">${el.title}</span>
+                <div class="decision-result">
+                    <span>${opt.name}</span>
+                    <span class="result-tag ${tagClass}">${opt.quality.toUpperCase()}</span>
+                </div>
+            </div>
+        `;
+    });
+    document.getElementById('sumDecisions').innerHTML = decHtml;
+    
+    // Button
+    document.getElementById('btnNextPhase').textContent = STATE.phase === 5 ? 'View Results →' : 'Next Phase →';
+    
+    document.getElementById('summaryScreen').classList.add('active');
+}
+
+document.getElementById('btnNextPhase').onclick = () => {
+    document.getElementById('summaryScreen').classList.remove('active');
+    
+    if (STATE.phase >= 5) {
+        showResults();
+    } else {
+        showTransition();
+    }
+};
+
+function showTransition() {
+    const nextPhase = STATE.phase + 1;
+    const trans = DATA.transitions[nextPhase];
+    
+    document.getElementById('transYears').textContent = trans.years;
+    document.getElementById('transYear').textContent = trans.year;
+    document.getElementById('transText').innerHTML = trans.text.map(t => `<p>${t}</p>`).join('');
+    
+    document.getElementById('transitionScreen').classList.add('active');
+}
+
+document.getElementById('btnTransContinue').onclick = () => {
+    document.getElementById('transitionScreen').classList.remove('active');
+    startPhase(STATE.phase + 1);
+};
+
+function showResults() {
+    // Calculate grade
+    let good = 0;
+    Object.keys(DATA.elements).forEach(elId => {
+        const opt = DATA.elements[elId].options.find(o => o.id === STATE.choices[elId]);
+        if (opt.quality === 'good') good++;
+    });
+    
+    let grade;
+    if (good >= 5) grade = 'A';
+    else if (good >= 4) grade = 'B';
+    else if (good >= 2) grade = 'C';
+    else grade = 'D';
+    
+    document.getElementById('resGrade').textContent = grade;
+    document.getElementById('resGrade').className = `results-grade ${grade}`;
+    
+    document.getElementById('resTotalCost').textContent = `£${STATE.totals.cost.toLocaleString()}`;
+    document.getElementById('resTotalDose').textContent = `${STATE.totals.dose.toFixed(1)} mSv`;
+    document.getElementById('resTotalTime').textContent = `${STATE.totals.time} days`;
+    
+    document.getElementById('resultsScreen').classList.add('active');
+}
+</script>
 </body>
 </html>
