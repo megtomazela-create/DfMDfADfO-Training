@@ -601,11 +601,8 @@
             border-radius: 4px;
             font-size: 0.8rem;
             font-weight: 600;
+            color: var(--blue);
         }
-        
-        .option-cost.cheap { color: var(--green); }
-        .option-cost.medium { color: var(--amber); }
-        .option-cost.expensive { color: var(--red); }
         
         .option-desc { color: var(--light-grey); font-size: 0.9rem; margin-bottom: 10px; }
         
@@ -825,7 +822,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.7</div>
+<div class="version-tag">v0.8</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -1959,28 +1956,10 @@ const STATE = {
 // ============================================
 function formatMoney(n) { return '£' + n.toLocaleString(); }
 
-function getCostClass(cost) {
-    if (cost <= 20000) return 'cheap';
-    if (cost <= 60000) return 'medium';
-    return 'expensive';
-}
-
 function getRemainingBudget() {
+    // Only used for Stage 1
     const stage = GAME_DATA.stages[STATE.stage];
-    const stageBudget = stage.budget;
-    
-    if (STATE.stage === 1) {
-        // Stage 1 uses totals.cost directly
-        return stageBudget - STATE.totals.cost;
-    } else {
-        // Stages 2-5 use stageTotals
-        const stageSpent = STATE.stageTotals[STATE.stage]?.cost || 0;
-        return stageBudget - stageSpent;
-    }
-}
-
-function canAfford(cost) {
-    return cost <= getRemainingBudget();
+    return stage.budget - STATE.totals.cost;
 }
 
 // ============================================
@@ -2077,13 +2056,14 @@ function updateStatsDisplay() {
     let html = '';
     
     if (STATE.stage === 1) {
+        // Stage 1: Show remaining budget
         const cls = remaining < 100000 ? (remaining < 0 ? 'danger' : 'warning') : '';
-        html = `<div class="stat">💰 Remaining: <span class="stat-value ${cls}">${formatMoney(remaining)}</span></div>`;
+        html = `<div class="stat">💰 Budget: <span class="stat-value ${cls}">${formatMoney(remaining)}</span></div>`;
     } else {
+        // Stages 2-5: Show accumulated costs
         const st = STATE.stageTotals[STATE.stage] || { cost: 0, dose: 0, time: 0 };
-        const budgetCls = remaining < 50000 ? (remaining < 0 ? 'danger' : 'warning') : '';
         html = `
-            <div class="stat">💰 Left: <span class="stat-value ${budgetCls}">${formatMoney(remaining)}</span></div>
+            <div class="stat">💰 Cost: <span class="stat-value" style="color: var(--blue);">${formatMoney(st.cost)}</span></div>
             <div class="stat">☢️ <span class="stat-value">${st.dose.toFixed(1)} mSv</span></div>
             <div class="stat">⏱️ <span class="stat-value">${st.time} days</span></div>
             <div class="stat">❤️ <span class="stat-value ${STATE.plantHealth < 60 ? 'danger' : ''}">${STATE.plantHealth}%</span></div>
@@ -2106,7 +2086,13 @@ function updateProgressLabel() {
 document.querySelectorAll('.hotspot').forEach(h => {
     h.onclick = () => {
         const elId = h.dataset.element;
-        // Always allow opening - player can change their decision
+        
+        // In Stage 1, can always click (to change decision)
+        // In Stages 2-5, can only click if not completed (decisions are final)
+        if (STATE.stage > 1 && STATE.completed[STATE.stage]?.[elId]) {
+            return; // Decision already made, can't change
+        }
+        
         openElementModal(elId);
     };
 });
@@ -2166,7 +2152,7 @@ function renderDesignModal(elId, element) {
                 <div class="choice-image">[Image: ${opt.name}]</div>
                 <div class="option-header">
                     <span class="option-name">${opt.name}</span>
-                    <span class="option-cost ${getCostClass(opt.cost)}">${formatMoney(opt.cost)}</span>
+                    <span class="option-cost">${formatMoney(opt.cost)}</span>
                 </div>
                 <p class="option-desc">${opt.desc}</p>
                 ${!affordable ? '<div class="disabled-reason">⚠️ Insufficient budget</div>' : ''}
@@ -2212,7 +2198,7 @@ function renderDesignModal(elId, element) {
 }
 
 // ============================================
-// STAGES 2-5: DECISIONS
+// STAGES 2-5: DECISIONS (No budget, decisions are final)
 // ============================================
 function renderDecisionModal(elId, element) {
     const stageKey = `stage${STATE.stage}`;
@@ -2235,18 +2221,7 @@ function renderDecisionModal(elId, element) {
     }
     
     const char = GAME_DATA.characters[GAME_DATA.stages[STATE.stage].char];
-    
-    // Check if already completed - calculate available budget including potential refund
-    const previousChoiceId = STATE.stageChoices[`${STATE.stage}_${elId}`];
-    let previousChoice = null;
-    let availableBudget = getRemainingBudget();
-    
-    if (previousChoiceId) {
-        previousChoice = stageData.options.find(o => o.id === previousChoiceId);
-        if (previousChoice) {
-            availableBudget += (previousChoice.cost || 0);
-        }
-    }
+    const stageCost = STATE.stageTotals[STATE.stage]?.cost || 0;
     
     let html = '';
     
@@ -2257,10 +2232,10 @@ function renderDecisionModal(elId, element) {
         </div>
     `;
     
-    // Budget display
+    // Show accumulated stage cost (not budget remaining)
     html += `<div style="margin-bottom: 15px; padding: 10px; background: var(--deep-navy); border-radius: 6px; display: flex; justify-content: space-between;">
-        <span>Stage Budget Remaining:</span>
-        <span class="stat-value ${availableBudget < 50000 ? 'warning' : ''}">${formatMoney(availableBudget)}</span>
+        <span>Stage Cost So Far:</span>
+        <span class="stat-value" style="color: var(--blue);">${formatMoney(stageCost)}</span>
     </div>`;
     
     // Situation box - neutral styling, let content speak for itself
@@ -2277,22 +2252,16 @@ function renderDecisionModal(elId, element) {
         </div>
     `;
     
-    // Check if ANY option is affordable
-    const hasAffordableOption = stageData.options.some(opt => (opt.cost || 0) <= availableBudget);
-    
-    // Options - no hints about which is "better"
+    // Options - all available, no budget restrictions
     html += '<div class="options-list">';
     stageData.options.forEach(opt => {
         const cost = opt.cost || 0;
-        const affordable = cost <= availableBudget;
-        const disabledClass = affordable ? '' : 'disabled';
-        const selectedClass = previousChoiceId === opt.id ? 'selected' : '';
         
         html += `
-            <div class="option-card ${disabledClass} ${selectedClass}" data-id="${opt.id}" data-cost="${cost}">
+            <div class="option-card" data-id="${opt.id}">
                 <div class="option-header">
                     <span class="option-name">${opt.name}</span>
-                    <span class="option-cost ${getCostClass(cost)}">${formatMoney(cost)}</span>
+                    <span class="option-cost">${formatMoney(cost)}</span>
                 </div>
                 <p class="option-desc">${opt.desc}</p>
                 <div class="option-impacts">
@@ -2301,24 +2270,15 @@ function renderDecisionModal(elId, element) {
                     ${opt.healthImpact ? `<span class="impact ${opt.healthImpact > 0 ? 'positive' : 'negative'}">❤️ ${opt.healthImpact > 0 ? '+' : ''}${opt.healthImpact}%</span>` : ''}
                     ${opt.risk ? `<span class="impact neutral">⚠️ ${opt.risk}% failure risk</span>` : ''}
                 </div>
-                ${!affordable ? '<div class="disabled-reason">⚠️ Insufficient budget</div>' : ''}
             </div>
         `;
     });
     html += '</div>';
     
-    // Warning if no affordable options
-    if (!hasAffordableOption) {
-        html += `<div style="margin-top: 15px; padding: 15px; background: rgba(220, 38, 38, 0.2); border: 1px solid var(--red); border-radius: 8px; text-align: center;">
-            <strong style="color: var(--red);">⚠️ Budget Exhausted</strong>
-            <p style="margin-top: 8px; color: var(--light-grey);">You cannot afford any option. The cheapest option will be forced.</p>
-        </div>`;
-    }
-    
     document.getElementById('modalBody').innerHTML = html;
     
-    let selected = previousChoiceId || null;
-    document.querySelectorAll('.option-card:not(.disabled)').forEach(card => {
+    let selected = null;
+    document.querySelectorAll('.option-card').forEach(card => {
         card.onclick = () => {
             document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
@@ -2326,15 +2286,17 @@ function renderDecisionModal(elId, element) {
         };
     });
     
-    // If no affordable options, auto-select the cheapest and show different button
-    if (!hasAffordableOption) {
-        const cheapest = stageData.options.reduce((min, opt) => (opt.cost || 0) < (min.cost || 0) ? opt : min);
-        selected = cheapest.id;
-        document.getElementById('modalFooter').innerHTML = '<button class="btn btn-danger" id="btnConfirm">Accept Forced Option</button>';
-    } else {
-        const btnText = previousChoiceId ? 'Update Decision' : 'Confirm Decision';
-        document.getElementById('modalFooter').innerHTML = `<button class="btn btn-primary" id="btnConfirm">${btnText}</button>`;
-    }
+    document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirm" disabled>Select an Option</button>';
+    
+    const observer = new MutationObserver(() => {
+        const hasSelection = document.querySelector('.option-card.selected');
+        const btn = document.getElementById('btnConfirm');
+        if (btn) {
+            btn.disabled = !hasSelection;
+            btn.textContent = hasSelection ? 'Confirm Decision' : 'Select an Option';
+        }
+    });
+    observer.observe(document.getElementById('modalBody'), { subtree: true, attributes: true, attributeFilter: ['class'] });
     
     document.getElementById('btnConfirm').onclick = () => {
         if (!selected) return;
@@ -2347,7 +2309,7 @@ function renderDecisionModal(elId, element) {
             return;
         }
         
-        applyDecision(elId, opt, stageData, previousChoice);
+        applyDecision(elId, opt, stageData, null);
     };
 }
 
@@ -2400,28 +2362,8 @@ function applyDecision(elId, opt, stageData, previousChoice = null) {
     const time = opt.time || 0;
     const healthImpact = opt.healthImpact || 0;
     
-    // Refund previous choice if changing decision
-    if (previousChoice) {
-        STATE.stageTotals[STATE.stage].cost -= (previousChoice.cost || 0);
-        STATE.stageTotals[STATE.stage].dose -= (previousChoice.dose || 0);
-        STATE.stageTotals[STATE.stage].time -= (previousChoice.time || 0);
-        STATE.totals.cost -= (previousChoice.cost || 0);
-        STATE.totals.dose -= (previousChoice.dose || 0);
-        STATE.totals.time -= (previousChoice.time || 0);
-        
-        // Reverse health impact
-        if (previousChoice.healthImpact) {
-            STATE.plantHealth = Math.max(0, Math.min(100, STATE.plantHealth - previousChoice.healthImpact));
-        }
-        
-        // Remove previous triggers/flags
-        if (previousChoice.trigger) delete STATE.triggers[previousChoice.trigger];
-        if (previousChoice.setFlag) delete STATE.flags[previousChoice.setFlag];
-    }
-    
-    // Additional costs from triggered scenarios
-    if (stageData.additionalCosts && !previousChoice) {
-        // Only apply additional costs on first decision, not when changing
+    // Additional costs from triggered scenarios (e.g., environmental cleanup)
+    if (stageData.additionalCosts) {
         STATE.stageTotals[STATE.stage].cost += (stageData.additionalCosts.regulatory || 0) + (stageData.additionalCosts.environmental || 0);
         STATE.totals.cost += (stageData.additionalCosts.regulatory || 0) + (stageData.additionalCosts.environmental || 0);
         if (stageData.additionalCosts.healthImpact) {
@@ -2446,7 +2388,7 @@ function applyDecision(elId, opt, stageData, previousChoice = null) {
     STATE.completed[STATE.stage][elId] = true;
     STATE.stageChoices[`${STATE.stage}_${elId}`] = opt.id;
     
-    // Mark hotspot as done - no judgment, just complete
+    // Mark hotspot as done
     const dot = document.querySelector(`[data-element="${elId}"] .hotspot-dot`);
     dot.classList.add('done');
     
@@ -2473,15 +2415,15 @@ function showStageSummary() {
         const over = spent > stage.budget;
         const remaining = stage.budget - spent;
         statsHtml = `
-            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value ${over ? 'over' : ''}">${formatMoney(spent)}</div><div class="summary-stat-label">Spent</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value">${formatMoney(spent)}</div><div class="summary-stat-label">Spent</div></div>
             <div class="summary-stat"><div class="summary-stat-icon">📊</div><div class="summary-stat-value">${formatMoney(stage.budget)}</div><div class="summary-stat-label">Budget</div></div>
-            <div class="summary-stat"><div class="summary-stat-icon">${over ? '⚠️' : '✓'}</div><div class="summary-stat-value ${over ? 'over' : ''}">${formatMoney(Math.abs(remaining))}</div><div class="summary-stat-label">${over ? 'Over Budget' : 'Remaining'}</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">${over ? '⚠️' : '✓'}</div><div class="summary-stat-value ${over ? 'over' : ''}">${formatMoney(Math.abs(remaining))}</div><div class="summary-stat-label">${over ? 'Over Budget' : 'Under Budget'}</div></div>
             <div class="summary-stat"><div class="summary-stat-icon">❤️</div><div class="summary-stat-value">${STATE.plantHealth}%</div><div class="summary-stat-label">Health</div></div>
         `;
     } else {
-        const over = st.cost > stage.budget;
+        // Stages 2-5: Just show what was spent, no budget comparison
         statsHtml = `
-            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value ${over ? 'over' : ''}">${formatMoney(st.cost)}</div><div class="summary-stat-label">Spent (of ${formatMoney(stage.budget)})</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value">${formatMoney(st.cost)}</div><div class="summary-stat-label">Stage Cost</div></div>
             <div class="summary-stat"><div class="summary-stat-icon">☢️</div><div class="summary-stat-value">${st.dose.toFixed(1)} mSv</div><div class="summary-stat-label">Dose</div></div>
             <div class="summary-stat"><div class="summary-stat-icon">⏱️</div><div class="summary-stat-value">${st.time} days</div><div class="summary-stat-label">Time</div></div>
             <div class="summary-stat"><div class="summary-stat-icon">❤️</div><div class="summary-stat-value">${STATE.plantHealth}%</div><div class="summary-stat-label">Health</div></div>
