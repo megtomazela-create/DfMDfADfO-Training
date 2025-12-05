@@ -109,8 +109,7 @@
         .intro-nav {
             position: absolute;
             bottom: 40px;
-            left: 0;
-            right: 0;
+            left: 0; right: 0;
             display: flex;
             justify-content: center;
             gap: 20px;
@@ -124,13 +123,10 @@
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
         }
         
         .intro-nav .btn-skip { background: transparent; color: var(--mid-grey); border: 1px solid var(--slate); }
-        .intro-nav .btn-skip:hover { color: var(--white); border-color: var(--white); }
         .intro-nav .btn-next { background: var(--blue); color: var(--deep-navy); }
-        .intro-nav .btn-next:hover { background: #33c0f5; }
         
         .intro-dots {
             position: absolute;
@@ -147,14 +143,13 @@
             background: var(--slate);
             border-radius: 2px;
             cursor: pointer;
-            transition: background 0.3s;
         }
         
         .intro-dot.active { background: var(--blue); }
         .intro-dot.done { background: var(--green); }
         
         /* ============================================
-           GAME SCREEN (FIXED VIEWPORT)
+           GAME LAYOUT
            ============================================ */
         #gameScreen {
             display: none;
@@ -165,7 +160,6 @@
         
         #gameScreen.active { display: flex; }
         
-        /* Top Bar */
         .top-bar {
             height: 60px;
             background: var(--deep-navy);
@@ -190,14 +184,11 @@
         
         .top-bar-right { display: flex; align-items: center; gap: 15px; }
         
-        .top-bar-stats {
-            display: flex;
-            gap: 20px;
-            font-size: 0.9rem;
-        }
-        
+        .top-bar-stats { display: flex; gap: 20px; font-size: 0.9rem; }
         .stat { display: flex; align-items: center; gap: 5px; }
         .stat-value { color: var(--white); font-weight: 600; }
+        .stat-value.warning { color: var(--amber); }
+        .stat-value.danger { color: var(--red); }
         
         .btn-next-stage {
             display: none;
@@ -211,7 +202,6 @@
             animation: pulse 2s infinite;
         }
         
-        .btn-next-stage:hover { background: #a2e060; }
         .btn-next-stage.visible { display: block; }
         
         @keyframes pulse {
@@ -219,7 +209,6 @@
             50% { box-shadow: 0 0 0 10px rgba(146, 208, 80, 0); }
         }
         
-        /* Progress Bar */
         .progress-bar {
             height: 6px;
             background: var(--dark-slate);
@@ -232,7 +221,6 @@
             transition: width 0.5s ease;
         }
         
-        /* Character Banner (for stages 2-5) */
         .character-banner {
             display: none;
             align-items: center;
@@ -250,8 +238,7 @@
         .character-banner.janet { border-color: var(--mid-grey); }
         
         .char-portrait {
-            width: 50px;
-            height: 50px;
+            width: 50px; height: 50px;
             border-radius: 8px;
             background: var(--slate);
             display: flex;
@@ -262,11 +249,9 @@
         }
         
         .char-portrait img { width: 100%; height: 100%; object-fit: cover; }
-        
         .char-info h4 { color: var(--white); margin-bottom: 2px; }
         .char-role { font-size: 0.85rem; color: var(--mid-grey); }
         
-        /* Map Container */
         .map-container {
             flex: 1;
             position: relative;
@@ -277,20 +262,15 @@
             background: #1a1a2e;
         }
         
-        .map-wrapper {
-            position: relative;
-            max-width: 100%;
-            max-height: 100%;
-        }
+        .map-wrapper { position: relative; max-width: 100%; max-height: 100%; }
         
         .map-wrapper img {
             display: block;
             max-width: 100%;
-            max-height: calc(100vh - 150px);
+            max-height: calc(100vh - 180px);
             object-fit: contain;
         }
         
-        /* Hotspots */
         .hotspot {
             position: absolute;
             transform: translate(-50%, -50%);
@@ -299,8 +279,7 @@
         }
         
         .hotspot-dot {
-            width: 44px;
-            height: 44px;
+            width: 44px; height: 44px;
             border-radius: 50%;
             background: rgba(0, 176, 240, 0.3);
             border: 3px solid var(--blue);
@@ -326,7 +305,17 @@
             content: '✓';
             color: var(--green);
             font-weight: bold;
-            font-size: 1.2rem;
+        }
+        
+        .hotspot-dot.warning {
+            background: rgba(245, 158, 11, 0.3);
+            border-color: var(--amber);
+            animation: none;
+        }
+        
+        .hotspot-dot.warning::after {
+            content: '⚠';
+            color: var(--amber);
         }
         
         .hotspot-dot.issue {
@@ -339,7 +328,6 @@
             content: '!';
             color: var(--red);
             font-weight: bold;
-            font-size: 1.2rem;
         }
         
         .hotspot-label {
@@ -365,7 +353,6 @@
             50% { box-shadow: 0 0 0 12px rgba(0, 176, 240, 0); }
         }
         
-        /* Bottom Info */
         .bottom-bar {
             height: 50px;
             background: var(--deep-navy);
@@ -377,17 +364,12 @@
             flex-shrink: 0;
         }
         
-        .progress-dots {
-            display: flex;
-            gap: 8px;
-        }
+        .progress-dots { display: flex; gap: 8px; }
         
         .progress-dot {
-            width: 12px;
-            height: 12px;
+            width: 12px; height: 12px;
             border-radius: 50%;
             background: var(--slate);
-            transition: all 0.3s;
         }
         
         .progress-dot.done { background: var(--green); }
@@ -396,16 +378,17 @@
         .progress-label { color: var(--mid-grey); font-size: 0.9rem; }
         
         /* ============================================
-           MODAL (POPUP)
+           MODAL
            ============================================ */
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             z-index: 500;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
         
         .modal-overlay.active { display: flex; }
@@ -413,16 +396,16 @@
         .modal {
             background: var(--dark-slate);
             border-radius: 12px;
-            width: 90%;
-            max-width: 550px;
-            max-height: 85vh;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
             overflow-y: auto;
             animation: modalIn 0.3s ease;
         }
         
         @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
         
         .modal-header {
@@ -433,7 +416,7 @@
             border-bottom: 1px solid var(--slate);
         }
         
-        .modal-header h3 { color: var(--white); font-size: 1.2rem; }
+        .modal-header h3 { color: var(--white); }
         
         .modal-close {
             background: none;
@@ -441,19 +424,51 @@
             color: var(--mid-grey);
             font-size: 1.5rem;
             cursor: pointer;
-            line-height: 1;
         }
-        
-        .modal-close:hover { color: var(--white); }
         
         .modal-body { padding: 20px; }
         
-        .modal-description { color: var(--light-grey); margin-bottom: 20px; }
+        /* Situation description */
+        .situation-box {
+            background: var(--slate);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--blue);
+        }
         
-        /* Design Choices */
-        .choice-list { display: flex; flex-direction: column; gap: 12px; }
+        .situation-box.warning { border-left-color: var(--amber); }
+        .situation-box.danger { border-left-color: var(--red); }
         
-        .choice-item {
+        .situation-box p {
+            color: var(--light-grey);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .situation-box p:last-child { margin-bottom: 0; }
+        .situation-box strong { color: var(--white); }
+        .situation-box em { color: var(--amber); font-style: normal; }
+        
+        /* Character quote */
+        .char-quote {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: var(--deep-navy);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .char-quote .char-portrait { width: 45px; height: 45px; flex-shrink: 0; }
+        .char-quote-text { font-style: italic; color: var(--light-grey); line-height: 1.5; }
+        .char-quote-name { color: var(--white); font-weight: 500; font-size: 0.85rem; margin-bottom: 5px; font-style: normal; }
+        
+        /* Options list */
+        .options-list { display: flex; flex-direction: column; gap: 10px; }
+        
+        .option-card {
             background: var(--slate);
             border-radius: 8px;
             padding: 15px;
@@ -462,29 +477,41 @@
             transition: all 0.2s;
         }
         
-        .choice-item:hover { border-color: var(--blue); }
-        .choice-item.selected { border-color: var(--green); background: rgba(146, 208, 80, 0.1); }
+        .option-card:hover { border-color: var(--blue); }
+        .option-card.selected { border-color: var(--green); background: rgba(146, 208, 80, 0.1); }
         
-        .choice-top {
+        .option-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 8px;
         }
         
-        .choice-name { color: var(--white); font-weight: 500; }
+        .option-name { color: var(--white); font-weight: 500; }
         
-        .choice-cost {
+        .option-cost {
             background: var(--deep-navy);
             color: var(--amber);
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 4px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
         }
         
-        .choice-desc { color: var(--light-grey); font-size: 0.9rem; }
+        .option-desc { color: var(--light-grey); font-size: 0.9rem; margin-bottom: 10px; }
         
+        .option-impacts {
+            display: flex;
+            gap: 15px;
+            font-size: 0.8rem;
+        }
+        
+        .impact { display: flex; align-items: center; gap: 4px; }
+        .impact.negative { color: var(--red); }
+        .impact.positive { color: var(--green); }
+        .impact.neutral { color: var(--mid-grey); }
+        
+        /* Design choice (Stage 1) */
         .choice-image {
             width: 100%;
             height: 60px;
@@ -498,104 +525,64 @@
             font-size: 0.75rem;
         }
         
-        /* Outcome Display */
-        .outcome-section { margin-bottom: 20px; }
-        
-        .outcome-character {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            background: var(--slate);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .outcome-character .char-portrait { flex-shrink: 0; }
-        
-        .outcome-name { color: var(--white); font-weight: 500; margin-bottom: 5px; }
-        .outcome-quote { font-style: italic; color: var(--light-grey); line-height: 1.5; }
-        
-        .outcome-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            background: var(--slate);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .outcome-stat { text-align: center; }
-        .outcome-stat-value { font-size: 1.3rem; font-weight: 600; color: var(--white); }
-        .outcome-stat-value.bad { color: var(--red); }
-        .outcome-stat-label { font-size: 0.75rem; color: var(--mid-grey); text-transform: uppercase; }
-        
-        .outcome-recall {
+        /* Recall what was chosen */
+        .design-recall {
             background: var(--deep-navy);
             padding: 10px 15px;
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--mid-grey);
+            margin-bottom: 15px;
         }
         
-        .outcome-recall strong { color: var(--white); }
+        .design-recall strong { color: var(--white); }
         
         .modal-footer {
             padding: 15px 20px;
             border-top: 1px solid var(--slate);
             display: flex;
             justify-content: flex-end;
+            gap: 10px;
         }
         
-        .modal-footer button {
+        .btn {
             padding: 10px 25px;
             border: none;
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
         }
         
-        .btn-confirm { background: var(--blue); color: var(--deep-navy); }
-        .btn-confirm:hover { background: #33c0f5; }
-        .btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary { background: var(--blue); color: var(--deep-navy); }
+        .btn-danger { background: var(--red); color: var(--white); }
+        .btn-secondary { background: var(--slate); color: var(--white); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         
         /* ============================================
-           TRANSITION SCREEN
+           SCREENS (Transition, Summary, Results)
            ============================================ */
-        #transitionScreen {
+        .overlay-screen {
             display: none;
             position: fixed;
             inset: 0;
-            background: #000;
+            background: rgba(0, 0, 0, 0.95);
             z-index: 600;
             align-items: center;
             justify-content: center;
         }
         
-        #transitionScreen.active { display: flex; }
+        .overlay-screen.active { display: flex; }
         
-        .transition-content {
+        .overlay-content {
             text-align: center;
-            max-width: 600px;
+            max-width: 650px;
             padding: 40px;
         }
         
-        .transition-years {
-            color: var(--mid-grey);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 10px;
-        }
+        .trans-years { color: var(--mid-grey); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; }
+        .trans-year { font-size: 5rem; color: var(--white); margin-bottom: 30px; }
         
-        .transition-year {
-            font-size: 5rem;
-            color: var(--white);
-            margin-bottom: 30px;
-        }
-        
-        .transition-text {
+        .trans-text {
             background: var(--dark-slate);
             padding: 25px;
             border-radius: 10px;
@@ -603,12 +590,8 @@
             margin-bottom: 30px;
         }
         
-        .transition-text p {
-            margin-bottom: 12px;
-            line-height: 1.6;
-        }
-        
-        .transition-text p:last-child { margin-bottom: 0; }
+        .trans-text p { margin-bottom: 12px; line-height: 1.6; }
+        .trans-text p:last-child { margin-bottom: 0; }
         
         .btn-continue {
             padding: 12px 30px;
@@ -621,89 +604,63 @@
             cursor: pointer;
         }
         
-        .btn-continue:hover { background: #33c0f5; }
-        
-        /* ============================================
-           SUMMARY SCREEN
-           ============================================ */
-        #summaryScreen {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: var(--deep-navy);
-            z-index: 600;
-            align-items: center;
-            justify-content: center;
-            overflow-y: auto;
-        }
-        
-        #summaryScreen.active { display: flex; }
-        
-        .summary-content {
-            max-width: 700px;
-            padding: 40px 20px;
-            text-align: center;
-        }
-        
+        /* Summary */
         .summary-title { font-size: 2rem; color: var(--white); margin-bottom: 10px; }
-        .summary-subtitle { color: var(--mid-grey); margin-bottom: 30px; }
+        .summary-subtitle { color: var(--mid-grey); margin-bottom: 25px; }
         
         .summary-stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 25px;
         }
         
         .summary-stat {
             background: var(--dark-slate);
-            padding: 20px 10px;
+            padding: 15px 10px;
             border-radius: 8px;
+            text-align: center;
         }
         
-        .summary-stat-icon { font-size: 1.5rem; margin-bottom: 8px; }
-        .summary-stat-value { font-size: 1.3rem; font-weight: 600; color: var(--white); }
-        .summary-stat-label { font-size: 0.7rem; color: var(--mid-grey); text-transform: uppercase; margin-top: 5px; }
+        .summary-stat-icon { font-size: 1.3rem; margin-bottom: 5px; }
+        .summary-stat-value { font-size: 1.2rem; font-weight: 600; color: var(--white); }
+        .summary-stat-value.over { color: var(--red); }
+        .summary-stat-label { font-size: 0.7rem; color: var(--mid-grey); text-transform: uppercase; margin-top: 3px; }
         
         .summary-decisions {
             background: var(--dark-slate);
             border-radius: 10px;
             padding: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
         }
         
-        .summary-decisions h4 { color: var(--white); margin-bottom: 15px; }
+        .summary-decisions h4 { color: var(--white); margin-bottom: 12px; }
         
         .decision-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
+            padding: 8px 0;
             border-bottom: 1px solid var(--slate);
+            font-size: 0.9rem;
         }
         
         .decision-row:last-child { border-bottom: none; }
-        
         .decision-element { color: var(--white); }
         
-        .decision-result {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .result-tag {
-            padding: 3px 8px;
+        .decision-tag {
+            padding: 2px 8px;
             border-radius: 4px;
             font-size: 0.7rem;
             font-weight: 600;
-            text-transform: uppercase;
         }
         
-        .result-tag.good { background: var(--green); color: var(--deep-navy); }
-        .result-tag.ok { background: var(--amber); color: var(--deep-navy); }
-        .result-tag.poor { background: var(--red); color: var(--white); }
+        .decision-tag.good { background: var(--green); color: var(--deep-navy); }
+        .decision-tag.ok { background: var(--amber); color: var(--deep-navy); }
+        .decision-tag.poor { background: var(--red); color: var(--white); }
         
         .btn-next-phase {
             padding: 12px 30px;
@@ -716,29 +673,11 @@
             cursor: pointer;
         }
         
-        .btn-next-phase:hover { background: #a2e060; }
-        
-        /* ============================================
-           FINAL RESULTS
-           ============================================ */
-        #resultsScreen {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: var(--deep-navy);
-            z-index: 600;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        #resultsScreen.active { display: flex; }
-        
-        .results-content { text-align: center; max-width: 600px; padding: 40px; }
-        
+        /* Results */
         .results-grade {
-            font-size: 8rem;
+            font-size: 7rem;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .results-grade.A { color: var(--green); }
@@ -746,47 +685,34 @@
         .results-grade.C { color: var(--amber); }
         .results-grade.D { color: var(--red); }
         
-        .results-title { font-size: 1.5rem; color: var(--white); margin-bottom: 30px; }
+        .results-title { color: var(--white); margin-bottom: 20px; }
+        .results-verdict { color: var(--light-grey); margin-bottom: 30px; font-size: 1.1rem; }
         
         .results-totals {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 15px;
             background: var(--dark-slate);
-            padding: 25px;
+            padding: 20px;
             border-radius: 10px;
             margin-bottom: 30px;
         }
         
         .results-total { text-align: center; }
-        .results-total-value { font-size: 1.5rem; font-weight: 600; color: var(--white); }
+        .results-total-value { font-size: 1.4rem; font-weight: 600; color: var(--white); }
         .results-total-label { font-size: 0.8rem; color: var(--mid-grey); }
-        
-        .btn-restart {
-            padding: 12px 30px;
-            background: var(--blue);
-            color: var(--deep-navy);
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
         
         /* Mobile */
         @media (max-width: 600px) {
             .top-bar-stats { display: none; }
-            .summary-stats { grid-template-columns: repeat(2, 1fr); }
-            .outcome-stats { grid-template-columns: 1fr; }
+            .summary-stats, .results-totals { grid-template-columns: repeat(2, 1fr); }
             .intro-title { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
 
-<!-- ============================================
-     CINEMATIC INTRO
-     ============================================ -->
+<!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
         <div class="bg dark"></div>
@@ -807,8 +733,7 @@
             <h2 class="intro-year">2025</h2>
             <div class="intro-text-box">
                 <p><strong>Thornbury Point Nuclear Power Station.</strong></p>
-                <p>A new generation of clean energy. Sixty years of operation ahead.</p>
-                <p>And someone needs to design it right.</p>
+                <p>Sixty years of operation ahead. And someone needs to design it right.</p>
             </div>
         </div>
     </div>
@@ -817,9 +742,9 @@
         <div class="bg" style="background-image: url('images/gamebackground.png');"></div>
         <div class="intro-content">
             <div class="intro-text-box">
-                <p>You've just been assigned your first major project: <span class="highlight">Section 4B</span> of Thornbury Point.</p>
-                <p>Primary coolant system auxiliaries. Pumps, pipes, welds, and control interfaces.</p>
-                <p>Your design will be built, operated, inspected, and eventually decommissioned over <strong>sixty years</strong>.</p>
+                <p>You've been assigned <span class="highlight">Section 4B</span>: Primary coolant system auxiliaries.</p>
+                <p>Your design will be built, operated, inspected, and decommissioned over <strong>sixty years</strong>.</p>
+                <p>Four people will inherit your choices. Their success depends on what you decide.</p>
             </div>
         </div>
     </div>
@@ -829,9 +754,8 @@
         <div class="intro-content">
             <div class="intro-text-box" style="text-align: center; border-left: none; border: 2px solid var(--blue);">
                 <p><strong>Six design decisions. Each has consequences.</strong></p>
-                <p>Four people will inherit your choices over the decades.</p>
-                <p>Their success — or failure — depends on what you decide now.</p>
-                <div class="intro-budget">Budget: £800,000</div>
+                <p>Budget, dose, time, plant health — every choice matters.</p>
+                <div class="intro-budget">Design Budget: £800,000</div>
             </div>
         </div>
     </div>
@@ -849,27 +773,23 @@
     </div>
 </div>
 
-<!-- ============================================
-     MAIN GAME SCREEN
-     ============================================ -->
+<!-- GAME SCREEN -->
 <div id="gameScreen">
     <div class="top-bar">
         <div class="top-bar-logo">
             <img src="../00_images/Logo_White_Nobackground.png" alt="Logo">
         </div>
         <div class="top-bar-phase">
-            <span id="phaseName">PHASE 1: DESIGN</span> — <span class="year" id="phaseYear">2025</span>
+            <span id="phaseName">STAGE 1: DESIGN</span> — <span class="year" id="phaseYear">2025</span>
         </div>
         <div class="top-bar-right">
-            <div class="top-bar-stats" id="topStats">
-                <div class="stat">💰 <span class="stat-value" id="statBudget">£800,000</span></div>
-            </div>
-            <button class="btn-next-stage" id="btnNextStage">Next Stage →</button>
+            <div class="top-bar-stats" id="topStats"></div>
+            <button class="btn-next-stage" id="btnNextStage">Complete Stage →</button>
         </div>
     </div>
     
     <div class="progress-bar">
-        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+        <div class="progress-fill" id="progressFill"></div>
     </div>
     
     <div class="character-banner" id="characterBanner">
@@ -885,32 +805,32 @@
             <img src="images/gamebackground.png" alt="Section 4B">
             
             <div class="hotspot" data-element="pumpAccess" style="left: 18%; top: 52%;">
-                <div class="hotspot-dot" id="dotPump"></div>
+                <div class="hotspot-dot"></div>
                 <span class="hotspot-label">Pump Access</span>
             </div>
             
             <div class="hotspot" data-element="weldClearance" style="left: 42%; top: 46%;">
-                <div class="hotspot-dot" id="dotWeld"></div>
+                <div class="hotspot-dot"></div>
                 <span class="hotspot-label">Weld Clearance</span>
             </div>
             
             <div class="hotspot" data-element="controlPanel" style="left: 85%; top: 42%;">
-                <div class="hotspot-dot" id="dotControl"></div>
+                <div class="hotspot-dot"></div>
                 <span class="hotspot-label">Control Panel</span>
             </div>
             
             <div class="hotspot" data-element="pipeConnections" style="left: 56%; top: 52%;">
-                <div class="hotspot-dot" id="dotConnections"></div>
+                <div class="hotspot-dot"></div>
                 <span class="hotspot-label">Pipe Connections</span>
             </div>
             
             <div class="hotspot" data-element="pipeRouting" style="left: 62%; top: 82%;">
-                <div class="hotspot-dot" id="dotRouting"></div>
+                <div class="hotspot-dot"></div>
                 <span class="hotspot-label">Pipe Routing</span>
             </div>
             
             <div class="hotspot" data-element="materialSpec" style="left: 32%; top: 58%;">
-                <div class="hotspot-dot" id="dotMaterial"></div>
+                <div class="hotspot-dot"></div>
                 <span class="hotspot-label">Material Spec</span>
             </div>
         </div>
@@ -928,9 +848,7 @@
     </div>
 </div>
 
-<!-- ============================================
-     MODAL POPUP
-     ============================================ -->
+<!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
         <div class="modal-header">
@@ -938,81 +856,53 @@
             <button class="modal-close" id="modalClose">×</button>
         </div>
         <div class="modal-body" id="modalBody"></div>
-        <div class="modal-footer">
-            <button class="btn-confirm" id="modalConfirm">Confirm</button>
-        </div>
+        <div class="modal-footer" id="modalFooter"></div>
     </div>
 </div>
 
-<!-- ============================================
-     TRANSITION SCREEN
-     ============================================ -->
-<div id="transitionScreen">
-    <div class="transition-content">
-        <p class="transition-years" id="transYears">15 YEARS LATER</p>
-        <h2 class="transition-year" id="transYear">2040</h2>
-        <div class="transition-text" id="transText"></div>
+<!-- TRANSITION SCREEN -->
+<div class="overlay-screen" id="transitionScreen">
+    <div class="overlay-content">
+        <p class="trans-years" id="transYears">15 YEARS LATER</p>
+        <h2 class="trans-year" id="transYear">2040</h2>
+        <div class="trans-text" id="transText"></div>
         <button class="btn-continue" id="btnTransContinue">Continue →</button>
     </div>
 </div>
 
-<!-- ============================================
-     SUMMARY SCREEN
-     ============================================ -->
-<div id="summaryScreen">
-    <div class="summary-content">
-        <h2 class="summary-title" id="sumTitle">Phase Complete</h2>
-        <p class="summary-subtitle" id="sumSubtitle">Year 2025</p>
-        
+<!-- SUMMARY SCREEN -->
+<div class="overlay-screen" id="summaryScreen">
+    <div class="overlay-content">
+        <h2 class="summary-title" id="sumTitle">Stage Complete</h2>
+        <p class="summary-subtitle" id="sumSubtitle"></p>
         <div class="summary-stats" id="sumStats"></div>
-        
-        <div class="summary-decisions">
-            <h4>Decisions</h4>
-            <div id="sumDecisions"></div>
-        </div>
-        
-        <button class="btn-next-phase" id="btnNextPhase">Next Phase →</button>
+        <div class="summary-decisions" id="sumDecisions"></div>
+        <button class="btn-next-phase" id="btnNextPhase">Next Stage →</button>
     </div>
 </div>
 
-<!-- ============================================
-     FINAL RESULTS
-     ============================================ -->
-<div id="resultsScreen">
-    <div class="results-content">
+<!-- RESULTS SCREEN -->
+<div class="overlay-screen" id="resultsScreen">
+    <div class="overlay-content">
         <div class="results-grade" id="resGrade">B</div>
         <h2 class="results-title">60 Years Complete</h2>
-        
-        <div class="results-totals">
-            <div class="results-total">
-                <div class="results-total-value" id="resTotalCost">£0</div>
-                <div class="results-total-label">Total Cost</div>
-            </div>
-            <div class="results-total">
-                <div class="results-total-value" id="resTotalDose">0 mSv</div>
-                <div class="results-total-label">Total Dose</div>
-            </div>
-            <div class="results-total">
-                <div class="results-total-value" id="resTotalTime">0 days</div>
-                <div class="results-total-label">Total Time</div>
-            </div>
-        </div>
-        
-        <button class="btn-restart" onclick="location.reload()">Play Again</button>
+        <p class="results-verdict" id="resVerdict">Competent Engineer</p>
+        <div class="results-totals" id="resTotals"></div>
+        <button class="btn-continue" onclick="location.reload()">Play Again</button>
     </div>
 </div>
 
 <script>
 // ============================================
-// DATA
+// MASTER GAME DATA (from Logic Document)
 // ============================================
-const DATA = {
-    phases: {
-        1: { name: 'DESIGN', year: 2025, budget: 800000 },
-        2: { name: 'MAINTENANCE', year: 2040, char: 'dave' },
-        3: { name: 'INSPECTION', year: 2055, char: 'sarah' },
-        4: { name: 'OPERATIONS', year: 2070, char: 'mike' },
-        5: { name: 'DECOMMISSIONING', year: 2085, char: 'janet' }
+const GAME_DATA = {
+    stages: {
+        1: { name: 'DESIGN', year: 2025, budget: 800000, time: null },
+        2: { name: 'MAINTENANCE', year: 2040, budget: 400000, time: 30, char: 'dave' },
+        3: { name: 'INSPECTION', year: 2055, budget: 250000, time: 21, char: 'sarah' },
+        4: { name: 'OPERATIONS', year: 2070, budget: 200000, time: 7, char: 'mike' },
+        5: { name: 'DECOMMISSIONING', year: 2085, budget: 1200000, time: 90, char: 'janet' }
     },
     
     characters: {
@@ -1022,282 +912,832 @@ const DATA = {
         janet: { name: 'Janet Cole', role: 'Decommissioning Lead', portrait: 'images/janet.png', emoji: '👩‍🔧' }
     },
     
-    elements: {
-        pumpAccess: {
-            title: 'Pump Access',
-            desc: 'How should the primary coolant pump be positioned?',
-            options: [
-                { id: 'corner', name: 'Corner Position', desc: 'Tucked in corner. 1.8m clearance.', cost: 120000, quality: 'poor' },
-                { id: 'openBay', name: 'Open Bay', desc: '2m clearance all sides, under crane.', cost: 150000, quality: 'good' },
-                { id: 'dedicated', name: 'Dedicated Room', desc: 'Shielded room with airlock. Over-spec.', cost: 290000, quality: 'wasteful' }
-            ],
-            outcomes: {
-                2: {
-                    corner: { time: 8, dose: 4, cost: 80000, quote: "Who signed off on this? The pump's in a corner." },
-                    openBay: { time: 3, dose: 1, cost: 30000, quote: "Full crane coverage. In and out, job done." },
-                    dedicated: { time: 4, dose: 0.5, cost: 40000, quote: "Nice room, but overkill for a standard pump." }
-                },
-                3: {
-                    corner: { time: 4, dose: 2, cost: 40000, quote: "Can barely fit equipment in. Limited coverage." },
-                    openBay: { time: 2, dose: 0.5, cost: 20000, quote: "Full access. This is how it should be." },
-                    dedicated: { time: 2, dose: 0.3, cost: 25000, quote: "Good access, airlock slows things down." }
-                },
-                4: {
-                    corner: { time: 2, dose: 1, cost: 20000, quote: "Emergency access is tight. Precious seconds lost." },
-                    openBay: { time: 1, dose: 0.2, cost: 10000, quote: "Clear sightlines, easy access." },
-                    dedicated: { time: 1, dose: 0.1, cost: 15000, quote: "Airlock is overkill but accessible." }
-                },
-                5: {
-                    corner: { time: 12, dose: 5, cost: 200000, quote: "Tight space means manual cutting. Months of work." },
-                    openBay: { time: 5, dose: 2, cost: 80000, quote: "Straight lift out. Coming apart clean." },
-                    dedicated: { time: 6, dose: 1, cost: 100000, quote: "Easy removal, but the room needs decon too." }
-                }
-            }
+    transitions: {
+        2: {
+            years: '15 YEARS LATER', year: '2040',
+            text: ['Thornbury Point has been generating power for 14 years.', 'Your design drawings are yellowed paper in a filing cabinet.', 'It\'s time for the first major maintenance outage.']
         },
-        weldClearance: {
-            title: 'Weld Clearance',
-            desc: 'What clearance around pipe welds for inspection?',
-            options: [
-                { id: '50mm', name: '50mm (Code Min)', desc: 'Minimum code clearance.', cost: 90000, quality: 'poor' },
-                { id: '150mm', name: '150mm Clearance', desc: 'Good for all inspection probes.', cost: 95000, quality: 'good' },
-                { id: '300mm', name: '300mm + Scaffold', desc: 'Generous with permanent scaffold.', cost: 180000, quality: 'wasteful' }
-            ],
-            outcomes: {
-                2: {
-                    '50mm': { time: 6, dose: 3, cost: 60000, quote: "50mm. Just because you can doesn't mean you should." },
-                    '150mm': { time: 2, dose: 1, cost: 20000, quote: "Proper clearance. Job's straightforward." },
-                    '300mm': { time: 2, dose: 0.5, cost: 25000, quote: "Plenty of room, but scaffold's contaminated now." }
-                },
-                3: {
-                    '50mm': { time: 5, dose: 3, cost: 50000, quote: "Writing 'limited coverage' on this report." },
-                    '150mm': { time: 2, dose: 0.5, cost: 20000, quote: "Adequate probe positioning. No issues." },
-                    '300mm': { time: 1, dose: 0.3, cost: 15000, quote: "Easy access, scaffold blocks some angles." }
-                },
-                4: {
-                    '50mm': { time: 1, dose: 0.5, cost: 10000, quote: "Hard to see weld indicators." },
-                    '150mm': { time: 0, dose: 0, cost: 5000, quote: "Good visibility of inspection points." },
-                    '300mm': { time: 0, dose: 0, cost: 5000, quote: "No operational issues." }
-                },
-                5: {
-                    '50mm': { time: 8, dose: 4, cost: 150000, quote: "Can't get cutting equipment in. Manual job." },
-                    '150mm': { time: 3, dose: 1, cost: 50000, quote: "Standard removal. No surprises." },
-                    '300mm': { time: 4, dose: 2, cost: 80000, quote: "Contaminated scaffolding to deal with too." }
-                }
-            }
+        3: {
+            years: '15 YEARS LATER', year: '2055',
+            text: ['Thirty years of operation.', 'Regulators want proof everything is still safe.', 'Time for detailed in-service inspection.']
         },
-        controlPanel: {
-            title: 'Control Panel',
-            desc: 'How should the control panel be organised?',
-            options: [
-                { id: 'system', name: 'System-Based', desc: 'Grouped by system. Logical for engineers.', cost: 85000, quality: 'poor' },
-                { id: 'task', name: 'Task-Based', desc: 'Grouped by workflow. Emergency left-to-right.', cost: 95000, quality: 'good' },
-                { id: 'touch', name: 'Touchscreen', desc: 'Sleek displays. Impressive in demos.', cost: 180000, quality: 'poor' }
-            ],
-            outcomes: {
-                2: {
-                    system: { time: 1, dose: 0, cost: 5000, quote: "Panel's fine for routine work." },
-                    task: { time: 0, dose: 0, cost: 5000, quote: "Easy to isolate systems. Logical layout." },
-                    touch: { time: 2, dose: 0, cost: 15000, quote: "Touch screens need calibration. Again." }
-                },
-                3: {
-                    system: { time: 0, dose: 0, cost: 5000, quote: "No inspection issues." },
-                    task: { time: 0, dose: 0, cost: 5000, quote: "Clear system status indication." },
-                    touch: { time: 1, dose: 0, cost: 10000, quote: "Display artifacts. Software update needed." }
-                },
-                4: {
-                    system: { time: 3, dose: 0, cost: 30000, quote: "3am, alarms everywhere, can't find isolation valve." },
-                    task: { time: 0, dose: 0, cost: 5000, quote: "Found controls immediately. Good design." },
-                    touch: { time: 5, dose: 0, cost: 50000, quote: "Touchscreen's frozen. Again. Mid-event." }
-                },
-                5: {
-                    system: { time: 1, dose: 0, cost: 10000, quote: "Panel removal straightforward." },
-                    task: { time: 1, dose: 0, cost: 10000, quote: "Standard panel removal." },
-                    touch: { time: 2, dose: 0, cost: 30000, quote: "Electronic waste. Special disposal." }
-                }
-            }
+        4: {
+            years: '15 YEARS LATER', year: '2070',
+            text: ['Forty-five years. The plant is showing its age.', 'Tonight, alarms will test your control room design.']
         },
-        pipeConnections: {
-            title: 'Pipe Connections',
-            desc: 'How should pipe joints be designed?',
-            options: [
-                { id: 'flanged', name: 'Flanged', desc: 'Bolted flanges. Easy disassembly.', cost: 160000, quality: 'good' },
-                { id: 'mixed', name: 'Mixed', desc: 'Flanges accessible, welded elsewhere.', cost: 170000, quality: 'ok' },
-                { id: 'welded', name: 'All Welded', desc: 'Continuous welds. Max integrity.', cost: 180000, quality: 'poor' }
-            ],
-            outcomes: {
-                2: {
-                    flanged: { time: 2, dose: 1, cost: 20000, quote: "Flanged connections. Someone thought ahead." },
-                    mixed: { time: 4, dose: 2, cost: 40000, quote: "Some flanges, some welds. Could be worse." },
-                    welded: { time: 8, dose: 4, cost: 80000, quote: "All welded. Cutting and re-welding then." }
-                },
-                3: {
-                    flanged: { time: 1, dose: 0.5, cost: 10000, quote: "Can remove sections for detailed inspection." },
-                    mixed: { time: 2, dose: 1, cost: 20000, quote: "Some joints accessible, others not." },
-                    welded: { time: 3, dose: 2, cost: 35000, quote: "In-situ only. Limited coverage." }
-                },
-                4: {
-                    flanged: { time: 0, dose: 0, cost: 5000, quote: "Quick isolation possible in emergencies." },
-                    mixed: { time: 1, dose: 0, cost: 10000, quote: "Most isolation points accessible." },
-                    welded: { time: 2, dose: 0, cost: 20000, quote: "Can't isolate quickly. Shut down more than needed." }
-                },
-                5: {
-                    flanged: { time: 3, dose: 1, cost: 40000, quote: "Unbolt, remove, done. How it should be." },
-                    mixed: { time: 6, dose: 3, cost: 100000, quote: "Flanges easy, welds need cutting. Mixed bag." },
-                    welded: { time: 10, dose: 5, cost: 180000, quote: "Every joint needs cutting. Takes forever." }
-                }
-            }
-        },
-        pipeRouting: {
-            title: 'Pipe Routing',
-            desc: 'How should pipes run through concrete?',
-            options: [
-                { id: 'embedded', name: 'Embedded', desc: 'Cast into structural concrete.', cost: 140000, quality: 'poor' },
-                { id: 'ducted', name: 'Accessible Ducts', desc: 'Removable duct covers.', cost: 165000, quality: 'good' },
-                { id: 'tunnel', name: 'Walk-In Tunnel', desc: 'Large tunnel for all services.', cost: 280000, quality: 'wasteful' }
-            ],
-            outcomes: {
-                2: {
-                    embedded: { time: 0, dose: 0, cost: 5000, quote: "Can't access these pipes. Hope nothing fails." },
-                    ducted: { time: 2, dose: 1, cost: 20000, quote: "Duct covers off, full access. Proper design." },
-                    tunnel: { time: 1, dose: 0.5, cost: 15000, quote: "Walk-in is nice. Did we need this much?" }
-                },
-                3: {
-                    embedded: { time: 0, dose: 0, cost: 5000, quote: "Embedded in concrete. Guessing what's in there." },
-                    ducted: { time: 2, dose: 0.5, cost: 15000, quote: "Full visual and probe access." },
-                    tunnel: { time: 1, dose: 0.3, cost: 12000, quote: "Easy inspection access." }
-                },
-                4: {
-                    embedded: { time: 2, dose: 0, cost: 20000, quote: "Leak detected. Can't find it. Somewhere in concrete." },
-                    ducted: { time: 0, dose: 0, cost: 5000, quote: "Quick visual confirms system status." },
-                    tunnel: { time: 0, dose: 0, cost: 5000, quote: "Easy walkthrough." }
-                },
-                5: {
-                    embedded: { time: 15, dose: 8, cost: 300000, quote: "Embedded. Six months extra, half a million more." },
-                    ducted: { time: 4, dose: 2, cost: 60000, quote: "Pull covers, extract pipes. Straightforward." },
-                    tunnel: { time: 3, dose: 1, cost: 50000, quote: "Easy access. Tunnel needs decon though." }
-                }
-            }
-        },
-        materialSpec: {
-            title: 'Material Spec',
-            desc: 'What material for primary circuit pipes?',
-            options: [
-                { id: 'standard', name: 'Standard SS', desc: '2,500 ppm cobalt. Industry standard.', cost: 200000, quality: 'poor' },
-                { id: 'lowCobalt', name: 'Low-Cobalt SS', desc: '<500 ppm cobalt. Less activation.', cost: 250000, quality: 'good' },
-                { id: 'exotic', name: 'Exotic Alloy', desc: 'High-performance nickel alloy.', cost: 400000, quality: 'poor' }
-            ],
-            outcomes: {
-                2: {
-                    standard: { time: 1, dose: 2, cost: 15000, quote: "Standard steel. Hot to work on but expected." },
-                    lowCobalt: { time: 1, dose: 0.5, cost: 12000, quote: "Low-cobalt. Noticeably lower dose rates." },
-                    exotic: { time: 2, dose: 1, cost: 25000, quote: "Special procedures for this alloy." }
-                },
-                3: {
-                    standard: { time: 1, dose: 1.5, cost: 12000, quote: "Standard material. Higher background." },
-                    lowCobalt: { time: 1, dose: 0.3, cost: 10000, quote: "Clean material, easy to work around." },
-                    exotic: { time: 1, dose: 0.5, cost: 15000, quote: "Good properties but finicky to inspect." }
-                },
-                4: {
-                    standard: { time: 0, dose: 0.5, cost: 5000, quote: "No operational difference." },
-                    lowCobalt: { time: 0, dose: 0.1, cost: 5000, quote: "Lower dose during rounds." },
-                    exotic: { time: 0, dose: 0.2, cost: 5000, quote: "Performs well operationally." }
-                },
-                5: {
-                    standard: { time: 8, dose: 10, cost: 200000, quote: "2,500 ppm cobalt. Decades to cool down." },
-                    lowCobalt: { time: 4, dose: 2, cost: 80000, quote: "Low activation. Can handle it sooner." },
-                    exotic: { time: 6, dose: 3, cost: 150000, quote: "Special disposal for this alloy." }
-                }
-            }
+        5: {
+            years: '15 YEARS LATER', year: '2085',
+            text: ['Sixty years. The reactor is shut down for good.', 'Now comes the hard part: taking it all apart safely.', 'Every 2025 decision has led to this moment.']
         }
     },
     
-    transitions: {
-        2: { years: '15 YEARS LATER', year: '2040', text: ['Thornbury Point has been generating power for 14 years.', 'Your design drawings are yellowed paper in a filing cabinet.', 'But your decisions are very much alive.', 'Time for the first major maintenance outage.'] },
-        3: { years: '15 YEARS LATER', year: '2055', text: ['Thirty years of operation.', 'Regulators want proof everything is still safe.', 'Every weld, every pipe needs inspection.'] },
-        4: { years: '15 YEARS LATER', year: '2070', text: ['Forty-five years. The plant shows its age.', 'Tonight, alarms will test your control room design.'] },
-        5: { years: '15 YEARS LATER', year: '2085', text: ['Sixty years. Reactor shut down for good.', 'Now comes the hard part: taking it apart safely.', 'Every 2025 decision led to this moment.'] }
+    // ELEMENT DEFINITIONS WITH ALL STAGE DATA
+    elements: {
+        pumpAccess: {
+            title: 'Pump Location/Access',
+            // Stage 1: Design choices
+            stage1: {
+                description: 'How should the primary coolant pump be positioned within Section 4B?',
+                options: [
+                    { id: 'corner', name: 'Corner Position', desc: 'Pump tucked in corner to maximise floor space for other equipment.', cost: 120000, quality: 'poor' },
+                    { id: 'openBay', name: 'Open Bay', desc: 'Pump in open bay with 2m clearance all sides, under crane rails.', cost: 150000, quality: 'good' },
+                    { id: 'dedicated', name: 'Dedicated Shielded Room', desc: 'Pump in dedicated shielded room with airlock. Over-specified for this application.', cost: 290000, quality: 'wasteful' }
+                ]
+            },
+            // Stage 2: Maintenance - depends on design choice
+            stage2: {
+                corner: {
+                    type: 'decision',
+                    situation: 'RCP seal replacement required. Pump must be removed from position. <strong>The gap between the structural beam and wall is 1.8m. The pump assembly is 2.1m wide.</strong>',
+                    charQuote: "Who signed off on this? The pump's in a corner. What were they thinking?",
+                    impossible: true,
+                    options: [
+                        { id: 'subcontract', name: 'Subcontract specialist rigging team', desc: 'Bring in experts with specialist equipment.', cost: 180000, time: 18, dose: 3, result: 'Task completed safely by specialists.' },
+                        { id: 'force', name: 'Force it - attempt to tilt and squeeze', desc: 'Risky attempt to manoeuvre pump through gap.', cost: 40000, time: 5, dose: 6, risk: { success: 30, fail: 70 }, failResult: { cost: 220000, time: 8, dose: 8, injury: 25, desc: 'Pump casing cracked during removal.' } }
+                    ]
+                },
+                openBay: {
+                    type: 'text',
+                    situation: 'RCP seal replacement required. Pump positioned in open bay with crane coverage.',
+                    charQuote: 'Full crane coverage. Lovely. In and out, job done.',
+                    result: 'Pump removed and replaced efficiently.',
+                    cost: 0, time: 3, dose: 1
+                },
+                dedicated: {
+                    type: 'text',
+                    situation: 'RCP seal replacement required. Pump is accessible but the airlock system adds complexity.',
+                    charQuote: 'Nice room, but did we really need all this for a standard pump?',
+                    result: 'Task completed with additional airlock protocols.',
+                    cost: 20000, time: 5, dose: 1.5
+                }
+            },
+            // Stage 3: Inspection
+            stage3: {
+                corner: {
+                    type: 'decision',
+                    situation: 'Pump casing and mounting bolts require inspection. <strong>Inspector cannot access the pump casing for UT inspection. Clearance is insufficient for probe positioning.</strong>',
+                    charQuote: "I cannot access the pump casing for UT inspection. The clearance is insufficient.",
+                    options: [
+                        { id: 'scaffold', name: 'Erect temporary scaffolding', desc: 'Use angled probes for partial coverage.', cost: 45000, time: 5, dose: 3, healthImpact: 0, result: 'Partial coverage achieved.' },
+                        { id: 'accept', name: 'Accept inspection limitation', desc: 'Document as "inaccessible" in report.', cost: 0, time: 1, dose: 0.5, healthImpact: -10, trigger: 'pumpInspectionGap', result: 'Regulatory note on file. Plant health reduced.' },
+                        { id: 'retrofit', name: 'Install permanent access platform', desc: 'Full inspection now and future.', cost: 120000, time: 12, dose: 2, healthImpact: 0, result: 'Full inspection achieved. Permanent improvement.' }
+                    ]
+                },
+                openBay: {
+                    type: 'text',
+                    situation: 'Pump casing and mounting bolts require inspection.',
+                    charQuote: 'Full access. This is how it should be done.',
+                    result: 'Inspection completed on schedule. Full UT coverage. No defects.',
+                    cost: 0, time: 2, dose: 1
+                },
+                dedicated: {
+                    type: 'text',
+                    situation: 'Pump casing inspection required. Airlock adds some complexity.',
+                    charQuote: 'Good access, though the airlock slows things down.',
+                    result: 'Inspection completed with additional decontamination protocols.',
+                    cost: 15000, time: 3, dose: 1
+                }
+            },
+            // Stage 4: Operations
+            stage4: {
+                corner: {
+                    type: 'conditional',
+                    trigger: 'pumpInspectionGap',
+                    ifTriggered: {
+                        type: 'decision',
+                        situation: '<strong>Night shift. Pump vibration readings have been trending upward for 6 months. Tonight they spike.</strong> The area of concern is the uninspected section of the casing.',
+                        charQuote: 'The vibrations are coming from the section we could never inspect properly.',
+                        options: [
+                            { id: 'shutdown', name: 'Emergency shutdown for inspection', desc: 'Stop and investigate properly.', cost: 150000, time: 5, dose: 2, healthImpact: 5, result: 'Problem identified and fixed.' },
+                            { id: 'reduce', name: 'Reduce power and monitor', desc: 'Lower output, watch closely.', cost: 50000, time: 0, dose: 0, risk: { success: 50, fail: 50 }, failResult: { cost: 300000, time: 5, dose: 5, healthImpact: -15, injury: 10, desc: 'Pump failed catastrophically.' } },
+                            { id: 'continue', name: 'Continue normal operation', desc: 'Hope for the best.', cost: 0, time: 0, dose: 0, risk: { success: 30, fail: 70 }, failResult: { cost: 300000, time: 5, dose: 5, healthImpact: -15, injury: 10, desc: 'Pump failed during operation.' } }
+                        ]
+                    },
+                    ifNotTriggered: {
+                        type: 'text',
+                        situation: 'Year 45 operational review of pump systems.',
+                        charQuote: 'Pump operating within normal parameters. Predictive maintenance indicates seals due at next outage.',
+                        result: 'No action needed this stage.',
+                        cost: 0, time: 0, dose: 0
+                    }
+                },
+                openBay: {
+                    type: 'text',
+                    situation: 'Year 45 operational review of pump systems.',
+                    charQuote: 'Pump operating within normal parameters. Good access for monitoring.',
+                    result: 'No issues identified.',
+                    cost: 0, time: 0, dose: 0
+                },
+                dedicated: {
+                    type: 'text',
+                    situation: 'Year 45 operational review.',
+                    charQuote: 'Airlock is overkill but at least it\'s accessible.',
+                    result: 'No issues identified.',
+                    cost: 0, time: 0, dose: 0
+                }
+            },
+            // Stage 5: Decommissioning
+            stage5: {
+                corner: {
+                    type: 'decision',
+                    situation: 'Remove pump for disposal/recycling. <strong>Pump removal requires structural modification. The access route designed in 2025 was never adequate.</strong>',
+                    charQuote: 'Sixty years later, still paying for that corner position.',
+                    options: [
+                        { id: 'demolish', name: 'Demolish section of wall', desc: 'Create access by removing concrete.', cost: 80000, time: 15, dose: 4, wasteExtra: 5, result: 'Pump removed. Additional concrete waste created.' },
+                        { id: 'cut', name: 'Cut pump into sections in-situ', desc: 'Manual cutting in confined space.', cost: 60000, time: 20, dose: 8, result: 'High dose work. Complex waste streams.' },
+                        { id: 'robot', name: 'Robotic cutting and removal', desc: 'Expensive but lowest dose.', cost: 200000, time: 8, dose: 1, result: 'Clean removal with minimal dose.' }
+                    ]
+                },
+                openBay: {
+                    type: 'text',
+                    situation: 'Standard pump removal. Reverse of installation.',
+                    charQuote: 'Straight lift out. This is coming apart clean.',
+                    result: 'Pump removed efficiently.',
+                    cost: 20000, time: 3, dose: 1
+                },
+                dedicated: {
+                    type: 'decision',
+                    situation: 'Pump easily accessible, but the dedicated room\'s shielding and airlock must also be decommissioned.',
+                    charQuote: 'Easy pump removal, but now we\'ve got this whole room to deal with.',
+                    options: [
+                        { id: 'fullDecom', name: 'Full room decommissioning', desc: 'Pump plus unnecessary room.', cost: 150000, time: 12, dose: 2, result: 'Unnecessary waste created by over-design.' }
+                    ]
+                }
+            }
+        },
+        
+        weldClearance: {
+            title: 'Weld Access Clearance',
+            stage1: {
+                description: 'What clearance should be provided around pipe welds for inspection access?',
+                options: [
+                    { id: '50mm', name: '50mm (Code Minimum)', desc: 'Minimum clearance permitted by design code.', cost: 90000, quality: 'poor' },
+                    { id: '150mm', name: '150mm Clearance', desc: 'Adequate clearance for all standard inspection probes.', cost: 95000, quality: 'good' },
+                    { id: '300mm', name: '300mm + Scaffolding', desc: 'Maximum clearance with permanent scaffolding installation.', cost: 180000, quality: 'wasteful' }
+                ]
+            },
+            stage2: {
+                '50mm': {
+                    type: 'decision',
+                    situation: 'Weld defect identified during construction needs repair. <strong>Clearance is too tight for comfortable welding position.</strong>',
+                    charQuote: "50mm clearance. Just because you can doesn't mean you should.",
+                    options: [
+                        { id: 'awkward', name: 'Proceed with awkward position', desc: 'Welder works in cramped space.', cost: 0, time: 4, dose: 4, risk: { success: 80, fail: 20 }, failResult: { healthImpact: -5, desc: 'Poor weld quality will cause issues later.' } },
+                        { id: 'platform', name: 'Install temporary access platform', desc: 'Better position for quality work.', cost: 25000, time: 6, dose: 2, result: 'Proper repair completed.' },
+                        { id: 'defer', name: 'Defer repair to next outage', desc: 'Leave it for now.', cost: 0, time: 0, dose: 0, healthImpact: -5, trigger: 'weldDeferred', result: 'Issue grows over time.' }
+                    ]
+                },
+                '150mm': {
+                    type: 'text',
+                    situation: 'Weld defect needs repair. Standard clearance available.',
+                    charQuote: 'Proper clearance. Makes the job straightforward.',
+                    result: 'Weld repair completed in normal working position.',
+                    cost: 0, time: 2, dose: 1
+                },
+                '300mm': {
+                    type: 'decision',
+                    situation: 'Weld repair needed. <strong>The permanent scaffolding has surface contamination and must be decontaminated first.</strong>',
+                    charQuote: 'Plenty of room, but that scaffolding\'s got contamination now.',
+                    options: [
+                        { id: 'decon', name: 'Decontaminate scaffolding', desc: 'Clean it then do repair.', cost: 20000, time: 3, dose: 2, result: 'Repair completed after decon.' },
+                        { id: 'remove', name: 'Remove scaffolding, work without', desc: 'Take it out entirely.', cost: 15000, time: 4, dose: 1, wasteExtra: 1, result: 'Scaffolding becomes waste.' }
+                    ]
+                }
+            },
+            stage3: {
+                '50mm': {
+                    type: 'decision',
+                    situation: 'In-Service Inspection of primary system welds required. <strong>Probe requires 80mm clearance for proper angle. Available clearance is 50mm.</strong>',
+                    charQuote: "I'm going to have to write 'limited coverage' on this report.",
+                    impossible: true,
+                    options: [
+                        { id: 'partial', name: 'Accept partial inspection (60%)', desc: 'Document the limitation.', cost: 0, time: 3, dose: 3, healthImpact: -10, trigger: 'weldInspectionGap', result: 'Regulatory note. Trigger created.' },
+                        { id: 'miniProbe', name: 'Use specialist miniature probe', desc: 'Reduced accuracy but better coverage.', cost: 40000, time: 5, dose: 4, healthImpact: -5, result: '80% coverage achieved.' },
+                        { id: 'excavate', name: 'Excavate wall to create access', desc: 'Permanent improvement.', cost: 90000, time: 10, dose: 3, result: 'Full inspection achieved.' }
+                    ]
+                },
+                '150mm': {
+                    type: 'text',
+                    situation: 'In-Service Inspection of welds. Full access available.',
+                    charQuote: 'Adequate clearance. Full probe positioning. No issues.',
+                    result: 'Full inspection coverage achieved.',
+                    cost: 0, time: 2, dose: 1
+                },
+                '300mm': {
+                    type: 'text',
+                    situation: 'Weld inspection required. Scaffolding is in the way of some angles.',
+                    charQuote: 'Easy access, but the scaffolding blocks some probe angles.',
+                    result: 'Inspection completed, scaffolding survey added.',
+                    cost: 10000, time: 4, dose: 2
+                }
+            },
+            stage4: {
+                '50mm': {
+                    type: 'conditional',
+                    trigger: 'weldInspectionGap',
+                    ifTriggered: {
+                        type: 'decision',
+                        situation: '<strong>Small leak detected at weld location that could not be fully inspected. Activity detected in secondary system.</strong>',
+                        charQuote: 'Leak at the exact spot we could never properly inspect. Surprise surprise.',
+                        options: [
+                            { id: 'shutdown', name: 'Immediate shutdown and repair', desc: 'Fix it properly.', cost: 200000, time: 14, dose: 5, healthImpact: 5, result: 'Problem fixed.' },
+                            { id: 'seal', name: 'Online leak sealing (temporary)', desc: 'Quick fix, may not hold.', cost: 50000, time: 2, dose: 2, risk: { success: 60, fail: 40 }, failResult: { cost: 250000, time: 6, dose: 6, healthImpact: -10, desc: 'Seal failed. Forced shutdown.' } },
+                            { id: 'monitor', name: 'Reduce power and monitor', desc: 'Live with it for now.', cost: 80000, time: 0, dose: 0, result: 'Leak stable but ongoing concern.' }
+                        ]
+                    },
+                    ifNotTriggered: {
+                        type: 'text',
+                        situation: 'Welds inspected at Year 30 remain within criteria.',
+                        charQuote: 'All welds behaving as expected.',
+                        result: 'No action needed.',
+                        cost: 0, time: 0, dose: 0
+                    }
+                },
+                '150mm': {
+                    type: 'text',
+                    situation: 'Operational review of weld integrity.',
+                    charQuote: 'All welds inspected properly, all behaving normally.',
+                    result: 'No issues.',
+                    cost: 0, time: 0, dose: 0
+                },
+                '300mm': {
+                    type: 'text',
+                    situation: 'Operational review.',
+                    charQuote: 'Welds fine. Scaffolding still contaminated.',
+                    result: 'No operational issues.',
+                    cost: 0, time: 0, dose: 0
+                }
+            },
+            stage5: {
+                '50mm': {
+                    type: 'decision',
+                    situation: 'Cut welds to remove pipe sections. <strong>Limited space for cutting tool.</strong>',
+                    charQuote: "Can't get proper cutting equipment in. Manual work required.",
+                    options: [
+                        { id: 'careful', name: 'Careful manual cutting', desc: 'Slow and precise.', cost: 30000, time: 5, dose: 3, risk: { success: 60, fail: 40 }, failResult: { cost: 80000, time: 10, dose: 5, desc: 'Contamination spread to concrete.' } },
+                        { id: 'contractor', name: 'Specialist cutting contractor', desc: 'Guaranteed clean cuts.', cost: 100000, time: 3, dose: 1, result: 'Clean removal.' }
+                    ]
+                },
+                '150mm': {
+                    type: 'text',
+                    situation: 'Standard weld cutting. Full access.',
+                    charQuote: 'Standard job. Full access.',
+                    result: 'Clean removal.',
+                    cost: 25000, time: 3, dose: 1
+                },
+                '300mm': {
+                    type: 'decision',
+                    situation: '<strong>The permanent scaffolding is now ILW due to 30 years of contamination.</strong> Must be disposed as waste.',
+                    charQuote: 'Scaffolding\'s been soaking up contamination for 30 years. It\'s ILW now.',
+                    options: [
+                        { id: 'dispose', name: 'Scaffolding + weld disposal', desc: 'Deal with unnecessary waste.', cost: 85000, time: 8, dose: 3, result: 'Wasteful design adds cost.' }
+                    ]
+                }
+            }
+        },
+        
+        controlPanel: {
+            title: 'Control Panel Layout',
+            stage1: {
+                description: 'How should the Section 4B control panel be organised?',
+                options: [
+                    { id: 'system', name: 'System-Based Layout', desc: 'Controls grouped by system (all pump controls together, all valve controls together).', cost: 85000, quality: 'poor' },
+                    { id: 'task', name: 'Task-Based Layout', desc: 'Controls grouped by operational sequence. Emergency sequence flows left-to-right.', cost: 95000, quality: 'good' },
+                    { id: 'touch', name: 'Touchscreen Interface', desc: 'Modern touchscreen displays. Impressive in demonstrations.', cost: 180000, quality: 'poor' }
+                ]
+            },
+            stage2: {
+                system: {
+                    type: 'decision',
+                    situation: 'Operators have submitted <strong>15 "human factors concerns" reports</strong> in the past year. They report confusion during abnormal conditions.',
+                    charQuote: 'The operators are complaining about the panel layout. Again.',
+                    options: [
+                        { id: 'redesign', name: 'Commission HF review and partial redesign', desc: 'Improve the layout.', cost: 60000, time: 0, dose: 0, setPanelImproved: true, result: 'Panel improved to medium difficulty.' },
+                        { id: 'labels', name: 'Add additional labelling and procedures', desc: 'Cheap fix, minimal improvement.', cost: 15000, time: 0, dose: 0, result: 'No real improvement.' },
+                        { id: 'nothing', name: 'Note concerns, no action', desc: 'Ignore the complaints.', cost: 0, time: 0, dose: 0, result: 'Operator frustration continues.' }
+                    ]
+                },
+                task: {
+                    type: 'text',
+                    situation: 'Control room operating review.',
+                    charQuote: 'Operators report intuitive layout. No issues.',
+                    result: 'Panel working well.',
+                    cost: 0, time: 0, dose: 0
+                },
+                touch: {
+                    type: 'decision',
+                    situation: 'Touchscreen system has <strong>experienced 3 failures</strong> in first 15 years. Operators report difficulty with gloved operations.',
+                    charQuote: 'Touchscreens with gloves? In a nuclear plant? Brilliant.',
+                    options: [
+                        { id: 'backup', name: 'Install backup hardwired panel', desc: 'Safety backup available.', cost: 70000, time: 0, dose: 0, setBackupPanel: true, result: 'Backup installed. Primary still problematic.' },
+                        { id: 'upgrade', name: 'Upgrade to industrial touchscreens', desc: 'Better but still touchscreen.', cost: 50000, time: 0, dose: 0, result: 'Reliability improved marginally.' },
+                        { id: 'train', name: 'Train operators more', desc: 'Blame the users.', cost: 10000, time: 0, dose: 0, result: 'No real improvement.' }
+                    ]
+                }
+            },
+            stage3: {
+                system: {
+                    type: 'text',
+                    situation: 'Control systems periodic safety review.',
+                    charQuote: 'Functionality confirmed. Design still awkward.',
+                    result: 'Standard review completed.',
+                    cost: 5000, time: 1, dose: 0
+                },
+                task: {
+                    type: 'text',
+                    situation: 'Control systems periodic safety review.',
+                    charQuote: 'Clear indication of system status. Good design.',
+                    result: 'Standard review completed.',
+                    cost: 5000, time: 1, dose: 0
+                },
+                touch: {
+                    type: 'text',
+                    situation: 'Control systems review. Display showing artifacts.',
+                    charQuote: 'Software update needed. Again.',
+                    result: 'Review completed with software issues noted.',
+                    cost: 10000, time: 1, dose: 0
+                }
+            },
+            stage4: {
+                system: {
+                    type: 'decision',
+                    situation: '<strong>ALARMS: Multiple alarms sounding.</strong> Loss of Coolant indication. You must respond quickly. Controls are scattered across panel by system.',
+                    charQuote: "3am, alarms everywhere, and I can't find the isolation valve!",
+                    options: [
+                        { id: 'struggle', name: 'Search for correct controls', desc: 'Try to manage the emergency.', cost: 0, time: 2, dose: 3, risk: { success: 40, fail: 60 }, failResult: { cost: 200000, time: 5, dose: 5, healthImpact: -20, desc: 'Delayed response. Regulatory investigation.' } },
+                        { id: 'senior', name: 'Call senior operator', desc: 'Get help from experience.', cost: 0, time: 1, dose: 1, result: 'Event managed. Your failure recorded.' }
+                    ],
+                    checkImproved: true,
+                    improvedOptions: [
+                        { id: 'manage', name: 'Respond using improved panel', desc: 'Panel was upgraded in Stage 2.', cost: 0, time: 1, dose: 1, result: 'Event managed with minor delay.' }
+                    ]
+                },
+                task: {
+                    type: 'text',
+                    situation: 'ALARMS: Loss of Coolant indication. Emergency response required.',
+                    charQuote: 'Found the right controls immediately. That\'s what good design looks like.',
+                    result: 'Textbook response. Event managed efficiently.',
+                    cost: 0, time: 0, dose: 0.5
+                },
+                touch: {
+                    type: 'decision',
+                    situation: '<strong>ALARMS sounding. Touchscreen is lagging under processor load. Gloved fingers not registering.</strong> Screen glare from emergency lighting.',
+                    charQuote: "Touchscreen's frozen! In the middle of an event!",
+                    options: [
+                        { id: 'persist', name: 'Keep trying touchscreen', desc: 'Tap harder, tap faster.', cost: 0, time: 3, dose: 4, risk: { success: 30, fail: 70 }, failResult: { cost: 150000, time: 3, dose: 4, healthImpact: -15, desc: 'System freeze during event.' } },
+                        { id: 'backup', name: 'Switch to backup panel', desc: 'Use hardwired backup if installed.', cost: 0, time: 0, dose: 1, checkBackup: true, result: 'Event managed via backup.' }
+                    ]
+                }
+            },
+            stage5: {
+                system: {
+                    type: 'text',
+                    situation: 'Control panel decommissioning.',
+                    charQuote: 'Standard panel removal.',
+                    result: 'Non-radiological waste.',
+                    cost: 10000, time: 2, dose: 0.5
+                },
+                task: {
+                    type: 'text',
+                    situation: 'Control panel decommissioning.',
+                    charQuote: 'Standard panel removal.',
+                    result: 'Non-radiological waste.',
+                    cost: 10000, time: 2, dose: 0.5
+                },
+                touch: {
+                    type: 'text',
+                    situation: 'Touchscreen system decommissioning.',
+                    charQuote: 'Electronic waste. Special disposal required.',
+                    result: 'E-waste stream.',
+                    cost: 30000, time: 2, dose: 0
+                }
+            }
+        },
+        
+        pipeConnections: {
+            title: 'Pipe Connections',
+            stage1: {
+                description: 'How should pipe joints be designed?',
+                options: [
+                    { id: 'welded', name: 'All Welded Joints', desc: 'Continuous welded construction. Maximum integrity.', cost: 180000, quality: 'poor' },
+                    { id: 'flanged', name: 'Flanged Connections', desc: 'Bolted flanges at all joints. Easy to disassemble.', cost: 160000, quality: 'good' },
+                    { id: 'excessive', name: 'Flanges Everywhere', desc: 'Flanged connections every 2m. Maximum flexibility.', cost: 220000, quality: 'wasteful' }
+                ]
+            },
+            stage2: {
+                welded: {
+                    type: 'decision',
+                    situation: 'Section of pipe requires replacement due to erosion. <strong>No flanged joints available - must cut and re-weld.</strong>',
+                    charQuote: "All welded. So we're cutting and re-welding then. Brilliant.",
+                    options: [
+                        { id: 'replace', name: 'Cut, replace section, re-weld', desc: 'Proper replacement.', cost: 65000, time: 8, dose: 5, result: 'Pipe replaced. New welds need future inspection.' },
+                        { id: 'overlay', name: 'Weld overlay repair (temporary)', desc: 'Patch it for now.', cost: 25000, time: 3, dose: 3, healthImpact: -5, trigger: 'weldOverlay', result: 'Temporary fix. Revisit in 10 years.' }
+                    ]
+                },
+                flanged: {
+                    type: 'text',
+                    situation: 'Pipe section requires replacement. Flanged connections available.',
+                    charQuote: 'Flanged connections. Someone was thinking ahead.',
+                    result: 'Section unbolted, replaced, reconnected.',
+                    cost: 30000, time: 3, dose: 1.5
+                },
+                excessive: {
+                    type: 'decision',
+                    situation: '<strong>Three flange gaskets have failed</strong> in the past 5 years. More leak paths = more failures.',
+                    charQuote: 'Too many flanges means too many gaskets to fail.',
+                    options: [
+                        { id: 'preventive', name: 'Replace all gaskets (preventive)', desc: 'Replace them all now.', cost: 45000, time: 5, dose: 2, result: 'Reliable for next period.' },
+                        { id: 'reactive', name: 'Replace failed gaskets only', desc: 'Just fix what\'s broken.', cost: 15000, time: 2, dose: 1, healthImpact: -3, result: 'More failures likely.' }
+                    ]
+                }
+            },
+            stage3: {
+                welded: {
+                    type: 'decision',
+                    situation: 'All welds require inspection. <strong>Large number of weld inspections required.</strong>',
+                    charQuote: 'Every joint is a weld. Every weld needs inspection.',
+                    options: [
+                        { id: 'full', name: 'Full inspection programme', desc: 'Inspect all welds.', cost: 50000, time: 7, dose: 4, result: 'All welds verified.' },
+                        { id: 'sample', name: 'Sample inspection (50%)', desc: 'Inspect half, hope for best.', cost: 25000, time: 4, dose: 2, healthImpact: -5, result: 'Risk of missed defect.' }
+                    ]
+                },
+                flanged: {
+                    type: 'text',
+                    situation: 'Flanged connections visually inspected. Limited weld inspections needed.',
+                    charQuote: 'Flanges to inspect, not welds to probe. Much easier.',
+                    result: 'Inspection completed efficiently.',
+                    cost: 20000, time: 3, dose: 1.5
+                },
+                excessive: {
+                    type: 'text',
+                    situation: 'All 47 flanged connections require bolt inspection and gasket assessment.',
+                    charQuote: 'Forty-seven flanges. That\'s a lot of bolts to check.',
+                    result: 'Time-consuming but thorough.',
+                    cost: 35000, time: 5, dose: 2
+                }
+            },
+            stage4: {
+                welded: {
+                    type: 'text',
+                    situation: 'Piping system operational review.',
+                    charQuote: 'Welds holding. No isolation flexibility though.',
+                    result: 'No immediate issues.',
+                    cost: 0, time: 0, dose: 0
+                },
+                flanged: {
+                    type: 'text',
+                    situation: 'Piping system operational review.',
+                    charQuote: 'Quick isolation possible in emergencies. Good design.',
+                    result: 'Operational flexibility confirmed.',
+                    cost: 0, time: 0, dose: 0
+                },
+                excessive: {
+                    type: 'text',
+                    situation: 'Piping operational review. Two more gasket failures this period.',
+                    charQuote: 'Another gasket gone. Too many joints.',
+                    result: 'Ongoing maintenance burden.',
+                    cost: 20000, time: 2, dose: 0.5
+                }
+            },
+            stage5: {
+                welded: {
+                    type: 'decision',
+                    situation: 'Disassemble pipe system. <strong>12 welds to cut. Each must be clean to avoid contamination spread.</strong>',
+                    charQuote: 'Every joint needs cutting. This is going to take forever.',
+                    options: [
+                        { id: 'careful', name: 'Careful cutting in-house', desc: 'Do it ourselves, slowly.', cost: 80000, time: 15, dose: 8, risk: { success: 50, fail: 50 }, failResult: { cost: 140000, time: 22, dose: 12, desc: 'Contamination events during cutting.' } },
+                        { id: 'specialist', name: 'Specialist cutting contractor', desc: 'Experts with proper equipment.', cost: 180000, time: 10, dose: 3, result: 'Clean cuts guaranteed.' }
+                    ]
+                },
+                flanged: {
+                    type: 'text',
+                    situation: 'Unbolt flanges at connection points. Lift sections out.',
+                    charQuote: 'Unbolt, remove, done. This is how it should be.',
+                    result: 'Clean disassembly.',
+                    cost: 40000, time: 6, dose: 2
+                },
+                excessive: {
+                    type: 'text',
+                    situation: '47 flanged connections to unbolt. None difficult, just many.',
+                    charQuote: 'So many flanges. So many gaskets to dispose.',
+                    result: 'Tedious but achievable.',
+                    cost: 55000, time: 10, dose: 3
+                }
+            }
+        },
+        
+        pipeRouting: {
+            title: 'Pipe Routing',
+            stage1: {
+                description: 'How should pipes be routed through the concrete structure?',
+                options: [
+                    { id: 'embedded', name: 'Embedded in Concrete', desc: 'Pipes cast directly into structural concrete for "protection".', cost: 140000, quality: 'poor' },
+                    { id: 'ducted', name: 'Accessible Ducts', desc: 'Pipes run through removable duct covers.', cost: 165000, quality: 'good' },
+                    { id: 'tunnel', name: 'Walk-In Tunnel', desc: 'Large accessible tunnel for all services.', cost: 280000, quality: 'wasteful' }
+                ]
+            },
+            stage2: {
+                embedded: {
+                    type: 'decision',
+                    situation: '<strong>Suspected leak in embedded pipe section. Cannot be visually confirmed.</strong>',
+                    charQuote: "Can't access these pipes. Hope nothing goes wrong. Oh wait, it did.",
+                    options: [
+                        { id: 'excavate', name: 'Excavate concrete to investigate', desc: 'Dig it out.', cost: 70000, time: 12, dose: 4, result: 'Leak found and repaired. Concrete damaged.' },
+                        { id: 'bypass', name: 'Install bypass line', desc: 'Route around the problem.', cost: 90000, time: 8, dose: 2, result: 'Embedded section isolated and abandoned.' },
+                        { id: 'defer', name: 'Increase monitoring, defer', desc: 'Watch and wait.', cost: 10000, time: 0, dose: 0, healthImpact: -10, trigger: 'embeddedLeak', result: 'Problem deferred. Risk increased.' }
+                    ]
+                },
+                ducted: {
+                    type: 'text',
+                    situation: 'Minor leak at joint identified via duct access.',
+                    charQuote: 'Duct covers off, full access. Proper design.',
+                    result: 'Leak identified and repaired quickly.',
+                    cost: 15000, time: 2, dose: 1
+                },
+                tunnel: {
+                    type: 'text',
+                    situation: 'Leak repaired easily. However, tunnel surfaces show contamination migration.',
+                    charQuote: 'Walk-in access is nice, but did we need this much space?',
+                    result: 'Repair done. Decontamination required.',
+                    cost: 35000, time: 4, dose: 2
+                }
+            },
+            stage3: {
+                embedded: {
+                    type: 'decision',
+                    situation: '<strong>Embedded pipe sections cannot be inspected by conventional means.</strong>',
+                    charQuote: 'Embedded in concrete. We\'re guessing what\'s in there.',
+                    options: [
+                        { id: 'accept', name: 'Accept inspection gap', desc: 'Document the risk.', cost: 0, time: 1, dose: 0, healthImpact: -10, trigger: 'embeddedInspectionGap', result: 'Regulatory concern noted.' },
+                        { id: 'guided', name: 'Install guided wave UT', desc: 'Partial monitoring capability.', cost: 60000, time: 5, dose: 1, result: 'Some monitoring available.' },
+                        { id: 'excavate', name: 'Excavate sample locations', desc: 'Dig out inspection points.', cost: 100000, time: 14, dose: 5, result: 'Limited inspection. Structural damage.' }
+                    ]
+                },
+                ducted: {
+                    type: 'text',
+                    situation: 'Full inspection via duct access.',
+                    charQuote: 'Full visual and probe access. No issues.',
+                    result: 'Complete inspection achieved.',
+                    cost: 15000, time: 3, dose: 1.5
+                },
+                tunnel: {
+                    type: 'text',
+                    situation: 'Tunnel surfaces contaminated. Full PPE required.',
+                    charQuote: 'Tunnel surfaces contaminated. Workers need full suits.',
+                    result: 'Inspection completed with higher dose.',
+                    cost: 25000, time: 5, dose: 3
+                }
+            },
+            stage4: {
+                embedded: {
+                    type: 'conditional',
+                    trigger: 'embeddedLeak',
+                    ifTriggered: {
+                        type: 'decision',
+                        situation: '<strong>Groundwater monitoring detects activity. Source traced to embedded pipe section.</strong>',
+                        charQuote: 'Contamination in the groundwater. The leak we ignored.',
+                        options: [
+                            { id: 'emergency', name: 'Emergency excavation and repair', desc: 'Dig it out now.', cost: 200000, time: 21, dose: 8, result: 'Environmental report required. Fixed.' },
+                            { id: 'treatment', name: 'Groundwater treatment + isolation', desc: 'Treat the water, abandon the pipe.', cost: 150000, time: 7, dose: 2, result: 'Pipe abandoned. Long-term monitoring.' }
+                        ],
+                        additionalCosts: { regulatory: 50000, environmental: 100000, healthImpact: -15 }
+                    },
+                    ifNotTriggered: {
+                        type: 'text',
+                        situation: 'Embedded sections monitored. No issues detected.',
+                        charQuote: 'Monitoring shows nothing wrong. For now.',
+                        result: 'No action needed.',
+                        cost: 0, time: 0, dose: 0
+                    }
+                },
+                ducted: {
+                    type: 'text',
+                    situation: 'Quick visual check via duct access.',
+                    charQuote: 'Quick visual confirms system status.',
+                    result: 'No issues.',
+                    cost: 0, time: 0, dose: 0
+                },
+                tunnel: {
+                    type: 'text',
+                    situation: 'Tunnel walkthrough inspection.',
+                    charQuote: 'Easy walkthrough. Tunnel still contaminated.',
+                    result: 'No operational issues.',
+                    cost: 0, time: 0, dose: 0
+                }
+            },
+            stage5: {
+                embedded: {
+                    type: 'decision',
+                    situation: '<strong>Pipes encased in concrete. Contamination has migrated into surrounding structure.</strong>',
+                    charQuote: 'Embedded in concrete. That\'s another six months and half a million.',
+                    options: [
+                        { id: 'demolish', name: 'Full concrete excavation', desc: 'Break it all out.', cost: 350000, time: 40, dose: 20, result: 'Massive ILW concrete waste.' },
+                        { id: 'specialist', name: 'Specialist demolition contractor', desc: 'Controlled demolition.', cost: 400000, time: 25, dose: 8, result: 'Controlled but still expensive.' }
+                    ]
+                },
+                ducted: {
+                    type: 'text',
+                    situation: 'Remove duct covers, lift pipes from ducts.',
+                    charQuote: 'Pull the covers, extract the pipes. Straightforward.',
+                    result: 'Ducts can be demolished as clean concrete.',
+                    cost: 50000, time: 8, dose: 2
+                },
+                tunnel: {
+                    type: 'decision',
+                    situation: 'Pipes easily removed, but <strong>tunnel itself is contaminated ILW. Large volume of waste.</strong>',
+                    charQuote: 'Easy pipe removal. But now we\'ve got this huge tunnel to decontaminate.',
+                    options: [
+                        { id: 'full', name: 'Pipe removal + tunnel decom', desc: 'Deal with the whole thing.', cost: 220000, time: 25, dose: 8, result: 'Large ILW void to fill.' }
+                    ]
+                }
+            }
+        },
+        
+        materialSpec: {
+            title: 'Material Specification',
+            stage1: {
+                description: 'What material for primary circuit pipework?',
+                options: [
+                    { id: 'standard', name: 'Standard Stainless Steel', desc: 'Type 304/316, ~2,500ppm cobalt. Industry standard.', cost: 200000, quality: 'poor' },
+                    { id: 'lowCobalt', name: 'Low-Cobalt Stainless', desc: 'Cobalt below 500ppm. Reduces activation.', cost: 250000, quality: 'good' },
+                    { id: 'exotic', name: 'Exotic Nickel Alloy', desc: 'High-performance nickel alloy. Premium specification.', cost: 400000, quality: 'poor' }
+                ]
+            },
+            stage2: {
+                standard: {
+                    type: 'text',
+                    situation: 'Maintenance in activated area. Standard steel dose rates.',
+                    charQuote: 'Standard steel. Hot to work on but expected.',
+                    result: 'Higher dose for all maintenance tasks.',
+                    cost: 0, time: 2, dose: 3, isModifier: true
+                },
+                lowCobalt: {
+                    type: 'text',
+                    situation: 'Maintenance in activated area. Low dose rates.',
+                    charQuote: 'Low-cobalt. Noticeably lower dose rates.',
+                    result: 'Dose rates as predicted. Good ALARP.',
+                    cost: 0, time: 0, dose: 0
+                },
+                exotic: {
+                    type: 'text',
+                    situation: 'Maintenance requires special procedures for exotic alloy.',
+                    charQuote: 'Special procedures for this alloy. Slower work. Higher dose.',
+                    result: 'Significantly higher dose rates.',
+                    cost: 0, time: 4, dose: 5, isModifier: true
+                }
+            },
+            stage3: {
+                standard: {
+                    type: 'text',
+                    situation: 'Inspection in elevated dose rate area.',
+                    charQuote: 'Standard material. Higher background.',
+                    result: 'Extended stand-off techniques required.',
+                    cost: 15000, time: 3, dose: 4, isModifier: true
+                },
+                lowCobalt: {
+                    type: 'text',
+                    situation: 'Inspection with manageable dose rates.',
+                    charQuote: 'Clean material, easy to work around.',
+                    result: 'Standard techniques applied.',
+                    cost: 0, time: 0, dose: 0
+                },
+                exotic: {
+                    type: 'text',
+                    situation: 'Inspection requires shielded equipment.',
+                    charQuote: 'Dose rates require specialist contractor.',
+                    result: 'Specialist inspection required.',
+                    cost: 40000, time: 5, dose: 6, isModifier: true
+                }
+            },
+            stage4: {
+                standard: {
+                    type: 'decision',
+                    situation: '<strong>Cumulative workforce dose approaching administrative limits.</strong>',
+                    charQuote: 'Dose budget is tight. Standard steel not helping.',
+                    options: [
+                        { id: 'contractors', name: 'Bring in additional contractors', desc: 'More workers = more dose available.', cost: 80000, time: 0, dose: 0, result: 'Dose spread across more workers.' },
+                        { id: 'shielding', name: 'Install temporary shielding', desc: 'One-time improvement.', cost: 50000, time: 5, dose: -2, result: 'Future task doses reduced.' },
+                        { id: 'slow', name: 'Accept constraints, slow down', desc: 'Work proceeds slower.', cost: 0, time: 10, dose: 0, result: 'Schedule impact.' }
+                    ]
+                },
+                lowCobalt: {
+                    type: 'text',
+                    situation: 'Dose rates remain low.',
+                    charQuote: 'Low dose rates. Full operational flexibility.',
+                    result: 'No dose constraints.',
+                    cost: 0, time: 0, dose: 0
+                },
+                exotic: {
+                    type: 'decision',
+                    situation: '<strong>Dose rates severely limiting work time.</strong>',
+                    charQuote: 'Nickel alloy activation is brutal.',
+                    options: [
+                        { id: 'contractors', name: 'Bring in additional contractors', desc: 'More workers needed.', cost: 100000, time: 0, dose: 0, result: 'Dose spread, expensive.' },
+                        { id: 'remote', name: 'Remote operations where possible', desc: 'Minimise human proximity.', cost: 60000, time: 8, dose: -3, result: 'Reduced direct exposure.' }
+                    ]
+                }
+            },
+            stage5: {
+                standard: {
+                    type: 'decision',
+                    situation: 'Components remain <strong>highly active after 5-year decay storage.</strong> Remote handling required.',
+                    charQuote: '2,500 ppm cobalt. Waiting decades for it to cool down.',
+                    options: [
+                        { id: 'remote', name: 'Remote handling operations', desc: 'Difficult but manageable.', cost: 120000, time: 18, dose: 6, risk: { success: 70, fail: 30 }, failResult: { cost: 180000, time: 25, dose: 10, desc: 'Errors during remote handling.' } },
+                        { id: 'specialist', name: 'Specialist remote handling contractor', desc: 'Expert operators.', cost: 200000, time: 12, dose: 2, result: 'Clean removal by experts.' }
+                    ]
+                },
+                lowCobalt: {
+                    type: 'text',
+                    situation: 'After 5-year decay, dose rates allow hands-on work.',
+                    charQuote: 'Low activation. Can handle it much sooner.',
+                    result: 'LLW disposal possible for some items.',
+                    cost: 60000, time: 8, dose: 2
+                },
+                exotic: {
+                    type: 'decision',
+                    situation: '<strong>Nickel-63 half-life is 100 years.</strong> Components will remain active for centuries.',
+                    charQuote: 'This alloy will be hot for a hundred years.',
+                    options: [
+                        { id: 'extended', name: 'Extended remote operations', desc: 'Very difficult work.', cost: 250000, time: 30, dose: 15, result: 'Long-term storage required.' },
+                        { id: 'specialist', name: 'Specialist + extended storage', desc: 'Experts plus waiting.', cost: 300000, time: 20, dose: 5, result: 'Still expensive.' }
+                    ]
+                }
+            }
+        }
     }
 };
 
 // ============================================
-// STATE
+// GAME STATE
 // ============================================
 const STATE = {
-    phase: 1,
-    choices: {},      // Design choices from phase 1
-    completed: {},    // Completed elements per phase
-    totals: { cost: 0, dose: 0, time: 0 }
+    stage: 1,
+    choices: {},           // Stage 1 design choices
+    stageChoices: {},      // Choices made in stages 2-5
+    completed: {},         // Completed elements per stage
+    triggers: {},          // Active triggers
+    flags: {},             // Special flags (panelImproved, backupPanel, etc.)
+    totals: { cost: 0, dose: 0, time: 0 },
+    stageTotals: {},
+    plantHealth: 100,
+    injuries: 0
 };
 
 // ============================================
-// INTRO
+// INTRO CONTROLLER
 // ============================================
 let currentSlide = 1;
 const totalSlides = 4;
 
-function updateSlide() {
+function updateIntroSlide() {
     document.querySelectorAll('.intro-slide').forEach(s => s.classList.remove('active'));
     document.querySelector(`.intro-slide[data-slide="${currentSlide}"]`).classList.add('active');
-    
     document.querySelectorAll('.intro-dot').forEach((d, i) => {
         d.classList.remove('active', 'done');
         if (i + 1 === currentSlide) d.classList.add('active');
         else if (i + 1 < currentSlide) d.classList.add('done');
     });
-    
     document.getElementById('btnIntroNext').textContent = currentSlide === totalSlides ? 'Begin →' : 'Continue →';
 }
 
-function nextSlide() {
-    if (currentSlide < totalSlides) {
-        currentSlide++;
-        updateSlide();
-    } else {
-        endIntro();
-    }
-}
+document.getElementById('btnIntroNext').onclick = () => {
+    if (currentSlide < totalSlides) { currentSlide++; updateIntroSlide(); }
+    else endIntro();
+};
+document.getElementById('btnSkip').onclick = endIntro;
+document.querySelectorAll('.intro-dot').forEach(d => {
+    d.onclick = () => { currentSlide = parseInt(d.dataset.dot); updateIntroSlide(); };
+});
 
 function endIntro() {
     document.getElementById('cinematicIntro').classList.add('hidden');
     document.getElementById('gameScreen').classList.add('active');
-    startPhase(1);
+    startStage(1);
 }
 
-document.getElementById('btnIntroNext').onclick = nextSlide;
-document.getElementById('btnSkip').onclick = endIntro;
-document.querySelectorAll('.intro-dot').forEach(d => {
-    d.onclick = () => { currentSlide = parseInt(d.dataset.dot); updateSlide(); };
-});
-
 // ============================================
-// GAME
+// STAGE MANAGEMENT
 // ============================================
-function startPhase(phaseNum) {
-    STATE.phase = phaseNum;
-    STATE.completed[phaseNum] = {};
+function startStage(stageNum) {
+    STATE.stage = stageNum;
+    STATE.completed[stageNum] = {};
+    STATE.stageTotals[stageNum] = { cost: 0, dose: 0, time: 0 };
     
-    const phase = DATA.phases[phaseNum];
+    const stage = GAME_DATA.stages[stageNum];
     
     // Update header
-    document.getElementById('phaseName').textContent = `PHASE ${phaseNum}: ${phase.name}`;
-    document.getElementById('phaseYear').textContent = phase.year;
+    document.getElementById('phaseName').textContent = `STAGE ${stageNum}: ${stage.name}`;
+    document.getElementById('phaseYear').textContent = stage.year;
     
-    // Stats display
-    if (phaseNum === 1) {
-        document.getElementById('topStats').innerHTML = `<div class="stat">💰 <span class="stat-value" id="statBudget">£${phase.budget.toLocaleString()}</span></div>`;
-    } else {
-        document.getElementById('topStats').innerHTML = `
-            <div class="stat">💰 <span class="stat-value">£0</span></div>
-            <div class="stat">☢️ <span class="stat-value">0 mSv</span></div>
-            <div class="stat">⏱️ <span class="stat-value">0 days</span></div>
-        `;
-    }
+    // Update stats display
+    updateStatsDisplay();
     
     // Character banner
     const banner = document.getElementById('characterBanner');
-    if (phaseNum > 1 && phase.char) {
-        const char = DATA.characters[phase.char];
-        banner.className = `character-banner visible ${phase.char}`;
+    if (stageNum > 1 && stage.char) {
+        const char = GAME_DATA.characters[stage.char];
+        banner.className = `character-banner visible ${stage.char}`;
         document.getElementById('charPortrait').innerHTML = char.portrait 
             ? `<img src="${char.portrait}" alt="${char.name}">` 
             : char.emoji;
@@ -1309,31 +1749,55 @@ function startPhase(phaseNum) {
     
     // Reset hotspots
     document.querySelectorAll('.hotspot-dot').forEach(d => {
-        d.classList.remove('done', 'issue');
+        d.classList.remove('done', 'warning', 'issue');
     });
     
     // Update progress
     document.querySelectorAll('.progress-dot').forEach((d, i) => {
         d.classList.remove('current', 'done');
-        if (i + 1 === phaseNum) d.classList.add('current');
-        else if (i + 1 < phaseNum) d.classList.add('done');
+        if (i + 1 === stageNum) d.classList.add('current');
+        else if (i + 1 < stageNum) d.classList.add('done');
     });
     
-    document.getElementById('progressFill').style.width = `${(phaseNum - 1) * 25}%`;
-    
-    // Hide next stage button
+    document.getElementById('progressFill').style.width = `${(stageNum - 1) * 25}%`;
     document.getElementById('btnNextStage').classList.remove('visible');
     
     updateProgressLabel();
 }
 
-function updateProgressLabel() {
-    const done = Object.keys(STATE.completed[STATE.phase] || {}).length;
-    document.getElementById('progressLabel').textContent = `${done} of 6 complete`;
+function updateStatsDisplay() {
+    const stage = GAME_DATA.stages[STATE.stage];
+    let html = '';
     
+    if (STATE.stage === 1) {
+        const spent = STATE.totals.cost;
+        const remaining = stage.budget - spent;
+        html = `
+            <div class="stat">💰 Remaining: <span class="stat-value ${remaining < 100000 ? 'warning' : ''}">${formatMoney(remaining)}</span></div>
+        `;
+    } else {
+        const st = STATE.stageTotals[STATE.stage] || { cost: 0, dose: 0, time: 0 };
+        html = `
+            <div class="stat">💰 <span class="stat-value">${formatMoney(st.cost)}</span></div>
+            <div class="stat">☢️ <span class="stat-value">${st.dose.toFixed(1)} mSv</span></div>
+            <div class="stat">⏱️ <span class="stat-value">${st.time} days</span></div>
+            <div class="stat">❤️ <span class="stat-value ${STATE.plantHealth < 60 ? 'danger' : ''}">${STATE.plantHealth}%</span></div>
+        `;
+    }
+    
+    document.getElementById('topStats').innerHTML = html;
+}
+
+function updateProgressLabel() {
+    const done = Object.keys(STATE.completed[STATE.stage] || {}).length;
+    document.getElementById('progressLabel').textContent = `${done} of 6 complete`;
     if (done === 6) {
         document.getElementById('btnNextStage').classList.add('visible');
     }
+}
+
+function formatMoney(amount) {
+    return '£' + amount.toLocaleString();
 }
 
 // ============================================
@@ -1342,47 +1806,54 @@ function updateProgressLabel() {
 document.querySelectorAll('.hotspot').forEach(h => {
     h.onclick = () => {
         const el = h.dataset.element;
-        if (STATE.completed[STATE.phase]?.[el]) return;
-        
-        if (STATE.phase === 1) {
-            showDesignModal(el);
-        } else {
-            showOutcomeModal(el);
-        }
+        if (STATE.completed[STATE.stage]?.[el]) return;
+        openElementModal(el);
     };
 });
 
 // ============================================
-// MODALS
+// MODAL SYSTEM
 // ============================================
-function openModal() {
-    document.getElementById('modalOverlay').classList.add('active');
-}
-
-function closeModal() {
-    document.getElementById('modalOverlay').classList.remove('active');
-}
+function openModal() { document.getElementById('modalOverlay').classList.add('active'); }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
 
 document.getElementById('modalClose').onclick = closeModal;
 document.getElementById('modalOverlay').onclick = (e) => {
     if (e.target.id === 'modalOverlay') closeModal();
 };
 
-function showDesignModal(elementId) {
-    const el = DATA.elements[elementId];
-    document.getElementById('modalTitle').textContent = el.title;
+function openElementModal(elementId) {
+    const element = GAME_DATA.elements[elementId];
+    document.getElementById('modalTitle').textContent = element.title;
     
-    let html = `<p class="modal-description">${el.desc}</p><div class="choice-list">`;
-    el.options.forEach(opt => {
-        const sel = STATE.choices[elementId] === opt.id ? 'selected' : '';
+    if (STATE.stage === 1) {
+        renderDesignChoiceModal(elementId, element);
+    } else {
+        renderStageInteractionModal(elementId, element);
+    }
+    
+    openModal();
+}
+
+// ============================================
+// STAGE 1: DESIGN CHOICES
+// ============================================
+function renderDesignChoiceModal(elementId, element) {
+    const data = element.stage1;
+    
+    let html = `<div class="situation-box"><p>${data.description}</p></div>`;
+    html += '<div class="options-list">';
+    
+    data.options.forEach(opt => {
+        const selected = STATE.choices[elementId] === opt.id ? 'selected' : '';
         html += `
-            <div class="choice-item ${sel}" data-id="${opt.id}">
+            <div class="option-card ${selected}" data-id="${opt.id}">
                 <div class="choice-image">[Image: ${opt.name}]</div>
-                <div class="choice-top">
-                    <span class="choice-name">${opt.name}</span>
-                    <span class="choice-cost">£${opt.cost.toLocaleString()}</span>
+                <div class="option-header">
+                    <span class="option-name">${opt.name}</span>
+                    <span class="option-cost">${formatMoney(opt.cost)}</span>
                 </div>
-                <p class="choice-desc">${opt.desc}</p>
+                <p class="option-desc">${opt.desc}</p>
             </div>
         `;
     });
@@ -1391,162 +1862,358 @@ function showDesignModal(elementId) {
     document.getElementById('modalBody').innerHTML = html;
     
     let selected = STATE.choices[elementId] || null;
-    document.querySelectorAll('.choice-item').forEach(item => {
-        item.onclick = () => {
-            document.querySelectorAll('.choice-item').forEach(i => i.classList.remove('selected'));
-            item.classList.add('selected');
-            selected = item.dataset.id;
+    document.querySelectorAll('.option-card').forEach(card => {
+        card.onclick = () => {
+            document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selected = card.dataset.id;
         };
     });
     
-    const btn = document.getElementById('modalConfirm');
-    btn.textContent = 'Confirm';
-    btn.onclick = () => {
+    document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirm">Confirm Selection</button>';
+    document.getElementById('btnConfirm').onclick = () => {
         if (!selected) return;
-        
-        const opt = el.options.find(o => o.id === selected);
-        
-        // Refund old if changing
-        if (STATE.choices[elementId]) {
-            const old = el.options.find(o => o.id === STATE.choices[elementId]);
-            STATE.totals.cost -= old.cost;
-        }
-        
-        STATE.choices[elementId] = selected;
-        STATE.completed[1][elementId] = true;
-        STATE.totals.cost += opt.cost;
-        
-        // Update hotspot
-        const dot = document.querySelector(`[data-element="${elementId}"] .hotspot-dot`);
-        dot.classList.add('done');
-        
-        // Update budget
-        const remaining = DATA.phases[1].budget - STATE.totals.cost;
-        document.getElementById('statBudget').textContent = `£${remaining.toLocaleString()}`;
-        
-        updateProgressLabel();
-        closeModal();
+        confirmDesignChoice(elementId, element, selected);
     };
-    
-    openModal();
 }
 
-function showOutcomeModal(elementId) {
-    const el = DATA.elements[elementId];
-    const choice = STATE.choices[elementId];
-    const outcome = el.outcomes[STATE.phase][choice];
-    const opt = el.options.find(o => o.id === choice);
-    const char = DATA.characters[DATA.phases[STATE.phase].char];
+function confirmDesignChoice(elementId, element, choiceId) {
+    const opt = element.stage1.options.find(o => o.id === choiceId);
     
-    document.getElementById('modalTitle').textContent = el.title;
+    // Refund old choice if changing
+    if (STATE.choices[elementId]) {
+        const old = element.stage1.options.find(o => o.id === STATE.choices[elementId]);
+        STATE.totals.cost -= old.cost;
+    }
     
-    const html = `
-        <div class="outcome-section">
-            <div class="outcome-character">
-                <div class="char-portrait">${char.portrait ? `<img src="${char.portrait}">` : char.emoji}</div>
-                <div>
-                    <div class="outcome-name">${char.name}</div>
-                    <p class="outcome-quote">"${outcome.quote}"</p>
-                </div>
-            </div>
-            
-            <div class="outcome-stats">
-                <div class="outcome-stat">
-                    <div class="outcome-stat-value ${outcome.time > 5 ? 'bad' : ''}">${outcome.time} days</div>
-                    <div class="outcome-stat-label">Time</div>
-                </div>
-                <div class="outcome-stat">
-                    <div class="outcome-stat-value ${outcome.dose > 3 ? 'bad' : ''}">${outcome.dose} mSv</div>
-                    <div class="outcome-stat-label">Dose</div>
-                </div>
-                <div class="outcome-stat">
-                    <div class="outcome-stat-value ${outcome.cost > 80000 ? 'bad' : ''}">£${outcome.cost.toLocaleString()}</div>
-                    <div class="outcome-stat-label">Cost</div>
-                </div>
-            </div>
-            
-            <div class="outcome-recall">
-                <strong>Your 2025 choice:</strong> ${opt.name}
+    STATE.choices[elementId] = choiceId;
+    STATE.completed[1][elementId] = true;
+    STATE.totals.cost += opt.cost;
+    
+    // Update hotspot
+    const dot = document.querySelector(`[data-element="${elementId}"] .hotspot-dot`);
+    dot.classList.add('done');
+    
+    updateStatsDisplay();
+    updateProgressLabel();
+    closeModal();
+}
+
+// ============================================
+// STAGES 2-5: INTERACTIONS
+// ============================================
+function renderStageInteractionModal(elementId, element) {
+    const stageKey = `stage${STATE.stage}`;
+    const designChoice = STATE.choices[elementId];
+    let stageData = element[stageKey]?.[designChoice];
+    
+    if (!stageData) {
+        // Fallback if no specific data
+        document.getElementById('modalBody').innerHTML = '<p>No specific interaction for this element at this stage.</p>';
+        document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirm">Continue</button>';
+        document.getElementById('btnConfirm').onclick = () => {
+            STATE.completed[STATE.stage][elementId] = true;
+            document.querySelector(`[data-element="${elementId}"] .hotspot-dot`).classList.add('done');
+            updateProgressLabel();
+            closeModal();
+        };
+        return;
+    }
+    
+    // Handle conditional type
+    if (stageData.type === 'conditional') {
+        const triggerActive = STATE.triggers[stageData.trigger];
+        stageData = triggerActive ? stageData.ifTriggered : stageData.ifNotTriggered;
+    }
+    
+    const char = GAME_DATA.characters[GAME_DATA.stages[STATE.stage].char];
+    const designOpt = element.stage1.options.find(o => o.id === designChoice);
+    
+    if (stageData.type === 'text') {
+        renderTextOutcome(elementId, stageData, char, designOpt);
+    } else if (stageData.type === 'decision') {
+        renderDecisionPoint(elementId, stageData, char, designOpt);
+    }
+}
+
+function renderTextOutcome(elementId, data, char, designOpt) {
+    let html = '';
+    
+    // Design recall
+    html += `<div class="design-recall"><strong>Your 2025 choice:</strong> ${designOpt.name}</div>`;
+    
+    // Situation
+    html += `<div class="situation-box"><p>${data.situation}</p></div>`;
+    
+    // Character quote
+    html += `
+        <div class="char-quote">
+            <div class="char-portrait">${char.portrait ? `<img src="${char.portrait}">` : char.emoji}</div>
+            <div>
+                <div class="char-quote-name">${char.name}</div>
+                <p class="char-quote-text">"${data.charQuote}"</p>
             </div>
         </div>
     `;
     
+    // Result
+    html += `<div class="situation-box" style="border-left-color: var(--green);"><p><strong>Result:</strong> ${data.result}</p></div>`;
+    
+    // Impacts preview
+    html += `<div class="option-impacts" style="justify-content: center; padding: 10px 0;">`;
+    if (data.cost) html += `<span class="impact negative">💰 ${formatMoney(data.cost)}</span>`;
+    if (data.time) html += `<span class="impact negative">⏱️ +${data.time} days</span>`;
+    if (data.dose) html += `<span class="impact negative">☢️ +${data.dose} mSv</span>`;
+    if (!data.cost && !data.time && !data.dose) html += `<span class="impact positive">No additional impact</span>`;
+    html += `</div>`;
+    
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirm">Continue</button>';
+    
+    document.getElementById('btnConfirm').onclick = () => {
+        applyOutcome(elementId, data);
+    };
+}
+
+function renderDecisionPoint(elementId, data, char, designOpt) {
+    let html = '';
+    
+    // Design recall
+    html += `<div class="design-recall"><strong>Your 2025 choice:</strong> ${designOpt.name}</div>`;
+    
+    // Situation
+    const boxClass = data.impossible ? 'warning' : '';
+    html += `<div class="situation-box ${boxClass}"><p>${data.situation}</p></div>`;
+    
+    // Character quote
+    html += `
+        <div class="char-quote">
+            <div class="char-portrait">${char.portrait ? `<img src="${char.portrait}">` : char.emoji}</div>
+            <div>
+                <div class="char-quote-name">${char.name}</div>
+                <p class="char-quote-text">"${data.charQuote}"</p>
+            </div>
+        </div>
+    `;
+    
+    // Options
+    let options = data.options;
+    
+    // Check for improved panel options
+    if (data.checkImproved && STATE.flags.panelImproved) {
+        options = data.improvedOptions;
+    }
+    
+    html += '<div class="options-list">';
+    options.forEach(opt => {
+        html += `
+            <div class="option-card" data-id="${opt.id}">
+                <div class="option-header">
+                    <span class="option-name">${opt.name}</span>
+                    ${opt.cost ? `<span class="option-cost">${formatMoney(opt.cost)}</span>` : ''}
+                </div>
+                <p class="option-desc">${opt.desc}</p>
+                <div class="option-impacts">
+                    ${opt.cost ? `<span class="impact negative">💰 ${formatMoney(opt.cost)}</span>` : ''}
+                    ${opt.time ? `<span class="impact negative">⏱️ +${opt.time} days</span>` : ''}
+                    ${opt.dose ? `<span class="impact ${opt.dose > 0 ? 'negative' : 'positive'}">☢️ ${opt.dose > 0 ? '+' : ''}${opt.dose} mSv</span>` : ''}
+                    ${opt.healthImpact ? `<span class="impact ${opt.healthImpact > 0 ? 'positive' : 'negative'}">❤️ ${opt.healthImpact > 0 ? '+' : ''}${opt.healthImpact}%</span>` : ''}
+                    ${opt.risk ? `<span class="impact neutral">⚠️ ${opt.risk.success}% success</span>` : ''}
+                </div>
+            </div>
+        `;
+    });
+    html += '</div>';
+    
     document.getElementById('modalBody').innerHTML = html;
     
-    const btn = document.getElementById('modalConfirm');
-    btn.textContent = 'Continue';
-    btn.onclick = () => {
-        STATE.completed[STATE.phase][elementId] = true;
-        STATE.totals.cost += outcome.cost;
-        STATE.totals.dose += outcome.dose;
-        STATE.totals.time += outcome.time;
+    let selected = null;
+    document.querySelectorAll('.option-card').forEach(card => {
+        card.onclick = () => {
+            document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selected = card.dataset.id;
+        };
+    });
+    
+    document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirm" disabled>Select an Option</button>';
+    
+    // Enable button when option selected
+    const observer = new MutationObserver(() => {
+        const hasSelection = document.querySelector('.option-card.selected');
+        const btn = document.getElementById('btnConfirm');
+        btn.disabled = !hasSelection;
+        btn.textContent = hasSelection ? 'Confirm Decision' : 'Select an Option';
+    });
+    observer.observe(document.getElementById('modalBody'), { subtree: true, attributes: true, attributeFilter: ['class'] });
+    
+    document.getElementById('btnConfirm').onclick = () => {
+        if (!selected) return;
+        const opt = options.find(o => o.id === selected);
         
-        // Update hotspot
-        const dot = document.querySelector(`[data-element="${elementId}"] .hotspot-dot`);
-        if (outcome.time > 5 || outcome.dose > 3 || outcome.cost > 80000) {
-            dot.classList.add('issue');
-        } else {
-            dot.classList.add('done');
+        // Handle risk
+        if (opt.risk) {
+            const roll = Math.random() * 100;
+            if (roll > opt.risk.success) {
+                // Failed!
+                showRiskResult(elementId, opt, false);
+                return;
+            }
         }
         
-        updateProgressLabel();
-        closeModal();
+        // Success
+        applyDecision(elementId, opt, data);
+    };
+}
+
+function showRiskResult(elementId, opt, success) {
+    if (!success && opt.failResult) {
+        const fail = opt.failResult;
+        
+        let html = `<div class="situation-box danger"><p><strong>Attempt Failed!</strong></p><p>${fail.desc}</p></div>`;
+        
+        html += `<div class="option-impacts" style="justify-content: center; padding: 15px 0; flex-wrap: wrap; gap: 10px;">`;
+        if (fail.cost) html += `<span class="impact negative">💰 ${formatMoney(fail.cost)}</span>`;
+        if (fail.time) html += `<span class="impact negative">⏱️ +${fail.time} days</span>`;
+        if (fail.dose) html += `<span class="impact negative">☢️ +${fail.dose} mSv</span>`;
+        if (fail.healthImpact) html += `<span class="impact negative">❤️ ${fail.healthImpact}%</span>`;
+        if (fail.injury) html += `<span class="impact negative">🚑 ${fail.injury}% injury risk</span>`;
+        html += `</div>`;
+        
+        document.getElementById('modalBody').innerHTML = html;
+        document.getElementById('modalFooter').innerHTML = '<button class="btn btn-danger" id="btnConfirm">Accept Consequences</button>';
+        
+        document.getElementById('btnConfirm').onclick = () => {
+            // Apply failure consequences
+            const outcome = {
+                cost: fail.cost || 0,
+                time: fail.time || 0,
+                dose: fail.dose || 0,
+                healthImpact: fail.healthImpact || 0
+            };
+            
+            // Check for injury
+            if (fail.injury && Math.random() * 100 < fail.injury) {
+                STATE.injuries++;
+                outcome.cost += 50000;
+                outcome.time += 10;
+            }
+            
+            applyOutcome(elementId, outcome, 'issue');
+        };
+    }
+}
+
+function applyDecision(elementId, opt, data) {
+    // Set triggers
+    if (opt.trigger) STATE.triggers[opt.trigger] = true;
+    
+    // Set flags
+    if (opt.setPanelImproved) STATE.flags.panelImproved = true;
+    if (opt.setBackupPanel) STATE.flags.backupPanel = true;
+    
+    // Apply outcome
+    const outcome = {
+        cost: opt.cost || 0,
+        time: opt.time || 0,
+        dose: opt.dose || 0,
+        healthImpact: opt.healthImpact || 0,
+        result: opt.result
     };
     
-    openModal();
+    // Add any additional costs from the data
+    if (data.additionalCosts) {
+        outcome.cost += (data.additionalCosts.regulatory || 0) + (data.additionalCosts.environmental || 0);
+        if (data.additionalCosts.healthImpact) outcome.healthImpact += data.additionalCosts.healthImpact;
+    }
+    
+    applyOutcome(elementId, outcome);
+}
+
+function applyOutcome(elementId, outcome, status = 'done') {
+    // Apply to stage totals
+    STATE.stageTotals[STATE.stage].cost += outcome.cost || 0;
+    STATE.stageTotals[STATE.stage].dose += outcome.dose || 0;
+    STATE.stageTotals[STATE.stage].time += outcome.time || 0;
+    
+    // Apply to overall totals
+    STATE.totals.cost += outcome.cost || 0;
+    STATE.totals.dose += outcome.dose || 0;
+    STATE.totals.time += outcome.time || 0;
+    
+    // Apply health impact
+    if (outcome.healthImpact) {
+        STATE.plantHealth = Math.max(0, Math.min(100, STATE.plantHealth + outcome.healthImpact));
+    }
+    
+    // Set triggers
+    if (outcome.trigger) STATE.triggers[outcome.trigger] = true;
+    
+    // Mark complete
+    STATE.completed[STATE.stage][elementId] = true;
+    STATE.stageChoices[`${STATE.stage}_${elementId}`] = outcome;
+    
+    // Update hotspot visual
+    const dot = document.querySelector(`[data-element="${elementId}"] .hotspot-dot`);
+    dot.classList.add(status);
+    
+    updateStatsDisplay();
+    updateProgressLabel();
+    closeModal();
 }
 
 // ============================================
-// NEXT STAGE
+// STAGE COMPLETION
 // ============================================
-document.getElementById('btnNextStage').onclick = showSummary;
+document.getElementById('btnNextStage').onclick = showStageSummary;
 
-function showSummary() {
-    const phase = DATA.phases[STATE.phase];
+function showStageSummary() {
+    const stage = GAME_DATA.stages[STATE.stage];
+    const st = STATE.stageTotals[STATE.stage];
     
-    document.getElementById('sumTitle').textContent = `${phase.name} Complete`;
-    document.getElementById('sumSubtitle').textContent = `Year ${phase.year}`;
+    document.getElementById('sumTitle').textContent = `${stage.name} Complete`;
+    document.getElementById('sumSubtitle').textContent = `Year ${stage.year}`;
     
     // Stats
     let statsHtml = '';
-    if (STATE.phase === 1) {
+    if (STATE.stage === 1) {
+        const budget = stage.budget;
+        const spent = STATE.totals.cost;
+        const over = spent > budget;
         statsHtml = `
-            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value">£${STATE.totals.cost.toLocaleString()}</div><div class="summary-stat-label">Spent</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value ${over ? 'over' : ''}">${formatMoney(spent)}</div><div class="summary-stat-label">Spent</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">📊</div><div class="summary-stat-value">${formatMoney(budget)}</div><div class="summary-stat-label">Budget</div></div>
             <div class="summary-stat"><div class="summary-stat-icon">📋</div><div class="summary-stat-value">6</div><div class="summary-stat-label">Decisions</div></div>
-            <div class="summary-stat"><div class="summary-stat-icon">📅</div><div class="summary-stat-value">60 yrs</div><div class="summary-stat-label">Ahead</div></div>
-            <div class="summary-stat"><div class="summary-stat-icon">👥</div><div class="summary-stat-value">4</div><div class="summary-stat-label">People</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">❤️</div><div class="summary-stat-value">${STATE.plantHealth}%</div><div class="summary-stat-label">Health</div></div>
         `;
     } else {
         statsHtml = `
-            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value">£${STATE.totals.cost.toLocaleString()}</div><div class="summary-stat-label">Total Cost</div></div>
-            <div class="summary-stat"><div class="summary-stat-icon">☢️</div><div class="summary-stat-value">${STATE.totals.dose.toFixed(1)} mSv</div><div class="summary-stat-label">Total Dose</div></div>
-            <div class="summary-stat"><div class="summary-stat-icon">⏱️</div><div class="summary-stat-value">${STATE.totals.time} days</div><div class="summary-stat-label">Total Time</div></div>
-            <div class="summary-stat"><div class="summary-stat-icon">📊</div><div class="summary-stat-value">${STATE.phase}/5</div><div class="summary-stat-label">Phase</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value">${formatMoney(st.cost)}</div><div class="summary-stat-label">Stage Cost</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">☢️</div><div class="summary-stat-value">${st.dose.toFixed(1)} mSv</div><div class="summary-stat-label">Dose</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">⏱️</div><div class="summary-stat-value">${st.time} days</div><div class="summary-stat-label">Time</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">❤️</div><div class="summary-stat-value">${STATE.plantHealth}%</div><div class="summary-stat-label">Health</div></div>
         `;
     }
     document.getElementById('sumStats').innerHTML = statsHtml;
     
-    // Decisions
-    let decHtml = '';
-    Object.keys(DATA.elements).forEach(elId => {
-        const el = DATA.elements[elId];
-        const choiceId = STATE.choices[elId];
-        const opt = el.options.find(o => o.id === choiceId);
+    // Decisions list
+    let decHtml = '<h4>Decisions Made</h4>';
+    Object.keys(GAME_DATA.elements).forEach(elId => {
+        const el = GAME_DATA.elements[elId];
+        const choice = STATE.choices[elId];
+        const opt = el.stage1.options.find(o => o.id === choice);
         const tagClass = opt.quality === 'good' ? 'good' : opt.quality === 'ok' ? 'ok' : 'poor';
         decHtml += `
             <div class="decision-row">
                 <span class="decision-element">${el.title}</span>
-                <div class="decision-result">
-                    <span>${opt.name}</span>
-                    <span class="result-tag ${tagClass}">${opt.quality.toUpperCase()}</span>
-                </div>
+                <span class="decision-tag ${tagClass}">${opt.quality.toUpperCase()}</span>
             </div>
         `;
     });
     document.getElementById('sumDecisions').innerHTML = decHtml;
     
     // Button
-    document.getElementById('btnNextPhase').textContent = STATE.phase === 5 ? 'View Results →' : 'Next Phase →';
+    document.getElementById('btnNextPhase').textContent = STATE.stage === 5 ? 'View Final Results →' : 'Next Stage →';
     
     document.getElementById('summaryScreen').classList.add('active');
 }
@@ -1554,16 +2221,16 @@ function showSummary() {
 document.getElementById('btnNextPhase').onclick = () => {
     document.getElementById('summaryScreen').classList.remove('active');
     
-    if (STATE.phase >= 5) {
-        showResults();
+    if (STATE.stage >= 5) {
+        showFinalResults();
     } else {
         showTransition();
     }
 };
 
 function showTransition() {
-    const nextPhase = STATE.phase + 1;
-    const trans = DATA.transitions[nextPhase];
+    const nextStage = STATE.stage + 1;
+    const trans = GAME_DATA.transitions[nextStage];
     
     document.getElementById('transYears').textContent = trans.years;
     document.getElementById('transYear').textContent = trans.year;
@@ -1574,29 +2241,38 @@ function showTransition() {
 
 document.getElementById('btnTransContinue').onclick = () => {
     document.getElementById('transitionScreen').classList.remove('active');
-    startPhase(STATE.phase + 1);
+    startStage(STATE.stage + 1);
 };
 
-function showResults() {
+function showFinalResults() {
     // Calculate grade
     let good = 0;
-    Object.keys(DATA.elements).forEach(elId => {
-        const opt = DATA.elements[elId].options.find(o => o.id === STATE.choices[elId]);
+    Object.keys(GAME_DATA.elements).forEach(elId => {
+        const opt = GAME_DATA.elements[elId].stage1.options.find(o => o.id === STATE.choices[elId]);
         if (opt.quality === 'good') good++;
     });
     
-    let grade;
-    if (good >= 5) grade = 'A';
-    else if (good >= 4) grade = 'B';
-    else if (good >= 2) grade = 'C';
-    else grade = 'D';
+    let grade, verdict;
+    if (good >= 5 && STATE.plantHealth >= 80 && STATE.totals.dose < 25) {
+        grade = 'A'; verdict = 'Master Designer';
+    } else if (good >= 4 && STATE.plantHealth >= 60) {
+        grade = 'B'; verdict = 'Competent Engineer';
+    } else if (good >= 2) {
+        grade = 'C'; verdict = 'Needs Improvement';
+    } else {
+        grade = 'D'; verdict = 'Lessons to Learn';
+    }
     
     document.getElementById('resGrade').textContent = grade;
     document.getElementById('resGrade').className = `results-grade ${grade}`;
+    document.getElementById('resVerdict').textContent = verdict;
     
-    document.getElementById('resTotalCost').textContent = `£${STATE.totals.cost.toLocaleString()}`;
-    document.getElementById('resTotalDose').textContent = `${STATE.totals.dose.toFixed(1)} mSv`;
-    document.getElementById('resTotalTime').textContent = `${STATE.totals.time} days`;
+    document.getElementById('resTotals').innerHTML = `
+        <div class="results-total"><div class="results-total-value">${formatMoney(STATE.totals.cost)}</div><div class="results-total-label">Total Cost</div></div>
+        <div class="results-total"><div class="results-total-value">${STATE.totals.dose.toFixed(1)} mSv</div><div class="results-total-label">Total Dose</div></div>
+        <div class="results-total"><div class="results-total-value">${STATE.totals.time} days</div><div class="results-total-label">Total Time</div></div>
+        <div class="results-total"><div class="results-total-value">${STATE.plantHealth}%</div><div class="results-total-label">Plant Health</div></div>
+    `;
     
     document.getElementById('resultsScreen').classList.add('active');
 }
