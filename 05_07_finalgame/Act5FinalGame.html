@@ -467,7 +467,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.9);
             z-index: 500;
             align-items: center;
             justify-content: center;
@@ -477,154 +477,337 @@
         .modal-overlay.active { display: flex; }
         
         .modal {
-            background: var(--dark-slate);
-            border-radius: 12px;
+            background: linear-gradient(180deg, #1a2634 0%, #0d1b2a 100%);
+            border-radius: 16px;
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             max-height: 90vh;
             overflow-y: auto;
             animation: modalIn 0.3s ease;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         }
         
         @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
         
+        /* Modal Header - Component Name prominent */
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            border-bottom: 1px solid var(--slate);
+            padding: 24px 24px 16px 24px;
+            border-bottom: none;
         }
         
-        .modal-header h3 { color: var(--white); }
+        .modal-header h3 { 
+            color: var(--white); 
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .modal-header h3::before {
+            content: '⚙️';
+            font-size: 1.3rem;
+        }
         
         .modal-close {
-            background: none;
+            background: var(--slate);
             border: none;
             color: var(--mid-grey);
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             cursor: pointer;
-        }
-        
-        .modal-body { padding: 20px; }
-        
-        /* Situation description */
-        .situation-box {
-            background: var(--slate);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-left: 4px solid var(--blue);
-        }
-        
-        .situation-box p {
-            color: var(--light-grey);
-            line-height: 1.6;
-            margin-bottom: 10px;
-        }
-        
-        .situation-box p:last-child { margin-bottom: 0; }
-        .situation-box strong { color: var(--white); }
-        .situation-box em { color: var(--amber); font-style: normal; }
-        
-        /* Character quote */
-        .char-quote {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            background: var(--deep-navy);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .char-quote .char-portrait { width: 45px; height: 45px; flex-shrink: 0; }
-        .char-quote-text { font-style: italic; color: var(--light-grey); line-height: 1.5; }
-        .char-quote-name { color: var(--white); font-weight: 500; font-size: 0.85rem; margin-bottom: 5px; font-style: normal; }
-        
-        /* Design recall */
-        .design-recall {
-            background: var(--deep-navy);
-            padding: 10px 15px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            color: var(--mid-grey);
-            margin-bottom: 15px;
-        }
-        
-        .design-recall strong { color: var(--white); }
-        
-        /* Options list */
-        .options-list { display: flex; flex-direction: column; gap: 10px; }
-        
-        .option-card {
-            background: var(--slate);
-            border-radius: 8px;
-            padding: 15px;
-            cursor: pointer;
-            border: 2px solid transparent;
+            align-items: center;
+            justify-content: center;
             transition: all 0.2s;
         }
         
-        .option-card:hover { border-color: var(--blue); }
-        .option-card.selected { border-color: var(--green); background: rgba(146, 208, 80, 0.1); }
+        .modal-close:hover {
+            background: var(--red);
+            color: var(--white);
+        }
+        
+        .modal-body { padding: 0 24px 24px 24px; }
+        
+        /* Context Bar - Design recall + Stage cost */
+        .context-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--deep-navy);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .context-design {
+            color: var(--mid-grey);
+        }
+        
+        .context-design strong {
+            color: var(--amber);
+            font-weight: 600;
+        }
+        
+        .context-cost {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--blue);
+            font-weight: 600;
+        }
+        
+        /* Situation Panel - The main story */
+        .situation-panel {
+            background: linear-gradient(135deg, rgba(0, 176, 240, 0.1) 0%, rgba(0, 176, 240, 0.05) 100%);
+            border: 1px solid rgba(0, 176, 240, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .situation-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--blue);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .situation-text {
+            color: var(--white);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        /* Character Speech Bubble */
+        .speech-bubble {
+            position: relative;
+            background: var(--slate);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            margin-left: 60px;
+        }
+        
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 20px;
+            border: 10px solid transparent;
+            border-right-color: var(--slate);
+            border-left: 0;
+        }
+        
+        .speech-portrait {
+            position: absolute;
+            left: -60px;
+            top: 0;
+            width: 48px;
+            height: 48px;
+            background: var(--deep-navy);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 2px solid var(--slate);
+        }
+        
+        .speech-name {
+            font-weight: 600;
+            color: var(--green);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        
+        .speech-text {
+            color: var(--light-grey);
+            font-style: italic;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        /* Decision Section */
+        .decision-section {
+            margin-top: 24px;
+        }
+        
+        .decision-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .decision-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--amber);
+            font-weight: 700;
+        }
+        
+        .decision-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--amber), transparent);
+        }
+        
+        /* Option Cards - Clickable decisions */
+        .options-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+        }
+        
+        .option-card {
+            background: var(--dark-slate);
+            border-radius: 12px;
+            padding: 0;
+            cursor: pointer;
+            border: 2px solid var(--slate);
+            transition: all 0.2s;
+            overflow: hidden;
+        }
+        
+        .option-card:hover { 
+            border-color: var(--blue); 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 176, 240, 0.2);
+        }
+        
+        .option-card.selected { 
+            border-color: var(--green); 
+            background: var(--dark-slate);
+            box-shadow: 0 0 0 3px rgba(146, 208, 80, 0.2);
+        }
+        
+        .option-card.selected .option-main {
+            background: rgba(146, 208, 80, 0.1);
+        }
+        
         .option-card.disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            border-color: transparent;
+            border-color: var(--slate);
         }
-        .option-card.disabled:hover { border-color: transparent; }
-        .option-card.disabled .option-cost { color: var(--red); }
+        
+        .option-card.disabled:hover { 
+            border-color: var(--slate); 
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .option-main {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        
+        .option-content { flex: 1; }
+        
+        .option-name { 
+            color: var(--white); 
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+        }
+        
+        .option-desc { 
+            color: var(--mid-grey); 
+            font-size: 0.9rem; 
+            line-height: 1.5;
+        }
+        
+        .option-cost-badge {
+            background: var(--blue);
+            color: var(--deep-navy);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        
+        .option-card.disabled .option-cost-badge {
+            background: var(--red);
+            color: var(--white);
+        }
+        
+        .option-impacts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 12px 20px;
+            background: var(--deep-navy);
+            border-top: 1px solid var(--slate);
+        }
+        
+        .impact { 
+            display: flex; 
+            align-items: center; 
+            gap: 5px;
+            font-size: 0.85rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .impact.negative { color: var(--red); }
+        .impact.positive { color: var(--green); }
+        .impact.neutral { color: var(--amber); }
         
         .disabled-reason {
             color: var(--red);
             font-size: 0.8rem;
             font-weight: 600;
-            margin-top: 8px;
+            padding: 8px 20px;
+            background: rgba(220, 53, 69, 0.1);
         }
         
-        .option-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
+        /* Stage 1 Design Choice cards */
+        .design-card {
+            background: var(--dark-slate);
+            border-radius: 12px;
+            cursor: pointer;
+            border: 2px solid var(--slate);
+            transition: all 0.2s;
+            overflow: hidden;
         }
         
-        .option-name { color: var(--white); font-weight: 500; }
-        
-        .option-cost {
-            background: var(--deep-navy);
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--blue);
+        .design-card:hover { 
+            border-color: var(--blue); 
+            transform: translateY(-2px);
         }
         
-        .option-desc { color: var(--light-grey); font-size: 0.9rem; margin-bottom: 10px; }
-        
-        .option-impacts {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            font-size: 0.8rem;
+        .design-card.selected { 
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(146, 208, 80, 0.2);
         }
         
-        .impact { display: flex; align-items: center; gap: 4px; }
-        .impact.negative { color: var(--red); }
-        .impact.positive { color: var(--green); }
-        .impact.neutral { color: var(--mid-grey); }
+        .design-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
         
-        /* Design choice (Stage 1) */
-        .choice-image {
+        .design-card-image {
             width: 100%;
-            height: 60px;
-            background: var(--deep-navy);
-            border-radius: 4px;
-            margin-bottom: 10px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--slate) 0%, var(--deep-navy) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -632,12 +815,124 @@
             font-size: 0.75rem;
         }
         
+        .design-card-body {
+            padding: 16px;
+        }
+        
+        .design-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .design-card-name {
+            color: var(--white);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .design-card-cost {
+            background: var(--blue);
+            color: var(--deep-navy);
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+        
+        .design-card.disabled .design-card-cost {
+            background: var(--red);
+            color: var(--white);
+        }
+        
+        .design-card-desc {
+            color: var(--mid-grey);
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        
+        /* Modal Footer */
         .modal-footer {
-            padding: 15px 20px;
+            padding: 16px 24px;
             border-top: 1px solid var(--slate);
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
+            gap: 12px;
+            background: var(--deep-navy);
+        }
+        
+        .modal-footer .btn {
+            padding: 12px 28px;
+            font-size: 0.95rem;
+        }
+        
+        /* Failure Panel */
+        .failure-panel {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.2) 0%, rgba(220, 53, 69, 0.1) 100%);
+            border: 2px solid var(--red);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .failure-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+        
+        .failure-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--red);
+            margin-bottom: 10px;
+        }
+        
+        .failure-text {
+            color: var(--light-grey);
+            line-height: 1.6;
+        }
+        
+        .failure-impacts {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        
+        .failure-impact {
+            background: var(--dark-slate);
+            border-radius: 8px;
+            padding: 16px 12px;
+            text-align: center;
+        }
+        
+        .failure-impact-icon {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .failure-impact-value {
+            display: block;
+            color: var(--red);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .failure-impact-label {
+            font-size: 0.7rem;
+            color: var(--mid-grey);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        @media (max-width: 500px) {
+            .failure-impacts {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
         }
         
         .btn {
@@ -954,7 +1249,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.11</div>
+<div class="version-tag">v0.12</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -1353,15 +1648,36 @@ const GAME_DATA = {
                     { id: 'dedicated', name: 'Dedicated Shielded Room', desc: 'Separate room with airlock. Maximum protection.', cost: 200000, quality: 'wasteful' }
                 ]
             },
-            // STAGE 2: MAINTENANCE - Every design gets decisions, but difficulty varies
+            // =====================================
+            // STAGE 2: MAINTENANCE
+            // =====================================
             stage2: {
                 corner: {
                     situation: 'RCP seal replacement required. The pump is 2.1m wide but the corner position only provides 1.8m clearance. It physically cannot be removed through the access route.',
                     quote: "Boss, we've got a problem. That corner position from the 2025 design - the pump doesn't fit through the gap. Whoever signed off on 1.8m clearance for a 2.1m pump... anyway, what do you want us to do?",
                     options: [
-                        { id: 'subcontract', name: 'Hire specialist rigging team', desc: 'Bring in experts with hydraulic jacks and custom rigging to work around the constraint.', cost: 180000, time: 18, dose: 3 },
-                        { id: 'force', name: 'Attempt to tilt and manoeuvre through', desc: 'Try to angle the pump through the gap. Risky - may damage pump casing.', cost: 40000, time: 5, dose: 6, risk: 70 },
-                        { id: 'modify', name: 'Cut a larger access opening', desc: 'Permanently modify the wall structure to create adequate access.', cost: 120000, time: 14, dose: 4 }
+                        { 
+                            id: 'modify', 
+                            name: 'Cut a larger access opening', 
+                            desc: 'Permanently modify the wall structure to create adequate access. Fixes the problem for good.', 
+                            cost: 120000, time: 14, dose: 4,
+                            setState: { accessFixed: true }
+                        },
+                        { 
+                            id: 'subcontract', 
+                            name: 'Hire specialist rigging team', 
+                            desc: 'Bring in experts with hydraulic jacks and custom rigging to work around the constraint. Problem remains for next time.', 
+                            cost: 180000, time: 18, dose: 3,
+                            setState: { workaroundUsed: true }
+                        },
+                        { 
+                            id: 'force', 
+                            name: 'Attempt to tilt and manoeuvre through', 
+                            desc: 'Try to angle the pump through the gap. Risky - may damage pump casing.', 
+                            cost: 40000, time: 5, dose: 6, risk: 70,
+                            setState: { deteriorating: true },
+                            failState: { deteriorating: true, damageCaused: true }
+                        }
                     ]
                 },
                 openBay: {
@@ -1376,21 +1692,98 @@ const GAME_DATA = {
                     situation: 'RCP seal replacement required. The pump is in a dedicated shielded room with airlock system.',
                     quote: "The pump room from 2025 - it's accessible, but this airlock system adds a lot of complexity. We need full contamination protocols just to get in there. Did we really need all this shielding for a coolant pump?",
                     options: [
-                        { id: 'airlock', name: 'Full airlock protocol', desc: 'Follow complete airlock entry and exit procedures as designed.', cost: 45000, time: 6, dose: 2 },
-                        { id: 'bypass', name: 'Temporary airlock bypass', desc: 'Faster access but requires additional contamination control paperwork.', cost: 35000, time: 4, dose: 2.5 }
+                        { 
+                            id: 'airlock', 
+                            name: 'Full airlock protocol', 
+                            desc: 'Follow complete airlock entry and exit procedures as designed.', 
+                            cost: 45000, time: 6, dose: 2,
+                            setState: { airlockMaintained: true }
+                        },
+                        { 
+                            id: 'bypass', 
+                            name: 'Temporary airlock bypass', 
+                            desc: 'Faster access but requires additional contamination control paperwork.', 
+                            cost: 35000, time: 4, dose: 2.5,
+                            setState: { airlockBypassed: true }
+                        }
                     ]
                 }
             },
-            // STAGE 3: INSPECTION
+            // =====================================
+            // STAGE 3: INSPECTION - Checks Stage 2 state
+            // =====================================
             stage3: {
                 corner: {
-                    situation: 'Pump casing and mounting bolts require ultrasonic inspection. The corner position provides insufficient clearance for standard probe positioning.',
-                    quote: "Remember that corner position from 2025? Now I can't get my UT probe in at the correct angle. The clearance is too tight for proper inspection coverage. How do you want me to handle this?",
-                    options: [
-                        { id: 'scaffold', name: 'Erect scaffolding and use angled probes', desc: 'Partial coverage achievable. Will need to document limitations in the report.', cost: 45000, time: 5, dose: 3, trigger: 'pumpInspectionGap' },
-                        { id: 'accept', name: 'Accept the inspection limitation', desc: 'Mark areas as "inaccessible" in the inspection report. Regulator will note this.', cost: 5000, time: 1, dose: 0.5, healthImpact: -10, trigger: 'pumpInspectionGap' },
-                        { id: 'retrofit', name: 'Install permanent access platform', desc: 'Expensive now, but enables full inspection coverage for remaining plant life.', cost: 120000, time: 12, dose: 2 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        // They fixed the access in 2040
+                        accessFixed: {
+                            situation: 'Pump casing and mounting bolts require ultrasonic inspection. The access opening you cut in 2040 provides adequate clearance for probe positioning.',
+                            quote: "Good call cutting that access opening back in 2040. I can actually get my UT probes in at the right angles now. Full coverage is possible. What level of inspection do you want?",
+                            options: [
+                                { id: 'standard', name: 'Standard UT inspection', desc: 'Full coverage with standard equipment.', cost: 20000, time: 3, dose: 1.5 },
+                                { id: 'enhanced', name: 'Enhanced inspection with TOFD', desc: 'Additional Time-of-Flight Diffraction for better defect sizing.', cost: 30000, time: 4, dose: 2 }
+                            ]
+                        },
+                        // They used a workaround - problem remains
+                        workaroundUsed: {
+                            situation: 'Pump casing inspection required. The corner position from 2025 was never permanently fixed - the specialist rigging in 2040 was just a workaround. Access is still constrained.',
+                            quote: "Same problem as 2040. That corner position was never properly fixed - we just worked around it. Now I can't get my probes in at the right angle. We need to decide: fix it now, or accept the gaps?",
+                            options: [
+                                { 
+                                    id: 'platform', 
+                                    name: 'Install permanent access platform', 
+                                    desc: 'Finally fix the access problem. Enables full inspection coverage for remaining plant life.', 
+                                    cost: 120000, time: 12, dose: 2,
+                                    setState: { accessFixed: true }
+                                },
+                                { 
+                                    id: 'partial', 
+                                    name: 'Scaffold and use angled probes', 
+                                    desc: 'Achieves ~60% coverage. Uninspected areas will need to be documented.', 
+                                    cost: 45000, time: 5, dose: 3,
+                                    setState: { inspectionGap: true }
+                                },
+                                { 
+                                    id: 'accept', 
+                                    name: 'Accept inspection limitation', 
+                                    desc: 'Mark areas as "inaccessible" in report. Regulator will note this. Cheapest but riskiest.', 
+                                    cost: 5000, time: 1, dose: 0.5, healthImpact: -10,
+                                    setState: { inspectionGap: true }
+                                }
+                            ]
+                        },
+                        // They tried to force it and caused damage
+                        deteriorating: {
+                            situation: 'Pump inspection urgently required. The forced removal attempt in 2040 caused damage that has been worsening. Access remains impossible.',
+                            quote: "This is getting serious. That forced removal in 2040 - we damaged something and it's been getting worse. Vibrations are up 40%. And we STILL can't get proper access because the corner position was never fixed. We need to act.",
+                            options: [
+                                { 
+                                    id: 'emergency', 
+                                    name: 'Emergency retrofit and repair', 
+                                    desc: 'Cut new access, conduct full inspection, repair damage from 2040.', 
+                                    cost: 180000, time: 20, dose: 5,
+                                    setState: { accessFixed: true, deteriorating: false }
+                                },
+                                { 
+                                    id: 'monitor', 
+                                    name: 'Enhanced monitoring only', 
+                                    desc: 'Install more sensors. Hope we catch problems before failure. Very risky.', 
+                                    cost: 30000, time: 3, dose: 1, healthImpact: -15,
+                                    setState: { inspectionGap: true }
+                                }
+                            ]
+                        },
+                        // Default if no specific state (shouldn't happen)
+                        default: {
+                            situation: 'Pump inspection required. The corner position continues to create access challenges.',
+                            quote: "That corner position from 2025 - still causing headaches for inspection access. What's the plan?",
+                            options: [
+                                { id: 'scaffold', name: 'Erect scaffolding', desc: 'Partial coverage achievable.', cost: 45000, time: 5, dose: 3, setState: { inspectionGap: true } },
+                                { id: 'retrofit', name: 'Install permanent platform', desc: 'Fix the access problem permanently.', cost: 120000, time: 12, dose: 2, setState: { accessFixed: true } }
+                            ]
+                        }
+                    }
                 },
                 openBay: {
                     situation: 'Pump casing and mounting bolts require ultrasonic inspection. The open bay provides excellent access from all angles.',
@@ -1401,38 +1794,119 @@ const GAME_DATA = {
                     ]
                 },
                 dedicated: {
-                    situation: 'Pump inspection required. Good access once inside the room, but airlock protocols apply.',
-                    quote: "The pump room - good access once I'm inside, but these airlock protocols from the 2025 design slow everything down. Every entry and exit is a procedure. What's the priority here?",
-                    options: [
-                        { id: 'standard', name: 'Standard inspection with airlock', desc: 'Follow full entry/exit protocols for each inspection task.', cost: 25000, time: 4, dose: 1.5 },
-                        { id: 'extended', name: 'Extended single-entry inspection', desc: 'Minimise entries by doing extra work during each access.', cost: 35000, time: 5, dose: 2 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        airlockMaintained: {
+                            situation: 'Pump inspection required. Good access once inside the room. Airlock system has been properly maintained.',
+                            quote: "Pump room airlock is working properly - we've been following protocols since 2040. Good access once I'm inside. Standard inspection approach?",
+                            options: [
+                                { id: 'standard', name: 'Standard inspection with airlock', desc: 'Full entry/exit protocols.', cost: 25000, time: 4, dose: 1.5 },
+                                { id: 'extended', name: 'Extended single-entry inspection', desc: 'Do more in one access to minimise entries.', cost: 35000, time: 5, dose: 2 }
+                            ]
+                        },
+                        airlockBypassed: {
+                            situation: 'Pump inspection required. The airlock was bypassed in 2040, and contamination controls have been compromised since.',
+                            quote: "Remember that airlock bypass in 2040? The contamination has spread. Room's messier than it should be. My team will need extra protection. This is going to be slow and expensive.",
+                            options: [
+                                { 
+                                    id: 'contaminated', 
+                                    name: 'Inspection with enhanced protection', 
+                                    desc: 'Full PPE and decon procedures due to contamination spread.', 
+                                    cost: 55000, time: 7, dose: 4 
+                                },
+                                { 
+                                    id: 'clean', 
+                                    name: 'Clean room first, then inspect', 
+                                    desc: 'Decontaminate the area before inspection. More expensive but safer long-term.', 
+                                    cost: 85000, time: 10, dose: 2,
+                                    setState: { airlockMaintained: true, airlockBypassed: false }
+                                }
+                            ]
+                        },
+                        default: {
+                            situation: 'Pump inspection required in dedicated room.',
+                            quote: "Pump room access - standard airlock protocols apply.",
+                            options: [
+                                { id: 'standard', name: 'Standard inspection', desc: 'Follow entry/exit protocols.', cost: 25000, time: 4, dose: 1.5 }
+                            ]
+                        }
+                    }
                 }
             },
-            // STAGE 4: OPERATIONS
+            // =====================================
+            // STAGE 4: OPERATIONS - Checks cumulative state
+            // =====================================
             stage4: {
                 corner: {
-                    checkTrigger: 'pumpInspectionGap',
-                    triggered: {
-                        situation: 'Night shift. Pump vibrations spiking. The vibration is coming from the area that could not be inspected in 2055 due to access limitations.',
-                        quote: "It's 3am and we've got a problem. Pump vibrations are spiking - and it's coming from exactly the area we couldn't inspect back in 2055 because of that corner position. We're flying blind here. What's the call?",
-                        options: [
-                            { id: 'shutdown', name: 'Emergency shutdown for inspection', desc: 'Safe option but significant revenue loss and investigation required.', cost: 150000, time: 5, dose: 2 },
-                            { id: 'reduce', name: 'Reduce power to 50%', desc: 'Lower the stress on the pump. Monitor closely and hope it stabilises.', cost: 50000, time: 0, dose: 0, risk: 50, healthImpact: -5 },
-                            { id: 'continue', name: 'Continue and monitor', desc: 'It might be fine. Or it might not.', cost: 0, time: 0, dose: 0, risk: 70, healthImpact: -15 }
-                        ]
-                    },
-                    notTriggered: {
-                        situation: 'Pump operational review. Despite the corner position, vibrations are within normal range.',
-                        quote: "Pump review time. That corner position still makes me nervous - we got lucky on the inspection coverage. Vibrations are okay for now, but I'd recommend enhanced monitoring. Your call.",
-                        options: [
-                            { id: 'monitor', name: 'Enhanced monitoring programme', desc: 'Install additional vibration sensors and analysis equipment.', cost: 30000, time: 1, dose: 0 },
-                            { id: 'continue', name: 'Standard monitoring', desc: 'Continue with normal surveillance programme.', cost: 10000, time: 0, dose: 0 }
-                        ]
+                    checkElementState: true,
+                    scenarios: {
+                        // Access was fixed at some point - things are okay
+                        accessFixed: {
+                            situation: 'Pump operational review. The access was eventually fixed, and full inspection records are available.',
+                            quote: "Pump's running well. That access opening we cut - it's let us maintain proper inspection records ever since. We know exactly what condition the pump's in. Just confirming the monitoring approach.",
+                            options: [
+                                { id: 'standard', name: 'Standard monitoring', desc: 'Continue normal surveillance.', cost: 10000, time: 0, dose: 0 },
+                                { id: 'predictive', name: 'Predictive maintenance analysis', desc: 'Use our good historical data to optimise future maintenance.', cost: 25000, time: 1, dose: 0 }
+                            ]
+                        },
+                        // Never fixed AND have inspection gaps - crisis
+                        inspectionGap: {
+                            situation: 'ALARM: 3am. Pump vibrations spiking. The vibration is coming from exactly the areas we could never properly inspect due to the corner position that was never fixed.',
+                            quote: "It's 3am and we've got a serious problem. Pump vibrations are off the chart - and it's coming from exactly where we couldn't inspect. That corner position was never fixed, we've been flying blind for 30 years. What's the call, boss?",
+                            options: [
+                                { 
+                                    id: 'shutdown', 
+                                    name: 'Emergency shutdown', 
+                                    desc: 'Trip the reactor. Safe but massive revenue loss and investigation required.', 
+                                    cost: 200000, time: 7, dose: 3,
+                                    setState: { emergencyOccurred: true }
+                                },
+                                { 
+                                    id: 'reduce', 
+                                    name: 'Reduce power to 50%', 
+                                    desc: 'Lower stress on the pump. Monitor closely. Might stabilise, might not.', 
+                                    cost: 50000, time: 0, dose: 0, risk: 40, healthImpact: -5 
+                                },
+                                { 
+                                    id: 'continue', 
+                                    name: 'Continue and monitor', 
+                                    desc: 'It might be fine. Or the pump might fail catastrophically.', 
+                                    cost: 0, time: 0, dose: 0, risk: 70, healthImpact: -20 
+                                }
+                            ]
+                        },
+                        // Deteriorating from 2040 damage - worse crisis
+                        deteriorating: {
+                            situation: 'CRITICAL ALARM. The pump damage from 2040 has progressed to imminent failure. Vibrations are extreme.',
+                            quote: "CRITICAL. That damage from 2040 - we should have fixed it then. The pump's about to fail. We have minutes to decide, not hours. Trip the reactor or risk a LOCA.",
+                            options: [
+                                { 
+                                    id: 'trip', 
+                                    name: 'Emergency reactor trip', 
+                                    desc: 'Immediate shutdown. Only safe option at this point.', 
+                                    cost: 300000, time: 10, dose: 5, healthImpact: -10,
+                                    setState: { emergencyOccurred: true, deteriorating: false }
+                                },
+                                { 
+                                    id: 'gamble', 
+                                    name: 'Attempt controlled runback', 
+                                    desc: 'Try to reduce power gradually. Extremely risky.', 
+                                    cost: 50000, time: 0, dose: 0, risk: 85, healthImpact: -30 
+                                }
+                            ]
+                        },
+                        default: {
+                            situation: 'Pump operational review. Corner position continues to limit options.',
+                            quote: "That corner position from 2025 still limits our monitoring options. Vibrations are within range but I'm not confident in our coverage.",
+                            options: [
+                                { id: 'enhanced', name: 'Enhanced monitoring', desc: 'Install additional sensors.', cost: 30000, time: 1, dose: 0 },
+                                { id: 'standard', name: 'Standard monitoring', desc: 'Continue normal surveillance.', cost: 10000, time: 0, dose: 0 }
+                            ]
+                        }
                     }
                 },
                 openBay: {
-                    situation: 'Pump operational review. All parameters nominal. Full inspection history available from good access in previous years.',
+                    situation: 'Pump operational review. All parameters nominal. Full inspection history available from good access over the years.',
                     quote: "Pump running perfectly. That open bay design from 2025 has given us complete inspection records over the years - we know exactly what condition it's in. No concerns here. Just confirming the monitoring approach.",
                     options: [
                         { id: 'standard', name: 'Standard monitoring', desc: 'Continue normal surveillance programme.', cost: 5000, time: 0, dose: 0 },
@@ -1440,40 +1914,134 @@ const GAME_DATA = {
                     ]
                 },
                 dedicated: {
-                    situation: 'Pump operational review. Pump running well but the airlock system requires its own maintenance.',
-                    quote: "Pump's fine, but that dedicated room from 2025 - now the airlock seals need servicing. We're maintaining equipment just to maintain other equipment. What's your priority?",
-                    options: [
-                        { id: 'service', name: 'Full airlock service', desc: 'Complete maintenance of the airlock system.', cost: 25000, time: 2, dose: 0.5 },
-                        { id: 'defer', name: 'Defer airlock maintenance', desc: 'Not critical yet. Can wait until next outage.', cost: 5000, time: 0, dose: 0, healthImpact: -3 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        airlockMaintained: {
+                            situation: 'Pump operational review. Pump and airlock system both running well.',
+                            quote: "Pump's fine, airlock's been properly maintained since 2040. Extra maintenance overhead but no issues. Standard checks?",
+                            options: [
+                                { id: 'standard', name: 'Standard monitoring', desc: 'Continue normal surveillance.', cost: 15000, time: 0, dose: 0 },
+                                { id: 'service', name: 'Full airlock service', desc: 'Preventive maintenance on airlock seals.', cost: 35000, time: 2, dose: 0.5 }
+                            ]
+                        },
+                        airlockBypassed: {
+                            situation: 'Pump running but room contamination from 2040 bypass continues to cause problems.',
+                            quote: "That bypass in 2040 keeps haunting us. The room's contamination makes every entry expensive. We should really sort this out before decommissioning.",
+                            options: [
+                                { 
+                                    id: 'cleanup', 
+                                    name: 'Major decontamination', 
+                                    desc: 'Clean the room properly. High cost now, saves money later.', 
+                                    cost: 100000, time: 8, dose: 3,
+                                    setState: { airlockMaintained: true, airlockBypassed: false }
+                                },
+                                { id: 'defer', name: 'Defer to decommissioning', desc: 'Live with it until end of life.', cost: 20000, time: 1, dose: 1 }
+                            ]
+                        },
+                        default: {
+                            situation: 'Pump operational review in dedicated room.',
+                            quote: "Pump room status check. Systems nominal.",
+                            options: [
+                                { id: 'standard', name: 'Standard monitoring', desc: 'Continue normal surveillance.', cost: 15000, time: 0, dose: 0 }
+                            ]
+                        }
+                    }
                 }
             },
-            // STAGE 5: DECOMMISSIONING
+            // =====================================
+            // STAGE 5: DECOMMISSIONING - Final consequences
+            // =====================================
             stage5: {
                 corner: {
-                    situation: 'Pump removal for decommissioning. The same access problem from 2040 remains - the pump still does not fit through the corner access route.',
-                    quote: "Sixty years later and we're right back where we were in 2040. That corner position - pump still doesn't fit through the gap. We've got three options, none of them cheap.",
-                    options: [
-                        { id: 'demolish', name: 'Demolish wall section', desc: 'Remove the concrete wall to create adequate access.', cost: 80000, time: 15, dose: 4 },
-                        { id: 'cut', name: 'Cut pump into pieces in-situ', desc: 'Segment the pump for removal. Manual cutting in confined space.', cost: 60000, time: 20, dose: 8 },
-                        { id: 'robot', name: 'Robotic cutting system', desc: 'Remote cutting minimises dose but requires specialist equipment.', cost: 200000, time: 8, dose: 1 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        // Access was fixed - manageable
+                        accessFixed: {
+                            situation: 'Pump removal for decommissioning. The access opening cut earlier makes removal possible, though not as easy as proper design would have been.',
+                            quote: "At least we fixed the access at some point. Not as clean as a proper open bay design would have been, but we can get the pump out through the modified opening. Options for removal?",
+                            options: [
+                                { id: 'standard', name: 'Standard removal via modified access', desc: 'Use the access opening to remove pump intact.', cost: 45000, time: 8, dose: 3 },
+                                { id: 'segmented', name: 'Segment for easier handling', desc: 'Cut pump into sections for removal.', cost: 60000, time: 12, dose: 2 }
+                            ]
+                        },
+                        // Never fixed, but no emergency - expensive removal
+                        inspectionGap: {
+                            situation: 'Pump removal for decommissioning. The corner position was never fixed - same problem as 2040, sixty years later.',
+                            quote: "Sixty years and we're back to the same problem. Corner position, pump doesn't fit. We got away with it operationally, but now we have to get this thing out somehow.",
+                            options: [
+                                { id: 'demolish', name: 'Demolish wall section', desc: 'Remove the concrete to create access.', cost: 80000, time: 15, dose: 4 },
+                                { id: 'cut', name: 'Cut pump in-situ', desc: 'Segment the pump in the confined space.', cost: 60000, time: 20, dose: 8 },
+                                { id: 'robot', name: 'Robotic cutting system', desc: 'Remote cutting minimises dose but expensive.', cost: 200000, time: 10, dose: 1 }
+                            ]
+                        },
+                        // Had an emergency - pump may already be damaged/isolated
+                        emergencyOccurred: {
+                            situation: 'Pump decommissioning following the operational emergency. The pump was isolated after the incident and has been sitting inactive.',
+                            quote: "This pump's been sitting here since that emergency. Not sure what state it's in internally. We need to be careful - could be damaged, could be fine. Still got that access problem too.",
+                            options: [
+                                { 
+                                    id: 'careful', 
+                                    name: 'Careful characterisation first', 
+                                    desc: 'Full assessment before removal. Slower but safer.', 
+                                    cost: 100000, time: 18, dose: 3 
+                                },
+                                { id: 'remote', name: 'Full remote handling', desc: 'Assume worst case, use robotics throughout.', cost: 250000, time: 12, dose: 0.5 }
+                            ]
+                        },
+                        // Catastrophic - major contamination
+                        deteriorating: {
+                            situation: 'Pump decommissioning following catastrophic failure. Major contamination in the area. Remote handling mandatory.',
+                            quote: "That pump failure contaminated the whole area. We're in full remote handling territory. This is going to take years and cost a fortune. The 2025 corner position plus the 2040 damage plus 2070... it all adds up.",
+                            options: [
+                                { id: 'remote', name: 'Full remote decommissioning', desc: 'Robotics only. No personnel entry possible.', cost: 400000, time: 30, dose: 2, healthImpact: -10 },
+                                { id: 'encapsulate', name: 'Encapsulate and defer', desc: 'Seal the area for future generations to deal with.', cost: 150000, time: 10, dose: 1, healthImpact: -20 }
+                            ]
+                        },
+                        default: {
+                            situation: 'Pump removal for decommissioning. Corner access remains a challenge.',
+                            quote: "That corner position from 2025 - still causing problems even at decommissioning. Pump doesn't fit through.",
+                            options: [
+                                { id: 'demolish', name: 'Demolish wall', desc: 'Create access by removing structure.', cost: 80000, time: 15, dose: 4 },
+                                { id: 'cut', name: 'Cut in-situ', desc: 'Segment the pump in place.', cost: 60000, time: 20, dose: 8 }
+                            ]
+                        }
+                    }
                 },
                 openBay: {
                     situation: 'Pump removal for decommissioning. Full crane access available - reverse of original installation.',
-                    quote: "This is how decommissioning should work. That open bay from 2025 - crane hooks on, pump lifts out. Exactly like the installation but in reverse. Clean and simple. How do you want it handled?",
+                    quote: "This is how decommissioning should work. That open bay from 2025 - crane hooks on, pump lifts out. Exactly like the installation but in reverse. Clean and simple. Sixty years of good design paying off one final time.",
                     options: [
                         { id: 'standard', name: 'Standard crane removal', desc: 'Lift and containerise in one operation.', cost: 20000, time: 3, dose: 1 },
-                        { id: 'segmented', name: 'Segmented removal for recycling', desc: 'Additional cutting to enable material segregation and recycling.', cost: 35000, time: 5, dose: 1.5 }
+                        { id: 'segmented', name: 'Segmented removal for recycling', desc: 'Additional cutting to enable material segregation.', cost: 35000, time: 5, dose: 1.5 }
                     ]
                 },
                 dedicated: {
-                    situation: 'Pump removal straightforward, but the entire dedicated shielded room must also be decommissioned.',
-                    quote: "Pump comes out in a day - that's not the problem. But that whole shielded room from 2025? The walls, the airlock, all the unnecessary structure - it all has to come out too. Major extra work.",
-                    options: [
-                        { id: 'full', name: 'Full room decommissioning', desc: 'Remove pump and all associated room structures.', cost: 150000, time: 12, dose: 2 },
-                        { id: 'seal', name: 'Remove pump, seal room for later', desc: 'Defer the room decommissioning. Creates future liability.', cost: 60000, time: 5, dose: 1, healthImpact: -5 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        airlockMaintained: {
+                            situation: 'Pump removal straightforward, but the entire dedicated room must also be decommissioned. Airlock is in good condition.',
+                            quote: "Pump comes out easily - that's not the issue. But that entire shielded room from 2025? The walls, the airlock - all unnecessary and all has to come out. At least it's clean.",
+                            options: [
+                                { id: 'full', name: 'Full room decommissioning', desc: 'Remove pump and all room structures.', cost: 120000, time: 10, dose: 2 },
+                                { id: 'phased', name: 'Phased approach', desc: 'Pump first, room structure later.', cost: 140000, time: 14, dose: 2.5 }
+                            ]
+                        },
+                        airlockBypassed: {
+                            situation: 'Pump and room decommissioning complicated by contamination spread from the 2040 airlock bypass.',
+                            quote: "That 2040 bypass decision - it's made this whole room a contamination problem. Pump removal is secondary to cleaning up the mess that's spread over 45 years. This is expensive.",
+                            options: [
+                                { id: 'full', name: 'Full decontamination and removal', desc: 'Clean everything, then remove.', cost: 200000, time: 18, dose: 4 },
+                                { id: 'remote', name: 'Remote handling throughout', desc: 'Treat as high-contamination from the start.', cost: 280000, time: 15, dose: 1 }
+                            ]
+                        },
+                        default: {
+                            situation: 'Pump and dedicated room decommissioning.',
+                            quote: "Pump room decommissioning. Standard approach.",
+                            options: [
+                                { id: 'full', name: 'Full decommissioning', desc: 'Remove everything.', cost: 150000, time: 12, dose: 2 }
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -2149,7 +2717,21 @@ const STATE = {
     totals: { cost: 0, dose: 0, time: 0 },
     stageTotals: {},
     plantHealth: 100,
-    injuries: 0
+    injuries: 0,
+    // Element-specific state for compounding consequences
+    elementState: {
+        pumpAccess: {
+            accessFixed: false,
+            workaroundUsed: false,
+            inspectionGap: false,
+            deteriorating: false
+        },
+        weldClearance: {},
+        controlPanel: {},
+        pipeConnections: {},
+        pipeRouting: {},
+        materialSpec: {}
+    }
 };
 
 // ============================================
@@ -2336,12 +2918,33 @@ function renderDesignModal(elId, element) {
         availableBudget += currentChoice.cost;
     }
     
-    let html = `<div class="situation-box"><p>${data.description}</p></div>`;
-    html += `<div style="margin-bottom: 15px; padding: 10px; background: var(--deep-navy); border-radius: 6px; display: flex; justify-content: space-between;">
-        <span>Remaining Design Budget:</span>
-        <span class="stat-value ${availableBudget < 150000 ? 'warning' : ''}">${formatMoney(availableBudget)}</span>
-    </div>`;
-    html += '<div class="options-list">';
+    let html = '';
+    
+    // Context bar with budget
+    html += `
+        <div class="context-bar">
+            <span class="context-design">📅 Year 2025 · Design Phase</span>
+            <span class="context-cost">💰 Budget: ${formatMoney(availableBudget)}</span>
+        </div>
+    `;
+    
+    // Situation panel - the question
+    html += `
+        <div class="situation-panel">
+            <div class="situation-label">Design Decision Required</div>
+            <div class="situation-text">${data.description}</div>
+        </div>
+    `;
+    
+    // Decision section header
+    html += `
+        <div class="decision-section">
+            <div class="decision-header">
+                <span class="decision-label">Choose Your Approach</span>
+                <div class="decision-line"></div>
+            </div>
+            <div class="options-list">
+    `;
     
     data.options.forEach(opt => {
         const sel = STATE.designChoices[elId] === opt.id ? 'selected' : '';
@@ -2349,25 +2952,28 @@ function renderDesignModal(elId, element) {
         const disabledClass = affordable ? '' : 'disabled';
         
         html += `
-            <div class="option-card ${sel} ${disabledClass}" data-id="${opt.id}" data-cost="${opt.cost}">
-                <div class="choice-image">[Image: ${opt.name}]</div>
-                <div class="option-header">
-                    <span class="option-name">${opt.name}</span>
-                    <span class="option-cost">${formatMoney(opt.cost)}</span>
+            <div class="design-card ${sel} ${disabledClass}" data-id="${opt.id}" data-cost="${opt.cost}">
+                <div class="design-card-image">[Illustration: ${opt.name}]</div>
+                <div class="design-card-body">
+                    <div class="design-card-header">
+                        <span class="design-card-name">${opt.name}</span>
+                        <span class="design-card-cost">${formatMoney(opt.cost)}</span>
+                    </div>
+                    <p class="design-card-desc">${opt.desc}</p>
+                    ${!affordable ? '<div class="disabled-reason">⚠️ Insufficient budget</div>' : ''}
                 </div>
-                <p class="option-desc">${opt.desc}</p>
-                ${!affordable ? '<div class="disabled-reason">⚠️ Insufficient budget</div>' : ''}
             </div>
         `;
     });
-    html += '</div>';
+    
+    html += '</div></div>';
     
     document.getElementById('modalBody').innerHTML = html;
     
     let selected = STATE.designChoices[elId] || null;
-    document.querySelectorAll('.option-card:not(.disabled)').forEach(card => {
+    document.querySelectorAll('.design-card:not(.disabled)').forEach(card => {
         card.onclick = () => {
-            document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.design-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
             selected = card.dataset.id;
         };
@@ -2405,6 +3011,7 @@ function renderDecisionModal(elId, element) {
     const stageKey = `stage${STATE.stage}`;
     const designChoice = STATE.designChoices[elId];
     const designOpt = element.stage1.options.find(o => o.id === designChoice);
+    const stage = GAME_DATA.stages[STATE.stage];
     
     let stageData = element[stageKey]?.[designChoice];
     
@@ -2414,67 +3021,102 @@ function renderDecisionModal(elId, element) {
         return;
     }
     
-    // Handle conditional (trigger-based or flag-based)
-    if (stageData.checkTrigger) {
+    // Handle element state-based scenarios (new compounding system)
+    if (stageData.checkElementState && stageData.scenarios) {
+        const elState = STATE.elementState[elId] || {};
+        
+        // Check states in priority order (most specific first)
+        if (elState.deteriorating && stageData.scenarios.deteriorating) {
+            stageData = stageData.scenarios.deteriorating;
+        } else if (elState.emergencyOccurred && stageData.scenarios.emergencyOccurred) {
+            stageData = stageData.scenarios.emergencyOccurred;
+        } else if (elState.inspectionGap && stageData.scenarios.inspectionGap) {
+            stageData = stageData.scenarios.inspectionGap;
+        } else if (elState.accessFixed && stageData.scenarios.accessFixed) {
+            stageData = stageData.scenarios.accessFixed;
+        } else if (elState.workaroundUsed && stageData.scenarios.workaroundUsed) {
+            stageData = stageData.scenarios.workaroundUsed;
+        } else if (elState.airlockBypassed && stageData.scenarios.airlockBypassed) {
+            stageData = stageData.scenarios.airlockBypassed;
+        } else if (elState.airlockMaintained && stageData.scenarios.airlockMaintained) {
+            stageData = stageData.scenarios.airlockMaintained;
+        } else {
+            stageData = stageData.scenarios.default || stageData.scenarios[Object.keys(stageData.scenarios)[0]];
+        }
+    }
+    // Handle old trigger-based system (for backwards compatibility)
+    else if (stageData.checkTrigger) {
         stageData = STATE.triggers[stageData.checkTrigger] ? stageData.triggered : stageData.notTriggered;
     } else if (stageData.checkFlag) {
         stageData = STATE.flags[stageData.checkFlag] ? stageData.hasFlag : stageData.noFlag;
     }
     
-    const char = GAME_DATA.characters[GAME_DATA.stages[STATE.stage].char];
+    const char = GAME_DATA.characters[stage.char];
     const stageCost = STATE.stageTotals[STATE.stage]?.cost || 0;
     
     let html = '';
     
-    // Design recall - just show what they chose, no judgment
+    // Context bar - year, design choice, stage cost
     html += `
-        <div class="design-recall">
-            <strong>2025 Design:</strong> ${designOpt.name}
+        <div class="context-bar">
+            <span class="context-design">📅 Year ${stage.year} · 2025 Design: <strong>${designOpt.name}</strong></span>
+            <span class="context-cost">💰 Stage Cost: ${formatMoney(stageCost)}</span>
         </div>
     `;
     
-    // Show accumulated stage cost (not budget remaining)
-    html += `<div style="margin-bottom: 15px; padding: 10px; background: var(--deep-navy); border-radius: 6px; display: flex; justify-content: space-between;">
-        <span>Stage Cost So Far:</span>
-        <span class="stat-value" style="color: var(--blue);">${formatMoney(stageCost)}</span>
-    </div>`;
-    
-    // Situation box - neutral styling, let content speak for itself
-    html += `<div class="situation-box"><p>${stageData.situation}</p></div>`;
-    
-    // Character quote
+    // Situation panel - the main story
     html += `
-        <div class="char-quote">
-            <div class="char-portrait">${char.emoji}</div>
-            <div>
-                <div class="char-quote-name">${char.name}</div>
-                <p class="char-quote-text">"${stageData.quote}"</p>
+        <div class="situation-panel">
+            <div class="situation-label">Current Situation</div>
+            <div class="situation-text">${stageData.situation}</div>
+        </div>
+    `;
+    
+    // Character speech bubble
+    html += `
+        <div class="speech-bubble">
+            <div class="speech-portrait">${char.emoji}</div>
+            <div class="speech-name">${char.name}, ${char.role}</div>
+            <div class="speech-text">"${stageData.quote}"</div>
+        </div>
+    `;
+    
+    // Decision section
+    html += `
+        <div class="decision-section">
+            <div class="decision-header">
+                <span class="decision-label">Your Decision</span>
+                <div class="decision-line"></div>
             </div>
-        </div>
+            <div class="options-list">
     `;
     
-    // Options - all available, no budget restrictions
-    html += '<div class="options-list">';
     stageData.options.forEach(opt => {
         const cost = opt.cost || 0;
+        const hasImpacts = opt.time || opt.dose || opt.healthImpact || opt.risk;
         
         html += `
             <div class="option-card" data-id="${opt.id}">
-                <div class="option-header">
-                    <span class="option-name">${opt.name}</span>
-                    <span class="option-cost">${formatMoney(cost)}</span>
+                <div class="option-main">
+                    <div class="option-content">
+                        <div class="option-name">${opt.name}</div>
+                        <div class="option-desc">${opt.desc}</div>
+                    </div>
+                    <div class="option-cost-badge">${formatMoney(cost)}</div>
                 </div>
-                <p class="option-desc">${opt.desc}</p>
+                ${hasImpacts ? `
                 <div class="option-impacts">
                     ${opt.time ? `<span class="impact negative">⏱️ +${opt.time} days</span>` : ''}
                     ${opt.dose ? `<span class="impact negative">☢️ +${opt.dose} mSv</span>` : ''}
                     ${opt.healthImpact ? `<span class="impact ${opt.healthImpact > 0 ? 'positive' : 'negative'}">❤️ ${opt.healthImpact > 0 ? '+' : ''}${opt.healthImpact}%</span>` : ''}
-                    ${opt.risk ? `<span class="impact neutral">⚠️ ${opt.risk}% failure risk</span>` : ''}
+                    ${opt.risk ? `<span class="impact neutral">⚠️ ${opt.risk}% risk</span>` : ''}
                 </div>
+                ` : ''}
             </div>
         `;
     });
-    html += '</div>';
+    
+    html += '</div></div>';
     
     document.getElementById('modalBody').innerHTML = html;
     
@@ -2515,23 +3157,37 @@ function renderDecisionModal(elId, element) {
 }
 
 function showFailure(elId, opt, stageData) {
-    let html = `
-        <div class="situation-box danger">
-            <p><strong>Attempt Failed!</strong></p>
-            <p>The risky approach didn't work. Consequences apply.</p>
-        </div>
-    `;
-    
     const extraCost = opt.cost || 0;
     const extraDose = (opt.dose || 0) + 2;
     const extraTime = (opt.time || 0) + 5;
     
-    html += `
-        <div class="option-impacts" style="justify-content: center; padding: 20px;">
-            <span class="impact negative">💰 ${formatMoney(extraCost + 50000)}</span>
-            <span class="impact negative">⏱️ +${extraTime} days</span>
-            <span class="impact negative">☢️ +${extraDose} mSv</span>
-            <span class="impact negative">❤️ -10%</span>
+    let html = `
+        <div class="failure-panel">
+            <div class="failure-icon">⚠️</div>
+            <div class="failure-title">Attempt Failed!</div>
+            <div class="failure-text">The risky approach didn't work. The situation has gotten worse and you must deal with the consequences.</div>
+        </div>
+        <div class="failure-impacts">
+            <div class="failure-impact">
+                <span class="failure-impact-icon">💰</span>
+                <span class="failure-impact-value">${formatMoney(extraCost + 50000)}</span>
+                <span class="failure-impact-label">Emergency Costs</span>
+            </div>
+            <div class="failure-impact">
+                <span class="failure-impact-icon">⏱️</span>
+                <span class="failure-impact-value">+${extraTime} days</span>
+                <span class="failure-impact-label">Delays</span>
+            </div>
+            <div class="failure-impact">
+                <span class="failure-impact-icon">☢️</span>
+                <span class="failure-impact-value">+${extraDose} mSv</span>
+                <span class="failure-impact-label">Dose Uptake</span>
+            </div>
+            <div class="failure-impact">
+                <span class="failure-impact-icon">❤️</span>
+                <span class="failure-impact-value">-10%</span>
+                <span class="failure-impact-label">Plant Health</span>
+            </div>
         </div>
     `;
     
@@ -2539,7 +3195,7 @@ function showFailure(elId, opt, stageData) {
     document.getElementById('modalFooter').innerHTML = '<button class="btn btn-danger" id="btnConfirm">Accept Consequences</button>';
     
     document.getElementById('btnConfirm').onclick = () => {
-        // Apply failure
+        // Apply failure costs
         STATE.stageTotals[STATE.stage].cost += extraCost + 50000;
         STATE.stageTotals[STATE.stage].dose += extraDose;
         STATE.stageTotals[STATE.stage].time += extraTime;
@@ -2548,8 +3204,16 @@ function showFailure(elId, opt, stageData) {
         STATE.totals.time += extraTime;
         STATE.plantHealth = Math.max(0, STATE.plantHealth - 10);
         
+        // Apply failState if specified, otherwise use setState
+        if (!STATE.elementState[elId]) STATE.elementState[elId] = {};
+        const stateToApply = opt.failState || opt.setState || { failureOccurred: true };
+        Object.keys(stateToApply).forEach(key => {
+            STATE.elementState[elId][key] = stateToApply[key];
+        });
+        console.log(`Failure state for ${elId}:`, STATE.elementState[elId]);
+        
         STATE.completed[STATE.stage][elId] = true;
-        document.querySelector(`[data-element="${elId}"] .hotspot-dot`).classList.add('issue');
+        document.querySelector(`[data-element="${elId}"] .hotspot-dot`).classList.add('done');
         
         updateStatsDisplay();
         updateProgressLabel();
@@ -2583,8 +3247,18 @@ function applyDecision(elId, opt, stageData, previousChoice = null) {
         STATE.plantHealth = Math.max(0, Math.min(100, STATE.plantHealth + healthImpact));
     }
     
+    // Handle old trigger/flag system
     if (opt.trigger) STATE.triggers[opt.trigger] = true;
     if (opt.setFlag) STATE.flags[opt.setFlag] = true;
+    
+    // Handle new element state system for compounding consequences
+    if (opt.setState) {
+        if (!STATE.elementState[elId]) STATE.elementState[elId] = {};
+        Object.keys(opt.setState).forEach(key => {
+            STATE.elementState[elId][key] = opt.setState[key];
+        });
+        console.log(`State updated for ${elId}:`, STATE.elementState[elId]);
+    }
     
     STATE.completed[STATE.stage][elId] = true;
     STATE.stageChoices[`${STATE.stage}_${elId}`] = opt.id;
