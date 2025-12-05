@@ -822,7 +822,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.8</div>
+<div class="version-tag">v0.9</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -1078,62 +1078,56 @@ const GAME_DATA = {
             // STAGE 2: MAINTENANCE - Every design gets decisions, but difficulty varies
             stage2: {
                 corner: {
-                    situation: 'RCP seal replacement required. <strong>The pump is 2.1m wide. The gap to remove it is only 1.8m.</strong> It physically cannot fit through the access route.',
-                    quote: "Who signed off on this? The pump doesn't fit through the gap!",
-                    boxType: 'danger',
+                    situation: 'RCP seal replacement required. The pump is 2.1m wide but the corner position only provides 1.8m clearance. It physically cannot be removed through the access route.',
+                    quote: "Boss, we've got a problem. That corner position from the 2025 design - the pump doesn't fit through the gap. Whoever signed off on 1.8m clearance for a 2.1m pump... anyway, what do you want us to do?",
                     options: [
-                        { id: 'subcontract', name: 'Hire specialist rigging team', desc: 'Experts with hydraulic jacks and custom rigging.', cost: 180000, time: 18, dose: 3 },
-                        { id: 'force', name: 'Attempt to tilt and squeeze through', desc: 'Risky. May damage pump casing.', cost: 40000, time: 5, dose: 6, risk: 70 },
-                        { id: 'modify', name: 'Cut access opening in wall', desc: 'Permanent structural modification.', cost: 120000, time: 14, dose: 4 }
+                        { id: 'subcontract', name: 'Hire specialist rigging team', desc: 'Bring in experts with hydraulic jacks and custom rigging to work around the constraint.', cost: 180000, time: 18, dose: 3 },
+                        { id: 'force', name: 'Attempt to tilt and manoeuvre through', desc: 'Try to angle the pump through the gap. Risky - may damage pump casing.', cost: 40000, time: 5, dose: 6, risk: 70 },
+                        { id: 'modify', name: 'Cut a larger access opening', desc: 'Permanently modify the wall structure to create adequate access.', cost: 120000, time: 14, dose: 4 }
                     ]
                 },
                 openBay: {
-                    situation: 'RCP seal replacement required. Pump is positioned in open bay with full crane coverage.',
-                    quote: 'Full crane access. Textbook lift. This is how it should be done.',
-                    boxType: 'good',
+                    situation: 'RCP seal replacement required. The pump is positioned in the open bay with 2m clearance and full crane coverage.',
+                    quote: "Good news - that open bay layout from 2025 is paying off. We've got full crane access, plenty of clearance. Standard lift operation. Just need your sign-off on the approach.",
                     options: [
-                        { id: 'standard', name: 'Standard crane lift', desc: 'Routine operation. Lift, move, replace seals.', cost: 25000, time: 3, dose: 1 },
-                        { id: 'enhanced', name: 'Enhanced procedure with extra checks', desc: 'Additional inspections while pump is out.', cost: 40000, time: 4, dose: 1.5 }
+                        { id: 'standard', name: 'Standard crane lift', desc: 'Routine lift operation. Remove pump, replace seals, reinstall.', cost: 25000, time: 3, dose: 1 },
+                        { id: 'enhanced', name: 'Enhanced procedure with extra inspections', desc: 'While the pump is out, conduct additional inspections of the mounting and surrounding area.', cost: 40000, time: 4, dose: 1.5 }
                     ]
                 },
                 dedicated: {
-                    situation: 'RCP seal replacement required. Pump is accessible but airlock system adds complexity.',
-                    quote: 'Nice room, but did we really need an airlock for this pump?',
-                    boxType: 'warning',
+                    situation: 'RCP seal replacement required. The pump is in a dedicated shielded room with airlock system.',
+                    quote: "The pump room from 2025 - it's accessible, but this airlock system adds a lot of complexity. We need full contamination protocols just to get in there. Did we really need all this shielding for a coolant pump?",
                     options: [
-                        { id: 'airlock', name: 'Full airlock protocol', desc: 'Follow all airlock procedures.', cost: 45000, time: 6, dose: 2 },
-                        { id: 'bypass', name: 'Temporary airlock bypass', desc: 'Faster but creates contamination control paperwork.', cost: 35000, time: 4, dose: 2.5 }
+                        { id: 'airlock', name: 'Full airlock protocol', desc: 'Follow complete airlock entry and exit procedures as designed.', cost: 45000, time: 6, dose: 2 },
+                        { id: 'bypass', name: 'Temporary airlock bypass', desc: 'Faster access but requires additional contamination control paperwork.', cost: 35000, time: 4, dose: 2.5 }
                     ]
                 }
             },
             // STAGE 3: INSPECTION
             stage3: {
                 corner: {
-                    situation: 'Pump casing and mounting bolts require UT inspection. <strong>Clearance is insufficient for standard probe positioning.</strong>',
-                    quote: "I can't get the probe in at the right angle. Clearance is too tight.",
-                    boxType: 'danger',
+                    situation: 'Pump casing and mounting bolts require ultrasonic inspection. The corner position provides insufficient clearance for standard probe positioning.',
+                    quote: "Remember that corner position from 2025? Now I can't get my UT probe in at the correct angle. The clearance is too tight for proper inspection coverage. How do you want me to handle this?",
                     options: [
-                        { id: 'scaffold', name: 'Erect scaffolding, use angled probes', desc: 'Partial coverage only. Document limitations.', cost: 45000, time: 5, dose: 3, trigger: 'pumpInspectionGap' },
-                        { id: 'accept', name: 'Accept inspection limitation', desc: 'Mark as "inaccessible" in report. Regulatory note.', cost: 5000, time: 1, dose: 0.5, healthImpact: -10, trigger: 'pumpInspectionGap' },
-                        { id: 'retrofit', name: 'Install permanent access platform', desc: 'Expensive but enables full inspection forever.', cost: 120000, time: 12, dose: 2 }
+                        { id: 'scaffold', name: 'Erect scaffolding and use angled probes', desc: 'Partial coverage achievable. Will need to document limitations in the report.', cost: 45000, time: 5, dose: 3, trigger: 'pumpInspectionGap' },
+                        { id: 'accept', name: 'Accept the inspection limitation', desc: 'Mark areas as "inaccessible" in the inspection report. Regulator will note this.', cost: 5000, time: 1, dose: 0.5, healthImpact: -10, trigger: 'pumpInspectionGap' },
+                        { id: 'retrofit', name: 'Install permanent access platform', desc: 'Expensive now, but enables full inspection coverage for remaining plant life.', cost: 120000, time: 12, dose: 2 }
                     ]
                 },
                 openBay: {
-                    situation: 'Pump casing and mounting bolts require UT inspection. Full access available.',
-                    quote: 'Textbook access. Full probe coverage. No limitations.',
-                    boxType: 'good',
+                    situation: 'Pump casing and mounting bolts require ultrasonic inspection. The open bay provides excellent access from all angles.',
+                    quote: "That open bay design from 2025 - brilliant. I've got full access all around the pump. Can get my probes in at every angle needed. Standard inspection or do you want the enhanced coverage?",
                     options: [
-                        { id: 'standard', name: 'Standard UT inspection', desc: 'Full coverage with standard equipment.', cost: 15000, time: 2, dose: 1 },
-                        { id: 'enhanced', name: 'Enhanced inspection with TOFD', desc: 'Additional technique for better defect sizing.', cost: 25000, time: 3, dose: 1.5 }
+                        { id: 'standard', name: 'Standard UT inspection', desc: 'Full coverage with standard equipment. Meets all requirements.', cost: 15000, time: 2, dose: 1 },
+                        { id: 'enhanced', name: 'Enhanced inspection with TOFD', desc: 'Additional Time-of-Flight Diffraction technique for better defect sizing.', cost: 25000, time: 3, dose: 1.5 }
                     ]
                 },
                 dedicated: {
-                    situation: 'Pump inspection required. Airlock protocols apply. Contamination controls add time.',
-                    quote: 'Good access once you get in. The airlock just slows everything down.',
-                    boxType: 'warning',
+                    situation: 'Pump inspection required. Good access once inside the room, but airlock protocols apply.',
+                    quote: "The pump room - good access once I'm inside, but these airlock protocols from the 2025 design slow everything down. Every entry and exit is a procedure. What's the priority here?",
                     options: [
-                        { id: 'standard', name: 'Standard inspection with airlock', desc: 'Follow full protocols.', cost: 25000, time: 4, dose: 1.5 },
-                        { id: 'extended', name: 'Extended inspection during access', desc: 'Do extra work while in there to minimise entries.', cost: 35000, time: 5, dose: 2 }
+                        { id: 'standard', name: 'Standard inspection with airlock', desc: 'Follow full entry/exit protocols for each inspection task.', cost: 25000, time: 4, dose: 1.5 },
+                        { id: 'extended', name: 'Extended single-entry inspection', desc: 'Minimise entries by doing extra work during each access.', cost: 35000, time: 5, dose: 2 }
                     ]
                 }
             },
@@ -1142,72 +1136,65 @@ const GAME_DATA = {
                 corner: {
                     checkTrigger: 'pumpInspectionGap',
                     triggered: {
-                        situation: '<strong>Night shift. Pump vibrations spiking.</strong> The problem is in the area that couldn\'t be inspected.',
-                        quote: 'Vibrations from exactly where we couldn\'t inspect. What a surprise.',
-                        boxType: 'danger',
+                        situation: 'Night shift. Pump vibrations spiking. The vibration is coming from the area that could not be inspected in 2055 due to access limitations.',
+                        quote: "It's 3am and we've got a problem. Pump vibrations are spiking - and it's coming from exactly the area we couldn't inspect back in 2055 because of that corner position. We're flying blind here. What's the call?",
                         options: [
-                            { id: 'shutdown', name: 'Emergency shutdown for inspection', desc: 'Safe but expensive revenue loss.', cost: 150000, time: 5, dose: 2 },
-                            { id: 'reduce', name: 'Reduce power to 50%', desc: 'Monitor closely. Hope it stabilises.', cost: 50000, time: 0, dose: 0, risk: 50, healthImpact: -5 },
-                            { id: 'continue', name: 'Continue operation', desc: 'It might be fine. Or not.', cost: 0, time: 0, dose: 0, risk: 70, healthImpact: -15 }
+                            { id: 'shutdown', name: 'Emergency shutdown for inspection', desc: 'Safe option but significant revenue loss and investigation required.', cost: 150000, time: 5, dose: 2 },
+                            { id: 'reduce', name: 'Reduce power to 50%', desc: 'Lower the stress on the pump. Monitor closely and hope it stabilises.', cost: 50000, time: 0, dose: 0, risk: 50, healthImpact: -5 },
+                            { id: 'continue', name: 'Continue and monitor', desc: 'It might be fine. Or it might not.', cost: 0, time: 0, dose: 0, risk: 70, healthImpact: -15 }
                         ]
                     },
                     notTriggered: {
-                        situation: 'Pump operational review. Vibrations within normal range despite access limitations.',
-                        quote: 'Running okay for now, but that corner position still worries me.',
-                        boxType: 'warning',
+                        situation: 'Pump operational review. Despite the corner position, vibrations are within normal range.',
+                        quote: "Pump review time. That corner position still makes me nervous - we got lucky on the inspection coverage. Vibrations are okay for now, but I'd recommend enhanced monitoring. Your call.",
                         options: [
-                            { id: 'monitor', name: 'Enhanced monitoring programme', desc: 'Extra vibration sensors and analysis.', cost: 30000, time: 1, dose: 0 },
-                            { id: 'continue', name: 'Standard monitoring', desc: 'Normal surveillance.', cost: 10000, time: 0, dose: 0 }
+                            { id: 'monitor', name: 'Enhanced monitoring programme', desc: 'Install additional vibration sensors and analysis equipment.', cost: 30000, time: 1, dose: 0 },
+                            { id: 'continue', name: 'Standard monitoring', desc: 'Continue with normal surveillance programme.', cost: 10000, time: 0, dose: 0 }
                         ]
                     }
                 },
                 openBay: {
-                    situation: 'Pump operational review. All parameters nominal. Good access for any needed interventions.',
-                    quote: 'Pump running like a dream. If we need to touch it, we can.',
-                    boxType: 'good',
+                    situation: 'Pump operational review. All parameters nominal. Full inspection history available from good access in previous years.',
+                    quote: "Pump running perfectly. That open bay design from 2025 has given us complete inspection records over the years - we know exactly what condition it's in. No concerns here. Just confirming the monitoring approach.",
                     options: [
-                        { id: 'standard', name: 'Standard monitoring', desc: 'Normal surveillance programme.', cost: 5000, time: 0, dose: 0 },
-                        { id: 'predictive', name: 'Predictive maintenance analysis', desc: 'Advanced analytics to optimise next outage.', cost: 15000, time: 0, dose: 0 }
+                        { id: 'standard', name: 'Standard monitoring', desc: 'Continue normal surveillance programme.', cost: 5000, time: 0, dose: 0 },
+                        { id: 'predictive', name: 'Predictive maintenance analysis', desc: 'Use historical data to optimise timing of next maintenance.', cost: 15000, time: 0, dose: 0 }
                     ]
                 },
                 dedicated: {
-                    situation: 'Pump operational review. Running well but airlock maintenance is due.',
-                    quote: 'Pump is fine. The airlock servicing is the headache.',
-                    boxType: 'warning',
+                    situation: 'Pump operational review. Pump running well but the airlock system requires its own maintenance.',
+                    quote: "Pump's fine, but that dedicated room from 2025 - now the airlock seals need servicing. We're maintaining equipment just to maintain other equipment. What's your priority?",
                     options: [
-                        { id: 'service', name: 'Full airlock service', desc: 'Maintain the unnecessary system.', cost: 25000, time: 2, dose: 0.5 },
-                        { id: 'defer', name: 'Defer airlock maintenance', desc: 'Not strictly required yet.', cost: 5000, time: 0, dose: 0, healthImpact: -3 }
+                        { id: 'service', name: 'Full airlock service', desc: 'Complete maintenance of the airlock system.', cost: 25000, time: 2, dose: 0.5 },
+                        { id: 'defer', name: 'Defer airlock maintenance', desc: 'Not critical yet. Can wait until next outage.', cost: 5000, time: 0, dose: 0, healthImpact: -3 }
                     ]
                 }
             },
             // STAGE 5: DECOMMISSIONING
             stage5: {
                 corner: {
-                    situation: 'Pump removal required. <strong>Same problem as 2040: it doesn\'t fit through the access route.</strong>',
-                    quote: "Sixty years later and we're still dealing with that corner position.",
-                    boxType: 'danger',
+                    situation: 'Pump removal for decommissioning. The same access problem from 2040 remains - the pump still does not fit through the corner access route.',
+                    quote: "Sixty years later and we're right back where we were in 2040. That corner position - pump still doesn't fit through the gap. We've got three options, none of them cheap.",
                     options: [
-                        { id: 'demolish', name: 'Demolish wall section', desc: 'Create access by removing concrete.', cost: 80000, time: 15, dose: 4 },
-                        { id: 'cut', name: 'Cut pump into pieces in-situ', desc: 'Manual cutting in confined space.', cost: 60000, time: 20, dose: 8 },
-                        { id: 'robot', name: 'Robotic cutting and removal', desc: 'Expensive but minimises dose.', cost: 200000, time: 8, dose: 1 }
+                        { id: 'demolish', name: 'Demolish wall section', desc: 'Remove the concrete wall to create adequate access.', cost: 80000, time: 15, dose: 4 },
+                        { id: 'cut', name: 'Cut pump into pieces in-situ', desc: 'Segment the pump for removal. Manual cutting in confined space.', cost: 60000, time: 20, dose: 8 },
+                        { id: 'robot', name: 'Robotic cutting system', desc: 'Remote cutting minimises dose but requires specialist equipment.', cost: 200000, time: 8, dose: 1 }
                     ]
                 },
                 openBay: {
-                    situation: 'Pump removal. Reverse of installation. Full crane access.',
-                    quote: 'Hook on, lift out, job done. This is how decommissioning should work.',
-                    boxType: 'good',
+                    situation: 'Pump removal for decommissioning. Full crane access available - reverse of original installation.',
+                    quote: "This is how decommissioning should work. That open bay from 2025 - crane hooks on, pump lifts out. Exactly like the installation but in reverse. Clean and simple. How do you want it handled?",
                     options: [
-                        { id: 'standard', name: 'Standard crane removal', desc: 'Lift and containerise.', cost: 20000, time: 3, dose: 1 },
-                        { id: 'segmented', name: 'Segmented removal for recycling', desc: 'More work but enables material segregation.', cost: 35000, time: 5, dose: 1.5 }
+                        { id: 'standard', name: 'Standard crane removal', desc: 'Lift and containerise in one operation.', cost: 20000, time: 3, dose: 1 },
+                        { id: 'segmented', name: 'Segmented removal for recycling', desc: 'Additional cutting to enable material segregation and recycling.', cost: 35000, time: 5, dose: 1.5 }
                     ]
                 },
                 dedicated: {
-                    situation: 'Pump easily removed, but <strong>the entire shielded room must also be decommissioned.</strong>',
-                    quote: 'Pump out in a day. Room decontamination? That\'s weeks.',
-                    boxType: 'warning',
+                    situation: 'Pump removal straightforward, but the entire dedicated shielded room must also be decommissioned.',
+                    quote: "Pump comes out in a day - that's not the problem. But that whole shielded room from 2025? The walls, the airlock, all the unnecessary structure - it all has to come out too. Major extra work.",
                     options: [
-                        { id: 'full', name: 'Full room decommissioning', desc: 'Pump plus unnecessary room structures.', cost: 150000, time: 12, dose: 2 },
-                        { id: 'seal', name: 'Remove pump, seal room for later', desc: 'Defer room work but creates future liability.', cost: 60000, time: 5, dose: 1, healthImpact: -5 }
+                        { id: 'full', name: 'Full room decommissioning', desc: 'Remove pump and all associated room structures.', cost: 150000, time: 12, dose: 2 },
+                        { id: 'seal', name: 'Remove pump, seal room for later', desc: 'Defer the room decommissioning. Creates future liability.', cost: 60000, time: 5, dose: 1, healthImpact: -5 }
                     ]
                 }
             }
@@ -1228,61 +1215,55 @@ const GAME_DATA = {
             },
             stage2: {
                 '50mm': {
-                    situation: 'Weld repair needed. <strong>50mm clearance too tight for comfortable welding position.</strong>',
-                    quote: "50mm. The absolute minimum. And now we're paying for it.",
-                    boxType: 'danger',
+                    situation: 'Weld repair needed on a pipe section. The 50mm code-minimum clearance from the 2025 design makes welding positions extremely awkward.',
+                    quote: "We've got a weld that needs repair, but that 50mm clearance from 2025 - it's the absolute minimum and now we're paying for it. My welder can barely get in there. How do you want to handle this?",
                     options: [
-                        { id: 'awkward', name: 'Weld in awkward position', desc: 'Possible but poor quality risk.', cost: 15000, time: 4, dose: 4, risk: 20, healthImpact: -5 },
-                        { id: 'platform', name: 'Install temporary platform', desc: 'Better position, better weld.', cost: 35000, time: 6, dose: 2 },
-                        { id: 'defer', name: 'Defer repair to next outage', desc: 'Risk leaving defect in place.', cost: 0, time: 0, dose: 0, healthImpact: -5, trigger: 'weldDeferred' }
+                        { id: 'awkward', name: 'Weld in awkward position', desc: 'Attempt the repair in constrained space. Risk of poor weld quality.', cost: 15000, time: 4, dose: 4, risk: 20, healthImpact: -5 },
+                        { id: 'platform', name: 'Install temporary access platform', desc: 'Better working position, better quality weld.', cost: 35000, time: 6, dose: 2 },
+                        { id: 'defer', name: 'Defer repair to next outage', desc: 'Leave the defect and monitor. Risk of progression.', cost: 0, time: 0, dose: 0, healthImpact: -5, trigger: 'weldDeferred' }
                     ]
                 },
                 '150mm': {
-                    situation: 'Weld repair needed. Standard clearance available.',
-                    quote: 'Proper clearance. Welder can get in comfortably.',
-                    boxType: 'good',
+                    situation: 'Weld repair needed on a pipe section. The 150mm clearance specified in 2025 provides adequate working room.',
+                    quote: "Found a weld that needs attention. Good news is that 150mm clearance from 2025 - my welder can get in there comfortably. Standard repair or do you want the enhanced treatment?",
                     options: [
-                        { id: 'standard', name: 'Standard weld repair', desc: 'Normal procedure.', cost: 20000, time: 2, dose: 1 },
-                        { id: 'enhanced', name: 'Enhanced repair with PWHT', desc: 'Post-weld heat treatment for longevity.', cost: 30000, time: 3, dose: 1.5 }
+                        { id: 'standard', name: 'Standard weld repair', desc: 'Normal repair procedure with good access.', cost: 20000, time: 2, dose: 1 },
+                        { id: 'enhanced', name: 'Enhanced repair with PWHT', desc: 'Post-weld heat treatment for maximum longevity.', cost: 30000, time: 3, dose: 1.5 }
                     ]
                 },
                 '300mm': {
-                    situation: 'Weld repair needed. <strong>Permanent scaffolding has surface contamination.</strong>',
-                    quote: 'Plenty of room, but that scaffolding is now contaminated.',
-                    boxType: 'warning',
+                    situation: 'Weld repair needed. Plenty of clearance, but the permanent scaffolding installed in 2025 has surface contamination.',
+                    quote: "The 300mm clearance is great for access, but that permanent scaffolding from 2025? It's picked up contamination over 15 years. We need to deal with that before we can work on the weld.",
                     options: [
-                        { id: 'decon', name: 'Decontaminate scaffolding first', desc: 'Clean before repair work.', cost: 30000, time: 4, dose: 2 },
-                        { id: 'remove', name: 'Remove contaminated scaffolding', desc: 'Creates waste but clears the area.', cost: 25000, time: 3, dose: 1.5 }
+                        { id: 'decon', name: 'Decontaminate scaffolding first', desc: 'Clean the scaffolding surfaces before repair work.', cost: 30000, time: 4, dose: 2 },
+                        { id: 'remove', name: 'Remove contaminated scaffolding sections', desc: 'Take out the affected sections. Creates waste but clears the area.', cost: 25000, time: 3, dose: 1.5 }
                     ]
                 }
             },
             stage3: {
                 '50mm': {
-                    situation: 'In-Service Inspection required. <strong>UT probe needs 80mm clearance. You have 50mm.</strong>',
-                    quote: "Can't get proper probe angle. I'll have to document 'limited coverage'.",
-                    boxType: 'danger',
+                    situation: 'In-Service Inspection of pipe welds required. The UT probe needs 80mm minimum clearance - you only have 50mm.',
+                    quote: "In-service inspection time. That 50mm clearance from 2025 - my probe needs 80mm to get the right angle. I physically cannot achieve full coverage. What do you want me to do?",
                     options: [
-                        { id: 'partial', name: 'Accept 60% coverage', desc: 'Document limitation. Regulatory note.', cost: 5000, time: 3, dose: 3, healthImpact: -10, trigger: 'weldInspectionGap' },
-                        { id: 'miniprobe', name: 'Specialist miniature probes', desc: 'Reduced accuracy but better coverage.', cost: 40000, time: 5, dose: 4, healthImpact: -5 },
-                        { id: 'excavate', name: 'Excavate wall for access', desc: 'Permanent improvement.', cost: 90000, time: 10, dose: 3 }
+                        { id: 'partial', name: 'Accept 60% coverage', desc: 'Document the limitation. Regulator will note the gap.', cost: 5000, time: 3, dose: 3, healthImpact: -10, trigger: 'weldInspectionGap' },
+                        { id: 'miniprobe', name: 'Use specialist miniature probes', desc: 'Smaller probes give better access but reduced accuracy.', cost: 40000, time: 5, dose: 4, healthImpact: -5 },
+                        { id: 'excavate', name: 'Excavate wall for permanent access', desc: 'Create the clearance that should have been there from the start.', cost: 90000, time: 10, dose: 3 }
                     ]
                 },
                 '150mm': {
-                    situation: 'In-Service Inspection. Full probe access available.',
-                    quote: 'Full coverage. Every weld scanned properly.',
-                    boxType: 'good',
+                    situation: 'In-Service Inspection of pipe welds required. The 150mm clearance provides full probe access.',
+                    quote: "Weld inspections due. That 150mm clearance from 2025 - exactly what I need. Full coverage, all angles. Just need to know if you want standard or the enhanced approach.",
                     options: [
-                        { id: 'standard', name: 'Standard UT examination', desc: '100% coverage achieved.', cost: 15000, time: 2, dose: 1 },
-                        { id: 'phased', name: 'Phased array for enhanced detection', desc: 'Better defect characterisation.', cost: 25000, time: 3, dose: 1.5 }
+                        { id: 'standard', name: 'Standard UT examination', desc: '100% coverage achieved with standard equipment.', cost: 15000, time: 2, dose: 1 },
+                        { id: 'phased', name: 'Phased array for enhanced detection', desc: 'Better defect characterisation and sizing.', cost: 25000, time: 3, dose: 1.5 }
                     ]
                 },
                 '300mm': {
-                    situation: 'Weld inspection. Scaffolding partially blocks some probe angles.',
-                    quote: 'Scaffolding is in the way of some shots. We can work around it.',
-                    boxType: 'warning',
+                    situation: 'Weld inspection required. The permanent scaffolding from 2025 partially blocks some probe angles.',
+                    quote: "Good clearance overall, but that permanent scaffolding from 2025 is in my way for some of the shots. I can work around it, but it adds time. Or we can survey the scaffolding condition too while we're here.",
                     options: [
                         { id: 'workaround', name: 'Work around scaffolding', desc: 'Some awkward angles but achievable.', cost: 20000, time: 4, dose: 2 },
-                        { id: 'survey', name: 'Add scaffolding contamination survey', desc: 'Check the scaffolding condition too.', cost: 30000, time: 5, dose: 2.5 }
+                        { id: 'survey', name: 'Include scaffolding contamination survey', desc: 'Check the scaffolding condition while doing the inspection.', cost: 30000, time: 5, dose: 2.5 }
                     ]
                 }
             },
@@ -1290,70 +1271,63 @@ const GAME_DATA = {
                 '50mm': {
                     checkTrigger: 'weldInspectionGap',
                     triggered: {
-                        situation: '<strong>Leak detected at weld location that couldn\'t be inspected.</strong> Activity in secondary system.',
-                        quote: 'Leak exactly where we couldn\'t see. Who could have predicted this?',
-                        boxType: 'danger',
+                        situation: 'Leak detected at a weld location. It is in the area that could not be fully inspected in 2055 due to the 50mm clearance limitation.',
+                        quote: "We've got a leak - and it's at exactly the weld location we couldn't properly inspect in 2055 because of that 50mm clearance. If we'd had proper access, we'd have caught this developing. What now?",
                         options: [
-                            { id: 'shutdown', name: 'Immediate shutdown and repair', desc: 'Fix it properly.', cost: 200000, time: 14, dose: 5 },
-                            { id: 'seal', name: 'Online leak sealing', desc: 'Temporary fix. May not hold.', cost: 50000, time: 2, dose: 2, risk: 40, healthImpact: -10 },
-                            { id: 'reduce', name: 'Reduce power and monitor', desc: 'Live with it until next outage.', cost: 80000, time: 0, dose: 0, healthImpact: -5 }
+                            { id: 'shutdown', name: 'Immediate shutdown and repair', desc: 'Fix it properly. Significant outage required.', cost: 200000, time: 14, dose: 5 },
+                            { id: 'seal', name: 'Online leak sealing', desc: 'Temporary clamp seal. May not hold long-term.', cost: 50000, time: 2, dose: 2, risk: 40, healthImpact: -10 },
+                            { id: 'reduce', name: 'Reduce power and monitor', desc: 'Lower pressure may slow the leak. Live with it until planned outage.', cost: 80000, time: 0, dose: 0, healthImpact: -5 }
                         ]
                     },
                     notTriggered: {
-                        situation: 'Weld operational review. No indications from the areas that could be inspected.',
-                        quote: 'What we could see looks fine. What we couldn\'t see... who knows.',
-                        boxType: 'warning',
+                        situation: 'Weld operational review. No leaks detected, but the areas with limited inspection coverage remain a concern.',
+                        quote: "No leaks yet, but that 50mm clearance from 2025 still limits what we could see in inspections. We're monitoring the areas we could check - but what we couldn't see still worries me.",
                         options: [
-                            { id: 'monitor', name: 'Enhanced leak monitoring', desc: 'Extra detection equipment.', cost: 25000, time: 1, dose: 0 },
-                            { id: 'standard', name: 'Standard monitoring', desc: 'Normal programme.', cost: 10000, time: 0, dose: 0 }
+                            { id: 'monitor', name: 'Enhanced leak detection', desc: 'Additional monitoring equipment on high-risk areas.', cost: 25000, time: 1, dose: 0 },
+                            { id: 'standard', name: 'Standard monitoring', desc: 'Continue with normal programme.', cost: 10000, time: 0, dose: 0 }
                         ]
                     }
                 },
                 '150mm': {
-                    situation: 'Weld operational review. All welds fully inspected at Year 30. No concerns.',
-                    quote: 'Full inspection history. Full confidence. No surprises.',
-                    boxType: 'good',
+                    situation: 'Weld operational review. All welds were fully inspected at the 30-year mark. No concerns.',
+                    quote: "All those welds we inspected properly in 2055 because of the 150mm clearance? Complete records, no surprises. Full confidence in the system. Just confirming monitoring approach.",
                     options: [
-                        { id: 'maintain', name: 'Maintain inspection programme', desc: 'Continue proven approach.', cost: 5000, time: 0, dose: 0 },
-                        { id: 'extend', name: 'Extend to additional welds', desc: 'Broaden the programme.', cost: 15000, time: 1, dose: 0.5 }
+                        { id: 'maintain', name: 'Maintain inspection programme', desc: 'Continue the proven approach.', cost: 5000, time: 0, dose: 0 },
+                        { id: 'extend', name: 'Extend coverage to additional welds', desc: 'Broaden the surveillance programme.', cost: 15000, time: 1, dose: 0.5 }
                     ]
                 },
                 '300mm': {
-                    situation: 'Welds fine. Scaffolding contamination increasing. Annual surveys required.',
-                    quote: 'Welds okay. That scaffolding keeps getting hotter though.',
-                    boxType: 'warning',
+                    situation: 'Welds are fine but the permanent scaffolding contamination levels are increasing each year. Annual surveys now required.',
+                    quote: "Welds are all okay, but that scaffolding from 2025 - the contamination keeps building up. We're now doing annual surveys just to track how hot it's getting. Want to deal with it now or keep monitoring?",
                     options: [
-                        { id: 'survey', name: 'Annual scaffolding survey', desc: 'Track contamination build-up.', cost: 15000, time: 1, dose: 0.5 },
-                        { id: 'remove', name: 'Remove scaffolding now', desc: 'Deal with it before it gets worse.', cost: 40000, time: 3, dose: 2 }
+                        { id: 'survey', name: 'Continue annual scaffolding surveys', desc: 'Track the contamination build-up.', cost: 15000, time: 1, dose: 0.5 },
+                        { id: 'remove', name: 'Remove scaffolding now', desc: 'Deal with it before it becomes ILW.', cost: 40000, time: 3, dose: 2 }
                     ]
                 }
             },
             stage5: {
                 '50mm': {
-                    situation: 'Weld cutting for pipe removal. <strong>No room for proper cutting equipment.</strong>',
-                    quote: 'Tight clearance for cutting. Contamination spread is likely.',
-                    boxType: 'danger',
+                    situation: 'Pipe cutting required for removal. The 50mm clearance leaves no room for standard cutting equipment.',
+                    quote: "Time to cut these pipes out. That 50mm clearance from 2025 - no room for our normal cutting gear. We're going to be doing this the hard way. Confined space work or bring in specialists?",
                     options: [
-                        { id: 'manual', name: 'Manual cutting in confined space', desc: 'High dose, contamination risk.', cost: 30000, time: 8, dose: 5, risk: 40 },
-                        { id: 'specialist', name: 'Specialist confined space contractor', desc: 'Experts with proper equipment.', cost: 100000, time: 5, dose: 2 }
+                        { id: 'manual', name: 'Manual cutting in confined space', desc: 'High dose, slow progress, contamination risk.', cost: 30000, time: 8, dose: 5, risk: 40 },
+                        { id: 'specialist', name: 'Specialist confined-space contractor', desc: 'Experts with proper equipment for tight access.', cost: 100000, time: 5, dose: 2 }
                     ]
                 },
                 '150mm': {
-                    situation: 'Weld cutting for removal. Standard access.',
-                    quote: 'Clean cuts. In and out. Professional job.',
-                    boxType: 'good',
+                    situation: 'Pipe cutting for removal. Good access for standard cutting equipment.',
+                    quote: "That 150mm clearance from 2025 - still paying dividends at the end. Standard cutting gear fits perfectly. Clean cuts, professional job. What's the approach?",
                     options: [
-                        { id: 'standard', name: 'Standard cutting and removal', desc: 'Normal procedures.', cost: 25000, time: 3, dose: 1 },
-                        { id: 'segregate', name: 'Cut with material segregation', desc: 'Separate for recycling.', cost: 35000, time: 4, dose: 1.5 }
+                        { id: 'standard', name: 'Standard cutting and removal', desc: 'Normal decommissioning procedures.', cost: 25000, time: 3, dose: 1 },
+                        { id: 'segregate', name: 'Cut with material segregation', desc: 'Additional effort to separate materials for recycling.', cost: 35000, time: 4, dose: 1.5 }
                     ]
                 },
                 '300mm': {
-                    situation: 'Weld cutting easy. <strong>Scaffolding is now ILW after 30 years of contamination.</strong>',
-                    quote: 'Easy weld access. But now we have ILW scaffolding to dispose of.',
-                    boxType: 'warning',
+                    situation: 'Weld cutting is easy with the clearance, but the permanent scaffolding has become ILW after 30 years of contamination accumulation.',
+                    quote: "Easy access for the welds - that's the good news. The bad news? That scaffolding from 2025 has been accumulating activity for 60 years. It's now intermediate level waste. Another disposal headache.",
                     options: [
-                        { id: 'both', name: 'Remove welds and scaffolding together', desc: 'Deal with unnecessary waste.', cost: 85000, time: 8, dose: 3 },
-                        { id: 'defer', name: 'Welds now, scaffolding later', desc: 'Split the work but extends project.', cost: 50000, time: 5, dose: 2, healthImpact: -3 }
+                        { id: 'both', name: 'Remove welds and scaffolding together', desc: 'Deal with the additional waste now.', cost: 85000, time: 8, dose: 3 },
+                        { id: 'defer', name: 'Welds now, scaffolding later', desc: 'Split the work. Extends overall project.', cost: 50000, time: 5, dose: 2, healthImpact: -3 }
                     ]
                 }
             }
@@ -1374,61 +1348,55 @@ const GAME_DATA = {
             },
             stage2: {
                 system: {
-                    situation: 'Operators submitted <strong>15 "human factors concern" reports</strong> citing confusion during abnormal conditions.',
-                    quote: 'The operators can\'t find controls during emergencies. That\'s a problem.',
-                    boxType: 'danger',
+                    situation: 'Operators have submitted 15 human factors concern reports in 15 years. The system-based layout causes confusion during abnormal conditions - controls for related actions are scattered across different panels.',
+                    quote: "We've had 15 formal complaints about the control panel since 2025. The system-based layout - when things go wrong, operators can't find what they need quickly. Controls for emergency sequences are all over the place. How do you want to address this?",
                     options: [
-                        { id: 'redesign', name: 'Commission HF review and redesign', desc: 'Fix the layout properly.', cost: 60000, time: 0, dose: 0, setFlag: 'panelRedesigned' },
-                        { id: 'labels', name: 'Add labels and colour coding', desc: 'Cheap fix. Limited improvement.', cost: 15000, time: 0, dose: 0 },
-                        { id: 'nothing', name: 'Issue reminder to operators', desc: 'Training will fix it. Maybe.', cost: 5000, time: 0, dose: 0 }
+                        { id: 'redesign', name: 'Commission HF review and redesign', desc: 'Proper human factors assessment and panel modifications.', cost: 60000, time: 0, dose: 0, setFlag: 'panelRedesigned' },
+                        { id: 'labels', name: 'Add labels and colour coding', desc: 'Cheap visual improvements. Limited real benefit.', cost: 15000, time: 0, dose: 0 },
+                        { id: 'nothing', name: 'Issue training reminder', desc: 'Tell operators to try harder.', cost: 5000, time: 0, dose: 0 }
                     ]
                 },
                 task: {
-                    situation: 'Control room operations review. Operators report intuitive layout.',
-                    quote: 'Panel works well. Operators find what they need.',
-                    boxType: 'good',
+                    situation: 'Control room operations review. The task-based layout from 2025 is working well - operators report intuitive workflow during both normal and abnormal conditions.',
+                    quote: "The operators love the panel layout from 2025. Task-based design - emergency sequences flow left to right, everything's where they expect it. Just needs standard maintenance. Any enhancements you want to add?",
                     options: [
-                        { id: 'maintain', name: 'Standard maintenance', desc: 'Keep it running.', cost: 10000, time: 0, dose: 0 },
-                        { id: 'enhance', name: 'Add status display enhancements', desc: 'Minor improvements.', cost: 20000, time: 0, dose: 0 }
+                        { id: 'maintain', name: 'Standard maintenance', desc: 'Keep it running as designed.', cost: 10000, time: 0, dose: 0 },
+                        { id: 'enhance', name: 'Add status display enhancements', desc: 'Minor improvements to status indicators.', cost: 20000, time: 0, dose: 0 }
                     ]
                 },
                 touch: {
-                    situation: '<strong>3 touchscreen failures</strong> in 15 years. Operators report issues with gloves and low-light.',
-                    quote: 'Touchscreens in a control room. With gloves. Brilliant idea.',
-                    boxType: 'danger',
+                    situation: 'Three touchscreen failures in 15 years. Operators report issues with gloves, low-light conditions, and response lag during high-activity periods.',
+                    quote: "That touchscreen system from 2025 - we've had three complete failures already. Operators can't use it with gloves, it's hard to see in emergency lighting, and it lags when they need it most. I'm concerned about the next emergency. What do you want to do?",
                     options: [
-                        { id: 'backup', name: 'Install hardwired backup panel', desc: 'Safety backup for when screens fail.', cost: 70000, time: 0, dose: 0, setFlag: 'backupPanel' },
-                        { id: 'upgrade', name: 'Upgrade to industrial touchscreens', desc: 'Better screens. Still touchscreens.', cost: 50000, time: 0, dose: 0 },
-                        { id: 'train', name: 'Additional operator training', desc: 'Train them to use broken equipment.', cost: 10000, time: 0, dose: 0 }
+                        { id: 'backup', name: 'Install hardwired backup panel', desc: 'Physical buttons as safety backup.', cost: 70000, time: 0, dose: 0, setFlag: 'backupPanel' },
+                        { id: 'upgrade', name: 'Upgrade to industrial touchscreens', desc: 'Better screens, but still touchscreens.', cost: 50000, time: 0, dose: 0 },
+                        { id: 'train', name: 'Additional operator training', desc: 'Train them to work around the limitations.', cost: 10000, time: 0, dose: 0 }
                     ]
                 }
             },
             stage3: {
                 system: {
-                    situation: 'Control systems safety review. HMI assessment required.',
-                    quote: 'The layout still causes confusion. Regulators are noting it.',
-                    boxType: 'warning',
+                    situation: 'Regulatory safety review of control systems. Human-Machine Interface assessment is part of the inspection programme.',
+                    quote: "Regulator is here for the HMI assessment. That system-based layout from 2025 - they're going to note the operator complaints. We should have the review documentation ready. How thorough do you want us to be?",
                     options: [
-                        { id: 'review', name: 'Full HMI review with recommendations', desc: 'Detailed assessment.', cost: 20000, time: 2, dose: 0 },
-                        { id: 'minimal', name: 'Minimal compliance review', desc: 'Do the minimum.', cost: 8000, time: 1, dose: 0 }
+                        { id: 'review', name: 'Full HMI review with action plan', desc: 'Comprehensive assessment and improvement recommendations.', cost: 20000, time: 2, dose: 0 },
+                        { id: 'minimal', name: 'Minimal compliance documentation', desc: 'Meet the minimum requirements.', cost: 8000, time: 1, dose: 0 }
                     ]
                 },
                 task: {
-                    situation: 'Control systems safety review. Good human factors ratings.',
-                    quote: 'Operators rate the panel highly. No issues.',
-                    boxType: 'good',
+                    situation: 'Regulatory safety review of control systems. The task-based panel from 2025 receives consistently high human factors ratings.',
+                    quote: "Regulator's reviewing our control systems. That task-based layout from 2025? Operators score it highly, incident response times are good. We're in good shape. Standard review or go above and beyond?",
                     options: [
-                        { id: 'standard', name: 'Standard review', desc: 'Confirm continued performance.', cost: 10000, time: 1, dose: 0 },
-                        { id: 'benchmark', name: 'Benchmark against best practice', desc: 'Compare to industry leaders.', cost: 18000, time: 2, dose: 0 }
+                        { id: 'standard', name: 'Standard review', desc: 'Confirm continued good performance.', cost: 10000, time: 1, dose: 0 },
+                        { id: 'benchmark', name: 'Benchmark against industry best practice', desc: 'Compare to leading facilities worldwide.', cost: 18000, time: 2, dose: 0 }
                     ]
                 },
                 touch: {
-                    situation: 'Safety review. Display artifacts and software issues noted.',
-                    quote: 'Software showing its age. More glitches every year.',
-                    boxType: 'warning',
+                    situation: 'Safety review identifies display artefacts and intermittent software glitches in the touchscreen system. System is showing its age.',
+                    quote: "The touchscreens from 2025 - they're 30 years old and the software is getting flaky. Display glitches, slow response. The regulator wants to see our maintenance plan. What level of fix are we looking at?",
                     options: [
-                        { id: 'software', name: 'Full software update', desc: 'Update the system.', cost: 35000, time: 2, dose: 0 },
-                        { id: 'patch', name: 'Critical patches only', desc: 'Fix the worst bugs.', cost: 15000, time: 1, dose: 0, healthImpact: -3 }
+                        { id: 'software', name: 'Full software update and hardware refresh', desc: 'Comprehensive system update.', cost: 35000, time: 2, dose: 0 },
+                        { id: 'patch', name: 'Critical patches only', desc: 'Fix the worst bugs. Hope for the best.', cost: 15000, time: 1, dose: 0, healthImpact: -3 }
                     ]
                 }
             },
@@ -1436,83 +1404,75 @@ const GAME_DATA = {
                 system: {
                     checkFlag: 'panelRedesigned',
                     hasFlag: {
-                        situation: 'ALARMS: Loss of Coolant indication. Panel was redesigned - improved layout.',
-                        quote: 'Found the controls. Good thing we fixed that panel.',
-                        boxType: 'warning',
+                        situation: 'ALARM: Loss of Coolant Flow indication. The panel was redesigned after the 2040 review - improved layout helps operator response.',
+                        quote: "LOCA indication! Good news - we fixed that panel layout after 2040. Operators are finding controls faster than before. Still not as good as it could have been from the start, but better. What's your call on the response?",
                         options: [
-                            { id: 'respond', name: 'Respond using improved panel', desc: 'Minor delay but manageable.', cost: 20000, time: 1, dose: 1 },
-                            { id: 'senior', name: 'Call shift supervisor backup', desc: 'Extra support for complex event.', cost: 5000, time: 1, dose: 0.5 }
+                            { id: 'respond', name: 'Standard emergency response', desc: 'Follow procedure with improved panel.', cost: 20000, time: 1, dose: 1 },
+                            { id: 'senior', name: 'Call shift supervisor for support', desc: 'Extra verification for complex event.', cost: 5000, time: 1, dose: 0.5 }
                         ]
                     },
                     noFlag: {
-                        situation: '<strong>ALARMS: Loss of Coolant indication.</strong> Controls scattered across panel. You can\'t find the isolation valve.',
-                        quote: "3am, alarms everywhere, where's that valve?!",
-                        boxType: 'danger',
+                        situation: 'ALARM: Loss of Coolant Flow indication. The system-based panel layout from 2025 was never fixed. Operators are struggling to locate the correct controls.',
+                        quote: "LOCA indication at 3am! Operators can't find the isolation valves - that system-based layout from 2025 has controls scattered everywhere. We never fixed it after the complaints. This is exactly the scenario we worried about!",
                         options: [
-                            { id: 'search', name: 'Search for correct controls', desc: 'Delayed response. Possible errors.', cost: 50000, time: 2, dose: 3, risk: 40, healthImpact: -10 },
-                            { id: 'senior', name: 'Call senior operator immediately', desc: 'Get help. Your failure recorded.', cost: 10000, time: 1, dose: 1, trigger: 'operatorFailure' },
-                            { id: 'procedure', name: 'Follow procedure step by step', desc: 'Slow but reduces error chance.', cost: 30000, time: 3, dose: 2 }
+                            { id: 'search', name: 'Search for correct controls', desc: 'Delayed response while operators hunt for switches.', cost: 50000, time: 2, dose: 3, risk: 40, healthImpact: -10 },
+                            { id: 'senior', name: 'Immediately call senior operator', desc: 'Get experienced help. Your failure is on record.', cost: 10000, time: 1, dose: 1, trigger: 'operatorFailure' },
+                            { id: 'procedure', name: 'Follow procedure step by step', desc: 'Slow but systematic reduces error chance.', cost: 30000, time: 3, dose: 2 }
                         ]
                     }
                 },
                 task: {
-                    situation: 'ALARMS: Loss of Coolant indication. Panel layout matches emergency procedure.',
-                    quote: 'Reactor trip, safety injection, isolation. All in sequence. Perfect.',
-                    boxType: 'good',
+                    situation: 'ALARM: Loss of Coolant Flow indication. The task-based panel layout from 2025 means emergency controls are exactly where operators expect them.',
+                    quote: "LOCA indication - but watch this. Task-based layout from 2025: reactor trip here, safety injection there, isolation valves in sequence. Operators are executing the response exactly as trained. Textbook.",
                     options: [
-                        { id: 'respond', name: 'Follow emergency procedure', desc: 'Textbook response.', cost: 5000, time: 0, dose: 0.5 },
-                        { id: 'verify', name: 'Respond with extra verification', desc: 'Additional checks.', cost: 8000, time: 0, dose: 0.5 }
+                        { id: 'respond', name: 'Execute standard emergency response', desc: 'Smooth response using well-designed panel.', cost: 5000, time: 0, dose: 0.5 },
+                        { id: 'verify', name: 'Execute with additional verification', desc: 'Extra checks at each step.', cost: 8000, time: 0, dose: 0.5 }
                     ]
                 },
                 touch: {
                     checkFlag: 'backupPanel',
                     hasFlag: {
-                        situation: 'ALARMS: Touchscreen lagging under load. Switch to backup panel.',
-                        quote: 'Screen frozen again. Thank God for the backup.',
-                        boxType: 'warning',
+                        situation: 'ALARM: System transient. Touchscreens are lagging under heavy demand, but the backup hardwired panel installed after 2040 is available.',
+                        quote: "Transient in progress - touchscreens are struggling with the load. But that backup panel we installed after 2040 is right there. Physical switches, instant response. Thank God we put that in. Switching over?",
                         options: [
-                            { id: 'backup', name: 'Use hardwired backup', desc: 'Reliable manual controls.', cost: 15000, time: 1, dose: 1 },
-                            { id: 'wait', name: 'Wait for screen to recover', desc: 'Risky delay.', cost: 0, time: 2, dose: 0, risk: 30, healthImpact: -5 }
+                            { id: 'backup', name: 'Switch to hardwired backup', desc: 'Reliable physical controls.', cost: 15000, time: 1, dose: 1 },
+                            { id: 'wait', name: 'Wait for touchscreens to recover', desc: 'They might speed up. Risky delay.', cost: 0, time: 2, dose: 0, risk: 30, healthImpact: -5 }
                         ]
                     },
                     noFlag: {
-                        situation: '<strong>ALARMS: Touchscreen frozen.</strong> Gloved fingers not registering. No backup panel.',
-                        quote: 'Screen\'s frozen! We have nothing else!',
-                        boxType: 'danger',
+                        situation: 'ALARM: System transient. Touchscreens are frozen. Gloved fingers not registering. No backup panel available.',
+                        quote: "Touchscreens are frozen solid! Operators can't get any response - gloves don't work, the screens have locked up. We never installed that backup panel after 2040. We have no control interface. What do we do?!",
                         options: [
-                            { id: 'reboot', name: 'Attempt system reboot', desc: 'Fast but risky.', cost: 0, time: 2, dose: 0, risk: 50, healthImpact: -15 },
-                            { id: 'manual', name: 'Manual field operation', desc: 'Send operators to local panels.', cost: 30000, time: 4, dose: 4 },
-                            { id: 'scram', name: 'Manual reactor trip', desc: 'Safe shutdown. Full investigation.', cost: 100000, time: 5, dose: 1 }
+                            { id: 'reboot', name: 'Emergency system reboot', desc: 'Fast but everything goes dark during restart.', cost: 0, time: 2, dose: 0, risk: 50, healthImpact: -15 },
+                            { id: 'manual', name: 'Send operators to local panels', desc: 'Manual operation from field locations.', cost: 30000, time: 4, dose: 4 },
+                            { id: 'scram', name: 'Manual reactor trip', desc: 'Safe shutdown. Major investigation follows.', cost: 100000, time: 5, dose: 1 }
                         ]
                     }
                 }
             },
             stage5: {
                 system: {
-                    situation: 'Control panel decommissioning. Standard electrical removal.',
-                    quote: 'Panel comes out. Wish the operators had had something better.',
-                    boxType: 'neutral',
+                    situation: 'Control panel decommissioning. Standard electrical equipment removal.',
+                    quote: "Taking out the control panels. That system-based layout from 2025 caused headaches for 60 years - at least it comes out easily. Standard removal or do you want it preserved for lessons learned?",
                     options: [
-                        { id: 'standard', name: 'Standard removal', desc: 'Normal decommissioning.', cost: 10000, time: 2, dose: 0.5 },
-                        { id: 'preserve', name: 'Preserve for training museum', desc: 'Educational purposes.', cost: 20000, time: 3, dose: 0.5 }
+                        { id: 'standard', name: 'Standard removal', desc: 'Normal decommissioning procedure.', cost: 10000, time: 2, dose: 0.5 },
+                        { id: 'preserve', name: 'Preserve as training example', desc: 'Document what not to do for future projects.', cost: 20000, time: 3, dose: 0.5 }
                     ]
                 },
                 task: {
-                    situation: 'Control panel decommissioning. Well-designed panel served well.',
-                    quote: 'Sixty years of good service. Panel did its job.',
-                    boxType: 'good',
+                    situation: 'Control panel decommissioning. The well-designed panel served operators well for 60 years.',
+                    quote: "End of the line for the control panel. That task-based design from 2025 served us well - 60 years of reliable operation, operators loved it. Any interest in documenting this as a best practice example?",
                     options: [
-                        { id: 'standard', name: 'Standard removal', desc: 'Normal decommissioning.', cost: 10000, time: 2, dose: 0.5 },
-                        { id: 'document', name: 'Document as best practice example', desc: 'Capture lessons for future.', cost: 15000, time: 2, dose: 0.5 }
+                        { id: 'standard', name: 'Standard removal', desc: 'Normal decommissioning procedure.', cost: 10000, time: 2, dose: 0.5 },
+                        { id: 'document', name: 'Document as best practice', desc: 'Capture the design principles for future projects.', cost: 15000, time: 2, dose: 0.5 }
                     ]
                 },
                 touch: {
-                    situation: 'Touchscreen decommissioning. Electronic waste requiring special disposal.',
-                    quote: 'E-waste. Special handling. Of course.',
-                    boxType: 'warning',
+                    situation: 'Touchscreen system decommissioning. Electronic waste requires specialist disposal.',
+                    quote: "The touchscreen system from 2025 - finally taking it out. E-waste disposal requirements for all this electronics. Plus the usual radioactive contamination on the surfaces. Specialist handling needed.",
                     options: [
-                        { id: 'ewaste', name: 'Specialist e-waste disposal', desc: 'Proper handling of electronics.', cost: 30000, time: 3, dose: 0 },
-                        { id: 'strip', name: 'Strip valuable components first', desc: 'Recovery before disposal.', cost: 20000, time: 4, dose: 0.5 }
+                        { id: 'ewaste', name: 'Specialist e-waste disposal', desc: 'Proper handling of contaminated electronics.', cost: 30000, time: 3, dose: 0 },
+                        { id: 'strip', name: 'Strip valuable components first', desc: 'Recover materials before disposal.', cost: 20000, time: 4, dose: 0.5 }
                     ]
                 }
             }
@@ -1533,117 +1493,105 @@ const GAME_DATA = {
             },
             stage2: {
                 welded: {
-                    situation: 'Pipe section replacement needed. <strong>All welded - must cut and re-weld.</strong>',
-                    quote: 'All welded. So we\'re cutting, grinding, and re-welding then.',
-                    boxType: 'danger',
+                    situation: 'A pipe section needs replacement. The all-welded design from 2025 means there are no break points - must cut and re-weld.',
+                    quote: "Need to replace a section of pipe. That all-welded design from 2025 - there's nowhere to unbolt. We have to cut it out and weld in the replacement. Time-consuming and high dose. How do you want to proceed?",
                     options: [
-                        { id: 'replace', name: 'Cut, replace, re-weld', desc: 'Proper repair. High dose.', cost: 65000, time: 8, dose: 5 },
-                        { id: 'overlay', name: 'Weld overlay repair', desc: 'Temporary patch. May need revisiting.', cost: 25000, time: 3, dose: 3, healthImpact: -5, trigger: 'weldOverlay' }
+                        { id: 'replace', name: 'Cut, replace, and re-weld', desc: 'Proper repair but significant work.', cost: 65000, time: 8, dose: 5 },
+                        { id: 'overlay', name: 'Weld overlay repair', desc: 'Temporary fix. Will need revisiting eventually.', cost: 25000, time: 3, dose: 3, healthImpact: -5, trigger: 'weldOverlay' }
                     ]
                 },
                 flanged: {
-                    situation: 'Pipe section replacement. Flanged connections available.',
-                    quote: 'Unbolt, remove, replace. Someone thought ahead.',
-                    boxType: 'good',
+                    situation: 'A pipe section needs replacement. The flanged connections from the 2025 design allow easy section removal.',
+                    quote: "Pipe section needs replacing. Good news - those flanged connections from 2025 mean we just unbolt, remove the section, and bolt in the new one. Clean and simple. Standard replacement or should we upgrade the gaskets while we're there?",
                     options: [
-                        { id: 'standard', name: 'Standard flange replacement', desc: 'Unbolt and replace section.', cost: 30000, time: 3, dose: 1.5 },
-                        { id: 'upgrade', name: 'Upgrade gaskets while open', desc: 'Better gasket material.', cost: 40000, time: 4, dose: 2 }
+                        { id: 'standard', name: 'Standard flange replacement', desc: 'Unbolt, replace section, re-bolt.', cost: 30000, time: 3, dose: 1.5 },
+                        { id: 'upgrade', name: 'Replace with upgraded gaskets', desc: 'Better gasket material for longer life.', cost: 40000, time: 4, dose: 2 }
                     ]
                 },
                 excessive: {
-                    situation: '<strong>Three gasket failures</strong> this outage. Too many flanges means too many leak paths.',
-                    quote: 'Another gasket gone. That\'s the third this week.',
-                    boxType: 'warning',
+                    situation: 'Three gasket failures this outage. With flanges every 2m from the 2025 design, there are 47 potential leak paths.',
+                    quote: "Third gasket failure this week. That design from 2025 with flanges every 2m - 47 flanges means 47 places to leak. We're chasing gaskets constantly. Do you want to replace all of them preventively or keep playing whack-a-mole?",
                     options: [
-                        { id: 'replace', name: 'Replace all gaskets preventively', desc: 'Do them all now.', cost: 45000, time: 5, dose: 2 },
-                        { id: 'reactive', name: 'Replace only failed gaskets', desc: 'Fix what\'s broken.', cost: 15000, time: 2, dose: 1, healthImpact: -3 }
+                        { id: 'replace', name: 'Replace all gaskets preventively', desc: 'Do them all now. No more surprises this outage.', cost: 45000, time: 5, dose: 2 },
+                        { id: 'reactive', name: 'Keep replacing as they fail', desc: 'Fix what breaks. Hope it holds.', cost: 15000, time: 2, dose: 1, healthImpact: -3 }
                     ]
                 }
             },
             stage3: {
                 welded: {
-                    situation: 'All welds require inspection. <strong>Large number of weld examinations.</strong>',
-                    quote: 'Every joint is a weld. Every weld needs UT.',
-                    boxType: 'warning',
+                    situation: 'All welds require inspection. The all-welded design from 2025 means a large number of weld examinations are needed.',
+                    quote: "Inspection programme time. That all-welded design from 2025 - every joint is a weld, every weld needs examining. It's a lot of coverage. Full programme or sample-based approach?",
                     options: [
-                        { id: 'full', name: 'Full inspection programme', desc: 'Examine every weld.', cost: 50000, time: 7, dose: 4 },
-                        { id: 'sample', name: 'Sample 50% of welds', desc: 'Risk missing defects.', cost: 25000, time: 4, dose: 2, healthImpact: -5 }
+                        { id: 'full', name: 'Full inspection of all welds', desc: 'Examine every weld in the system.', cost: 50000, time: 7, dose: 4 },
+                        { id: 'sample', name: 'Sample 50% of welds', desc: 'Risk-based selection. May miss developing defects.', cost: 25000, time: 4, dose: 2, healthImpact: -5 }
                     ]
                 },
                 flanged: {
-                    situation: 'Limited weld inspections. Flanges visually checked.',
-                    quote: 'Few welds to check. Flanges look fine.',
-                    boxType: 'good',
+                    situation: 'Limited number of welds to inspect. Flanged joints from 2025 require visual and torque checks.',
+                    quote: "Inspection time. That flanged design from 2025 means fewer welds to examine. Just need to UT the welds we have and verify the flange bolt torques. Straightforward. Any extras you want?",
                     options: [
-                        { id: 'standard', name: 'Standard inspection programme', desc: 'Welds and flange checks.', cost: 20000, time: 3, dose: 1.5 },
-                        { id: 'torque', name: 'Add bolt torque verification', desc: 'Extra flange checks.', cost: 28000, time: 4, dose: 2 }
+                        { id: 'standard', name: 'Standard inspection programme', desc: 'UT on welds, visual and torque on flanges.', cost: 20000, time: 3, dose: 1.5 },
+                        { id: 'torque', name: 'Add detailed bolt torque analysis', desc: 'Extra verification of flange integrity.', cost: 28000, time: 4, dose: 2 }
                     ]
                 },
                 excessive: {
-                    situation: '47 flanged connections to inspect. Many gaskets showing wear.',
-                    quote: 'Forty-seven flanges. I\'ll be checking bolts all week.',
-                    boxType: 'warning',
+                    situation: '47 flanged connections to inspect. Many gaskets from 2025 are showing wear after 30 years.',
+                    quote: "47 flanges to check from that 2025 design. I'll be verifying bolts and gaskets all week. Some of these gaskets are 30 years old and looking tired. Full coverage or prioritise high-risk locations?",
                     options: [
                         { id: 'all', name: 'Inspect all 47 connections', desc: 'Thorough but time-consuming.', cost: 35000, time: 6, dose: 2.5 },
-                        { id: 'sample', name: 'Sample inspection', desc: 'Check high-risk locations.', cost: 20000, time: 3, dose: 1.5, healthImpact: -3 }
+                        { id: 'sample', name: 'Prioritise high-risk locations', desc: 'Focus on problem areas. May miss issues elsewhere.', cost: 20000, time: 3, dose: 1.5, healthImpact: -3 }
                     ]
                 }
             },
             stage4: {
                 welded: {
-                    situation: 'Piping operational review. No isolation flexibility for online work.',
-                    quote: 'Need to do online maintenance. Can\'t isolate without shutdown.',
-                    boxType: 'warning',
+                    situation: 'Online maintenance needed but the all-welded design from 2025 provides no isolation points.',
+                    quote: "We need to do some maintenance, but that all-welded design from 2025 - there's nowhere to isolate. Can't do it online. We either wait for the outage or take a partial shutdown. Your call.",
                     options: [
-                        { id: 'defer', name: 'Defer work to next outage', desc: 'Wait for full shutdown.', cost: 10000, time: 0, dose: 0 },
-                        { id: 'partial', name: 'Partial shutdown for access', desc: 'Reduced power for maintenance.', cost: 40000, time: 2, dose: 1 }
+                        { id: 'defer', name: 'Defer to next scheduled outage', desc: 'Wait for full shutdown. Work accumulates.', cost: 10000, time: 0, dose: 0 },
+                        { id: 'partial', name: 'Partial shutdown for access', desc: 'Reduce power to create safe work window.', cost: 40000, time: 2, dose: 1 }
                     ]
                 },
                 flanged: {
-                    situation: 'Piping review. Quick isolation possible for online work.',
-                    quote: 'Need to check that valve. No problem, we can isolate.',
-                    boxType: 'good',
+                    situation: 'Online maintenance needed. The flanged design from 2025 allows isolation and work at power.',
+                    quote: "Valve needs attention. That flanged design from 2025 - we can isolate the section and work while the plant runs. No shutdown needed. Do it now or schedule for the outage?",
                     options: [
-                        { id: 'online', name: 'Online maintenance', desc: 'Isolate and work at power.', cost: 15000, time: 1, dose: 0.5 },
+                        { id: 'online', name: 'Isolate and work at power', desc: 'Use the flexibility of flanged design.', cost: 15000, time: 1, dose: 0.5 },
                         { id: 'defer', name: 'Defer to outage', desc: 'Not urgent. Can wait.', cost: 5000, time: 0, dose: 0 }
                     ]
                 },
                 excessive: {
-                    situation: 'Two more gasket failures this operating period.',
-                    quote: 'More gaskets leaking. This is getting old.',
-                    boxType: 'warning',
+                    situation: 'Two more gasket failures during this operating period. The 47-flange design from 2025 continues to cause problems.',
+                    quote: "Two more gaskets gone. That 47-flange design from 2025 - we're still fighting it 45 years later. Every flange is an opportunity for a leak. Fix them during a mini-outage or try to manage through?",
                     options: [
-                        { id: 'repair', name: 'Repair during short outage', desc: 'Fix the leaks.', cost: 30000, time: 3, dose: 1 },
-                        { id: 'monitor', name: 'Monitor and manage', desc: 'Live with minor seepage.', cost: 10000, time: 0, dose: 0, healthImpact: -3 }
+                        { id: 'repair', name: 'Short outage to repair leakers', desc: 'Fix the immediate problems.', cost: 30000, time: 3, dose: 1 },
+                        { id: 'monitor', name: 'Manage leakage and monitor', desc: 'Live with minor seepage. Not ideal.', cost: 10000, time: 0, dose: 0, healthImpact: -3 }
                     ]
                 }
             },
             stage5: {
                 welded: {
-                    situation: '<strong>12 welds to cut for removal.</strong> Each cut risks contamination spread.',
-                    quote: 'Cutting all day. Every joint needs the saw.',
-                    boxType: 'danger',
+                    situation: 'Pipe removal for decommissioning. The all-welded design from 2025 means 12 welds to cut. Each cut risks contamination spread.',
+                    quote: "Time to take these pipes out. That all-welded design from 2025 means 12 cuts to make. Each one sprays contamination if we're not careful. Slow and steady, or bring in the specialists?",
                     options: [
-                        { id: 'careful', name: 'Careful cutting programme', desc: 'Slow and controlled.', cost: 80000, time: 15, dose: 8, risk: 30 },
-                        { id: 'specialist', name: 'Specialist cutting contractor', desc: 'Experts guarantee clean cuts.', cost: 180000, time: 10, dose: 3 }
+                        { id: 'careful', name: 'Careful in-house cutting programme', desc: 'Slow and controlled. Higher dose.', cost: 80000, time: 15, dose: 8, risk: 30 },
+                        { id: 'specialist', name: 'Specialist cutting contractor', desc: 'Experts with containment equipment.', cost: 180000, time: 10, dose: 3 }
                     ]
                 },
                 flanged: {
-                    situation: 'Unbolt flanges. Lift sections out.',
-                    quote: 'Unbolt, remove, done. Decommissioning the way it should be.',
-                    boxType: 'good',
+                    situation: 'Pipe removal for decommissioning. The flanged design from 2025 means unbolt and remove in sections.',
+                    quote: "Decommissioning the pipework. That flanged design from 2025 is paying off one last time - unbolt the flanges, lift out the sections. No cutting, minimal contamination. Standard removal or segregate for recycling?",
                     options: [
-                        { id: 'standard', name: 'Standard disassembly', desc: 'Unbolt and remove.', cost: 40000, time: 6, dose: 2 },
-                        { id: 'segregate', name: 'Segregate for recycling', desc: 'Separate materials.', cost: 55000, time: 8, dose: 2.5 }
+                        { id: 'standard', name: 'Standard flange disassembly', desc: 'Unbolt and remove. Clean and simple.', cost: 40000, time: 6, dose: 2 },
+                        { id: 'segregate', name: 'Segregate materials for recycling', desc: 'Extra effort to separate materials.', cost: 55000, time: 8, dose: 2.5 }
                     ]
                 },
                 excessive: {
-                    situation: '47 connections to unbolt. Many contaminated gaskets.',
-                    quote: 'So many flanges. So many gaskets to dispose of.',
-                    boxType: 'warning',
+                    situation: '47 flange connections to disconnect. Many contaminated gaskets to dispose of as waste.',
+                    quote: "47 flanges from that 2025 design - at least they unbolt easily. But every one of those gaskets is contaminated waste now. Lots of small waste packages. Deal with it systematically or cut corners?",
                     options: [
-                        { id: 'full', name: 'Full disassembly', desc: 'All 47 connections.', cost: 55000, time: 10, dose: 3 },
-                        { id: 'bulk', name: 'Cut into larger sections', desc: 'Fewer disconnections.', cost: 45000, time: 8, dose: 2.5 }
+                        { id: 'full', name: 'Full systematic disassembly', desc: 'All 47 connections done properly.', cost: 55000, time: 10, dose: 3 },
+                        { id: 'bulk', name: 'Cut into larger sections instead', desc: 'Fewer disconnections but larger packages.', cost: 45000, time: 8, dose: 2.5 }
                     ]
                 }
             }
@@ -1664,61 +1612,55 @@ const GAME_DATA = {
             },
             stage2: {
                 embedded: {
-                    situation: '<strong>Suspected leak in embedded section. Cannot visually confirm.</strong>',
-                    quote: "There's a leak somewhere in that concrete. Good luck finding it.",
-                    boxType: 'danger',
+                    situation: 'Suspected leak somewhere in an embedded pipe section. The pipes are cast into concrete from the 2025 design - cannot visually confirm location.',
+                    quote: "We've got activity readings suggesting a leak, but those embedded pipes from 2025 - they're buried in the concrete. I can't see where it's coming from. We either dig until we find it, route around it, or hope it stabilises. Your call.",
                     options: [
-                        { id: 'excavate', name: 'Excavate concrete to find leak', desc: 'Dig until you find it.', cost: 70000, time: 12, dose: 4 },
-                        { id: 'bypass', name: 'Install bypass line', desc: 'Route around the problem.', cost: 90000, time: 8, dose: 2 },
-                        { id: 'defer', name: 'Increase monitoring, defer', desc: 'Hope it stabilises.', cost: 10000, time: 0, dose: 0, healthImpact: -10, trigger: 'embeddedLeak' }
+                        { id: 'excavate', name: 'Excavate concrete to find leak', desc: 'Dig until we locate the source.', cost: 70000, time: 12, dose: 4 },
+                        { id: 'bypass', name: 'Install bypass line around section', desc: 'Route around the problem entirely.', cost: 90000, time: 8, dose: 2 },
+                        { id: 'defer', name: 'Increase monitoring and defer', desc: 'Hope it stabilises. Monitor closely.', cost: 10000, time: 0, dose: 0, healthImpact: -10, trigger: 'embeddedLeak' }
                     ]
                 },
                 ducted: {
-                    situation: 'Minor leak at joint. Visible through duct access.',
-                    quote: 'Pulled the duct cover. There\'s the leak. Easy fix.',
-                    boxType: 'good',
+                    situation: 'Minor leak detected at a pipe joint. The accessible ducts from the 2025 design allow easy location and access.',
+                    quote: "Found a small leak - pulled off the duct cover from that 2025 design and there it is, plain as day. Easy to see, easy to fix. Standard repair or should I check the neighbouring joints while I'm here?",
                     options: [
-                        { id: 'repair', name: 'Standard repair', desc: 'Fix the joint.', cost: 15000, time: 2, dose: 1 },
-                        { id: 'inspect', name: 'Repair and inspect neighbouring joints', desc: 'Check while you\'re there.', cost: 25000, time: 3, dose: 1.5 }
+                        { id: 'repair', name: 'Standard repair', desc: 'Fix the leaking joint.', cost: 15000, time: 2, dose: 1 },
+                        { id: 'inspect', name: 'Repair and inspect neighbours', desc: 'Check adjacent joints while access is open.', cost: 25000, time: 3, dose: 1.5 }
                     ]
                 },
                 tunnel: {
-                    situation: 'Leak repaired. <strong>Tunnel surfaces showing contamination migration.</strong>',
-                    quote: 'Easy access for repair. But the tunnel walls are contaminated now.',
-                    boxType: 'warning',
+                    situation: 'Leak repaired easily with walk-in access. However, the tunnel surfaces from 2025 are showing contamination migration.',
+                    quote: "Easy access through the tunnel to fix the leak - that 2025 design makes repairs simple. But the tunnel walls themselves are picking up contamination. We should deal with that while we're here. Clean it or seal it?",
                     options: [
-                        { id: 'repair', name: 'Repair and decontaminate', desc: 'Clean the surfaces.', cost: 35000, time: 4, dose: 2 },
-                        { id: 'seal', name: 'Repair and seal contamination', desc: 'Contain it for now.', cost: 25000, time: 3, dose: 1.5, healthImpact: -3 }
+                        { id: 'repair', name: 'Repair and decontaminate tunnel', desc: 'Fix leak and clean surfaces.', cost: 35000, time: 4, dose: 2 },
+                        { id: 'seal', name: 'Repair and seal contamination', desc: 'Contain it for now. Defer full decon.', cost: 25000, time: 3, dose: 1.5, healthImpact: -3 }
                     ]
                 }
             },
             stage3: {
                 embedded: {
-                    situation: '<strong>Embedded sections cannot be inspected by conventional means.</strong>',
-                    quote: 'How do I inspect pipes inside concrete? I can\'t.',
-                    boxType: 'danger',
+                    situation: 'In-Service Inspection required. The embedded pipes from 2025 cannot be examined by conventional ultrasonic or visual methods.',
+                    quote: "How do I inspect pipes that are buried in concrete from 2025? The short answer is: I can't. Not with conventional methods. We can document the limitation, try guided wave technology, or excavate samples. What's the approach?",
                     options: [
-                        { id: 'accept', name: 'Document inspection gap', desc: 'Accept the limitation.', cost: 5000, time: 1, dose: 0, healthImpact: -10, trigger: 'embeddedInspectionGap' },
-                        { id: 'guided', name: 'Install guided wave monitoring', desc: 'Some detection capability.', cost: 60000, time: 5, dose: 1 },
-                        { id: 'excavate', name: 'Excavate sample locations', desc: 'Physically expose sections.', cost: 100000, time: 14, dose: 5 }
+                        { id: 'accept', name: 'Document inspection gap', desc: 'Accept and document the limitation.', cost: 5000, time: 1, dose: 0, healthImpact: -10, trigger: 'embeddedInspectionGap' },
+                        { id: 'guided', name: 'Install guided wave monitoring', desc: 'Some detection capability through concrete.', cost: 60000, time: 5, dose: 1 },
+                        { id: 'excavate', name: 'Excavate sample locations', desc: 'Physically expose sections for examination.', cost: 100000, time: 14, dose: 5 }
                     ]
                 },
                 ducted: {
-                    situation: 'Full pipe inspection via duct access.',
-                    quote: 'Covers off, full access, complete inspection.',
-                    boxType: 'good',
+                    situation: 'Full pipe inspection via removable duct covers from the 2025 design. Complete access available.',
+                    quote: "Inspection time. Those duct covers from 2025 - lift them off and I've got full access to every inch of pipe. Complete coverage, no limitations. Standard inspection or add coating condition assessment?",
                     options: [
-                        { id: 'standard', name: 'Standard inspection', desc: 'Visual and UT.', cost: 15000, time: 3, dose: 1.5 },
-                        { id: 'coating', name: 'Inspect and assess coating', desc: 'Check protective layers.', cost: 22000, time: 4, dose: 2 }
+                        { id: 'standard', name: 'Standard inspection', desc: 'Full visual and UT coverage.', cost: 15000, time: 3, dose: 1.5 },
+                        { id: 'coating', name: 'Include coating condition assessment', desc: 'Check protective coating integrity.', cost: 22000, time: 4, dose: 2 }
                     ]
                 },
                 tunnel: {
-                    situation: 'Pipe inspection in contaminated tunnel. Full PPE required.',
-                    quote: 'Easy access but hot in here. Full suits required.',
-                    boxType: 'warning',
+                    situation: 'Pipe inspection in the walk-in tunnel. Good access but the tunnel from 2025 is now contaminated, requiring full PPE.',
+                    quote: "Easy pipe access through the tunnel, but 30 years of operation means it's contaminated now. Full suits required just to get in there. That 2025 tunnel design - easy access comes with dose penalty. Full inspection or remote camera?",
                     options: [
-                        { id: 'suited', name: 'Full inspection in PPE', desc: 'Longer due to suit restrictions.', cost: 25000, time: 5, dose: 3 },
-                        { id: 'remote', name: 'Remote camera inspection', desc: 'Limited but lower dose.', cost: 30000, time: 4, dose: 1, healthImpact: -2 }
+                        { id: 'suited', name: 'Full hands-on inspection in PPE', desc: 'Complete coverage but slower in suits.', cost: 25000, time: 5, dose: 3 },
+                        { id: 'remote', name: 'Remote camera inspection', desc: 'Limited contact but lower dose.', cost: 30000, time: 4, dose: 1, healthImpact: -2 }
                     ]
                 }
             },
@@ -1726,70 +1668,63 @@ const GAME_DATA = {
                 embedded: {
                     checkTrigger: 'embeddedLeak',
                     triggered: {
-                        situation: '<strong>Groundwater monitoring detects activity. Source: embedded pipe section.</strong>',
-                        quote: 'Contamination in the groundwater. The leak we couldn\'t fix.',
-                        boxType: 'danger',
+                        situation: 'Groundwater monitoring detects radioactive contamination. The source is the embedded pipe leak that was deferred in 2040.',
+                        quote: "Remember that leak we couldn't find in 2040? The one in the embedded pipes from 2025 that we decided to monitor? It's been leaking into the groundwater for 30 years. Environmental regulator is involved. This is serious.",
                         additionalCosts: { regulatory: 50000, environmental: 100000, healthImpact: -15 },
                         options: [
-                            { id: 'excavate', name: 'Emergency excavation', desc: 'Dig out and repair now.', cost: 200000, time: 21, dose: 8 },
-                            { id: 'treat', name: 'Groundwater treatment + isolation', desc: 'Treat water, abandon pipe.', cost: 150000, time: 7, dose: 2 }
+                            { id: 'excavate', name: 'Emergency excavation and repair', desc: 'Dig out the embedded section and fix it.', cost: 200000, time: 21, dose: 8 },
+                            { id: 'treat', name: 'Groundwater treatment and isolation', desc: 'Treat the water, abandon the pipe section.', cost: 150000, time: 7, dose: 2 }
                         ]
                     },
                     notTriggered: {
-                        situation: 'Embedded section monitoring. No activity detected.',
-                        quote: 'Monitoring shows nothing. For now.',
-                        boxType: 'warning',
+                        situation: 'Monitoring of embedded pipe sections continues. No activity detected in groundwater so far.',
+                        quote: "Still monitoring those embedded pipes from 2025. Groundwater sampling shows nothing... yet. But we're flying blind on actual pipe condition. Continue monitoring or enhance detection capability?",
                         options: [
-                            { id: 'maintain', name: 'Continue monitoring programme', desc: 'Keep watching.', cost: 15000, time: 0, dose: 0 },
-                            { id: 'enhance', name: 'Enhanced groundwater monitoring', desc: 'More detection points.', cost: 30000, time: 1, dose: 0 }
+                            { id: 'maintain', name: 'Continue current monitoring', desc: 'Keep watching the groundwater.', cost: 15000, time: 0, dose: 0 },
+                            { id: 'enhance', name: 'Enhanced monitoring network', desc: 'More sampling points, faster detection.', cost: 30000, time: 1, dose: 0 }
                         ]
                     }
                 },
                 ducted: {
-                    situation: 'Duct access enables quick visual checks during operation.',
-                    quote: 'Quick look through the duct cover. All good.',
-                    boxType: 'good',
+                    situation: 'Quick operational checks through duct access. The 2025 design continues to provide excellent accessibility.',
+                    quote: "Running operational checks. That ducted design from 2025 - I can pop the covers and do a visual check in minutes. Want the standard check or add thermal imaging for early leak detection?",
                     options: [
-                        { id: 'visual', name: 'Routine visual inspection', desc: 'Standard checks.', cost: 5000, time: 0, dose: 0 },
-                        { id: 'thermal', name: 'Add thermal imaging', desc: 'Early leak detection.', cost: 15000, time: 1, dose: 0 }
+                        { id: 'visual', name: 'Routine visual inspection', desc: 'Quick visual through duct covers.', cost: 5000, time: 0, dose: 0 },
+                        { id: 'thermal', name: 'Add thermal imaging survey', desc: 'Infrared check for developing leaks.', cost: 15000, time: 1, dose: 0 }
                     ]
                 },
                 tunnel: {
-                    situation: 'Tunnel access maintained. Contamination levels stable.',
-                    quote: 'Tunnel still accessible. Still contaminated.',
-                    boxType: 'warning',
+                    situation: 'Tunnel access maintained. Contamination levels stable but requiring ongoing control.',
+                    quote: "Tunnel from 2025 - still accessible, still contaminated. We're maintaining the contamination controls but it's an ongoing burden. Status quo or invest in reducing the source term?",
                     options: [
-                        { id: 'maintain', name: 'Routine monitoring', desc: 'Track contamination levels.', cost: 10000, time: 0, dose: 0.5 },
-                        { id: 'decon', name: 'Partial decontamination', desc: 'Reduce hot spots.', cost: 35000, time: 3, dose: 2 }
+                        { id: 'maintain', name: 'Continue routine monitoring', desc: 'Maintain current controls.', cost: 10000, time: 0, dose: 0.5 },
+                        { id: 'decon', name: 'Partial decontamination campaign', desc: 'Reduce hotspots in the tunnel.', cost: 35000, time: 3, dose: 2 }
                     ]
                 }
             },
             stage5: {
                 embedded: {
-                    situation: '<strong>Pipes encased in concrete. Contamination has migrated into structure.</strong>',
-                    quote: 'Six months extra work. Half a million more. Thanks, 2025.',
-                    boxType: 'danger',
+                    situation: 'Pipes cast into concrete from 2025 require major excavation. Contamination has migrated into the concrete matrix itself.',
+                    quote: "The embedded pipes from 2025 - now the contamination has soaked into the surrounding concrete over 60 years. We're not just removing pipes, we're removing contaminated structural concrete. Huge job. In-house or specialists?",
                     options: [
-                        { id: 'excavate', name: 'Full excavation programme', desc: 'Break out all concrete.', cost: 350000, time: 40, dose: 20 },
-                        { id: 'specialist', name: 'Specialist demolition contractor', desc: 'Controlled approach.', cost: 400000, time: 25, dose: 8 }
+                        { id: 'excavate', name: 'Full in-house excavation', desc: 'Our teams break out all the concrete.', cost: 350000, time: 40, dose: 20 },
+                        { id: 'specialist', name: 'Specialist demolition contractor', desc: 'Controlled demolition with contamination management.', cost: 400000, time: 25, dose: 8 }
                     ]
                 },
                 ducted: {
-                    situation: 'Remove covers, lift pipes from ducts. Ducts remain clean.',
-                    quote: 'Covers off, pipes out. Ducts can be demolished as clean concrete.',
-                    boxType: 'good',
+                    situation: 'Pipe removal via duct access. The ducts from 2025 remain uncontaminated and can be demolished as clean concrete.',
+                    quote: "Best news I've had all project. Those duct covers from 2025 - lift them off, pull out the pipes, and the duct structures themselves are clean concrete. Standard demolition for the ducts. Want to assess if they could be kept for other use?",
                     options: [
-                        { id: 'standard', name: 'Standard duct removal', desc: 'Remove pipes, demolish clean ducts.', cost: 50000, time: 8, dose: 2 },
-                        { id: 'reuse', name: 'Assess duct reuse', desc: 'Check if ducts can be kept.', cost: 40000, time: 6, dose: 1.5 }
+                        { id: 'standard', name: 'Standard pipe and duct removal', desc: 'Remove pipes, demolish clean ducts.', cost: 50000, time: 8, dose: 2 },
+                        { id: 'reuse', name: 'Assess duct structures for reuse', desc: 'Check if ducts can serve future purpose.', cost: 40000, time: 6, dose: 1.5 }
                     ]
                 },
                 tunnel: {
-                    situation: 'Pipes easy to remove. <strong>Tunnel is contaminated ILW. Large waste volume.</strong>',
-                    quote: 'Pipes out quick. Tunnel decon? That\'s the real job.',
-                    boxType: 'warning',
+                    situation: 'Pipes removed easily, but the tunnel from 2025 is contaminated infrastructure requiring disposal as intermediate level waste.',
+                    quote: "Pipes came out clean - the tunnel gave us easy access right to the end. But the tunnel itself? 60 years of contamination buildup. It's ILW now. Large volume, complex disposal. Full decon or grout and entomb?",
                     options: [
                         { id: 'full', name: 'Full tunnel decommissioning', desc: 'Decontaminate and demolish.', cost: 220000, time: 25, dose: 8 },
-                        { id: 'fill', name: 'Grout fill and entomb', desc: 'Seal it in place.', cost: 150000, time: 15, dose: 4, healthImpact: -5 }
+                        { id: 'fill', name: 'Grout fill and entombment', desc: 'Seal in place with grout.', cost: 150000, time: 15, dose: 4, healthImpact: -5 }
                     ]
                 }
             }
@@ -1810,124 +1745,112 @@ const GAME_DATA = {
             },
             stage2: {
                 standard: {
-                    situation: '<strong>Dose rates higher than predicted.</strong> Maintenance taking longer due to ALARP controls.',
-                    quote: 'Standard steel. Running hot. Every job takes longer.',
-                    boxType: 'warning',
+                    situation: 'Dose rates around the primary circuit are higher than predicted. The standard stainless steel from 2025 contains ~2,500ppm cobalt, which is activating under neutron flux.',
+                    quote: "Dose rates are running hot. That standard stainless from 2025 - 2,500ppm cobalt content. It's activating and making every maintenance job take longer because of ALARP controls. How do you want to approach this outage?",
                     isModifier: true,
                     options: [
-                        { id: 'accept', name: 'Accept higher doses', desc: 'Work with what we have.', cost: 0, time: 2, dose: 3 },
-                        { id: 'shield', name: 'Install temporary shielding', desc: 'Reduce dose for this outage.', cost: 25000, time: 3, dose: 1.5 }
+                        { id: 'accept', name: 'Accept higher dose rates', desc: 'Work with what we have. Jobs take longer.', cost: 0, time: 2, dose: 3 },
+                        { id: 'shield', name: 'Install temporary shielding', desc: 'Reduce dose exposure for this outage.', cost: 25000, time: 3, dose: 1.5 }
                     ]
                 },
                 lowCobalt: {
-                    situation: 'Dose rates as predicted. ALARP working well.',
-                    quote: 'Low-cobalt steel. Clean to work on. Makes everything easier.',
-                    boxType: 'good',
+                    situation: 'Dose rates as predicted in the design basis. The low-cobalt stainless from 2025 is performing as expected with minimal activation.',
+                    quote: "Dose rates exactly where we predicted. That low-cobalt steel from 2025 - worth every penny. Work areas are clean, jobs go smoothly. Just confirming the maintenance approach.",
                     options: [
-                        { id: 'standard', name: 'Standard procedures', desc: 'Normal approach.', cost: 0, time: 0, dose: 0.5 },
-                        { id: 'optimise', name: 'Optimise future dose budgets', desc: 'Bank the savings.', cost: 5000, time: 0, dose: 0.5 }
+                        { id: 'standard', name: 'Standard maintenance procedures', desc: 'Normal approach - no special measures needed.', cost: 0, time: 0, dose: 0.5 },
+                        { id: 'optimise', name: 'Optimise future dose budgets', desc: 'Bank the dose savings for contingencies.', cost: 5000, time: 0, dose: 0.5 }
                     ]
                 },
                 exotic: {
-                    situation: '<strong>Dose rates significantly higher than predicted.</strong> Nickel-63 creating problems.',
-                    quote: 'Exotic alloy. Exotic dose rates. Should have stuck with normal steel.',
-                    boxType: 'danger',
+                    situation: 'Dose rates significantly higher than predicted. The exotic nickel alloy from 2025 contains Nickel-59 which is creating unexpected activation products.',
+                    quote: "Big problem. That exotic alloy from 2025 - it looked great on paper, but the nickel content is activating badly. Dose rates are twice what we planned for. Every job is a challenge. What's the strategy?",
                     isModifier: true,
                     options: [
-                        { id: 'accept', name: 'Work with enhanced controls', desc: 'More restrictions, slower work.', cost: 0, time: 4, dose: 5 },
-                        { id: 'remote', name: 'Use remote tooling', desc: 'Reduce direct exposure.', cost: 40000, time: 5, dose: 3 }
+                        { id: 'accept', name: 'Accept enhanced dose controls', desc: 'More restrictions, slower work, higher doses.', cost: 0, time: 4, dose: 5 },
+                        { id: 'remote', name: 'Invest in remote tooling', desc: 'Reduce direct worker exposure.', cost: 40000, time: 5, dose: 3 }
                     ]
                 }
             },
             stage3: {
                 standard: {
-                    situation: 'Elevated dose rates require stand-off techniques for inspection.',
-                    quote: 'Need to keep distance. Limits what we can see.',
-                    boxType: 'warning',
+                    situation: 'Elevated dose rates require stand-off inspection techniques. The activated standard steel from 2025 limits close-approach work.',
+                    quote: "Inspection time, but that standard steel from 2025 is running hot. I need to keep my distance, which limits probe positioning. Extended reach equipment or accept the limitations?",
                     isModifier: true,
                     options: [
-                        { id: 'standoff', name: 'Extended reach inspection', desc: 'Longer probes, less accuracy.', cost: 15000, time: 3, dose: 4 },
-                        { id: 'shielded', name: 'Shielded inspection equipment', desc: 'Better but expensive.', cost: 35000, time: 4, dose: 2 }
+                        { id: 'standoff', name: 'Extended reach inspection', desc: 'Longer probe extensions, some accuracy loss.', cost: 15000, time: 3, dose: 4 },
+                        { id: 'shielded', name: 'Invest in shielded inspection equipment', desc: 'Better equipment for close-approach work.', cost: 35000, time: 4, dose: 2 }
                     ]
                 },
                 lowCobalt: {
-                    situation: 'Manageable dose rates. Standard inspection techniques apply.',
-                    quote: 'Clean material. Normal inspection. No drama.',
-                    boxType: 'good',
+                    situation: 'Manageable dose rates allow standard inspection approaches. The low-cobalt specification from 2025 continues to pay dividends.',
+                    quote: "Inspection programme running smoothly. That low-cobalt steel from 2025 - dose rates are low enough for normal close-approach work. No special equipment needed. Standard or enhanced baseline?",
                     options: [
-                        { id: 'standard', name: 'Standard inspection', desc: 'Normal techniques.', cost: 10000, time: 2, dose: 1 },
-                        { id: 'baseline', name: 'Establish detailed baseline', desc: 'Reference for future.', cost: 18000, time: 3, dose: 1.5 }
+                        { id: 'standard', name: 'Standard inspection', desc: 'Normal techniques, full coverage.', cost: 10000, time: 2, dose: 1 },
+                        { id: 'baseline', name: 'Establish detailed baseline', desc: 'Extra measurements for future reference.', cost: 18000, time: 3, dose: 1.5 }
                     ]
                 },
                 exotic: {
-                    situation: 'Very high dose rates. <strong>Specialist contractor required.</strong>',
-                    quote: 'Too hot for our teams. Need specialists.',
-                    boxType: 'danger',
+                    situation: 'Very high dose rates make inspection extremely challenging. The exotic alloy from 2025 requires specialist contractors with high-dose experience.',
+                    quote: "That exotic alloy from 2025 - it's so hot now our regular teams can't get near it safely. We need specialists who handle high-dose work. Or we accept limited inspection coverage.",
                     isModifier: true,
                     options: [
-                        { id: 'specialist', name: 'Specialist inspection contractor', desc: 'Experts with special equipment.', cost: 50000, time: 5, dose: 3 },
-                        { id: 'limited', name: 'Accept limited inspection', desc: 'Do what we can safely.', cost: 20000, time: 3, dose: 4, healthImpact: -5 }
+                        { id: 'specialist', name: 'Hire specialist high-dose contractor', desc: 'Experts with special shielding and experience.', cost: 50000, time: 5, dose: 3 },
+                        { id: 'limited', name: 'Accept limited inspection coverage', desc: 'Do what we can safely. Document gaps.', cost: 20000, time: 3, dose: 4, healthImpact: -5 }
                     ]
                 }
             },
             stage4: {
                 standard: {
-                    situation: 'Cumulative workforce dose approaching limits. Scheduling constrained.',
-                    quote: 'Running out of dose budget. Need more workers or less work.',
-                    boxType: 'warning',
+                    situation: 'Cumulative workforce dose approaching annual limits. The activated standard steel from 2025 constrains operational flexibility.',
+                    quote: "We're running into dose limit problems. That standard steel from 2025 - 45 years of activation means we're burning through dose budget fast. Need to bring in more workers or slow down.",
                     options: [
-                        { id: 'contractors', name: 'Bring in additional contractors', desc: 'More workers to share dose.', cost: 80000, time: 0, dose: 0 },
-                        { id: 'shielding', name: 'Install permanent shielding', desc: 'Long-term improvement.', cost: 50000, time: 5, dose: 0 },
-                        { id: 'slow', name: 'Accept schedule extension', desc: 'Work slower, spread dose.', cost: 20000, time: 10, dose: 0 }
+                        { id: 'contractors', name: 'Bring in additional contractors', desc: 'More workers to share the dose burden.', cost: 80000, time: 0, dose: 0 },
+                        { id: 'shielding', name: 'Install permanent shielding', desc: 'Long-term dose reduction investment.', cost: 50000, time: 5, dose: 0 },
+                        { id: 'slow', name: 'Accept schedule extension', desc: 'Work slower to spread dose over time.', cost: 20000, time: 10, dose: 0 }
                     ]
                 },
                 lowCobalt: {
-                    situation: 'Dose rates remain low. Full operational flexibility.',
-                    quote: 'Plenty of dose budget. No constraints.',
-                    boxType: 'good',
+                    situation: 'Dose rates remain low. Full operational flexibility maintained thanks to the low-cobalt specification from 2025.',
+                    quote: "Dose budgets looking healthy. That low-cobalt decision in 2025 gives us complete flexibility - no constraints on work planning, no limit problems. How do you want to manage the surplus?",
                     options: [
-                        { id: 'maintain', name: 'Standard operations', desc: 'Continue normal approach.', cost: 5000, time: 0, dose: 0.5 },
-                        { id: 'bank', name: 'Bank dose savings', desc: 'Reserve for contingencies.', cost: 5000, time: 0, dose: 0 }
+                        { id: 'maintain', name: 'Standard operations', desc: 'Continue normal working.', cost: 5000, time: 0, dose: 0.5 },
+                        { id: 'bank', name: 'Bank dose margin for contingencies', desc: 'Reserve capacity for unexpected work.', cost: 5000, time: 0, dose: 0 }
                     ]
                 },
                 exotic: {
-                    situation: '<strong>Severe dose constraints.</strong> Work significantly limited.',
-                    quote: 'Can barely get near it. Work windows are minutes, not hours.',
-                    boxType: 'danger',
+                    situation: 'Severe dose constraints limit work. The exotic alloy from 2025 has created extreme activation levels after 45 years.',
+                    quote: "We can barely get near the primary circuit. That exotic alloy from 2025 - after 45 years of activation, work windows are measured in minutes. Major operational constraints. How do we manage this?",
                     options: [
-                        { id: 'contractors', name: 'Large contractor team', desc: 'Many workers, short exposures.', cost: 120000, time: 5, dose: 0 },
-                        { id: 'remote', name: 'Remote operations only', desc: 'No direct access.', cost: 80000, time: 8, dose: 0 },
-                        { id: 'restrict', name: 'Severely restrict operations', desc: 'Accept limitations.', cost: 30000, time: 0, dose: 0, healthImpact: -10 }
+                        { id: 'contractors', name: 'Rotating contractor teams', desc: 'Many workers, very short exposures each.', cost: 120000, time: 5, dose: 0 },
+                        { id: 'remote', name: 'Remote operations only', desc: 'No direct human access to affected areas.', cost: 80000, time: 8, dose: 0 },
+                        { id: 'restrict', name: 'Severely restrict operations', desc: 'Accept major operational limitations.', cost: 30000, time: 0, dose: 0, healthImpact: -10 }
                     ]
                 }
             },
             stage5: {
                 standard: {
-                    situation: '<strong>Components still highly active after 5-year decay.</strong> Remote handling required.',
-                    quote: '2,500 ppm cobalt. Still hot after 5 years. Decades to cool.',
-                    boxType: 'danger',
+                    situation: 'After the 5-year decay period, components with standard steel remain highly active. Remote handling required for most work.',
+                    quote: "Five years of decay storage and that standard steel from 2025 is still too hot for hands-on work. 2,500ppm cobalt means decades more before it cools. Remote handling for everything. In-house or specialist?",
                     options: [
-                        { id: 'remote', name: 'Remote handling operations', desc: 'Difficult but necessary.', cost: 120000, time: 18, dose: 6, risk: 30 },
-                        { id: 'specialist', name: 'Specialist remote contractor', desc: 'Expert operators.', cost: 200000, time: 12, dose: 2 }
+                        { id: 'remote', name: 'In-house remote handling', desc: 'Our teams with manipulators. Learning curve.', cost: 120000, time: 18, dose: 6, risk: 30 },
+                        { id: 'specialist', name: 'Specialist remote handling contractor', desc: 'Experienced operators, proven techniques.', cost: 200000, time: 12, dose: 2 }
                     ]
                 },
                 lowCobalt: {
-                    situation: 'After 5-year decay, dose rates allow hands-on work with standard PPE.',
-                    quote: 'Low activation. Can handle it now. Some LLW possible.',
-                    boxType: 'good',
+                    situation: 'After 5-year decay, the low-cobalt materials from 2025 allow hands-on work with standard PPE. Some components may qualify as LLW.',
+                    quote: "Five years decay and that low-cobalt steel from 2025 is cool enough for hands-on work. Some of it might even go as low-level waste instead of ILW. This is exactly what we hoped for.",
                     options: [
-                        { id: 'handson', name: 'Hands-on removal', desc: 'Direct handling possible.', cost: 60000, time: 8, dose: 2 },
-                        { id: 'segregate', name: 'Segregate for recycling', desc: 'Maximise material recovery.', cost: 80000, time: 10, dose: 2.5 }
+                        { id: 'handson', name: 'Hands-on removal and segregation', desc: 'Direct handling with standard PPE.', cost: 60000, time: 8, dose: 2 },
+                        { id: 'segregate', name: 'Detailed segregation for waste minimisation', desc: 'Maximum effort to classify materials correctly.', cost: 80000, time: 10, dose: 2.5 }
                     ]
                 },
                 exotic: {
-                    situation: '<strong>Nickel-63 half-life is 100 years.</strong> Components will be active for centuries.',
-                    quote: 'Hundred-year half-life. This stuff will outlive everyone here.',
-                    boxType: 'danger',
+                    situation: 'The exotic nickel alloy from 2025 contains Nickel-63 with a 100-year half-life. These components will remain highly active for centuries.',
+                    quote: "That exotic alloy from 2025 - Nickel-63 has a hundred-year half-life. Five years of decay makes no difference. This stuff will be active long after everyone here is dead. Long-term storage or extreme remote handling?",
                     options: [
-                        { id: 'extended', name: 'Extended remote operations', desc: 'Very difficult work.', cost: 250000, time: 30, dose: 15 },
-                        { id: 'storage', name: 'Long-term interim storage', desc: 'Store and wait decades.', cost: 200000, time: 10, dose: 3 },
-                        { id: 'specialist', name: 'Specialist handling + storage', desc: 'Experts plus waiting.', cost: 300000, time: 20, dose: 5 }
+                        { id: 'extended', name: 'Extended remote decommissioning', desc: 'Very slow, very careful, very expensive.', cost: 250000, time: 30, dose: 15 },
+                        { id: 'storage', name: 'Long-term interim storage', desc: 'Store for decades. Wait for decay. Pass to future.', cost: 200000, time: 10, dose: 3 },
+                        { id: 'specialist', name: 'Specialist handling plus storage', desc: 'Expert removal then long-term storage.', cost: 300000, time: 20, dose: 5 }
                     ]
                 }
             }
@@ -2056,9 +1979,9 @@ function updateStatsDisplay() {
     let html = '';
     
     if (STATE.stage === 1) {
-        // Stage 1: Show remaining budget
+        // Stage 1: Show remaining design budget
         const cls = remaining < 100000 ? (remaining < 0 ? 'danger' : 'warning') : '';
-        html = `<div class="stat">💰 Budget: <span class="stat-value ${cls}">${formatMoney(remaining)}</span></div>`;
+        html = `<div class="stat">💰 Design Budget: <span class="stat-value ${cls}">${formatMoney(remaining)}</span></div>`;
     } else {
         // Stages 2-5: Show accumulated costs
         const st = STATE.stageTotals[STATE.stage] || { cost: 0, dose: 0, time: 0 };
@@ -2137,7 +2060,7 @@ function renderDesignModal(elId, element) {
     
     let html = `<div class="situation-box"><p>${data.description}</p></div>`;
     html += `<div style="margin-bottom: 15px; padding: 10px; background: var(--deep-navy); border-radius: 6px; display: flex; justify-content: space-between;">
-        <span>Remaining Budget:</span>
+        <span>Remaining Design Budget:</span>
         <span class="stat-value ${availableBudget < 150000 ? 'warning' : ''}">${formatMoney(availableBudget)}</span>
     </div>`;
     html += '<div class="options-list">';
@@ -2415,8 +2338,8 @@ function showStageSummary() {
         const over = spent > stage.budget;
         const remaining = stage.budget - spent;
         statsHtml = `
-            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value">${formatMoney(spent)}</div><div class="summary-stat-label">Spent</div></div>
-            <div class="summary-stat"><div class="summary-stat-icon">📊</div><div class="summary-stat-value">${formatMoney(stage.budget)}</div><div class="summary-stat-label">Budget</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value">${formatMoney(spent)}</div><div class="summary-stat-label">Design Spent</div></div>
+            <div class="summary-stat"><div class="summary-stat-icon">📊</div><div class="summary-stat-value">${formatMoney(stage.budget)}</div><div class="summary-stat-label">Design Budget</div></div>
             <div class="summary-stat"><div class="summary-stat-icon">${over ? '⚠️' : '✓'}</div><div class="summary-stat-value ${over ? 'over' : ''}">${formatMoney(Math.abs(remaining))}</div><div class="summary-stat-label">${over ? 'Over Budget' : 'Under Budget'}</div></div>
             <div class="summary-stat"><div class="summary-stat-icon">❤️</div><div class="summary-stat-value">${STATE.plantHealth}%</div><div class="summary-stat-label">Health</div></div>
         `;
