@@ -2515,7 +2515,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.28</div>
+<div class="version-tag">v0.29</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -2644,37 +2644,37 @@
         <div class="map-wrapper">
             <img src="images/gamebackground.png" alt="Section 4B">
             
-            <div class="hotspot" data-element="pumpAccess" style="left: 18%; top: 52%;">
+            <div class="hotspot" data-element="pumpAccess" style="left: 31.2805%; top: 36.4431%;">
                 <div class="hotspot-square" id="square-pumpAccess">
                     <span class="hotspot-square-label">Pump Access</span>
                 </div>
             </div>
             
-            <div class="hotspot" data-element="weldClearance" style="left: 42%; top: 46%;">
+            <div class="hotspot" data-element="weldClearance" style="left: 45.9839%; top: 23.9149%;">
                 <div class="hotspot-square" id="square-weldClearance">
                     <span class="hotspot-square-label">Weld Clearance</span>
                 </div>
             </div>
             
-            <div class="hotspot" data-element="controlPanel" style="left: 85%; top: 42%;">
+            <div class="hotspot" data-element="controlPanel" style="left: 80.1562%; top: 45.332%;">
                 <div class="hotspot-square" id="square-controlPanel">
                     <span class="hotspot-square-label">Control Panel</span>
                 </div>
             </div>
             
-            <div class="hotspot" data-element="pipeConnections" style="left: 56%; top: 52%;">
+            <div class="hotspot" data-element="pipeConnections" style="left: 46.156%; top: 56.1654%;">
                 <div class="hotspot-square" id="square-pipeConnections">
                     <span class="hotspot-square-label">Pipe Connections</span>
                 </div>
             </div>
             
-            <div class="hotspot" data-element="pipeRouting" style="left: 62%; top: 82%;">
+            <div class="hotspot" data-element="pipeRouting" style="left: 56.4526%; top: 80.332%;">
                 <div class="hotspot-square" id="square-pipeRouting">
                     <span class="hotspot-square-label">Pipe Routing</span>
                 </div>
             </div>
             
-            <div class="hotspot" data-element="materialSpec" style="left: 32%; top: 58%;">
+            <div class="hotspot" data-element="materialSpec" style="left: 65.2808%; top: 40.4991%;">
                 <div class="hotspot-square" id="square-materialSpec">
                     <span class="hotspot-square-label">Material Spec</span>
                 </div>
@@ -3972,9 +3972,9 @@ const GAME_DATA = {
             stage1: {
                 description: 'How should pipe joints be designed?',
                 options: [
-                    { id: 'welded', name: 'All Welded', desc: 'Continuous welds throughout. No break points. More welding labour.', cost: 140000, quality: 'poor' },
-                    { id: 'flanged', name: 'Flanged at Strategic Points', desc: 'Bolted flanges every 6m and at components. Optimised design.', cost: 100000, quality: 'good' },
-                    { id: 'excessive', name: 'Flanges Everywhere', desc: 'Flanged every 2m. Maximum flexibility but many potential leak paths.', cost: 180000, quality: 'wasteful' }
+                    { id: 'welded', name: 'All Welded', desc: 'Continuous welds throughout. No break points. More welding labour.', cost: 140000, quality: 'poor', image: 'images/04_Pipe_01.png' },
+                    { id: 'flanged', name: 'Flanged at Strategic Points', desc: 'Bolted flanges every 6m and at components. Optimised design.', cost: 100000, quality: 'good', image: 'images/04_Pipe_02.png' },
+                    { id: 'excessive', name: 'Flanges Everywhere', desc: 'Flanged every 2m. Maximum flexibility but many potential leak paths.', cost: 180000, quality: 'wasteful', image: 'images/04_Pipe_03.png' }
                 ]
             },
             stage2: {
@@ -4349,9 +4349,9 @@ const GAME_DATA = {
             stage1: {
                 description: 'How should pipes run through concrete structure?',
                 options: [
-                    { id: 'embedded', name: 'Embedded in Concrete', desc: 'Cast directly into structural concrete.', cost: 90000, quality: 'poor' },
-                    { id: 'ducted', name: 'Accessible Ducts', desc: 'Removable duct covers for access.', cost: 130000, quality: 'good' },
-                    { id: 'tunnel', name: 'Walk-In Tunnel', desc: 'Large accessible service tunnel.', cost: 220000, quality: 'wasteful' }
+                    { id: 'embedded', name: 'Embedded in Concrete', desc: 'Cast directly into structural concrete.', cost: 90000, quality: 'poor', image: 'images/05_Route_01.png' },
+                    { id: 'ducted', name: 'Accessible Ducts', desc: 'Removable duct covers for access.', cost: 130000, quality: 'good', image: 'images/05_Route_02.png' },
+                    { id: 'tunnel', name: 'Walk-In Tunnel', desc: 'Large accessible service tunnel.', cost: 220000, quality: 'wasteful', image: 'images/05_Route_03.png' }
                 ]
             },
             stage2: {
@@ -6735,135 +6735,6 @@ function buildTimelineHTML(elId) {
 function toggleJourney(elId) {
     const card = document.querySelector(`.journey-card[data-element="${elId}"]`);
     card.classList.toggle('expanded');
-}
-
-// ============================================
-// DEBUG MODE - Press E to toggle
-// ============================================
-let debugMode = false;
-let draggedHotspot = null;
-let dragOffset = { x: 0, y: 0 };
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'e' || e.key === 'E') {
-        debugMode = !debugMode;
-        toggleDebugMode();
-    }
-});
-
-function toggleDebugMode() {
-    let panel = document.getElementById('debugPanel');
-    
-    if (debugMode) {
-        // Create debug panel
-        if (!panel) {
-            panel = document.createElement('div');
-            panel.id = 'debugPanel';
-            panel.style.cssText = `
-                position: fixed;
-                top: 10px;
-                right: 10px;
-                background: rgba(0,0,0,0.9);
-                color: #0f0;
-                padding: 15px;
-                border-radius: 8px;
-                font-family: monospace;
-                font-size: 12px;
-                z-index: 9999;
-                max-height: 90vh;
-                overflow-y: auto;
-                border: 2px solid #0f0;
-            `;
-            panel.innerHTML = '<div style="color: #ff0; margin-bottom: 10px; font-weight: bold;">🔧 DEBUG MODE (Press E to close)</div><div id="debugCoords"></div>';
-            document.body.appendChild(panel);
-        }
-        panel.style.display = 'block';
-        
-        // Make hotspots draggable
-        document.querySelectorAll('.hotspot').forEach(h => {
-            h.style.cursor = 'move';
-            h.style.outline = '2px dashed #0f0';
-            
-            h.onmousedown = startDrag;
-        });
-        
-        updateDebugCoords();
-        
-    } else {
-        if (panel) panel.style.display = 'none';
-        
-        // Remove draggable
-        document.querySelectorAll('.hotspot').forEach(h => {
-            h.style.cursor = 'pointer';
-            h.style.outline = 'none';
-            h.onmousedown = null;
-        });
-    }
-}
-
-function startDrag(e) {
-    if (!debugMode) return;
-    e.preventDefault();
-    
-    draggedHotspot = e.currentTarget;
-    const wrapper = document.querySelector('.map-wrapper');
-    const rect = wrapper.getBoundingClientRect();
-    
-    const hotspotRect = draggedHotspot.getBoundingClientRect();
-    dragOffset.x = e.clientX - hotspotRect.left - hotspotRect.width / 2;
-    dragOffset.y = e.clientY - hotspotRect.top - hotspotRect.height / 2;
-    
-    document.addEventListener('mousemove', doDrag);
-    document.addEventListener('mouseup', stopDrag);
-}
-
-function doDrag(e) {
-    if (!draggedHotspot) return;
-    
-    const wrapper = document.querySelector('.map-wrapper');
-    const rect = wrapper.getBoundingClientRect();
-    
-    const x = ((e.clientX - rect.left - dragOffset.x) / rect.width) * 100;
-    const y = ((e.clientY - rect.top - dragOffset.y) / rect.height) * 100;
-    
-    draggedHotspot.style.left = Math.max(0, Math.min(100, x)) + '%';
-    draggedHotspot.style.top = Math.max(0, Math.min(100, y)) + '%';
-    
-    updateDebugCoords();
-}
-
-function stopDrag() {
-    draggedHotspot = null;
-    document.removeEventListener('mousemove', doDrag);
-    document.removeEventListener('mouseup', stopDrag);
-}
-
-function updateDebugCoords() {
-    const coordsDiv = document.getElementById('debugCoords');
-    if (!coordsDiv) return;
-    
-    let html = '<div style="margin-bottom: 8px; color: #aaa;">Drag squares to reposition</div>';
-    html += '<div style="border-top: 1px solid #333; padding-top: 8px;">';
-    
-    document.querySelectorAll('.hotspot').forEach(h => {
-        const elId = h.dataset.element;
-        const left = h.style.left;
-        const top = h.style.top;
-        html += `<div style="margin: 4px 0;"><span style="color: #0af;">${elId}:</span> left: ${left}, top: ${top}</div>`;
-    });
-    
-    html += '</div>';
-    html += '<div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #333; color: #ff0;">Copy these values:</div>';
-    html += '<textarea id="debugOutput" style="width: 100%; height: 120px; margin-top: 8px; background: #111; color: #0f0; border: 1px solid #333; font-family: monospace; font-size: 11px;" readonly>';
-    
-    document.querySelectorAll('.hotspot').forEach(h => {
-        const elId = h.dataset.element;
-        html += `${elId}: left: ${h.style.left}, top: ${h.style.top}\n`;
-    });
-    
-    html += '</textarea>';
-    
-    coordsDiv.innerHTML = html;
 }
 </script>
 </body>
