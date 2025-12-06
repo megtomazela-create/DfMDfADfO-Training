@@ -642,6 +642,13 @@
             justify-content: center;
             font-size: 1.5rem;
             border: 2px solid var(--slate);
+            overflow: hidden;
+        }
+        
+        .speech-portrait img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
         .speech-name {
@@ -2508,7 +2515,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.25</div>
+<div class="version-tag">v0.26</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -2774,18 +2781,18 @@
 // ============================================
 const GAME_DATA = {
     stages: {
-        1: { name: 'DESIGN', year: 2025, budget: 800000 },
-        2: { name: 'MAINTENANCE', year: 2040, budget: 400000, time: 30, char: 'dave' },
-        3: { name: 'INSPECTION', year: 2055, budget: 250000, time: 21, char: 'sarah' },
-        4: { name: 'OPERATIONS', year: 2070, budget: 200000, time: 7, char: 'mike' },
-        5: { name: 'DECOMMISSIONING', year: 2085, budget: 1200000, time: 90, char: 'janet' }
+        1: { name: 'DESIGN', year: 2025, budget: 800000, bg: 'images/bg_design.png' },
+        2: { name: 'MAINTENANCE', year: 2040, budget: 400000, time: 30, char: 'dave', bg: 'images/bg_maintenance.png' },
+        3: { name: 'INSPECTION', year: 2055, budget: 250000, time: 21, char: 'sarah', bg: 'images/bg_inspection.png' },
+        4: { name: 'OPERATIONS', year: 2070, budget: 200000, time: 7, char: 'mike', bg: 'images/bg_operations.png' },
+        5: { name: 'DECOMMISSIONING', year: 2085, budget: 1200000, time: 90, char: 'janet', bg: 'images/bg_decom.png' }
     },
     
     characters: {
-        dave: { name: 'Dave Morton', role: 'Maintenance Supervisor', emoji: '👷' },
-        sarah: { name: 'Sarah Okonkwo', role: 'Principal Inspector', emoji: '🔍' },
-        mike: { name: 'Mike Brennan', role: 'Shift Operations Manager', emoji: '👨‍💼' },
-        janet: { name: 'Janet Cole', role: 'Decommissioning Lead', emoji: '👩‍🔧' }
+        dave: { name: 'Dave Morton', role: 'Maintenance Supervisor', emoji: '👷', image: 'images/dave.png' },
+        sarah: { name: 'Sarah Okonkwo', role: 'Principal Inspector', emoji: '🔍', image: 'images/sarah.png' },
+        mike: { name: 'Mike Brennan', role: 'Shift Operations Manager', emoji: '👨‍💼', image: 'images/mike.png' },
+        janet: { name: 'Janet Cole', role: 'Decommissioning Lead', emoji: '👩‍🔧', image: 'images/janet.png' }
     },
     
     transitions: {
@@ -3378,9 +3385,9 @@ const GAME_DATA = {
             stage1: {
                 description: 'What clearance around pipe welds for inspection access?',
                 options: [
-                    { id: '50mm', name: '50mm (Code Minimum)', desc: 'Meets code but just barely.', cost: 60000, quality: 'poor' },
-                    { id: '150mm', name: '150mm Clearance', desc: 'Adequate for all standard probes.', cost: 90000, quality: 'good' },
-                    { id: '300mm', name: '300mm + Permanent Scaffolding', desc: 'Maximum clearance with fixed platforms.', cost: 160000, quality: 'wasteful' }
+                    { id: '50mm', name: '50mm (Code Minimum)', desc: 'Meets code but just barely.', cost: 60000, quality: 'poor', image: 'images/03_Weld_01.png' },
+                    { id: '150mm', name: '150mm Clearance', desc: 'Adequate for all standard probes.', cost: 90000, quality: 'good', image: 'images/03_Weld_02.png' },
+                    { id: '300mm', name: '300mm + Permanent Scaffolding', desc: 'Maximum clearance with fixed platforms.', cost: 160000, quality: 'wasteful', image: 'images/03_Weld_03.png' }
                 ]
             },
             stage2: {
@@ -4342,9 +4349,9 @@ const GAME_DATA = {
             stage1: {
                 description: 'How should pipes run through concrete structure?',
                 options: [
-                    { id: 'embedded', name: 'Embedded in Concrete', desc: 'Cast directly into structural concrete.', cost: 90000, quality: 'poor' },
-                    { id: 'ducted', name: 'Accessible Ducts', desc: 'Removable duct covers for access.', cost: 130000, quality: 'good' },
-                    { id: 'tunnel', name: 'Walk-In Tunnel', desc: 'Large accessible service tunnel.', cost: 220000, quality: 'wasteful' }
+                    { id: 'embedded', name: 'Embedded in Concrete', desc: 'Cast directly into structural concrete.', cost: 90000, quality: 'poor', image: 'images/02_Pipe_01.png' },
+                    { id: 'ducted', name: 'Accessible Ducts', desc: 'Removable duct covers for access.', cost: 130000, quality: 'good', image: 'images/02_Pipe_02.png' },
+                    { id: 'tunnel', name: 'Walk-In Tunnel', desc: 'Large accessible service tunnel.', cost: 220000, quality: 'wasteful', image: 'images/02_Pipe_03.png' }
                 ]
             },
             stage2: {
@@ -5091,7 +5098,12 @@ function startStage(stageNum) {
     if (stageNum > 1 && stage.char) {
         const char = GAME_DATA.characters[stage.char];
         banner.className = `character-banner visible ${stage.char}`;
-        document.getElementById('charPortrait').textContent = char.emoji;
+        const portrait = document.getElementById('charPortrait');
+        if (char.image) {
+            portrait.innerHTML = `<img src="${char.image}" alt="${char.name}">`;
+        } else {
+            portrait.textContent = char.emoji;
+        }
         document.getElementById('charName').textContent = char.name;
         document.getElementById('charRole').textContent = char.role;
     } else {
@@ -5461,7 +5473,7 @@ function renderPipeRoutingDecision(elId, element) {
         </div>
         
         <div class="speech-bubble">
-            <div class="speech-portrait">${char.emoji}</div>
+            <div class="speech-portrait">${char.image ? `<img src="${char.image}" alt="${char.name}">` : char.emoji}</div>
             <div class="speech-name">${char.name}, ${char.role}</div>
             <div class="speech-text">"${stageData.quote}"</div>
         </div>
@@ -5962,7 +5974,7 @@ function renderDecisionModal(elId, element) {
     // Character speech bubble
     html += `
         <div class="speech-bubble">
-            <div class="speech-portrait">${char.emoji}</div>
+            <div class="speech-portrait">${char.image ? `<img src="${char.image}" alt="${char.name}">` : char.emoji}</div>
             <div class="speech-name">${char.name}, ${char.role}</div>
             <div class="speech-text">"${stageData.quote}"</div>
         </div>
@@ -6368,6 +6380,7 @@ document.getElementById('btnStoryNext').onclick = () => {
 function showTransition() {
     const nextStage = STATE.stage + 1;
     const trans = GAME_DATA.transitions[nextStage];
+    const nextStageData = GAME_DATA.stages[nextStage];
     
     document.getElementById('transYears').textContent = trans.years;
     document.getElementById('transYear').textContent = trans.year;
@@ -6376,7 +6389,15 @@ function showTransition() {
     document.getElementById('transText').innerHTML = trans.text.map(t => `<p class="phase-context-line">${t}</p>`).join('');
     document.getElementById('btnTransContinue').textContent = `Begin ${trans.phaseName} →`;
     
-    document.getElementById('transitionScreen').classList.add('active');
+    // Set background image for the stage
+    const transScreen = document.getElementById('transitionScreen');
+    if (nextStageData.bg) {
+        transScreen.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.85)), url('${nextStageData.bg}')`;
+        transScreen.style.backgroundSize = 'cover';
+        transScreen.style.backgroundPosition = 'center';
+    }
+    
+    transScreen.classList.add('active');
 }
 
 document.getElementById('btnTransContinue').onclick = () => {
@@ -6613,7 +6634,14 @@ function showFinalResults() {
     html += `</div>`;
     
     document.getElementById('finalReportContent').innerHTML = html;
-    document.getElementById('resultsScreen').classList.add('active');
+    
+    // Set results background
+    const resultsScreen = document.getElementById('resultsScreen');
+    resultsScreen.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('images/bg_results.png')`;
+    resultsScreen.style.backgroundSize = 'cover';
+    resultsScreen.style.backgroundPosition = 'center';
+    
+    resultsScreen.classList.add('active');
 }
 
 function buildTimelineHTML(elId) {
