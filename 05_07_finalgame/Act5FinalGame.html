@@ -841,13 +841,20 @@
         
         .design-card-image {
             width: 100%;
-            height: 70px;
+            height: 120px;
             background: linear-gradient(135deg, var(--slate) 0%, var(--deep-navy) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--mid-grey);
             font-size: 0.65rem;
+            overflow: hidden;
+        }
+        
+        .design-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
         .design-card-cost {
@@ -2935,9 +2942,9 @@ const GAME_DATA = {
             stage1: {
                 description: 'How should the primary coolant pump be positioned?',
                 options: [
-                    { id: 'corner', name: 'Corner Position', desc: 'Tucked in corner to maximise floor space. 1.8m clearance.', cost: 80000, quality: 'poor' },
-                    { id: 'openBay', name: 'Open Bay', desc: '2m clearance all sides, under crane rails.', cost: 120000, quality: 'good' },
-                    { id: 'dedicated', name: 'Dedicated Shielded Room', desc: 'Separate room with airlock. Maximum protection.', cost: 200000, quality: 'wasteful' }
+                    { id: 'corner', name: 'Corner Position', desc: 'Tucked in corner to maximise floor space. 1.8m clearance.', cost: 80000, quality: 'poor', image: 'images/01_Pump_01.png' },
+                    { id: 'openBay', name: 'Open Bay', desc: '2m clearance all sides, under crane rails.', cost: 120000, quality: 'good', image: 'images/01_Pump_02.png' },
+                    { id: 'dedicated', name: 'Dedicated Shielded Room', desc: 'Separate room with airlock. Maximum protection.', cost: 200000, quality: 'wasteful', image: 'images/01_Pump_03.png' }
                 ]
             },
             // =====================================
@@ -5152,7 +5159,9 @@ function closeModal() {
             pipeGameState.tunnelInterval = null;
         }
         pipeGameState.tunnelActive = false;
-        document.removeEventListener('keydown', handleTunnelKeyPress);
+        if (typeof handleTunnelKeyPress === 'function') {
+            document.removeEventListener('keydown', handleTunnelKeyPress);
+        }
     }
 }
 
@@ -5178,12 +5187,6 @@ function openElementModal(elId) {
 // STAGE 1: DESIGN
 // ============================================
 function renderDesignModal(elId, element) {
-    // Special handling for pipe routing mini-game
-    if (elId === 'pipeRouting') {
-        renderPipeRoutingGame(elId, element);
-        return;
-    }
-    
     const data = element.stage1;
     const remaining = getRemainingBudget();
     
@@ -5227,9 +5230,14 @@ function renderDesignModal(elId, element) {
         const affordable = opt.cost <= availableBudget;
         const disabledClass = affordable ? '' : 'disabled';
         
+        // Use actual image if available, otherwise show placeholder
+        const imageContent = opt.image 
+            ? `<img src="${opt.image}" alt="${opt.name}" onerror="this.parentElement.innerHTML='[${opt.name}]'">`
+            : `[${opt.name}]`;
+        
         html += `
             <div class="design-card ${sel} ${disabledClass}" data-id="${opt.id}" data-cost="${opt.cost}">
-                <div class="design-card-image">[${opt.name}]</div>
+                <div class="design-card-image">${imageContent}</div>
                 <div class="design-card-cost">${formatMoney(opt.cost)}</div>
                 <div class="design-card-body">
                     <div class="design-card-name">${opt.name}</div>
@@ -5279,11 +5287,9 @@ function renderDesignModal(elId, element) {
 }
 
 // ============================================
-// PIPE ROUTING MINI-GAME
+// PIPE ROUTING MINI-GAME (Stage 2+ Consequence Illustration)
 // ============================================
 let pipeGameState = {
-    currentTab: null,
-    completedGames: {},
     embeddedCost: 0,
     embeddedFound: 0,
     embeddedPipeRow: 1,
@@ -5294,50 +5300,77 @@ let pipeGameState = {
     tunnelDose: 0,
     tunnelActive: false,
     tunnelInterval: null,
-    tunnelCooldown: false
+    tunnelCooldown: false,
+    gameCompleted: false,
+    currentStageData: null,
+    currentElId: null,
+    currentElement: null
 };
 
-function renderPipeRoutingGame(elId, element) {
-    const data = element.stage1;
-    const remaining = getRemainingBudget();
+function renderPipeRoutingDecision(elId, element) {
+    const stageKey = `stage${STATE.stage}`;
+    const designChoice = STATE.designChoices[elId];
+    const designOpt = element.stage1.options.find(o => o.id === designChoice);
+    const stage = GAME_DATA.stages[STATE.stage];
     
-    let availableBudget = remaining;
-    if (STATE.designChoices[elId]) {
-        const currentChoice = data.options.find(o => o.id === STATE.designChoices[elId]);
-        availableBudget += currentChoice.cost;
+    let stageData = element[stageKey]?.[designChoice];
+    
+    if (!stageData) {
+        document.getElementById('modalBody').innerHTML = '<p>No data for this element at this stage.</p>';
+        document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" onclick="closeModal()">Close</button>';
+        return;
     }
+    
+    // Handle element state-based scenarios
+    if (stageData.checkElementState && stageData.scenarios) {
+        const elState = STATE.elementState[elId] || {};
+        const statePriority = [
+            'emergencyOccurred', 'leakOccurred', 'operatorError', 'contaminationSpread',
+            'deteriorating', 'corrosionDetected', 'doseConstraints',
+            'inspectionGap', 'inspectionLimited', 'cableConflict', 'boltDegradation',
+            'accessFixed', 'clearanceImproved', 'layoutModified', 'earlyReplacement',
+            'workaroundUsed', 'specialToolingUsed', 'backupInstalled', 'trainingEnhanced',
+            'shieldingAdded', 'remoteTooling', 'accessCreated', 'flangingAdded',
+            'airlockBypassed', 'airlockMaintained', 'weldCutMade', 'leakHistory'
+        ];
+        
+        let matchedScenario = null;
+        for (const state of statePriority) {
+            if (elState[state] && stageData.scenarios[state]) {
+                matchedScenario = stageData.scenarios[state];
+                break;
+            }
+        }
+        if (!matchedScenario) {
+            matchedScenario = stageData.scenarios.default || stageData.scenarios[Object.keys(stageData.scenarios)[0]];
+        }
+        stageData = matchedScenario;
+    }
+    
+    // Store for later use when game completes
+    pipeGameState.currentStageData = stageData;
+    pipeGameState.currentElId = elId;
+    pipeGameState.currentElement = element;
+    pipeGameState.gameCompleted = false;
+    
+    const char = GAME_DATA.characters[stage.char];
+    const stageCost = STATE.stageTotals[STATE.stage]?.cost || 0;
     
     let html = `
         <div class="context-bar">
-            <span class="context-design">📅 Year 2025 · Design Phase</span>
-            <span class="context-cost">💰 Budget: ${formatMoney(availableBudget)}</span>
+            <span class="context-design">📅 Year ${stage.year} · 2025 Design: <strong>${designOpt.name}</strong></span>
+            <span class="context-cost">💰 Stage Cost: ${formatMoney(stageCost)}</span>
         </div>
         
         <div class="situation-panel">
-            <div class="situation-label">Design Decision Required</div>
-            <div class="situation-text">${data.description} <strong>Try each option below to understand its consequences.</strong></div>
+            <div class="situation-label">Current Situation</div>
+            <div class="situation-text">${stageData.situation}</div>
         </div>
         
         <div class="pipe-game-container">
-            <div class="pipe-game-tabs">
-    `;
-    
-    data.options.forEach(opt => {
-        const activeClass = pipeGameState.currentTab === opt.id ? 'active' : '';
-        const completedClass = pipeGameState.completedGames[opt.id] ? 'completed' : '';
-        const affordable = opt.cost <= availableBudget;
-        
-        html += `
-            <div class="pipe-game-tab ${activeClass} ${completedClass} ${affordable ? '' : 'disabled'}" 
-                 onclick="${affordable ? `selectPipeTab('${opt.id}')` : ''}"
-                 data-id="${opt.id}">
-                <div class="pipe-game-tab-name">${opt.name}</div>
-                <div class="pipe-game-tab-cost">${formatMoney(opt.cost)}</div>
-            </div>
-        `;
-    });
-    
-    html += `
+            <div class="pipe-game-header">
+                <span class="pipe-game-title">📐 Experience the Consequence</span>
+                <span class="pipe-game-cost">${designOpt.name}</span>
             </div>
             <div class="pipe-game-view" id="pipeGameView">
                 <div class="pipe-game-labels">
@@ -5348,128 +5381,107 @@ function renderPipeRoutingGame(elId, element) {
                     <div class="pipe-game-wall"><span class="pipe-game-wall-label">CONTAINMENT</span></div>
                     <div class="pipe-game-wall right"><span class="pipe-game-wall-label">AUX SYSTEMS</span></div>
                 </div>
-                <div class="pipe-game-area" id="pipeGameArea">
-                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #5a7a9a; font-size: 0.85rem;">
-                        ← Select a design option to explore
-                    </div>
-                </div>
+                <div class="pipe-game-area" id="pipeGameArea"></div>
                 <div class="pipe-game-floor">
                     <span class="pipe-game-floor-label">FOUNDATION SLAB</span>
                 </div>
             </div>
-            <div class="pipe-game-message" id="pipeGameMessage">
-                <div class="pipe-game-message-title">🔍 Interactive Design Preview</div>
-                <div>Click each option above to see how it affects pipe accessibility. Complete all three to understand the trade-offs.</div>
-            </div>
+            <div class="pipe-game-message" id="pipeGameMessage"></div>
         </div>
+        
+        <div class="speech-bubble">
+            <div class="speech-portrait">${char.emoji}</div>
+            <div class="speech-name">${char.name}, ${char.role}</div>
+            <div class="speech-text">"${stageData.quote}"</div>
+        </div>
+        
+        <div id="pipeDecisionArea" style="display: none;"></div>
     `;
     
     document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('modalFooter').innerHTML = '<div id="pipeGameFooter"></div>';
     
-    // Set up confirm button
-    const allComplete = data.options.every(opt => pipeGameState.completedGames[opt.id] || opt.cost > availableBudget);
-    const hasChoice = !!STATE.designChoices[elId];
+    // Start the appropriate game based on design choice
+    if (designChoice === 'embedded') {
+        startEmbeddedGame();
+    } else if (designChoice === 'ducted') {
+        startDuctedGame();
+    } else if (designChoice === 'tunnel') {
+        startTunnelGame();
+    }
+}
+
+function showPipeDecisionOptions() {
+    const stageData = pipeGameState.currentStageData;
+    const elId = pipeGameState.currentElId;
     
-    document.getElementById('modalFooter').innerHTML = `
-        <button class="btn btn-primary" id="btnConfirmPipe" ${!allComplete && !hasChoice ? 'disabled' : ''}>
-            ${hasChoice ? 'Update Selection' : (allComplete ? 'Select Design' : 'Complete all options first')}
-        </button>
+    const numOptions = stageData.options.length;
+    const gridClass = numOptions === 2 ? 'two-options' : (numOptions === 3 ? 'three-options' : '');
+    
+    let html = `
+        <div class="decision-section">
+            <div class="decision-header">
+                <span class="decision-label">Your Decision</span>
+                <div class="decision-line"></div>
+            </div>
+            <div class="options-list ${gridClass}">
     `;
     
-    document.getElementById('btnConfirmPipe').onclick = () => {
-        if (!pipeGameState.currentTab) return;
+    stageData.options.forEach(opt => {
+        const cost = opt.cost || 0;
+        const hasImpacts = opt.time || opt.dose || opt.healthImpact || opt.risk;
         
-        const opt = data.options.find(o => o.id === pipeGameState.currentTab);
-        
-        // Refund old if changing
-        if (STATE.designChoices[elId]) {
-            const old = data.options.find(o => o.id === STATE.designChoices[elId]);
-            STATE.totals.cost -= old.cost;
-        }
-        
-        STATE.designChoices[elId] = pipeGameState.currentTab;
-        STATE.completed[1][elId] = true;
-        STATE.totals.cost += opt.cost;
-        
-        document.querySelector(`[data-element="${elId}"] .hotspot-dot`).classList.add('done');
-        
-        // Clean up tunnel game
-        if (pipeGameState.tunnelInterval) {
-            clearInterval(pipeGameState.tunnelInterval);
-            pipeGameState.tunnelInterval = null;
-        }
-        pipeGameState.tunnelActive = false;
-        document.removeEventListener('keydown', handleTunnelKeyPress);
-        
-        updateStatsDisplay();
-        updateProgressLabel();
-        closeModal();
-    };
-    
-    // If there's already a selection, show that tab
-    if (STATE.designChoices[elId]) {
-        selectPipeTab(STATE.designChoices[elId]);
-    }
-}
-
-function selectPipeTab(tabId) {
-    // Clean up previous game
-    if (pipeGameState.tunnelInterval) {
-        clearInterval(pipeGameState.tunnelInterval);
-        pipeGameState.tunnelInterval = null;
-    }
-    pipeGameState.tunnelActive = false;
-    document.removeEventListener('keydown', handleTunnelKeyPress);
-    
-    pipeGameState.currentTab = tabId;
-    
-    // Update tab styling
-    document.querySelectorAll('.pipe-game-tab').forEach(tab => {
-        tab.classList.toggle('active', tab.dataset.id === tabId);
+        html += `
+            <div class="option-card" data-id="${opt.id}">
+                <div class="option-header">
+                    <div class="option-name">${opt.name}</div>
+                    <div class="option-cost-badge">${formatMoney(cost)}</div>
+                </div>
+                <p class="option-desc">${opt.desc}</p>
+                ${hasImpacts ? `
+                    <div class="option-impacts">
+                        ${opt.time ? `<span class="impact">⏱️ ${opt.time}d</span>` : ''}
+                        ${opt.dose ? `<span class="impact">☢️ ${opt.dose}mSv</span>` : ''}
+                        ${opt.healthImpact ? `<span class="impact bad">❤️ ${opt.healthImpact}%</span>` : ''}
+                        ${opt.risk ? `<span class="impact bad">⚠️ Risk</span>` : ''}
+                    </div>
+                ` : ''}
+            </div>
+        `;
     });
     
-    // Render the appropriate game
-    const gameArea = document.getElementById('pipeGameArea');
-    const messageArea = document.getElementById('pipeGameMessage');
+    html += '</div></div>';
     
-    if (tabId === 'embedded') {
-        renderEmbeddedGame(gameArea, messageArea);
-    } else if (tabId === 'ducted') {
-        renderDuctedGame(gameArea, messageArea);
-    } else if (tabId === 'tunnel') {
-        renderTunnelGame(gameArea, messageArea);
-    }
+    document.getElementById('pipeDecisionArea').innerHTML = html;
+    document.getElementById('pipeDecisionArea').style.display = 'block';
     
-    updatePipeConfirmButton();
+    // Set up option selection
+    let selected = null;
+    document.querySelectorAll('#pipeDecisionArea .option-card').forEach(card => {
+        card.onclick = () => {
+            document.querySelectorAll('#pipeDecisionArea .option-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selected = card.dataset.id;
+        };
+    });
+    
+    document.getElementById('pipeGameFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirmPipeDecision">Confirm Decision</button>';
+    document.getElementById('btnConfirmPipeDecision').onclick = () => {
+        if (!selected) return;
+        
+        const opt = stageData.options.find(o => o.id === selected);
+        applyDecision(elId, opt, stageData);
+    };
 }
 
-function updatePipeConfirmButton() {
-    const btn = document.getElementById('btnConfirmPipe');
-    if (!btn) return;
-    
-    const data = GAME_DATA.elements.pipeRouting.stage1;
-    const remaining = getRemainingBudget();
-    let availableBudget = remaining;
-    if (STATE.designChoices.pipeRouting) {
-        const currentChoice = data.options.find(o => o.id === STATE.designChoices.pipeRouting);
-        availableBudget += currentChoice.cost;
-    }
-    
-    const allComplete = data.options.every(opt => pipeGameState.completedGames[opt.id] || opt.cost > availableBudget);
-    const hasChoice = !!STATE.designChoices.pipeRouting;
-    const currentTabComplete = pipeGameState.completedGames[pipeGameState.currentTab];
-    
-    btn.disabled = !currentTabComplete && !hasChoice;
-    btn.textContent = hasChoice ? 'Update Selection' : (currentTabComplete ? `Select ${pipeGameState.currentTab === 'embedded' ? 'Embedded' : pipeGameState.currentTab === 'ducted' ? 'Accessible Ducts' : 'Walk-In Tunnel'}` : 'Complete game first');
-}
-
-// EMBEDDED GAME
-function renderEmbeddedGame(gameArea, messageArea) {
+// EMBEDDED GAME - Find the leak
+function startEmbeddedGame() {
     pipeGameState.embeddedCost = 0;
     pipeGameState.embeddedFound = 0;
     pipeGameState.embeddedGameOver = false;
     pipeGameState.embeddedPipeRow = 1 + Math.floor(Math.random() * 2);
     
+    const gameArea = document.getElementById('pipeGameArea');
     let gridHTML = `
         <div class="embedded-stats">
             <div class="embedded-stat cost">💰 £<span id="embeddedCost">0</span>k</div>
@@ -5488,11 +5500,12 @@ function renderEmbeddedGame(gameArea, messageArea) {
     gridHTML += '</div>';
     gameArea.innerHTML = gridHTML;
     
-    messageArea.className = 'pipe-game-message';
-    messageArea.innerHTML = `
-        <div class="pipe-game-message-title">🔨 Find the Hidden Pipe</div>
-        <div>Click blocks to excavate. Each block costs £10,000. The pipe is hidden in one row.</div>
+    document.getElementById('pipeGameMessage').innerHTML = `
+        <div class="pipe-game-message-title">🔨 Find the Leak</div>
+        <div>The pipe is embedded in concrete. Click to excavate blocks (£10k each) and locate the leak source.</div>
     `;
+    
+    document.getElementById('pipeGameFooter').innerHTML = '';
 }
 
 function breakConcreteBlock(element) {
@@ -5521,37 +5534,32 @@ function breakConcreteBlock(element) {
 
 function completeEmbeddedGame(success) {
     pipeGameState.embeddedGameOver = true;
-    pipeGameState.completedGames.embedded = true;
+    pipeGameState.gameCompleted = true;
     
-    document.querySelectorAll('.pipe-game-tab').forEach(tab => {
-        if (tab.dataset.id === 'embedded') tab.classList.add('completed');
-    });
-    
-    const messageArea = document.getElementById('pipeGameMessage');
-    messageArea.className = 'pipe-game-message warning';
+    const msgArea = document.getElementById('pipeGameMessage');
+    msgArea.className = 'pipe-game-message warning';
     
     if (success) {
-        messageArea.innerHTML = `
-            <div class="pipe-game-message-title">🔍 Pipe Found — At What Cost?</div>
-            <div>You spent <strong>£${pipeGameState.embeddedCost},000</strong> just to find it. Now imagine doing this for every inspection, leak, or repair over 60 years. <strong>What you can't see, you can't prove is safe.</strong></div>
+        msgArea.innerHTML = `
+            <div class="pipe-game-message-title">🔍 Leak Located — At Great Cost</div>
+            <div>You spent <strong>£${pipeGameState.embeddedCost},000</strong> in excavation just to find it. This is reality with embedded pipes.</div>
         `;
     } else {
-        messageArea.innerHTML = `
-            <div class="pipe-game-message-title">💸 Budget Exceeded</div>
-            <div>You spent <strong>£${pipeGameState.embeddedCost},000</strong> and only found ${pipeGameState.embeddedFound}/8 sections. <strong>Embedding pipes saves money at construction — but creates a nightmare for every future intervention.</strong></div>
+        msgArea.innerHTML = `
+            <div class="pipe-game-message-title">💸 Excavation Budget Exceeded</div>
+            <div>£${pipeGameState.embeddedCost},000 spent, only ${pipeGameState.embeddedFound}/8 sections found. The pipe location remains uncertain.</div>
         `;
     }
     
-    updatePipeConfirmButton();
+    showPipeDecisionOptions();
 }
 
-// DUCTED GAME
-function renderDuctedGame(gameArea, messageArea) {
+// DUCTED GAME - Easy inspection
+function startDuctedGame() {
     pipeGameState.ductsOpened = 0;
     
-    let html = `
-        <div class="ducts-container">
-    `;
+    const gameArea = document.getElementById('pipeGameArea');
+    let html = '<div class="ducts-container">';
     
     for (let i = 0; i < 5; i++) {
         html += `
@@ -5574,11 +5582,12 @@ function renderDuctedGame(gameArea, messageArea) {
     
     gameArea.innerHTML = html;
     
-    messageArea.className = 'pipe-game-message';
-    messageArea.innerHTML = `
+    document.getElementById('pipeGameMessage').innerHTML = `
         <div class="pipe-game-message-title">🔍 Inspect the Accessible Ducts</div>
-        <div>Click each duct cover to lift it and reveal the pipe beneath. Trace the entire route.</div>
+        <div>Click each duct cover to open it and locate the leak. Quick and straightforward.</div>
     `;
+    
+    document.getElementById('pipeGameFooter').innerHTML = '';
 }
 
 function openDuctSection(element, index) {
@@ -5596,30 +5605,27 @@ function openDuctSection(element, index) {
 }
 
 function completeDuctedGame() {
-    pipeGameState.completedGames.ducted = true;
+    pipeGameState.gameCompleted = true;
     
-    document.querySelectorAll('.pipe-game-tab').forEach(tab => {
-        if (tab.dataset.id === 'ducted') tab.classList.add('completed');
-    });
-    
-    const messageArea = document.getElementById('pipeGameMessage');
-    messageArea.className = 'pipe-game-message success';
-    messageArea.innerHTML = `
-        <div class="pipe-game-message-title">✅ Full Route Traced</div>
-        <div>Easy access, clear visibility, simple inspection. <strong>The optimal balance between cost and lifecycle accessibility.</strong></div>
+    const msgArea = document.getElementById('pipeGameMessage');
+    msgArea.className = 'pipe-game-message success';
+    msgArea.innerHTML = `
+        <div class="pipe-game-message-title">✅ Leak Located Quickly</div>
+        <div>Full visibility, easy access. The 2025 design choice pays off — simple inspection, minimal cost.</div>
     `;
     
-    updatePipeConfirmButton();
+    showPipeDecisionOptions();
 }
 
-// TUNNEL GAME
-function renderTunnelGame(gameArea, messageArea) {
+// TUNNEL GAME - Navigate radiation
+function startTunnelGame() {
     pipeGameState.tunnelWorkerX = 15;
     pipeGameState.tunnelWorkerY = 20;
     pipeGameState.tunnelDose = 0;
     pipeGameState.tunnelActive = true;
     pipeGameState.tunnelCooldown = false;
     
+    const gameArea = document.getElementById('pipeGameArea');
     gameArea.innerHTML = `
         <div class="tunnel-interior">
             <div class="tunnel-dose-counter" id="tunnelDose">Dose: 0 mSv</div>
@@ -5644,15 +5650,16 @@ function renderTunnelGame(gameArea, messageArea) {
         </div>
     `;
     
-    messageArea.className = 'pipe-game-message';
-    messageArea.innerHTML = `
-        <div class="pipe-game-message-title">🎮 Navigate the Tunnel</div>
-        <div>Use arrow keys to move the worker to the exit. Avoid the radiation clouds!</div>
+    document.getElementById('pipeGameMessage').innerHTML = `
+        <div class="pipe-game-message-title">🎮 Navigate to the Leak</div>
+        <div>Use arrow keys to move the worker through the tunnel. Avoid the radiation clouds!</div>
         <div class="tunnel-controls">
             <span class="tunnel-key">←</span><span class="tunnel-key">→</span><span class="tunnel-key">↑</span><span class="tunnel-key">↓</span>
             <span class="tunnel-controls-text">Move worker</span>
         </div>
     `;
+    
+    document.getElementById('pipeGameFooter').innerHTML = '';
     
     document.addEventListener('keydown', handleTunnelKeyPress);
     
@@ -5696,7 +5703,7 @@ function handleTunnelKeyPress(e) {
     }
     
     // Check if reached goal
-    const gameWidth = document.getElementById('pipeGameArea')?.offsetWidth || 400;
+    const gameWidth = gameArea.offsetWidth || 400;
     if (pipeGameState.tunnelWorkerX > gameWidth - 80) {
         completeTunnelGame();
     }
@@ -5746,11 +5753,11 @@ function triggerTunnelContamination() {
     const worker = document.getElementById('tunnelWorker');
     if (worker) worker.classList.add('contaminated');
     
-    const messageArea = document.getElementById('pipeGameMessage');
-    messageArea.className = 'pipe-game-message warning';
-    messageArea.innerHTML = `
+    const msgArea = document.getElementById('pipeGameMessage');
+    msgArea.className = 'pipe-game-message warning';
+    msgArea.innerHTML = `
         <div class="pipe-game-message-title">☢️ Worker Contaminated!</div>
-        <div>Dose received: <strong>+1.0 mSv</strong>. Total: <strong>${pipeGameState.tunnelDose.toFixed(1)} mSv</strong>. The contamination zones are unavoidable.</div>
+        <div>Dose: <strong>+1.0 mSv</strong>. Total: <strong>${pipeGameState.tunnelDose.toFixed(1)} mSv</strong>. The contamination is unavoidable.</div>
         <div class="tunnel-controls">
             <span class="tunnel-key">←</span><span class="tunnel-key">→</span><span class="tunnel-key">↑</span><span class="tunnel-key">↓</span>
             <span class="tunnel-controls-text">Move worker</span>
@@ -5769,37 +5776,39 @@ function triggerTunnelContamination() {
 
 function completeTunnelGame() {
     pipeGameState.tunnelActive = false;
+    pipeGameState.gameCompleted = true;
+    
     if (pipeGameState.tunnelInterval) {
         clearInterval(pipeGameState.tunnelInterval);
         pipeGameState.tunnelInterval = null;
     }
     document.removeEventListener('keydown', handleTunnelKeyPress);
     
-    pipeGameState.completedGames.tunnel = true;
-    
-    document.querySelectorAll('.pipe-game-tab').forEach(tab => {
-        if (tab.dataset.id === 'tunnel') tab.classList.add('completed');
-    });
-    
-    const messageArea = document.getElementById('pipeGameMessage');
-    messageArea.className = 'pipe-game-message warning';
+    const msgArea = document.getElementById('pipeGameMessage');
+    msgArea.className = 'pipe-game-message warning';
     
     const doseMsg = pipeGameState.tunnelDose > 0 
-        ? `The worker accumulated <strong>${pipeGameState.tunnelDose.toFixed(1)} mSv</strong> crossing once.`
-        : `Even avoiding clouds here, in reality contamination covers every surface.`;
+        ? `Worker accumulated <strong>${pipeGameState.tunnelDose.toFixed(1)} mSv</strong> crossing once.`
+        : `Easy access, but contamination covers every surface.`;
     
-    messageArea.innerHTML = `
+    msgArea.innerHTML = `
         <div class="pipe-game-message-title">☢️ The Tunnel Problem</div>
-        <div>${doseMsg} Over 60 years, contamination builds on every surface. By decommissioning, the entire tunnel becomes <strong>Intermediate Level Waste (ILW)</strong> — expensive to remove and dispose of.</div>
+        <div>${doseMsg} Over 60 years, contamination builds everywhere. The entire tunnel becomes <strong>ILW</strong> at decommissioning.</div>
     `;
     
-    updatePipeConfirmButton();
+    showPipeDecisionOptions();
 }
 
 // ============================================
 // STAGES 2-5: DECISIONS (No budget, decisions are final)
 // ============================================
 function renderDecisionModal(elId, element) {
+    // Special handling for pipeRouting - show mini-game to illustrate consequences
+    if (elId === 'pipeRouting') {
+        renderPipeRoutingDecision(elId, element);
+        return;
+    }
+    
     const stageKey = `stage${STATE.stage}`;
     const designChoice = STATE.designChoices[elId];
     const designOpt = element.stage1.options.find(o => o.id === designChoice);
