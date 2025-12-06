@@ -1856,12 +1856,633 @@
             .timeline-name { display: none; }
             .timeline-node { width: 30px; height: 30px; font-size: 0.6rem; }
         }
+        
+        /* ============================================
+           PIPE ROUTING MINI-GAME
+           ============================================ */
+        .pipe-game-container {
+            background: #0a1628;
+            border: 1px solid #2d4a6f;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .pipe-game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid #2d4a6f;
+        }
+        
+        .pipe-game-title {
+            color: var(--blue);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .pipe-game-cost {
+            color: var(--amber);
+            font-size: 0.8rem;
+        }
+        
+        .pipe-game-tabs {
+            display: flex;
+            gap: 5px;
+            padding: 10px 15px;
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .pipe-game-tab {
+            flex: 1;
+            padding: 10px 15px;
+            background: #1a2d42;
+            border: 2px solid #2d4a6f;
+            border-radius: 6px;
+            color: var(--light-grey);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .pipe-game-tab:hover {
+            border-color: var(--blue);
+            background: #1f3a52;
+        }
+        
+        .pipe-game-tab.active {
+            border-color: var(--blue);
+            background: var(--blue);
+            color: #000;
+        }
+        
+        .pipe-game-tab.completed {
+            border-color: var(--green);
+        }
+        
+        .pipe-game-tab.completed::after {
+            content: ' ✓';
+            color: var(--green);
+        }
+        
+        .pipe-game-tab.active.completed::after {
+            color: #000;
+        }
+        
+        .pipe-game-tab.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .pipe-game-tab.disabled:hover {
+            border-color: #2d4a6f;
+            background: #1a2d42;
+        }
+        
+        .pipe-game-tab-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .pipe-game-tab-cost {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+        
+        .pipe-game-view {
+            position: relative;
+            height: 220px;
+            background: linear-gradient(180deg, #0d1a2d 0%, #0a1420 100%);
+            border-top: 1px solid #1a3050;
+        }
+        
+        .pipe-game-labels {
+            position: absolute;
+            top: 8px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            color: #5a7a9a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .pipe-game-floor {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 25px;
+            background: #2d3e50;
+            border-top: 2px solid #4a6785;
+        }
+        
+        .pipe-game-floor-label {
+            position: absolute;
+            bottom: 5px;
+            left: 15px;
+            font-size: 0.6rem;
+            color: #5a7a9a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .pipe-game-walls {
+            position: absolute;
+            top: 30px;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+        
+        .pipe-game-wall {
+            width: 30px;
+            background: linear-gradient(90deg, #3d4a5a 0%, #2d3e50 100%);
+            border: 1px solid #4a6785;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pipe-game-wall.right {
+            background: linear-gradient(90deg, #2d3e50 0%, #3d4a5a 100%);
+        }
+        
+        .pipe-game-wall-label {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-size: 0.55rem;
+            color: #6a8aaa;
+            letter-spacing: 1px;
+        }
+        
+        .pipe-game-area {
+            position: absolute;
+            top: 30px;
+            bottom: 25px;
+            left: 50px;
+            right: 50px;
+            overflow: hidden;
+        }
+        
+        .pipe-game-message {
+            padding: 12px 15px;
+            background: rgba(0,0,0,0.3);
+            border-top: 1px solid #2d4a6f;
+            font-size: 0.8rem;
+            color: var(--light-grey);
+            min-height: 60px;
+        }
+        
+        .pipe-game-message-title {
+            color: var(--amber);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .pipe-game-message.success .pipe-game-message-title { color: var(--green); }
+        .pipe-game-message.warning .pipe-game-message-title { color: var(--red); }
+        
+        /* Embedded game - concrete grid */
+        .concrete-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 3px;
+            padding: 8px;
+        }
+        
+        .concrete-block {
+            background: linear-gradient(135deg, #4a5568 0%, #3d4a5a 50%, #2d3e50 100%);
+            border: 1px solid #5a6a7a;
+            border-radius: 2px;
+            cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><text y="18" font-size="18">🔨</text></svg>') 4 4, pointer;
+            transition: all 0.15s;
+            position: relative;
+        }
+        
+        .concrete-block:hover:not(.broken) {
+            background: linear-gradient(135deg, #5a6878 0%, #4d5a6a 50%, #3d4e60 100%);
+            border-color: #7a8a9a;
+        }
+        
+        .concrete-block.broken {
+            background: #1a2535;
+            border-color: #2a3545;
+            cursor: default;
+        }
+        
+        .concrete-block.has-pipe.broken::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -2px;
+            right: -2px;
+            height: 10px;
+            transform: translateY(-50%);
+            background: linear-gradient(180deg, #00b0f0 0%, #0088cc 50%, #006699 100%);
+            border-radius: 5px;
+            box-shadow: 0 0 8px rgba(0, 176, 240, 0.5);
+        }
+        
+        .concrete-block.hit {
+            animation: blockHit 0.15s ease-out;
+        }
+        
+        @keyframes blockHit {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.92); }
+            100% { transform: scale(1); }
+        }
+        
+        .embedded-stats {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .embedded-stat {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .embedded-stat.cost { color: #ffc107; border: 1px solid #ffc107; }
+        .embedded-stat.found { color: #00b0f0; border: 1px solid #00b0f0; }
+        
+        /* Ducted game */
+        .ducts-container {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            right: 10px;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .duct-section {
+            position: relative;
+            height: 70px;
+            flex: 1;
+            max-width: 90px;
+            background: #1a2d42;
+            border: 2px solid #2d4a6f;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .duct-section:hover:not(.open) {
+            border-color: #00b0f0;
+            box-shadow: 0 0 10px rgba(0, 176, 240, 0.3);
+        }
+        
+        .duct-section.open {
+            background: #0d1f33;
+            border-color: #92d050;
+            cursor: default;
+        }
+        
+        .duct-cover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 16px;
+            background: linear-gradient(180deg, #3d5a80 0%, #2d4a6f 100%);
+            border-radius: 2px 2px 0 0;
+            transition: all 0.4s ease;
+            transform-origin: top center;
+        }
+        
+        .duct-section.open .duct-cover {
+            transform: rotateX(-100deg);
+            opacity: 0.4;
+        }
+        
+        .duct-cover-handle {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 4px;
+            background: #4a6785;
+            border-radius: 2px;
+        }
+        
+        .duct-pipe {
+            position: absolute;
+            top: 26px;
+            left: 6px;
+            right: 6px;
+            height: 16px;
+            background: linear-gradient(180deg, #00b0f0 0%, #0088cc 50%, #006699 100%);
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 2px 6px rgba(0, 176, 240, 0.4);
+        }
+        
+        .duct-section.open .duct-pipe { opacity: 1; }
+        
+        .duct-label {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.5rem;
+            color: #4a6785;
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+        
+        .duct-section.open .duct-label {
+            opacity: 1;
+            color: #92d050;
+        }
+        
+        .duct-click-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.55rem;
+            color: #6a8aaa;
+            text-align: center;
+            pointer-events: none;
+        }
+        
+        .duct-section.open .duct-click-hint { opacity: 0; }
+        
+        .duct-progress {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,0,0,0.7);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+        
+        .duct-progress-bar {
+            width: 100px;
+            height: 6px;
+            background: #1a2d42;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .duct-progress-fill {
+            height: 100%;
+            background: var(--green);
+            width: 0;
+            transition: width 0.3s;
+        }
+        
+        .duct-progress-text {
+            font-size: 0.7rem;
+            color: var(--light-grey);
+        }
+        
+        /* Tunnel game */
+        .tunnel-interior {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            background: #0a1628;
+            border: 1px solid #1a3a5c;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .tunnel-pipe {
+            position: absolute;
+            height: 20px;
+            background: linear-gradient(180deg, #00b0f0 0%, #0088cc 50%, #006699 100%);
+            border-radius: 10px;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            box-shadow: 0 2px 8px rgba(0, 176, 240, 0.4);
+        }
+        
+        .tunnel-pipe-supports {
+            position: absolute;
+            top: 35px;
+            left: 15px;
+            right: 15px;
+            height: 25px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .tunnel-pipe-support {
+            width: 5px;
+            height: 25px;
+            background: #4a6785;
+            border-radius: 2px;
+        }
+        
+        .tunnel-floor {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: #2d3e50;
+            border-top: 2px solid #4a6785;
+        }
+        
+        .tunnel-worker {
+            position: absolute;
+            bottom: 20px;
+            left: 15px;
+            width: 20px;
+            height: 38px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: left 0.08s, bottom 0.08s;
+            z-index: 10;
+        }
+        
+        .tunnel-worker-head {
+            width: 14px;
+            height: 14px;
+            background: #ffc107;
+            border-radius: 50%;
+            border: 2px solid #e6ac00;
+        }
+        
+        .tunnel-worker-body {
+            width: 16px;
+            height: 24px;
+            background: #ff6b35;
+            border-radius: 4px 4px 2px 2px;
+            margin-top: -2px;
+            border: 2px solid #e55a25;
+        }
+        
+        .tunnel-worker.contaminated .tunnel-worker-head,
+        .tunnel-worker.contaminated .tunnel-worker-body {
+            animation: contamFlash 0.2s infinite;
+        }
+        
+        @keyframes contamFlash {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.5) hue-rotate(60deg); }
+        }
+        
+        .tunnel-goal {
+            position: absolute;
+            right: 10px;
+            bottom: 20px;
+            width: 25px;
+            height: 45px;
+            background: linear-gradient(90deg, transparent 0%, rgba(146, 208, 80, 0.3) 100%);
+            border-right: 3px solid #92d050;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tunnel-goal-arrow {
+            color: #92d050;
+            font-size: 1rem;
+            animation: goalPulse 1s infinite;
+        }
+        
+        @keyframes goalPulse {
+            0%, 100% { opacity: 0.5; transform: translateX(0); }
+            50% { opacity: 1; transform: translateX(2px); }
+        }
+        
+        .radiation-cloud {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 193, 7, 0.7) 0%, rgba(255, 193, 7, 0.3) 40%, rgba(255, 193, 7, 0) 70%);
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .radiation-cloud::before {
+            content: '☢';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .radiation-cloud.barrier {
+            background: radial-gradient(circle, rgba(255, 100, 50, 0.8) 0%, rgba(255, 193, 7, 0.5) 40%, rgba(255, 193, 7, 0) 70%);
+            animation: barrierPulse 1.5s ease-in-out infinite;
+        }
+        
+        .radiation-cloud.moving {
+            animation: cloudDrift 3s ease-in-out infinite alternate;
+        }
+        
+        .radiation-cloud.pulsing {
+            animation: cloudPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes barrierPulse {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes cloudDrift {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(20px) translateY(-8px); }
+        }
+        
+        @keyframes cloudPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+        
+        .tunnel-dose-counter {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid #dc3545;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            color: #dc3545;
+            z-index: 20;
+        }
+        
+        .tunnel-dose-counter.warning {
+            animation: doseWarning 0.5s infinite;
+        }
+        
+        @keyframes doseWarning {
+            0%, 100% { background: rgba(220, 53, 69, 0.2); }
+            50% { background: rgba(220, 53, 69, 0.5); }
+        }
+        
+        .tunnel-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .tunnel-key {
+            display: inline-block;
+            background: #2d4a6f;
+            color: #00b0f0;
+            padding: 3px 7px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.7rem;
+        }
+        
+        .tunnel-controls-text {
+            font-size: 0.75rem;
+            color: #8899a6;
+        }
     </style>
 </head>
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.19</div>
+<div class="version-tag">v0.20</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -4522,7 +5143,18 @@ document.querySelectorAll('.hotspot').forEach(h => {
 // MODAL SYSTEM
 // ============================================
 function openModal() { document.getElementById('modalOverlay').classList.add('active'); }
-function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
+function closeModal() { 
+    document.getElementById('modalOverlay').classList.remove('active');
+    // Clean up pipe routing game if active
+    if (typeof pipeGameState !== 'undefined') {
+        if (pipeGameState.tunnelInterval) {
+            clearInterval(pipeGameState.tunnelInterval);
+            pipeGameState.tunnelInterval = null;
+        }
+        pipeGameState.tunnelActive = false;
+        document.removeEventListener('keydown', handleTunnelKeyPress);
+    }
+}
 
 document.getElementById('modalClose').onclick = closeModal;
 document.getElementById('modalOverlay').onclick = (e) => {
@@ -4546,6 +5178,12 @@ function openElementModal(elId) {
 // STAGE 1: DESIGN
 // ============================================
 function renderDesignModal(elId, element) {
+    // Special handling for pipe routing mini-game
+    if (elId === 'pipeRouting') {
+        renderPipeRoutingGame(elId, element);
+        return;
+    }
+    
     const data = element.stage1;
     const remaining = getRemainingBudget();
     
@@ -4638,6 +5276,524 @@ function renderDesignModal(elId, element) {
         updateProgressLabel();
         closeModal();
     };
+}
+
+// ============================================
+// PIPE ROUTING MINI-GAME
+// ============================================
+let pipeGameState = {
+    currentTab: null,
+    completedGames: {},
+    embeddedCost: 0,
+    embeddedFound: 0,
+    embeddedPipeRow: 1,
+    embeddedGameOver: false,
+    ductsOpened: 0,
+    tunnelWorkerX: 15,
+    tunnelWorkerY: 20,
+    tunnelDose: 0,
+    tunnelActive: false,
+    tunnelInterval: null,
+    tunnelCooldown: false
+};
+
+function renderPipeRoutingGame(elId, element) {
+    const data = element.stage1;
+    const remaining = getRemainingBudget();
+    
+    let availableBudget = remaining;
+    if (STATE.designChoices[elId]) {
+        const currentChoice = data.options.find(o => o.id === STATE.designChoices[elId]);
+        availableBudget += currentChoice.cost;
+    }
+    
+    let html = `
+        <div class="context-bar">
+            <span class="context-design">📅 Year 2025 · Design Phase</span>
+            <span class="context-cost">💰 Budget: ${formatMoney(availableBudget)}</span>
+        </div>
+        
+        <div class="situation-panel">
+            <div class="situation-label">Design Decision Required</div>
+            <div class="situation-text">${data.description} <strong>Try each option below to understand its consequences.</strong></div>
+        </div>
+        
+        <div class="pipe-game-container">
+            <div class="pipe-game-tabs">
+    `;
+    
+    data.options.forEach(opt => {
+        const activeClass = pipeGameState.currentTab === opt.id ? 'active' : '';
+        const completedClass = pipeGameState.completedGames[opt.id] ? 'completed' : '';
+        const affordable = opt.cost <= availableBudget;
+        
+        html += `
+            <div class="pipe-game-tab ${activeClass} ${completedClass} ${affordable ? '' : 'disabled'}" 
+                 onclick="${affordable ? `selectPipeTab('${opt.id}')` : ''}"
+                 data-id="${opt.id}">
+                <div class="pipe-game-tab-name">${opt.name}</div>
+                <div class="pipe-game-tab-cost">${formatMoney(opt.cost)}</div>
+            </div>
+        `;
+    });
+    
+    html += `
+            </div>
+            <div class="pipe-game-view" id="pipeGameView">
+                <div class="pipe-game-labels">
+                    <span>REACTOR BUILDING</span>
+                    <span>AUXILIARY BUILDING</span>
+                </div>
+                <div class="pipe-game-walls">
+                    <div class="pipe-game-wall"><span class="pipe-game-wall-label">CONTAINMENT</span></div>
+                    <div class="pipe-game-wall right"><span class="pipe-game-wall-label">AUX SYSTEMS</span></div>
+                </div>
+                <div class="pipe-game-area" id="pipeGameArea">
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #5a7a9a; font-size: 0.85rem;">
+                        ← Select a design option to explore
+                    </div>
+                </div>
+                <div class="pipe-game-floor">
+                    <span class="pipe-game-floor-label">FOUNDATION SLAB</span>
+                </div>
+            </div>
+            <div class="pipe-game-message" id="pipeGameMessage">
+                <div class="pipe-game-message-title">🔍 Interactive Design Preview</div>
+                <div>Click each option above to see how it affects pipe accessibility. Complete all three to understand the trade-offs.</div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('modalBody').innerHTML = html;
+    
+    // Set up confirm button
+    const allComplete = data.options.every(opt => pipeGameState.completedGames[opt.id] || opt.cost > availableBudget);
+    const hasChoice = !!STATE.designChoices[elId];
+    
+    document.getElementById('modalFooter').innerHTML = `
+        <button class="btn btn-primary" id="btnConfirmPipe" ${!allComplete && !hasChoice ? 'disabled' : ''}>
+            ${hasChoice ? 'Update Selection' : (allComplete ? 'Select Design' : 'Complete all options first')}
+        </button>
+    `;
+    
+    document.getElementById('btnConfirmPipe').onclick = () => {
+        if (!pipeGameState.currentTab) return;
+        
+        const opt = data.options.find(o => o.id === pipeGameState.currentTab);
+        
+        // Refund old if changing
+        if (STATE.designChoices[elId]) {
+            const old = data.options.find(o => o.id === STATE.designChoices[elId]);
+            STATE.totals.cost -= old.cost;
+        }
+        
+        STATE.designChoices[elId] = pipeGameState.currentTab;
+        STATE.completed[1][elId] = true;
+        STATE.totals.cost += opt.cost;
+        
+        document.querySelector(`[data-element="${elId}"] .hotspot-dot`).classList.add('done');
+        
+        // Clean up tunnel game
+        if (pipeGameState.tunnelInterval) {
+            clearInterval(pipeGameState.tunnelInterval);
+            pipeGameState.tunnelInterval = null;
+        }
+        pipeGameState.tunnelActive = false;
+        document.removeEventListener('keydown', handleTunnelKeyPress);
+        
+        updateStatsDisplay();
+        updateProgressLabel();
+        closeModal();
+    };
+    
+    // If there's already a selection, show that tab
+    if (STATE.designChoices[elId]) {
+        selectPipeTab(STATE.designChoices[elId]);
+    }
+}
+
+function selectPipeTab(tabId) {
+    // Clean up previous game
+    if (pipeGameState.tunnelInterval) {
+        clearInterval(pipeGameState.tunnelInterval);
+        pipeGameState.tunnelInterval = null;
+    }
+    pipeGameState.tunnelActive = false;
+    document.removeEventListener('keydown', handleTunnelKeyPress);
+    
+    pipeGameState.currentTab = tabId;
+    
+    // Update tab styling
+    document.querySelectorAll('.pipe-game-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.id === tabId);
+    });
+    
+    // Render the appropriate game
+    const gameArea = document.getElementById('pipeGameArea');
+    const messageArea = document.getElementById('pipeGameMessage');
+    
+    if (tabId === 'embedded') {
+        renderEmbeddedGame(gameArea, messageArea);
+    } else if (tabId === 'ducted') {
+        renderDuctedGame(gameArea, messageArea);
+    } else if (tabId === 'tunnel') {
+        renderTunnelGame(gameArea, messageArea);
+    }
+    
+    updatePipeConfirmButton();
+}
+
+function updatePipeConfirmButton() {
+    const btn = document.getElementById('btnConfirmPipe');
+    if (!btn) return;
+    
+    const data = GAME_DATA.elements.pipeRouting.stage1;
+    const remaining = getRemainingBudget();
+    let availableBudget = remaining;
+    if (STATE.designChoices.pipeRouting) {
+        const currentChoice = data.options.find(o => o.id === STATE.designChoices.pipeRouting);
+        availableBudget += currentChoice.cost;
+    }
+    
+    const allComplete = data.options.every(opt => pipeGameState.completedGames[opt.id] || opt.cost > availableBudget);
+    const hasChoice = !!STATE.designChoices.pipeRouting;
+    const currentTabComplete = pipeGameState.completedGames[pipeGameState.currentTab];
+    
+    btn.disabled = !currentTabComplete && !hasChoice;
+    btn.textContent = hasChoice ? 'Update Selection' : (currentTabComplete ? `Select ${pipeGameState.currentTab === 'embedded' ? 'Embedded' : pipeGameState.currentTab === 'ducted' ? 'Accessible Ducts' : 'Walk-In Tunnel'}` : 'Complete game first');
+}
+
+// EMBEDDED GAME
+function renderEmbeddedGame(gameArea, messageArea) {
+    pipeGameState.embeddedCost = 0;
+    pipeGameState.embeddedFound = 0;
+    pipeGameState.embeddedGameOver = false;
+    pipeGameState.embeddedPipeRow = 1 + Math.floor(Math.random() * 2);
+    
+    let gridHTML = `
+        <div class="embedded-stats">
+            <div class="embedded-stat cost">💰 £<span id="embeddedCost">0</span>k</div>
+            <div class="embedded-stat found">🔧 <span id="embeddedFound">0</span>/8</div>
+        </div>
+        <div class="concrete-grid">
+    `;
+    
+    for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 8; c++) {
+            const hasPipe = (r === pipeGameState.embeddedPipeRow);
+            gridHTML += `<div class="concrete-block${hasPipe ? ' has-pipe' : ''}" onclick="breakConcreteBlock(this)"></div>`;
+        }
+    }
+    
+    gridHTML += '</div>';
+    gameArea.innerHTML = gridHTML;
+    
+    messageArea.className = 'pipe-game-message';
+    messageArea.innerHTML = `
+        <div class="pipe-game-message-title">🔨 Find the Hidden Pipe</div>
+        <div>Click blocks to excavate. Each block costs £10,000. The pipe is hidden in one row.</div>
+    `;
+}
+
+function breakConcreteBlock(element) {
+    if (element.classList.contains('broken') || pipeGameState.embeddedGameOver) return;
+    
+    element.classList.add('hit');
+    setTimeout(() => element.classList.remove('hit'), 150);
+    
+    element.classList.add('broken');
+    pipeGameState.embeddedCost += 10;
+    document.getElementById('embeddedCost').textContent = pipeGameState.embeddedCost;
+    
+    if (element.classList.contains('has-pipe')) {
+        pipeGameState.embeddedFound++;
+        document.getElementById('embeddedFound').textContent = pipeGameState.embeddedFound;
+        
+        if (pipeGameState.embeddedFound === 8) {
+            completeEmbeddedGame(true);
+        }
+    }
+    
+    if (pipeGameState.embeddedCost >= 80 && pipeGameState.embeddedFound < 8) {
+        completeEmbeddedGame(false);
+    }
+}
+
+function completeEmbeddedGame(success) {
+    pipeGameState.embeddedGameOver = true;
+    pipeGameState.completedGames.embedded = true;
+    
+    document.querySelectorAll('.pipe-game-tab').forEach(tab => {
+        if (tab.dataset.id === 'embedded') tab.classList.add('completed');
+    });
+    
+    const messageArea = document.getElementById('pipeGameMessage');
+    messageArea.className = 'pipe-game-message warning';
+    
+    if (success) {
+        messageArea.innerHTML = `
+            <div class="pipe-game-message-title">🔍 Pipe Found — At What Cost?</div>
+            <div>You spent <strong>£${pipeGameState.embeddedCost},000</strong> just to find it. Now imagine doing this for every inspection, leak, or repair over 60 years. <strong>What you can't see, you can't prove is safe.</strong></div>
+        `;
+    } else {
+        messageArea.innerHTML = `
+            <div class="pipe-game-message-title">💸 Budget Exceeded</div>
+            <div>You spent <strong>£${pipeGameState.embeddedCost},000</strong> and only found ${pipeGameState.embeddedFound}/8 sections. <strong>Embedding pipes saves money at construction — but creates a nightmare for every future intervention.</strong></div>
+        `;
+    }
+    
+    updatePipeConfirmButton();
+}
+
+// DUCTED GAME
+function renderDuctedGame(gameArea, messageArea) {
+    pipeGameState.ductsOpened = 0;
+    
+    let html = `
+        <div class="ducts-container">
+    `;
+    
+    for (let i = 0; i < 5; i++) {
+        html += `
+            <div class="duct-section" onclick="openDuctSection(this, ${i})">
+                <div class="duct-cover"><div class="duct-cover-handle"></div></div>
+                <div class="duct-pipe"></div>
+                <div class="duct-label">Section ${i + 1} ✓</div>
+                <div class="duct-click-hint">Click</div>
+            </div>
+        `;
+    }
+    
+    html += `
+        </div>
+        <div class="duct-progress">
+            <div class="duct-progress-bar"><div class="duct-progress-fill" id="ductProgressFill"></div></div>
+            <span class="duct-progress-text"><span id="ductProgressText">0</span>/5</span>
+        </div>
+    `;
+    
+    gameArea.innerHTML = html;
+    
+    messageArea.className = 'pipe-game-message';
+    messageArea.innerHTML = `
+        <div class="pipe-game-message-title">🔍 Inspect the Accessible Ducts</div>
+        <div>Click each duct cover to lift it and reveal the pipe beneath. Trace the entire route.</div>
+    `;
+}
+
+function openDuctSection(element, index) {
+    if (element.classList.contains('open')) return;
+    
+    element.classList.add('open');
+    pipeGameState.ductsOpened++;
+    
+    document.getElementById('ductProgressFill').style.width = (pipeGameState.ductsOpened / 5 * 100) + '%';
+    document.getElementById('ductProgressText').textContent = pipeGameState.ductsOpened;
+    
+    if (pipeGameState.ductsOpened === 5) {
+        completeDuctedGame();
+    }
+}
+
+function completeDuctedGame() {
+    pipeGameState.completedGames.ducted = true;
+    
+    document.querySelectorAll('.pipe-game-tab').forEach(tab => {
+        if (tab.dataset.id === 'ducted') tab.classList.add('completed');
+    });
+    
+    const messageArea = document.getElementById('pipeGameMessage');
+    messageArea.className = 'pipe-game-message success';
+    messageArea.innerHTML = `
+        <div class="pipe-game-message-title">✅ Full Route Traced</div>
+        <div>Easy access, clear visibility, simple inspection. <strong>The optimal balance between cost and lifecycle accessibility.</strong></div>
+    `;
+    
+    updatePipeConfirmButton();
+}
+
+// TUNNEL GAME
+function renderTunnelGame(gameArea, messageArea) {
+    pipeGameState.tunnelWorkerX = 15;
+    pipeGameState.tunnelWorkerY = 20;
+    pipeGameState.tunnelDose = 0;
+    pipeGameState.tunnelActive = true;
+    pipeGameState.tunnelCooldown = false;
+    
+    gameArea.innerHTML = `
+        <div class="tunnel-interior">
+            <div class="tunnel-dose-counter" id="tunnelDose">Dose: 0 mSv</div>
+            <div class="tunnel-pipe"></div>
+            <div class="tunnel-pipe-supports">
+                <div class="tunnel-pipe-support"></div>
+                <div class="tunnel-pipe-support"></div>
+                <div class="tunnel-pipe-support"></div>
+                <div class="tunnel-pipe-support"></div>
+                <div class="tunnel-pipe-support"></div>
+            </div>
+            <div class="tunnel-floor"></div>
+            <div class="tunnel-goal"><span class="tunnel-goal-arrow">→</span></div>
+            <div class="tunnel-worker" id="tunnelWorker">
+                <div class="tunnel-worker-head"></div>
+                <div class="tunnel-worker-body"></div>
+            </div>
+            <div class="radiation-cloud barrier" id="tcloud1" style="width: 60px; height: 100px; bottom: 18px; left: 70px;"></div>
+            <div class="radiation-cloud moving" id="tcloud2" style="width: 45px; height: 40px; bottom: 50px; left: 160px;"></div>
+            <div class="radiation-cloud barrier" id="tcloud3" style="width: 70px; height: 110px; bottom: 15px; left: 240px;"></div>
+            <div class="radiation-cloud pulsing" id="tcloud4" style="width: 55px; height: 60px; bottom: 22px; left: 340px;"></div>
+        </div>
+    `;
+    
+    messageArea.className = 'pipe-game-message';
+    messageArea.innerHTML = `
+        <div class="pipe-game-message-title">🎮 Navigate the Tunnel</div>
+        <div>Use arrow keys to move the worker to the exit. Avoid the radiation clouds!</div>
+        <div class="tunnel-controls">
+            <span class="tunnel-key">←</span><span class="tunnel-key">→</span><span class="tunnel-key">↑</span><span class="tunnel-key">↓</span>
+            <span class="tunnel-controls-text">Move worker</span>
+        </div>
+    `;
+    
+    document.addEventListener('keydown', handleTunnelKeyPress);
+    
+    if (pipeGameState.tunnelInterval) clearInterval(pipeGameState.tunnelInterval);
+    pipeGameState.tunnelInterval = setInterval(checkTunnelCollisions, 50);
+}
+
+function handleTunnelKeyPress(e) {
+    if (!pipeGameState.tunnelActive) return;
+    
+    const step = 8;
+    const gameArea = document.getElementById('pipeGameArea');
+    if (!gameArea) return;
+    
+    const maxX = gameArea.offsetWidth - 70;
+    const maxY = 90;
+    
+    switch(e.key) {
+        case 'ArrowLeft':
+            pipeGameState.tunnelWorkerX = Math.max(10, pipeGameState.tunnelWorkerX - step);
+            e.preventDefault();
+            break;
+        case 'ArrowRight':
+            pipeGameState.tunnelWorkerX = Math.min(maxX, pipeGameState.tunnelWorkerX + step);
+            e.preventDefault();
+            break;
+        case 'ArrowUp':
+            pipeGameState.tunnelWorkerY = Math.min(maxY, pipeGameState.tunnelWorkerY + step);
+            e.preventDefault();
+            break;
+        case 'ArrowDown':
+            pipeGameState.tunnelWorkerY = Math.max(20, pipeGameState.tunnelWorkerY - step);
+            e.preventDefault();
+            break;
+    }
+    
+    const worker = document.getElementById('tunnelWorker');
+    if (worker) {
+        worker.style.left = pipeGameState.tunnelWorkerX + 'px';
+        worker.style.bottom = pipeGameState.tunnelWorkerY + 'px';
+    }
+    
+    // Check if reached goal
+    const gameWidth = document.getElementById('pipeGameArea')?.offsetWidth || 400;
+    if (pipeGameState.tunnelWorkerX > gameWidth - 80) {
+        completeTunnelGame();
+    }
+}
+
+function checkTunnelCollisions() {
+    if (!pipeGameState.tunnelActive || pipeGameState.tunnelCooldown) return;
+    
+    const worker = document.getElementById('tunnelWorker');
+    if (!worker) return;
+    
+    const workerRect = worker.getBoundingClientRect();
+    
+    for (let i = 1; i <= 4; i++) {
+        const cloud = document.getElementById(`tcloud${i}`);
+        if (!cloud) continue;
+        
+        const cloudRect = cloud.getBoundingClientRect();
+        const padding = 8;
+        
+        const overlap = !(
+            workerRect.right < cloudRect.left + padding ||
+            workerRect.left > cloudRect.right - padding ||
+            workerRect.bottom < cloudRect.top + padding ||
+            workerRect.top > cloudRect.bottom - padding
+        );
+        
+        if (overlap) {
+            triggerTunnelContamination();
+            break;
+        }
+    }
+}
+
+function triggerTunnelContamination() {
+    if (pipeGameState.tunnelCooldown) return;
+    
+    pipeGameState.tunnelCooldown = true;
+    pipeGameState.tunnelDose += 1.0;
+    
+    const counter = document.getElementById('tunnelDose');
+    if (counter) {
+        counter.textContent = `Dose: ${pipeGameState.tunnelDose.toFixed(1)} mSv`;
+        counter.classList.add('warning');
+    }
+    
+    const worker = document.getElementById('tunnelWorker');
+    if (worker) worker.classList.add('contaminated');
+    
+    const messageArea = document.getElementById('pipeGameMessage');
+    messageArea.className = 'pipe-game-message warning';
+    messageArea.innerHTML = `
+        <div class="pipe-game-message-title">☢️ Worker Contaminated!</div>
+        <div>Dose received: <strong>+1.0 mSv</strong>. Total: <strong>${pipeGameState.tunnelDose.toFixed(1)} mSv</strong>. The contamination zones are unavoidable.</div>
+        <div class="tunnel-controls">
+            <span class="tunnel-key">←</span><span class="tunnel-key">→</span><span class="tunnel-key">↑</span><span class="tunnel-key">↓</span>
+            <span class="tunnel-controls-text">Move worker</span>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        pipeGameState.tunnelCooldown = false;
+        if (worker) worker.classList.remove('contaminated');
+        
+        if (pipeGameState.tunnelDose >= 2) {
+            completeTunnelGame();
+        }
+    }, 500);
+}
+
+function completeTunnelGame() {
+    pipeGameState.tunnelActive = false;
+    if (pipeGameState.tunnelInterval) {
+        clearInterval(pipeGameState.tunnelInterval);
+        pipeGameState.tunnelInterval = null;
+    }
+    document.removeEventListener('keydown', handleTunnelKeyPress);
+    
+    pipeGameState.completedGames.tunnel = true;
+    
+    document.querySelectorAll('.pipe-game-tab').forEach(tab => {
+        if (tab.dataset.id === 'tunnel') tab.classList.add('completed');
+    });
+    
+    const messageArea = document.getElementById('pipeGameMessage');
+    messageArea.className = 'pipe-game-message warning';
+    
+    const doseMsg = pipeGameState.tunnelDose > 0 
+        ? `The worker accumulated <strong>${pipeGameState.tunnelDose.toFixed(1)} mSv</strong> crossing once.`
+        : `Even avoiding clouds here, in reality contamination covers every surface.`;
+    
+    messageArea.innerHTML = `
+        <div class="pipe-game-message-title">☢️ The Tunnel Problem</div>
+        <div>${doseMsg} Over 60 years, contamination builds on every surface. By decommissioning, the entire tunnel becomes <strong>Intermediate Level Waste (ILW)</strong> — expensive to remove and dispose of.</div>
+    `;
+    
+    updatePipeConfirmButton();
 }
 
 // ============================================
