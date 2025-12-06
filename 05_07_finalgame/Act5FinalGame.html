@@ -1698,59 +1698,70 @@
         .journey-timeline {
             padding: 16px 18px;
             background: var(--deep-navy);
+            text-align: left;
         }
         
-        .timeline-stage {
+        .journey-stage {
             display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-items: flex-start;
+            justify-content: flex-start;
             padding: 12px 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-align: left;
         }
         
-        .timeline-stage:last-child {
+        .journey-stage:last-child {
             border-bottom: none;
         }
         
-        .timeline-year {
+        .journey-stage-year {
             width: 70px;
             flex-shrink: 0;
+            text-align: center;
         }
         
-        .timeline-year-num {
+        .journey-stage-year-num {
             font-weight: 700;
             color: var(--blue);
             font-size: 1rem;
         }
         
-        .timeline-year-phase {
+        .journey-stage-year-phase {
             font-size: 0.65rem;
             color: var(--mid-grey);
             text-transform: uppercase;
         }
         
-        .timeline-event {
+        .journey-stage-event {
             flex: 1;
             padding-right: 12px;
+            text-align: left;
         }
         
-        .timeline-decision {
+        .journey-stage-decision {
             color: var(--white);
             font-weight: 500;
             font-size: 0.9rem;
             margin-bottom: 4px;
+            text-align: left;
         }
         
-        .timeline-consequence {
+        .journey-stage-consequence {
             font-size: 0.8rem;
             color: var(--mid-grey);
             line-height: 1.4;
+            text-align: left;
         }
         
-        .timeline-cost {
+        .journey-stage-cost {
             width: 80px;
             text-align: right;
             color: var(--amber);
             font-weight: 600;
             font-size: 0.9rem;
+            flex-shrink: 0;
         }
         
         .journey-lesson {
@@ -1850,7 +1861,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.16</div>
+<div class="version-tag">v0.19</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -5378,16 +5389,16 @@ function buildTimelineHTML(elId) {
     
     // Stage 1 - Design
     html += `
-        <div class="timeline-stage">
-            <div class="timeline-year">
-                <div class="timeline-year-num">2025</div>
-                <div class="timeline-year-phase">Design</div>
+        <div class="journey-stage">
+            <div class="journey-stage-year">
+                <div class="journey-stage-year-num">2025</div>
+                <div class="journey-stage-year-phase">Design</div>
             </div>
-            <div class="timeline-event">
-                <div class="timeline-decision">${designOpt.name}</div>
-                <div class="timeline-consequence">${designOpt.desc}</div>
+            <div class="journey-stage-event">
+                <div class="journey-stage-decision">${designOpt.name}</div>
+                <div class="journey-stage-consequence">${designOpt.desc}</div>
             </div>
-            <div class="timeline-cost">${formatMoney(designOpt.cost)}</div>
+            <div class="journey-stage-cost">${formatMoney(designOpt.cost)}</div>
         </div>
     `;
     
@@ -5437,16 +5448,16 @@ function buildTimelineHTML(elId) {
                     }
                     
                     html += `
-                        <div class="timeline-stage">
-                            <div class="timeline-year">
-                                <div class="timeline-year-num">${stage.year}</div>
-                                <div class="timeline-year-phase">${stage.phase}</div>
+                        <div class="journey-stage">
+                            <div class="journey-stage-year">
+                                <div class="journey-stage-year-num">${stage.year}</div>
+                                <div class="journey-stage-year-phase">${stage.phase}</div>
                             </div>
-                            <div class="timeline-event">
-                                <div class="timeline-decision">${chosenOption.name}</div>
-                                <div class="timeline-consequence">${consequence}</div>
+                            <div class="journey-stage-event">
+                                <div class="journey-stage-decision">${chosenOption.name}</div>
+                                <div class="journey-stage-consequence">${consequence}</div>
                             </div>
-                            <div class="timeline-cost">${formatMoney(chosenOption.cost || 0)}</div>
+                            <div class="journey-stage-cost">${formatMoney(chosenOption.cost || 0)}</div>
                         </div>
                     `;
                 }
