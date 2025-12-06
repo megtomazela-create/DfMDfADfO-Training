@@ -373,15 +373,11 @@
         .map-container {
             flex: 1;
             position: relative;
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             background: #1a1a2e;
-        }
-        
-        .map-container.active {
-            display: flex;
         }
         
         .map-wrapper { position: relative; max-width: 100%; max-height: 100%; }
@@ -400,168 +396,61 @@
             z-index: 10;
         }
         
-        .hotspot-dot {
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            background: rgba(0, 176, 240, 0.3);
-            border: 3px solid var(--blue);
+        .hotspot-square {
+            width: 90px;
+            height: 90px;
+            background: rgba(15, 25, 40, 0.8);
+            border: 2px solid var(--dark-slate);
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
-            animation: hotspotPulse 2s infinite;
+            transition: all 0.3s;
+            overflow: hidden;
+            position: relative;
         }
         
-        .hotspot:hover .hotspot-dot {
-            transform: scale(1.15);
-            background: rgba(0, 176, 240, 0.5);
+        .hotspot:hover .hotspot-square {
+            border-color: var(--blue);
+            box-shadow: 0 0 20px rgba(0, 176, 240, 0.5);
+            transform: scale(1.05);
         }
         
-        .hotspot-dot.done {
-            background: rgba(146, 208, 80, 0.3);
+        .hotspot-square.selected {
             border-color: var(--green);
-            animation: none;
+            box-shadow: 0 0 15px rgba(146, 208, 80, 0.4);
         }
         
-        .hotspot-dot.done::after {
-            content: '✓';
-            color: var(--green);
-            font-weight: bold;
-        }
-        
-        .hotspot-label {
+        .hotspot-square-label {
+            color: var(--mid-grey);
+            font-size: 0.65rem;
+            text-align: center;
+            padding: 4px;
             position: absolute;
-            top: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(31, 41, 55, 0.95);
-            color: var(--white);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
         }
         
-        .hotspot:hover .hotspot-label { opacity: 1; }
+        .hotspot-square.selected .hotspot-square-label {
+            background: var(--green);
+            color: var(--deep-navy);
+            font-weight: 600;
+        }
+        
+        .hotspot-square img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
         
         @keyframes hotspotPulse {
             0%, 100% { box-shadow: 0 0 0 0 rgba(0, 176, 240, 0.4); }
             50% { box-shadow: 0 0 0 12px rgba(0, 176, 240, 0); }
-        }
-        
-        /* ============================================
-           STAGE 1 DESIGN GRID
-           ============================================ */
-        .design-grid-container {
-            display: none;
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-            background: var(--deep-navy);
-        }
-        
-        .design-grid-container.active {
-            display: block;
-        }
-        
-        .design-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        
-        .design-square {
-            background: linear-gradient(135deg, #1a2634 0%, #0d1b2a 100%);
-            border: 2px solid var(--dark-slate);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            overflow: hidden;
-        }
-        
-        .design-square:hover {
-            border-color: var(--blue);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 176, 240, 0.2);
-        }
-        
-        .design-square.selected {
-            border-color: var(--green);
-            box-shadow: 0 0 20px rgba(146, 208, 80, 0.3);
-        }
-        
-        .design-square-image {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            background: linear-gradient(135deg, var(--slate) 0%, var(--deep-navy) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--mid-grey);
-            font-size: 2.5rem;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .design-square-image::before {
-            content: '?';
-            font-size: 3rem;
-            color: var(--dark-slate);
-            position: absolute;
-        }
-        
-        .design-square.selected .design-square-image::before {
-            display: none;
-        }
-        
-        .design-square-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .design-square-label {
-            padding: 12px 15px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--light-grey);
-            background: rgba(0, 0, 0, 0.3);
-            border-top: 1px solid var(--dark-slate);
-        }
-        
-        .design-square.selected .design-square-label {
-            background: var(--green);
-            color: var(--deep-navy);
-        }
-        
-        .design-square-choice {
-            font-size: 0.75rem;
-            font-weight: normal;
-            color: var(--deep-navy);
-            opacity: 0.8;
-            display: block;
-            margin-top: 2px;
-        }
-        
-        @media (max-width: 700px) {
-            .design-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
-            }
-        }
-        
-        @media (max-width: 450px) {
-            .design-grid {
-                grid-template-columns: 1fr;
-            }
         }
         
         .bottom-bar {
@@ -2605,7 +2494,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.23</div>
+<div class="version-tag">v0.24</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -2735,63 +2624,39 @@
             <img src="images/gamebackground.png" alt="Section 4B">
             
             <div class="hotspot" data-element="pumpAccess" style="left: 18%; top: 52%;">
-                <div class="hotspot-dot"></div>
-                <span class="hotspot-label">Pump Access</span>
+                <div class="hotspot-square" id="square-pumpAccess">
+                    <span class="hotspot-square-label">Pump Access</span>
+                </div>
             </div>
             
             <div class="hotspot" data-element="weldClearance" style="left: 42%; top: 46%;">
-                <div class="hotspot-dot"></div>
-                <span class="hotspot-label">Weld Clearance</span>
+                <div class="hotspot-square" id="square-weldClearance">
+                    <span class="hotspot-square-label">Weld Clearance</span>
+                </div>
             </div>
             
             <div class="hotspot" data-element="controlPanel" style="left: 85%; top: 42%;">
-                <div class="hotspot-dot"></div>
-                <span class="hotspot-label">Control Panel</span>
+                <div class="hotspot-square" id="square-controlPanel">
+                    <span class="hotspot-square-label">Control Panel</span>
+                </div>
             </div>
             
             <div class="hotspot" data-element="pipeConnections" style="left: 56%; top: 52%;">
-                <div class="hotspot-dot"></div>
-                <span class="hotspot-label">Pipe Connections</span>
+                <div class="hotspot-square" id="square-pipeConnections">
+                    <span class="hotspot-square-label">Pipe Connections</span>
+                </div>
             </div>
             
             <div class="hotspot" data-element="pipeRouting" style="left: 62%; top: 82%;">
-                <div class="hotspot-dot"></div>
-                <span class="hotspot-label">Pipe Routing</span>
+                <div class="hotspot-square" id="square-pipeRouting">
+                    <span class="hotspot-square-label">Pipe Routing</span>
+                </div>
             </div>
             
             <div class="hotspot" data-element="materialSpec" style="left: 32%; top: 58%;">
-                <div class="hotspot-dot"></div>
-                <span class="hotspot-label">Material Spec</span>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Stage 1 Design Grid -->
-    <div class="design-grid-container" id="designGridContainer">
-        <div class="design-grid">
-            <div class="design-square" data-element="pumpAccess">
-                <div class="design-square-image" id="designImg-pumpAccess"></div>
-                <div class="design-square-label">Pump Access</div>
-            </div>
-            <div class="design-square" data-element="weldClearance">
-                <div class="design-square-image" id="designImg-weldClearance"></div>
-                <div class="design-square-label">Weld Clearance</div>
-            </div>
-            <div class="design-square" data-element="controlPanel">
-                <div class="design-square-image" id="designImg-controlPanel"></div>
-                <div class="design-square-label">Control Panel</div>
-            </div>
-            <div class="design-square" data-element="pipeConnections">
-                <div class="design-square-image" id="designImg-pipeConnections"></div>
-                <div class="design-square-label">Pipe Connections</div>
-            </div>
-            <div class="design-square" data-element="pipeRouting">
-                <div class="design-square-image" id="designImg-pipeRouting"></div>
-                <div class="design-square-label">Pipe Routing</div>
-            </div>
-            <div class="design-square" data-element="materialSpec">
-                <div class="design-square-image" id="designImg-materialSpec"></div>
-                <div class="design-square-label">Material Spec</div>
+                <div class="hotspot-square" id="square-materialSpec">
+                    <span class="hotspot-square-label">Material Spec</span>
+                </div>
             </div>
         </div>
     </div>
@@ -5204,18 +5069,8 @@ function startStage(stageNum) {
     
     updateStatsDisplay();
     
-    // Toggle between design grid (Stage 1) and map view (Stages 2-5)
-    const mapContainer = document.getElementById('mapContainer');
-    const designGrid = document.getElementById('designGridContainer');
-    
-    if (stageNum === 1) {
-        mapContainer.classList.remove('active');
-        designGrid.classList.add('active');
-        updateDesignSquares();
-    } else {
-        mapContainer.classList.add('active');
-        designGrid.classList.remove('active');
-    }
+    // Update squares to show selected designs
+    updateHotspotSquares();
     
     // Character banner
     const banner = document.getElementById('characterBanner');
@@ -5229,9 +5084,9 @@ function startStage(stageNum) {
         banner.classList.remove('visible');
     }
     
-    // Reset hotspots
-    document.querySelectorAll('.hotspot-dot').forEach(d => {
-        d.classList.remove('done');
+    // Reset hotspot squares for new stage
+    document.querySelectorAll('.hotspot-square').forEach(sq => {
+        // Keep selected state but remove done state
     });
     
     document.getElementById('btnNextStage').classList.remove('visible');
@@ -5306,25 +5161,16 @@ document.querySelectorAll('.hotspot').forEach(h => {
 });
 
 // ============================================
-// DESIGN SQUARE CLICKS (Stage 1)
+// HOTSPOT SQUARE UPDATE
 // ============================================
-document.querySelectorAll('.design-square').forEach(sq => {
-    sq.onclick = () => {
-        const elId = sq.dataset.element;
-        openElementModal(elId);
-    };
-});
-
-function updateDesignSquares() {
+function updateHotspotSquares() {
     const elements = ['pumpAccess', 'weldClearance', 'controlPanel', 'pipeConnections', 'pipeRouting', 'materialSpec'];
     
     elements.forEach(elId => {
-        const square = document.querySelector(`.design-square[data-element="${elId}"]`);
-        const imgContainer = document.getElementById(`designImg-${elId}`);
-        const label = square.querySelector('.design-square-label');
+        const square = document.getElementById(`square-${elId}`);
+        if (!square) return;
         
-        if (!square || !imgContainer) return;
-        
+        const label = square.querySelector('.hotspot-square-label');
         const choice = STATE.designChoices[elId];
         
         if (choice) {
@@ -5333,21 +5179,27 @@ function updateDesignSquares() {
             
             square.classList.add('selected');
             
-            // Update label with choice name
-            const elementTitle = element.title;
-            label.innerHTML = `${elementTitle}<span class="design-square-choice">${opt.name}</span>`;
-            
             // Show image if available
             if (opt.image) {
-                imgContainer.innerHTML = `<img src="${opt.image}" alt="${opt.name}">`;
-            } else {
-                imgContainer.innerHTML = `<span style="font-size: 1.2rem; color: var(--green);">✓</span>`;
+                // Remove existing image if any
+                const existingImg = square.querySelector('img');
+                if (existingImg) existingImg.remove();
+                
+                const img = document.createElement('img');
+                img.src = opt.image;
+                img.alt = opt.name;
+                square.insertBefore(img, label);
             }
+            
+            // Update label
+            if (label) label.textContent = opt.name;
         } else {
             square.classList.remove('selected');
+            const existingImg = square.querySelector('img');
+            if (existingImg) existingImg.remove();
+            
             const element = GAME_DATA.elements[elId];
-            label.innerHTML = element.title;
-            imgContainer.innerHTML = '';
+            if (label) label.textContent = element.title;
         }
     });
 }
@@ -5484,11 +5336,7 @@ function renderDesignModal(elId, element) {
         STATE.completed[1][elId] = true;
         STATE.totals.cost += opt.cost;
         
-        // Update both hotspot (for compatibility) and design square
-        const hotspotDot = document.querySelector(`.hotspot[data-element="${elId}"] .hotspot-dot`);
-        if (hotspotDot) hotspotDot.classList.add('done');
-        
-        updateDesignSquares();
+        updateHotspotSquares();
         updateStatsDisplay();
         updateProgressLabel();
         closeModal();
