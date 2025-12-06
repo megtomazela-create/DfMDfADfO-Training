@@ -2534,7 +2534,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.33</div>
+<div class="version-tag">v0.34</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -6038,29 +6038,28 @@ function renderDecisionModal(elId, element) {
     html += '</div></div>';
     
     document.getElementById('modalBody').innerHTML = html;
-    
-    let selected = null;
-    document.querySelectorAll('#modalBody .option-card').forEach(card => {
-        card.onclick = () => {
-            document.querySelectorAll('#modalBody .option-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            selected = card.dataset.id;
-            
-            // Update button state immediately
-            const btn = document.getElementById('btnConfirm');
-            if (btn) {
-                btn.disabled = false;
-                btn.textContent = 'Confirm Decision';
-            }
-        };
-    });
-    
     document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirm" disabled>Select an Option</button>';
     
-    document.getElementById('btnConfirm').onclick = () => {
-        if (!selected) return;
+    // Store selection and wire up everything after DOM is ready
+    let selectedOptId = null;
+    
+    const cards = document.querySelectorAll('#modalBody .option-card');
+    const confirmBtn = document.getElementById('btnConfirm');
+    
+    cards.forEach(card => {
+        card.addEventListener('click', function() {
+            cards.forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedOptId = this.dataset.id;
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Confirm Decision';
+        });
+    });
+    
+    confirmBtn.addEventListener('click', function() {
+        if (!selectedOptId) return;
         
-        const opt = stageData.options.find(o => o.id === selected);
+        const opt = stageData.options.find(o => o.id === selectedOptId);
         
         // Handle risk
         if (opt.risk && Math.random() * 100 < opt.risk) {
@@ -6069,7 +6068,7 @@ function renderDecisionModal(elId, element) {
         }
         
         applyDecision(elId, opt, stageData, null);
-    };
+    });
 }
 
 function showFailure(elId, opt, stageData) {
