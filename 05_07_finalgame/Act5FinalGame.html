@@ -3311,8 +3311,27 @@ const GAME_DATA = {
                     situation: 'A pipe section needs replacement. The all-welded design from 2025 means there are no break points - must cut and re-weld.',
                     quote: "Need to replace a section of pipe. That all-welded design from 2025 - cost more in welding labour AND there's nowhere to unbolt. We have to cut it out and weld in the replacement. Time-consuming and high dose. How do you want to proceed?",
                     options: [
-                        { id: 'replace', name: 'Cut, replace, and re-weld', desc: 'Proper repair but significant work.', cost: 65000, time: 8, dose: 5 },
-                        { id: 'overlay', name: 'Weld overlay repair', desc: 'Temporary fix. Will need revisiting eventually.', cost: 25000, time: 3, dose: 3, healthImpact: -5, trigger: 'weldOverlay' }
+                        { 
+                            id: 'replace', 
+                            name: 'Cut, replace, and re-weld', 
+                            desc: 'Proper repair but significant work. Add a flange for future access.', 
+                            cost: 65000, time: 8, dose: 5,
+                            setState: { flangingAdded: true }
+                        },
+                        { 
+                            id: 'overlay', 
+                            name: 'Weld overlay repair', 
+                            desc: 'Temporary fix. Will need revisiting eventually.', 
+                            cost: 25000, time: 3, dose: 3, healthImpact: -5,
+                            setState: { deteriorating: true }
+                        },
+                        {
+                            id: 'minimal',
+                            name: 'Minimum cut and re-weld',
+                            desc: 'Just the damaged section. No design improvement.',
+                            cost: 45000, time: 6, dose: 4,
+                            setState: { weldCutMade: true }
+                        }
                     ]
                 },
                 flanged: {
@@ -3327,19 +3346,83 @@ const GAME_DATA = {
                     situation: 'Three gasket failures this outage. With flanges every 2m from the 2025 design, there are 47 potential leak paths.',
                     quote: "Third gasket failure this week. That design from 2025 with flanges every 2m - 47 flanges means 47 places to leak. We're chasing gaskets constantly. Do you want to replace all of them preventively or keep playing whack-a-mole?",
                     options: [
-                        { id: 'replace', name: 'Replace all gaskets preventively', desc: 'Do them all now. No more surprises this outage.', cost: 45000, time: 5, dose: 2 },
-                        { id: 'reactive', name: 'Keep replacing as they fail', desc: 'Fix what breaks. Hope it holds.', cost: 15000, time: 2, dose: 1, healthImpact: -3 }
+                        { 
+                            id: 'replace', 
+                            name: 'Replace all gaskets preventively', 
+                            desc: 'Do them all now. No more surprises this outage.', 
+                            cost: 45000, time: 5, dose: 2 
+                        },
+                        { 
+                            id: 'reactive', 
+                            name: 'Keep replacing as they fail', 
+                            desc: 'Fix what breaks. Hope it holds.', 
+                            cost: 15000, time: 2, dose: 1, healthImpact: -3,
+                            setState: { leakHistory: true }
+                        }
                     ]
                 }
             },
             stage3: {
                 welded: {
-                    situation: 'All welds require inspection. The all-welded design from 2025 means a large number of weld examinations are needed.',
-                    quote: "Inspection programme time. That all-welded design from 2025 - every joint is a weld, every weld needs examining. It's a lot of coverage. Full programme or sample-based approach?",
-                    options: [
-                        { id: 'full', name: 'Full inspection of all welds', desc: 'Examine every weld in the system.', cost: 50000, time: 7, dose: 4 },
-                        { id: 'sample', name: 'Sample 50% of welds', desc: 'Risk-based selection. May miss developing defects.', cost: 25000, time: 4, dose: 2, healthImpact: -5 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        flangingAdded: {
+                            situation: 'In-Service Inspection time. The flange you added in 2040 provides a break point, making some sections easier to examine.',
+                            quote: "Good call adding that flange in 2040. At least I have one break point now. Still a lot of welds to examine from the original all-welded design, but it's not quite as bad. Full programme or sample?",
+                            options: [
+                                { id: 'full', name: 'Full inspection programme', desc: 'Examine all welds thoroughly.', cost: 40000, time: 6, dose: 3.5 },
+                                { id: 'sample', name: 'Risk-based sample approach', desc: 'Focus on highest-risk welds.', cost: 22000, time: 3, dose: 2 }
+                            ]
+                        },
+                        deteriorating: {
+                            situation: '⚠️ URGENT: The weld overlay from 2040 is showing crack indications. The underlying defect appears to be propagating.',
+                            quote: "That overlay we did in 2040 instead of proper repair? It's cracking. I can see indications propagating into the base metal. The temporary fix is becoming a permanent problem. We need to act.",
+                            options: [
+                                { 
+                                    id: 'replace', 
+                                    name: 'Emergency section replacement', 
+                                    desc: 'Cut out the entire affected section. Proper fix finally.', 
+                                    cost: 95000, time: 10, dose: 6,
+                                    setState: { flangingAdded: true, deteriorating: false }
+                                },
+                                { 
+                                    id: 'monitor', 
+                                    name: 'Enhanced monitoring and operate', 
+                                    desc: 'Frequent inspection, plan replacement for next outage.', 
+                                    cost: 25000, time: 2, dose: 2,
+                                    setState: { inspectionLimited: true }
+                                }
+                            ]
+                        },
+                        weldCutMade: {
+                            situation: 'Full weld inspection required. The all-welded design from 2025 plus the 2040 repair weld means many examination points.',
+                            quote: "All-welded system from 2025, plus that repair weld from 2040. Every joint needs examining. No shortcuts available - it's a lot of welds. Full coverage or prioritise?",
+                            options: [
+                                { id: 'full', name: 'Full weld examination', desc: 'UT every weld in the system.', cost: 50000, time: 7, dose: 4 },
+                                { 
+                                    id: 'sample', 
+                                    name: 'Sample 50% of welds', 
+                                    desc: 'Risk-based selection. May miss developing issues.', 
+                                    cost: 25000, time: 4, dose: 2, healthImpact: -5,
+                                    setState: { inspectionLimited: true }
+                                }
+                            ]
+                        },
+                        default: {
+                            situation: 'All welds require inspection. The all-welded design from 2025 means a large number of weld examinations are needed.',
+                            quote: "Inspection programme time. That all-welded design from 2025 - every joint is a weld, every weld needs examining. It's a lot of coverage. Full programme or sample-based approach?",
+                            options: [
+                                { id: 'full', name: 'Full inspection of all welds', desc: 'Examine every weld in the system.', cost: 50000, time: 7, dose: 4 },
+                                { 
+                                    id: 'sample', 
+                                    name: 'Sample 50% of welds', 
+                                    desc: 'Risk-based selection. May miss developing defects.', 
+                                    cost: 25000, time: 4, dose: 2, healthImpact: -5,
+                                    setState: { inspectionLimited: true }
+                                }
+                            ]
+                        }
+                    }
                 },
                 flanged: {
                     situation: 'Limited number of welds to inspect. Flanged joints from 2025 require visual and torque checks.',
@@ -3350,22 +3433,106 @@ const GAME_DATA = {
                     ]
                 },
                 excessive: {
-                    situation: '47 flanged connections to inspect. Many gaskets from 2025 are showing wear after 30 years.',
-                    quote: "47 flanges to check from that 2025 design. I'll be verifying bolts and gaskets all week. Some of these gaskets are 30 years old and looking tired. Full coverage or prioritise high-risk locations?",
-                    options: [
-                        { id: 'all', name: 'Inspect all 47 connections', desc: 'Thorough but time-consuming.', cost: 35000, time: 6, dose: 2.5 },
-                        { id: 'sample', name: 'Prioritise high-risk locations', desc: 'Focus on problem areas. May miss issues elsewhere.', cost: 20000, time: 3, dose: 1.5, healthImpact: -3 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        leakHistory: {
+                            situation: 'Ongoing gasket issues from the reactive approach in 2040. Several flanges showing signs of distortion from repeated thermal cycling.',
+                            quote: "Those gaskets we kept replacing as they failed in 2040? Some of the flanges are showing distortion now - thermal cycling with leaking gaskets causes problems. I'm seeing bolt stretch too. Comprehensive check or focus on the worst ones?",
+                            options: [
+                                { 
+                                    id: 'comprehensive', 
+                                    name: 'Full flange condition assessment', 
+                                    desc: 'Check all 47 for distortion, bolt condition, and gasket seating.', 
+                                    cost: 55000, time: 8, dose: 4,
+                                    setState: { boltDegradation: true }
+                                },
+                                { 
+                                    id: 'worst', 
+                                    name: 'Focus on known problem flanges', 
+                                    desc: 'Address the worst ones. Others may develop issues.', 
+                                    cost: 30000, time: 4, dose: 2,
+                                    setState: { boltDegradation: true, inspectionLimited: true }
+                                }
+                            ]
+                        },
+                        default: {
+                            situation: '47 flanged connections to inspect. Many gaskets from 2025 are showing wear after 30 years.',
+                            quote: "47 flanges to check from that 2025 design. I'll be verifying bolts and gaskets all week. Some of these gaskets are 30 years old and looking tired. Full coverage or prioritise high-risk locations?",
+                            options: [
+                                { id: 'all', name: 'Inspect all 47 connections', desc: 'Thorough but time-consuming.', cost: 35000, time: 6, dose: 2.5 },
+                                { 
+                                    id: 'sample', 
+                                    name: 'Prioritise high-risk locations', 
+                                    desc: 'Focus on problem areas. May miss issues elsewhere.', 
+                                    cost: 20000, time: 3, dose: 1.5, healthImpact: -3,
+                                    setState: { inspectionLimited: true }
+                                }
+                            ]
+                        }
+                    }
                 }
             },
             stage4: {
                 welded: {
-                    situation: 'Online maintenance needed but the all-welded design from 2025 provides no isolation points.',
-                    quote: "We need to do some maintenance, but that all-welded design from 2025 - there's nowhere to isolate. Can't do it online. We either wait for the outage or take a partial shutdown. Your call.",
-                    options: [
-                        { id: 'defer', name: 'Defer to next scheduled outage', desc: 'Wait for full shutdown. Work accumulates.', cost: 10000, time: 0, dose: 0 },
-                        { id: 'partial', name: 'Partial shutdown for access', desc: 'Reduce power to create safe work window.', cost: 40000, time: 2, dose: 1 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        flangingAdded: {
+                            situation: 'Online maintenance needed. The flange added in 2040 provides an isolation point - a small improvement to the original all-welded design.',
+                            quote: "Need to do some valve work. Remember that flange we added in 2040? It's paying off now - I can isolate that section and work online. The rest is still all-welded, but at least we have one break point.",
+                            options: [
+                                { id: 'online', name: 'Use new isolation point', desc: 'Work at power using the added flange.', cost: 20000, time: 2, dose: 1 },
+                                { id: 'defer', name: 'Defer to outage anyway', desc: 'Conservative approach.', cost: 5000, time: 0, dose: 0 }
+                            ]
+                        },
+                        deteriorating: {
+                            situation: '⚠️ LEAK ALARM: The 2040 weld overlay is leaking. The "temporary" fix has failed after 30 years.',
+                            quote: "That overlay from 2040 - it's leaking now. We always knew it was temporary but kept hoping. Thirty years later, we're paying for the shortcut. Emergency repair or try to nurse it to the outage?",
+                            options: [
+                                { 
+                                    id: 'emergency', 
+                                    name: 'Emergency shutdown and repair', 
+                                    desc: 'Fix it properly this time.', 
+                                    cost: 120000, time: 12, dose: 7,
+                                    setState: { leakHistory: true, deteriorating: false }
+                                },
+                                { 
+                                    id: 'manage', 
+                                    name: 'Manage leakage to outage', 
+                                    desc: 'Contain and monitor. Risky.', 
+                                    cost: 25000, time: 1, dose: 2, risk: 35, healthImpact: -8,
+                                    setState: { leakHistory: true }
+                                }
+                            ]
+                        },
+                        inspectionLimited: {
+                            situation: '⚠️ WELD FAILURE: A weld in the uninspected sample has failed. The gap in the 2055 inspection has caught up with us.',
+                            quote: "Weld failure - and it's one we didn't examine in 2055. That sample-based approach saved money then, but this weld was developing a defect we never saw. Now it's leaking.",
+                            options: [
+                                { 
+                                    id: 'repair', 
+                                    name: 'Repair failed weld', 
+                                    desc: 'Fix this one and inspect the others we missed.', 
+                                    cost: 85000, time: 8, dose: 5,
+                                    setState: { leakHistory: true }
+                                },
+                                { 
+                                    id: 'temporary', 
+                                    name: 'Temporary clamp repair', 
+                                    desc: 'Quick fix. Proper repair at outage.', 
+                                    cost: 35000, time: 2, dose: 2,
+                                    setState: { leakHistory: true }
+                                }
+                            ]
+                        },
+                        default: {
+                            situation: 'Online maintenance needed but the all-welded design from 2025 provides no isolation points.',
+                            quote: "We need to do some maintenance, but that all-welded design from 2025 - there's nowhere to isolate. Can't do it online. We either wait for the outage or take a partial shutdown. Your call.",
+                            options: [
+                                { id: 'defer', name: 'Defer to next scheduled outage', desc: 'Wait for full shutdown. Work accumulates.', cost: 10000, time: 0, dose: 0 },
+                                { id: 'partial', name: 'Partial shutdown for access', desc: 'Reduce power to create safe work window.', cost: 40000, time: 2, dose: 1 }
+                            ]
+                        }
+                    }
                 },
                 flanged: {
                     situation: 'Online maintenance needed. The flanged design from 2025 allows isolation and work at power.',
@@ -3376,22 +3543,92 @@ const GAME_DATA = {
                     ]
                 },
                 excessive: {
-                    situation: 'Two more gasket failures during this operating period. The 47-flange design from 2025 continues to cause problems.',
-                    quote: "Two more gaskets gone. That 47-flange design from 2025 - we're still fighting it 45 years later. Every flange is an opportunity for a leak. Fix them during a mini-outage or try to manage through?",
-                    options: [
-                        { id: 'repair', name: 'Short outage to repair leakers', desc: 'Fix the immediate problems.', cost: 30000, time: 3, dose: 1 },
-                        { id: 'monitor', name: 'Manage leakage and monitor', desc: 'Live with minor seepage. Not ideal.', cost: 10000, time: 0, dose: 0, healthImpact: -3 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        boltDegradation: {
+                            situation: '⚠️ FLANGE FAILURE: Bolt failure on flange F-23. The degradation identified in 2055 has progressed to failure.',
+                            quote: "Bolt sheared on F-23 - that's one of the flanges we identified as degraded in 2055. The thermal cycling and gasket leaks have taken their toll. We've got a proper leak now.",
+                            options: [
+                                { 
+                                    id: 'replace', 
+                                    name: 'Replace flange assembly', 
+                                    desc: 'New bolts, new gasket, proper fix.', 
+                                    cost: 45000, time: 4, dose: 2,
+                                    setState: { leakHistory: true }
+                                },
+                                { 
+                                    id: 'repair', 
+                                    name: 'Emergency bolt replacement', 
+                                    desc: 'Replace just the failed bolts. Others may follow.', 
+                                    cost: 20000, time: 2, dose: 1.5,
+                                    setState: { leakHistory: true }
+                                }
+                            ]
+                        },
+                        leakHistory: {
+                            situation: 'More gasket failures. The pattern from 2040 continues - 47 flanges means constant vigilance.',
+                            quote: "Two more leakers. That 47-flange design from 2025 keeps us busy. Every outage we're chasing gaskets. It never ends. Fix them now or accept minor seepage?",
+                            options: [
+                                { 
+                                    id: 'fix', 
+                                    name: 'Fix leaking flanges', 
+                                    desc: 'Replace gaskets on problem flanges.', 
+                                    cost: 35000, time: 3, dose: 1.5 
+                                },
+                                { 
+                                    id: 'accept', 
+                                    name: 'Accept minor seepage', 
+                                    desc: 'Containment in place. Monitor closely.', 
+                                    cost: 8000, time: 0, dose: 0, healthImpact: -5 
+                                }
+                            ]
+                        },
+                        default: {
+                            situation: 'Two more gasket failures during this operating period. The 47-flange design from 2025 continues to cause problems.',
+                            quote: "Two more gaskets gone. That 47-flange design from 2025 - we're still fighting it 45 years later. Every flange is an opportunity for a leak. Fix them during a mini-outage or try to manage through?",
+                            options: [
+                                { id: 'repair', name: 'Short outage to repair leakers', desc: 'Fix the immediate problems.', cost: 30000, time: 3, dose: 1 },
+                                { 
+                                    id: 'monitor', 
+                                    name: 'Manage leakage and monitor', 
+                                    desc: 'Live with minor seepage. Not ideal.', 
+                                    cost: 10000, time: 0, dose: 0, healthImpact: -3,
+                                    setState: { leakHistory: true }
+                                }
+                            ]
+                        }
+                    }
                 }
             },
             stage5: {
                 welded: {
-                    situation: 'Pipe removal for decommissioning. The all-welded design from 2025 means 12 welds to cut. Each cut risks contamination spread.',
-                    quote: "Time to take these pipes out. That all-welded design from 2025 means 12 cuts to make. Each one sprays contamination if we're not careful. Slow and steady, or bring in the specialists?",
-                    options: [
-                        { id: 'careful', name: 'Careful in-house cutting programme', desc: 'Slow and controlled. Higher dose.', cost: 80000, time: 15, dose: 8, risk: 30 },
-                        { id: 'specialist', name: 'Specialist cutting contractor', desc: 'Experts with containment equipment.', cost: 180000, time: 10, dose: 3 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        flangingAdded: {
+                            situation: 'Pipe removal for decommissioning. The flange added in 2040 provides one break point, but most of the system is still all-welded.',
+                            quote: "Decommissioning time. That flange we added in 2040 gives us one clean break point, but the rest is still all-welded from 2025. 11 cuts to make instead of 12. Every little helps. In-house or specialists?",
+                            options: [
+                                { id: 'inhouse', name: 'In-house cutting with flange break', desc: 'Use the flange point to reduce cutting.', cost: 70000, time: 12, dose: 6 },
+                                { id: 'specialist', name: 'Specialist cutting contractor', desc: 'Full containment cutting programme.', cost: 160000, time: 9, dose: 3 }
+                            ]
+                        },
+                        leakHistory: {
+                            situation: 'Pipe removal complicated by historical contamination spread. The leaks over the years have contaminated surrounding areas.',
+                            quote: "That leak history from 2070 - the contamination spread beyond the pipes into the support steelwork and floor. We're not just removing pipes now, we're dealing with secondary contamination. Extended scope needed.",
+                            options: [
+                                { id: 'extended', name: 'Extended decontamination scope', desc: 'Address all contaminated areas.', cost: 150000, time: 20, dose: 10 },
+                                { id: 'pipes', name: 'Pipes only - defer surroundings', desc: 'Remove pipes, document surrounding contamination for later.', cost: 90000, time: 12, dose: 6, healthImpact: -5 }
+                            ]
+                        },
+                        default: {
+                            situation: 'Pipe removal for decommissioning. The all-welded design from 2025 means 12 welds to cut. Each cut risks contamination spread.',
+                            quote: "Time to take these pipes out. That all-welded design from 2025 means 12 cuts to make. Each one sprays contamination if we're not careful. Slow and steady, or bring in the specialists?",
+                            options: [
+                                { id: 'careful', name: 'Careful in-house cutting programme', desc: 'Slow and controlled. Higher dose.', cost: 80000, time: 15, dose: 8, risk: 30 },
+                                { id: 'specialist', name: 'Specialist cutting contractor', desc: 'Experts with containment equipment.', cost: 180000, time: 10, dose: 3 }
+                            ]
+                        }
+                    }
                 },
                 flanged: {
                     situation: 'Pipe removal for decommissioning. The flanged design from 2025 means unbolt and remove in sections.',
@@ -3402,12 +3639,33 @@ const GAME_DATA = {
                     ]
                 },
                 excessive: {
-                    situation: '47 flange connections to disconnect. Many contaminated gaskets to dispose of as waste.',
-                    quote: "47 flanges from that 2025 design - at least they unbolt easily. But every one of those gaskets is contaminated waste now. Lots of small waste packages. Deal with it systematically or cut corners?",
-                    options: [
-                        { id: 'full', name: 'Full systematic disassembly', desc: 'All 47 connections done properly.', cost: 55000, time: 10, dose: 3 },
-                        { id: 'bulk', name: 'Cut into larger sections instead', desc: 'Fewer disconnections but larger packages.', cost: 45000, time: 8, dose: 2.5 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        boltDegradation: {
+                            situation: 'Flange disassembly complicated by bolt degradation. Many seized and corroded from 60 years of thermal cycling and the problems identified in 2055.',
+                            quote: "Those degraded bolts we found in 2055 - 60 years of service hasn't improved them. Half of these are seized solid. Can't just unbolt them, we'll have to cut some off. Slows everything down.",
+                            options: [
+                                { id: 'systematic', name: 'Systematic bolt-by-bolt removal', desc: 'Careful approach to each connection.', cost: 75000, time: 14, dose: 4 },
+                                { id: 'cut', name: 'Cut through seized flanges', desc: 'Faster but generates more waste.', cost: 60000, time: 10, dose: 3.5 }
+                            ]
+                        },
+                        leakHistory: {
+                            situation: 'Flange removal with historical contamination issues. The gasket leak history means contamination has spread to bolt threads and surrounding areas.',
+                            quote: "All those gasket leaks over the years - the contamination soaked into everything. Bolt threads are contaminated, flange faces are activated. More waste classification headaches than a clean system would have.",
+                            options: [
+                                { id: 'full', name: 'Full systematic disassembly', desc: 'All connections done properly, full waste characterisation.', cost: 70000, time: 12, dose: 4 },
+                                { id: 'segregate', name: 'Segregate by contamination level', desc: 'Sort clean from contaminated as we go.', cost: 60000, time: 11, dose: 3.5 }
+                            ]
+                        },
+                        default: {
+                            situation: '47 flange connections to disconnect. Many contaminated gaskets to dispose of as waste.',
+                            quote: "47 flanges from that 2025 design - at least they unbolt easily. But every one of those gaskets is contaminated waste now. Lots of small waste packages. Deal with it systematically or cut corners?",
+                            options: [
+                                { id: 'full', name: 'Full systematic disassembly', desc: 'All 47 connections done properly.', cost: 55000, time: 10, dose: 3 },
+                                { id: 'bulk', name: 'Cut into larger sections instead', desc: 'Fewer disconnections but larger packages.', cost: 45000, time: 8, dose: 2.5 }
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -3430,9 +3688,27 @@ const GAME_DATA = {
                     situation: 'Suspected leak somewhere in an embedded pipe section. The pipes are cast into concrete from the 2025 design - cannot visually confirm location.',
                     quote: "We've got activity readings suggesting a leak, but those embedded pipes from 2025 - they're buried in the concrete. I can't see where it's coming from. We either dig until we find it, route around it, or hope it stabilises. Your call.",
                     options: [
-                        { id: 'excavate', name: 'Excavate concrete to find leak', desc: 'Dig until we locate the source.', cost: 70000, time: 12, dose: 4 },
-                        { id: 'bypass', name: 'Install bypass line around section', desc: 'Route around the problem entirely.', cost: 90000, time: 8, dose: 2 },
-                        { id: 'defer', name: 'Increase monitoring and defer', desc: 'Hope it stabilises. Monitor closely.', cost: 10000, time: 0, dose: 0, healthImpact: -10, trigger: 'embeddedLeak' }
+                        { 
+                            id: 'excavate', 
+                            name: 'Excavate concrete to find leak', 
+                            desc: 'Dig until we locate the source. Create permanent access point.', 
+                            cost: 70000, time: 12, dose: 4,
+                            setState: { accessCreated: true }
+                        },
+                        { 
+                            id: 'bypass', 
+                            name: 'Install bypass line around section', 
+                            desc: 'Route around the problem entirely. Original section abandoned.', 
+                            cost: 90000, time: 8, dose: 2,
+                            setState: { accessCreated: true }
+                        },
+                        { 
+                            id: 'defer', 
+                            name: 'Increase monitoring and defer', 
+                            desc: 'Hope it stabilises. Monitor closely.', 
+                            cost: 10000, time: 0, dose: 0, healthImpact: -10,
+                            setState: { contaminationSpread: true }
+                        }
                     ]
                 },
                 ducted: {
@@ -3448,19 +3724,80 @@ const GAME_DATA = {
                     quote: "Easy access through the tunnel to fix the leak - that 2025 design makes repairs simple. But the tunnel walls themselves are picking up contamination. We should deal with that while we're here. Clean it or seal it?",
                     options: [
                         { id: 'repair', name: 'Repair and decontaminate tunnel', desc: 'Fix leak and clean surfaces.', cost: 35000, time: 4, dose: 2 },
-                        { id: 'seal', name: 'Repair and seal contamination', desc: 'Contain it for now. Defer full decon.', cost: 25000, time: 3, dose: 1.5, healthImpact: -3 }
+                        { 
+                            id: 'seal', 
+                            name: 'Repair and seal contamination', 
+                            desc: 'Contain it for now. Defer full decon.', 
+                            cost: 25000, time: 3, dose: 1.5, healthImpact: -3,
+                            setState: { contaminationSpread: true }
+                        }
                     ]
                 }
             },
             stage3: {
                 embedded: {
-                    situation: 'In-Service Inspection required. The embedded pipes from 2025 cannot be examined by conventional ultrasonic or visual methods.',
-                    quote: "How do I inspect pipes that are buried in concrete from 2025? The short answer is: I can't. Not with conventional methods. We can document the limitation, try guided wave technology, or excavate samples. What's the approach?",
-                    options: [
-                        { id: 'accept', name: 'Document inspection gap', desc: 'Accept and document the limitation.', cost: 5000, time: 1, dose: 0, healthImpact: -10, trigger: 'embeddedInspectionGap' },
-                        { id: 'guided', name: 'Install guided wave monitoring', desc: 'Some detection capability through concrete.', cost: 60000, time: 5, dose: 1 },
-                        { id: 'excavate', name: 'Excavate sample locations', desc: 'Physically expose sections for examination.', cost: 100000, time: 14, dose: 5 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        accessCreated: {
+                            situation: 'In-Service Inspection time. The excavation or bypass from 2040 created some access points, improving the situation slightly.',
+                            quote: "Those embedded pipes from 2025 are still mostly buried, but the work we did in 2040 gave us a couple of access points. I can at least examine some sections now. Still limited though. What's the approach?",
+                            options: [
+                                { id: 'maximise', name: 'Maximise inspection at access points', desc: 'Full examination where we can reach.', cost: 35000, time: 5, dose: 2 },
+                                { 
+                                    id: 'extend', 
+                                    name: 'Extend access and install monitoring', 
+                                    desc: 'Create more access points and add guided wave sensors.', 
+                                    cost: 80000, time: 10, dose: 3 
+                                }
+                            ]
+                        },
+                        contaminationSpread: {
+                            situation: '⚠️ CONTAMINATION DETECTED: The leak deferred in 2040 has been spreading. Groundwater monitoring shows elevated activity levels.',
+                            quote: "That leak we couldn't find in 2040 and decided to monitor? The groundwater results are in - activity spreading into the soil. We can't inspect the pipes but we can see where the contamination's going. This needs addressing.",
+                            options: [
+                                { 
+                                    id: 'excavate', 
+                                    name: 'Emergency excavation programme', 
+                                    desc: 'Find and fix the source. Major work.', 
+                                    cost: 150000, time: 18, dose: 8,
+                                    setState: { accessCreated: true, contaminationSpread: false }
+                                },
+                                { 
+                                    id: 'contain', 
+                                    name: 'Groundwater containment and monitoring', 
+                                    desc: 'Install barrier, treat water. Source remains.', 
+                                    cost: 80000, time: 6, dose: 2,
+                                    setState: { inspectionLimited: true }
+                                }
+                            ]
+                        },
+                        default: {
+                            situation: 'In-Service Inspection required. The embedded pipes from 2025 cannot be examined by conventional ultrasonic or visual methods.',
+                            quote: "How do I inspect pipes that are buried in concrete from 2025? The short answer is: I can't. Not with conventional methods. We can document the limitation, try guided wave technology, or excavate samples. What's the approach?",
+                            options: [
+                                { 
+                                    id: 'accept', 
+                                    name: 'Document inspection gap', 
+                                    desc: 'Accept and document the limitation.', 
+                                    cost: 5000, time: 1, dose: 0, healthImpact: -10,
+                                    setState: { inspectionLimited: true }
+                                },
+                                { 
+                                    id: 'guided', 
+                                    name: 'Install guided wave monitoring', 
+                                    desc: 'Some detection capability through concrete.', 
+                                    cost: 60000, time: 5, dose: 1 
+                                },
+                                { 
+                                    id: 'excavate', 
+                                    name: 'Excavate sample locations', 
+                                    desc: 'Physically expose sections for examination.', 
+                                    cost: 100000, time: 14, dose: 5,
+                                    setState: { accessCreated: true }
+                                }
+                            ]
+                        }
+                    }
                 },
                 ducted: {
                     situation: 'Full pipe inspection via removable duct covers from the 2025 design. Complete access available.',
@@ -3471,33 +3808,86 @@ const GAME_DATA = {
                     ]
                 },
                 tunnel: {
-                    situation: 'Pipe inspection in the walk-in tunnel. Good access but the tunnel from 2025 is now contaminated, requiring full PPE.',
-                    quote: "Easy pipe access through the tunnel, but 30 years of operation means it's contaminated now. Full suits required just to get in there. That 2025 tunnel design - easy access comes with dose penalty. Full inspection or remote camera?",
-                    options: [
-                        { id: 'suited', name: 'Full hands-on inspection in PPE', desc: 'Complete coverage but slower in suits.', cost: 25000, time: 5, dose: 3 },
-                        { id: 'remote', name: 'Remote camera inspection', desc: 'Limited contact but lower dose.', cost: 30000, time: 4, dose: 1, healthImpact: -2 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        contaminationSpread: {
+                            situation: 'Tunnel inspection complicated by the contamination sealed in 2040. Sealed areas are now showing breakthrough.',
+                            quote: "Remember sealing that contamination in 2040 instead of decontaminating? It's breaking through the sealant now. The tunnel's getting hotter. We need to deal with this properly or accept higher dose for all tunnel work.",
+                            options: [
+                                { id: 'decon', name: 'Full decontamination campaign', desc: 'Strip and clean all contaminated surfaces.', cost: 60000, time: 8, dose: 5 },
+                                { 
+                                    id: 'accept', 
+                                    name: 'Accept elevated dose rates', 
+                                    desc: 'Work in higher dose environment.', 
+                                    cost: 15000, time: 4, dose: 4, healthImpact: -5 
+                                }
+                            ]
+                        },
+                        default: {
+                            situation: 'Pipe inspection in the walk-in tunnel. Good access but the tunnel from 2025 is now contaminated, requiring full PPE.',
+                            quote: "Easy pipe access through the tunnel, but 30 years of operation means it's contaminated now. Full suits required just to get in there. That 2025 tunnel design - easy access comes with dose penalty. Full inspection or remote camera?",
+                            options: [
+                                { id: 'suited', name: 'Full hands-on inspection in PPE', desc: 'Complete coverage but slower in suits.', cost: 25000, time: 5, dose: 3 },
+                                { 
+                                    id: 'remote', 
+                                    name: 'Remote camera inspection', 
+                                    desc: 'Limited contact but lower dose.', 
+                                    cost: 30000, time: 4, dose: 1, healthImpact: -2,
+                                    setState: { inspectionLimited: true }
+                                }
+                            ]
+                        }
+                    }
                 }
             },
             stage4: {
                 embedded: {
-                    checkTrigger: 'embeddedLeak',
-                    triggered: {
-                        situation: 'Groundwater monitoring detects radioactive contamination. The source is the embedded pipe leak that was deferred in 2040.',
-                        quote: "Remember that leak we couldn't find in 2040? The one in the embedded pipes from 2025 that we decided to monitor? It's been leaking into the groundwater for 30 years. Environmental regulator is involved. This is serious.",
-                        additionalCosts: { regulatory: 50000, environmental: 100000, healthImpact: -15 },
-                        options: [
-                            { id: 'excavate', name: 'Emergency excavation and repair', desc: 'Dig out the embedded section and fix it.', cost: 200000, time: 21, dose: 8 },
-                            { id: 'treat', name: 'Groundwater treatment and isolation', desc: 'Treat the water, abandon the pipe section.', cost: 150000, time: 7, dose: 2 }
-                        ]
-                    },
-                    notTriggered: {
-                        situation: 'Monitoring of embedded pipe sections continues. No activity detected in groundwater so far.',
-                        quote: "Still monitoring those embedded pipes from 2025. Groundwater sampling shows nothing... yet. But we're flying blind on actual pipe condition. Continue monitoring or enhance detection capability?",
-                        options: [
-                            { id: 'maintain', name: 'Continue current monitoring', desc: 'Keep watching the groundwater.', cost: 15000, time: 0, dose: 0 },
-                            { id: 'enhance', name: 'Enhanced monitoring network', desc: 'More sampling points, faster detection.', cost: 30000, time: 1, dose: 0 }
-                        ]
+                    checkElementState: true,
+                    scenarios: {
+                        contaminationSpread: {
+                            situation: '⚠️ ENVIRONMENTAL INCIDENT: Groundwater monitoring detects radioactive contamination. The embedded pipe leak has been spreading for decades.',
+                            quote: "Remember that leak we couldn't find in 2040? The one in the embedded pipes from 2025 that we decided to monitor? It's been leaking into the groundwater for 30 years. Environmental regulator is involved. This is serious.",
+                            additionalCosts: { regulatory: 50000, environmental: 100000, healthImpact: -15 },
+                            options: [
+                                { 
+                                    id: 'excavate', 
+                                    name: 'Emergency excavation and repair', 
+                                    desc: 'Dig out the embedded section and fix it.', 
+                                    cost: 200000, time: 21, dose: 8,
+                                    setState: { accessCreated: true, contaminationSpread: false }
+                                },
+                                { id: 'treat', name: 'Groundwater treatment and isolation', desc: 'Treat the water, abandon the pipe section.', cost: 150000, time: 7, dose: 2 }
+                            ]
+                        },
+                        inspectionLimited: {
+                            situation: 'Operating with documented inspection gaps. The uninspected embedded sections are an ongoing concern.',
+                            quote: "Those embedded pipes from 2025 that we documented as uninspectable in 2055 - we're still flying blind. Groundwater monitoring shows nothing abnormal... yet. But it's a known unknown. What's the approach?",
+                            options: [
+                                { id: 'continue', name: 'Continue monitoring regime', desc: 'Maintain current approach.', cost: 15000, time: 0, dose: 0 },
+                                { 
+                                    id: 'invest', 
+                                    name: 'Invest in advanced monitoring', 
+                                    desc: 'Deploy latest guided wave technology.', 
+                                    cost: 45000, time: 3, dose: 1 
+                                }
+                            ]
+                        },
+                        accessCreated: {
+                            situation: 'The access points created in previous work allow some monitoring of embedded sections.',
+                            quote: "Those excavation points from earlier - they're proving useful. I can at least see into some of the embedded sections from 2025. Not complete coverage but better than nothing. Continue monitoring or extend access?",
+                            options: [
+                                { id: 'monitor', name: 'Monitor at existing access points', desc: 'Use what we have.', cost: 12000, time: 1, dose: 0.5 },
+                                { id: 'extend', name: 'Extend access for better coverage', desc: 'Create additional inspection points.', cost: 50000, time: 6, dose: 2 }
+                            ]
+                        },
+                        default: {
+                            situation: 'Monitoring of embedded pipe sections continues. No activity detected in groundwater so far.',
+                            quote: "Still monitoring those embedded pipes from 2025. Groundwater sampling shows nothing... yet. But we're flying blind on actual pipe condition. Continue monitoring or enhance detection capability?",
+                            options: [
+                                { id: 'maintain', name: 'Continue current monitoring', desc: 'Keep watching the groundwater.', cost: 15000, time: 0, dose: 0 },
+                                { id: 'enhance', name: 'Enhanced monitoring network', desc: 'More sampling points, faster detection.', cost: 30000, time: 1, dose: 0 }
+                            ]
+                        }
                     }
                 },
                 ducted: {
@@ -3509,22 +3899,70 @@ const GAME_DATA = {
                     ]
                 },
                 tunnel: {
-                    situation: 'Tunnel access maintained. Contamination levels stable but requiring ongoing control.',
-                    quote: "Tunnel from 2025 - still accessible, still contaminated. We're maintaining the contamination controls but it's an ongoing burden. Status quo or invest in reducing the source term?",
-                    options: [
-                        { id: 'maintain', name: 'Continue routine monitoring', desc: 'Maintain current controls.', cost: 10000, time: 0, dose: 0.5 },
-                        { id: 'decon', name: 'Partial decontamination campaign', desc: 'Reduce hotspots in the tunnel.', cost: 35000, time: 3, dose: 2 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        contaminationSpread: {
+                            situation: 'Tunnel contamination has worsened. The sealed areas from 2055 have spread to previously clean sections.',
+                            quote: "The contamination in that tunnel from 2025 has spread. Those areas we sealed years ago - breakthrough into new sections. The whole tunnel's getting hotter. We need a proper strategy now.",
+                            options: [
+                                { 
+                                    id: 'major', 
+                                    name: 'Major decontamination campaign', 
+                                    desc: 'Full strip and clean of tunnel surfaces.', 
+                                    cost: 80000, time: 10, dose: 6,
+                                    setState: { contaminationSpread: false }
+                                },
+                                { id: 'manage', name: 'Enhanced contamination controls', desc: 'More frequent monitoring and local fixes.', cost: 30000, time: 3, dose: 2 }
+                            ]
+                        },
+                        inspectionLimited: {
+                            situation: 'Remote inspection regime continues. Camera coverage provides some assurance but isn\'t as good as hands-on examination.',
+                            quote: "Still using remote cameras in the tunnel from that 2025 design. It's keeping dose down but I'm not as confident in the inspection quality. Any indication of developing issues?",
+                            options: [
+                                { id: 'continue', name: 'Continue remote approach', desc: 'Cameras only. Minimal dose.', cost: 15000, time: 2, dose: 0.5 },
+                                { id: 'hands', name: 'Supplement with hands-on inspection', desc: 'Send team in for detailed checks.', cost: 30000, time: 4, dose: 3 }
+                            ]
+                        },
+                        default: {
+                            situation: 'Tunnel access maintained. Contamination levels stable but requiring ongoing control.',
+                            quote: "Tunnel from 2025 - still accessible, still contaminated. We're maintaining the contamination controls but it's an ongoing burden. Status quo or invest in reducing the source term?",
+                            options: [
+                                { id: 'maintain', name: 'Continue routine monitoring', desc: 'Maintain current controls.', cost: 10000, time: 0, dose: 0.5 },
+                                { id: 'decon', name: 'Partial decontamination campaign', desc: 'Reduce hotspots in the tunnel.', cost: 35000, time: 3, dose: 2 }
+                            ]
+                        }
+                    }
                 }
             },
             stage5: {
                 embedded: {
-                    situation: 'Pipes cast into concrete from 2025 require major excavation. Contamination has migrated into the concrete matrix itself.',
-                    quote: "The embedded pipes from 2025 - now the contamination has soaked into the surrounding concrete over 60 years. We're not just removing pipes, we're removing contaminated structural concrete. Huge job. In-house or specialists?",
-                    options: [
-                        { id: 'excavate', name: 'Full in-house excavation', desc: 'Our teams break out all the concrete.', cost: 350000, time: 40, dose: 20 },
-                        { id: 'specialist', name: 'Specialist demolition contractor', desc: 'Controlled demolition with contamination management.', cost: 400000, time: 25, dose: 8 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        contaminationSpread: {
+                            situation: 'Catastrophic contamination situation. The embedded pipe leaks have contaminated a large volume of concrete and soil over decades.',
+                            quote: "That embedded pipe design from 2025 combined with all those years of uncontrolled leakage - we're looking at hundreds of cubic metres of contaminated concrete and soil. The regulatory implications are severe. This is a major remediation project.",
+                            options: [
+                                { id: 'full', name: 'Full remediation programme', desc: 'Remove all contaminated material. Massive project.', cost: 600000, time: 60, dose: 25, healthImpact: -10 },
+                                { id: 'contain', name: 'Engineered containment', desc: 'Barrier system and long-term monitoring. Cheaper but institutionally controlled.', cost: 350000, time: 30, dose: 10, healthImpact: -15 }
+                            ]
+                        },
+                        accessCreated: {
+                            situation: 'Mixed situation. Some access points were created, but significant concrete excavation still required.',
+                            quote: "Those access points we created over the years help a bit - at least we know what we're dealing with in some sections. But most of the embedded pipes from 2025 are still buried. Major excavation still required, just with better knowledge.",
+                            options: [
+                                { id: 'targeted', name: 'Targeted excavation programme', desc: 'Focus on known problem areas first.', cost: 280000, time: 30, dose: 12 },
+                                { id: 'specialist', name: 'Full specialist demolition', desc: 'Bring in experts for complete removal.', cost: 380000, time: 22, dose: 7 }
+                            ]
+                        },
+                        default: {
+                            situation: 'Pipes cast into concrete from 2025 require major excavation. Contamination has migrated into the concrete matrix itself.',
+                            quote: "The embedded pipes from 2025 - now the contamination has soaked into the surrounding concrete over 60 years. We're not just removing pipes, we're removing contaminated structural concrete. Huge job. In-house or specialists?",
+                            options: [
+                                { id: 'excavate', name: 'Full in-house excavation', desc: 'Our teams break out all the concrete.', cost: 350000, time: 40, dose: 20 },
+                                { id: 'specialist', name: 'Specialist demolition contractor', desc: 'Controlled demolition with contamination management.', cost: 400000, time: 25, dose: 8 }
+                            ]
+                        }
+                    }
                 },
                 ducted: {
                     situation: 'Pipe removal via duct access. The ducts from 2025 remain uncontaminated and can be demolished as clean concrete.',
@@ -3535,12 +3973,33 @@ const GAME_DATA = {
                     ]
                 },
                 tunnel: {
-                    situation: 'Pipes removed easily, but the tunnel from 2025 is contaminated infrastructure requiring disposal as intermediate level waste.',
-                    quote: "Pipes came out clean - the tunnel gave us easy access right to the end. But the tunnel itself? 60 years of contamination buildup. It's ILW now. Large volume, complex disposal. Full decon or grout and entomb?",
-                    options: [
-                        { id: 'full', name: 'Full tunnel decommissioning', desc: 'Decontaminate and demolish.', cost: 220000, time: 25, dose: 8 },
-                        { id: 'fill', name: 'Grout fill and entombment', desc: 'Seal in place with grout.', cost: 150000, time: 15, dose: 4, healthImpact: -5 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        contaminationSpread: {
+                            situation: 'The tunnel is heavily contaminated after years of contamination spread. ILW classification for the entire structure.',
+                            quote: "That tunnel from 2025 - it's severely contaminated now after all those years of spread. Full ILW classification for the entire structure. We're looking at major disposal costs. Full strip-out or entombment?",
+                            options: [
+                                { id: 'strip', name: 'Full strip-out and disposal', desc: 'Remove everything. High volume ILW.', cost: 320000, time: 35, dose: 12 },
+                                { id: 'entomb', name: 'Grout and entomb in place', desc: 'Seal forever. Cheaper but sterilises the site.', cost: 180000, time: 18, dose: 5, healthImpact: -8 }
+                            ]
+                        },
+                        inspectionLimited: {
+                            situation: 'Tunnel decommissioning with some unknown areas due to remote-only inspection history.',
+                            quote: "The tunnel from 2025 needs to come out, but those areas we only ever inspected remotely - we don't know exactly what we're dealing with. Some surprises possible. Careful approach or accept uncertainty?",
+                            options: [
+                                { id: 'careful', name: 'Careful characterisation first', desc: 'Survey everything before removal.', cost: 250000, time: 28, dose: 9 },
+                                { id: 'proceed', name: 'Proceed with contingency', desc: 'Start work, deal with surprises.', cost: 200000, time: 22, dose: 8, risk: 25 }
+                            ]
+                        },
+                        default: {
+                            situation: 'Pipes removed easily, but the tunnel from 2025 is contaminated infrastructure requiring disposal as intermediate level waste.',
+                            quote: "Pipes came out clean - the tunnel gave us easy access right to the end. But the tunnel itself? 60 years of contamination buildup. It's ILW now. Large volume, complex disposal. Full decon or grout and entomb?",
+                            options: [
+                                { id: 'full', name: 'Full tunnel decommissioning', desc: 'Decontaminate and demolish.', cost: 220000, time: 25, dose: 8 },
+                                { id: 'fill', name: 'Grout fill and entombment', desc: 'Seal in place with grout.', cost: 150000, time: 15, dose: 4, healthImpact: -5 }
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -3883,7 +4342,8 @@ const STATE = {
             weldCutMade: false,
             inspectionLimited: false,
             boltDegradation: false,
-            leakHistory: false
+            leakHistory: false,
+            deteriorating: false
         },
         pipeRouting: {
             accessCreated: false,
@@ -4186,28 +4646,43 @@ function renderDecisionModal(elId, element) {
         return;
     }
     
-    // Handle element state-based scenarios (new compounding system)
+    // Handle element state-based scenarios (compounding consequences system)
     if (stageData.checkElementState && stageData.scenarios) {
         const elState = STATE.elementState[elId] || {};
         
-        // Check states in priority order (most specific first)
-        if (elState.deteriorating && stageData.scenarios.deteriorating) {
-            stageData = stageData.scenarios.deteriorating;
-        } else if (elState.emergencyOccurred && stageData.scenarios.emergencyOccurred) {
-            stageData = stageData.scenarios.emergencyOccurred;
-        } else if (elState.inspectionGap && stageData.scenarios.inspectionGap) {
-            stageData = stageData.scenarios.inspectionGap;
-        } else if (elState.accessFixed && stageData.scenarios.accessFixed) {
-            stageData = stageData.scenarios.accessFixed;
-        } else if (elState.workaroundUsed && stageData.scenarios.workaroundUsed) {
-            stageData = stageData.scenarios.workaroundUsed;
-        } else if (elState.airlockBypassed && stageData.scenarios.airlockBypassed) {
-            stageData = stageData.scenarios.airlockBypassed;
-        } else if (elState.airlockMaintained && stageData.scenarios.airlockMaintained) {
-            stageData = stageData.scenarios.airlockMaintained;
-        } else {
-            stageData = stageData.scenarios.default || stageData.scenarios[Object.keys(stageData.scenarios)[0]];
+        // Priority order for state checks - most severe/specific first
+        const statePriority = [
+            // Crisis states (highest priority)
+            'emergencyOccurred', 'leakOccurred', 'operatorError', 'contaminationSpread',
+            // Deterioration states
+            'deteriorating', 'corrosionDetected', 'doseConstraints',
+            // Limitation states
+            'inspectionGap', 'inspectionLimited', 'cableConflict', 'boltDegradation',
+            // Fixed/improved states
+            'accessFixed', 'clearanceImproved', 'layoutModified', 'earlyReplacement',
+            // Mitigation states
+            'workaroundUsed', 'specialToolingUsed', 'backupInstalled', 'trainingEnhanced',
+            'shieldingAdded', 'remoteTooling', 'accessCreated', 'flangingAdded',
+            // Specific equipment states
+            'airlockBypassed', 'airlockMaintained', 'weldCutMade', 'leakHistory'
+        ];
+        
+        let matchedScenario = null;
+        
+        // Check states in priority order
+        for (const state of statePriority) {
+            if (elState[state] && stageData.scenarios[state]) {
+                matchedScenario = stageData.scenarios[state];
+                break;
+            }
         }
+        
+        // Fall back to default or first available scenario
+        if (!matchedScenario) {
+            matchedScenario = stageData.scenarios.default || stageData.scenarios[Object.keys(stageData.scenarios)[0]];
+        }
+        
+        stageData = matchedScenario;
     }
     // Handle old trigger-based system (for backwards compatibility)
     else if (stageData.checkTrigger) {
