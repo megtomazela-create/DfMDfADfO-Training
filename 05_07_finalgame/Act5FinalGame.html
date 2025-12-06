@@ -373,11 +373,15 @@
         .map-container {
             flex: 1;
             position: relative;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             background: #1a1a2e;
+        }
+        
+        .map-container.active {
+            display: flex;
         }
         
         .map-wrapper { position: relative; max-width: 100%; max-height: 100%; }
@@ -446,6 +450,118 @@
         @keyframes hotspotPulse {
             0%, 100% { box-shadow: 0 0 0 0 rgba(0, 176, 240, 0.4); }
             50% { box-shadow: 0 0 0 12px rgba(0, 176, 240, 0); }
+        }
+        
+        /* ============================================
+           STAGE 1 DESIGN GRID
+           ============================================ */
+        .design-grid-container {
+            display: none;
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: var(--deep-navy);
+        }
+        
+        .design-grid-container.active {
+            display: block;
+        }
+        
+        .design-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .design-square {
+            background: linear-gradient(135deg, #1a2634 0%, #0d1b2a 100%);
+            border: 2px solid var(--dark-slate);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+        
+        .design-square:hover {
+            border-color: var(--blue);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 176, 240, 0.2);
+        }
+        
+        .design-square.selected {
+            border-color: var(--green);
+            box-shadow: 0 0 20px rgba(146, 208, 80, 0.3);
+        }
+        
+        .design-square-image {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: linear-gradient(135deg, var(--slate) 0%, var(--deep-navy) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--mid-grey);
+            font-size: 2.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .design-square-image::before {
+            content: '?';
+            font-size: 3rem;
+            color: var(--dark-slate);
+            position: absolute;
+        }
+        
+        .design-square.selected .design-square-image::before {
+            display: none;
+        }
+        
+        .design-square-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .design-square-label {
+            padding: 12px 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--light-grey);
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid var(--dark-slate);
+        }
+        
+        .design-square.selected .design-square-label {
+            background: var(--green);
+            color: var(--deep-navy);
+        }
+        
+        .design-square-choice {
+            font-size: 0.75rem;
+            font-weight: normal;
+            color: var(--deep-navy);
+            opacity: 0.8;
+            display: block;
+            margin-top: 2px;
+        }
+        
+        @media (max-width: 700px) {
+            .design-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 450px) {
+            .design-grid {
+                grid-template-columns: 1fr;
+            }
         }
         
         .bottom-bar {
@@ -841,7 +957,7 @@
         
         .design-card-image {
             width: 100%;
-            height: 120px;
+            aspect-ratio: 1 / 1;
             background: linear-gradient(135deg, var(--slate) 0%, var(--deep-navy) 100%);
             display: flex;
             align-items: center;
@@ -2489,7 +2605,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.20</div>
+<div class="version-tag">v0.23</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -2614,7 +2730,7 @@
         </div>
     </div>
     
-    <div class="map-container">
+    <div class="map-container" id="mapContainer">
         <div class="map-wrapper">
             <img src="images/gamebackground.png" alt="Section 4B">
             
@@ -2646,6 +2762,36 @@
             <div class="hotspot" data-element="materialSpec" style="left: 32%; top: 58%;">
                 <div class="hotspot-dot"></div>
                 <span class="hotspot-label">Material Spec</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stage 1 Design Grid -->
+    <div class="design-grid-container" id="designGridContainer">
+        <div class="design-grid">
+            <div class="design-square" data-element="pumpAccess">
+                <div class="design-square-image" id="designImg-pumpAccess"></div>
+                <div class="design-square-label">Pump Access</div>
+            </div>
+            <div class="design-square" data-element="weldClearance">
+                <div class="design-square-image" id="designImg-weldClearance"></div>
+                <div class="design-square-label">Weld Clearance</div>
+            </div>
+            <div class="design-square" data-element="controlPanel">
+                <div class="design-square-image" id="designImg-controlPanel"></div>
+                <div class="design-square-label">Control Panel</div>
+            </div>
+            <div class="design-square" data-element="pipeConnections">
+                <div class="design-square-image" id="designImg-pipeConnections"></div>
+                <div class="design-square-label">Pipe Connections</div>
+            </div>
+            <div class="design-square" data-element="pipeRouting">
+                <div class="design-square-image" id="designImg-pipeRouting"></div>
+                <div class="design-square-label">Pipe Routing</div>
+            </div>
+            <div class="design-square" data-element="materialSpec">
+                <div class="design-square-image" id="designImg-materialSpec"></div>
+                <div class="design-square-label">Material Spec</div>
             </div>
         </div>
     </div>
@@ -5058,6 +5204,19 @@ function startStage(stageNum) {
     
     updateStatsDisplay();
     
+    // Toggle between design grid (Stage 1) and map view (Stages 2-5)
+    const mapContainer = document.getElementById('mapContainer');
+    const designGrid = document.getElementById('designGridContainer');
+    
+    if (stageNum === 1) {
+        mapContainer.classList.remove('active');
+        designGrid.classList.add('active');
+        updateDesignSquares();
+    } else {
+        mapContainer.classList.add('active');
+        designGrid.classList.remove('active');
+    }
+    
     // Character banner
     const banner = document.getElementById('characterBanner');
     if (stageNum > 1 && stage.char) {
@@ -5145,6 +5304,53 @@ document.querySelectorAll('.hotspot').forEach(h => {
         openElementModal(elId);
     };
 });
+
+// ============================================
+// DESIGN SQUARE CLICKS (Stage 1)
+// ============================================
+document.querySelectorAll('.design-square').forEach(sq => {
+    sq.onclick = () => {
+        const elId = sq.dataset.element;
+        openElementModal(elId);
+    };
+});
+
+function updateDesignSquares() {
+    const elements = ['pumpAccess', 'weldClearance', 'controlPanel', 'pipeConnections', 'pipeRouting', 'materialSpec'];
+    
+    elements.forEach(elId => {
+        const square = document.querySelector(`.design-square[data-element="${elId}"]`);
+        const imgContainer = document.getElementById(`designImg-${elId}`);
+        const label = square.querySelector('.design-square-label');
+        
+        if (!square || !imgContainer) return;
+        
+        const choice = STATE.designChoices[elId];
+        
+        if (choice) {
+            const element = GAME_DATA.elements[elId];
+            const opt = element.stage1.options.find(o => o.id === choice);
+            
+            square.classList.add('selected');
+            
+            // Update label with choice name
+            const elementTitle = element.title;
+            label.innerHTML = `${elementTitle}<span class="design-square-choice">${opt.name}</span>`;
+            
+            // Show image if available
+            if (opt.image) {
+                imgContainer.innerHTML = `<img src="${opt.image}" alt="${opt.name}">`;
+            } else {
+                imgContainer.innerHTML = `<span style="font-size: 1.2rem; color: var(--green);">✓</span>`;
+            }
+        } else {
+            square.classList.remove('selected');
+            const element = GAME_DATA.elements[elId];
+            label.innerHTML = element.title;
+            imgContainer.innerHTML = '';
+        }
+    });
+}
 
 // ============================================
 // MODAL SYSTEM
@@ -5278,8 +5484,11 @@ function renderDesignModal(elId, element) {
         STATE.completed[1][elId] = true;
         STATE.totals.cost += opt.cost;
         
-        document.querySelector(`[data-element="${elId}"] .hotspot-dot`).classList.add('done');
+        // Update both hotspot (for compatibility) and design square
+        const hotspotDot = document.querySelector(`.hotspot[data-element="${elId}"] .hotspot-dot`);
+        if (hotspotDot) hotspotDot.classList.add('done');
         
+        updateDesignSquares();
         updateStatsDisplay();
         updateProgressLabel();
         closeModal();
@@ -5803,8 +6012,8 @@ function completeTunnelGame() {
 // STAGES 2-5: DECISIONS (No budget, decisions are final)
 // ============================================
 function renderDecisionModal(elId, element) {
-    // Special handling for pipeRouting - show mini-game to illustrate consequences
-    if (elId === 'pipeRouting') {
+    // Stage 2 + pipeRouting = show the pipe game
+    if (STATE.stage === 2 && elId === 'pipeRouting') {
         renderPipeRoutingDecision(elId, element);
         return;
     }
