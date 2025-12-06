@@ -2534,7 +2534,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.34</div>
+<div class="version-tag">v0.35</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -5355,21 +5355,29 @@ function renderDesignModal(elId, element) {
     
     document.getElementById('modalBody').innerHTML = html;
     
-    let selected = STATE.designChoices[elId] || null;
-    document.querySelectorAll('.design-card:not(.disabled)').forEach(card => {
-        card.onclick = () => {
+    const hasExistingChoice = !!STATE.designChoices[elId];
+    document.getElementById('modalFooter').innerHTML = `<button class="btn btn-primary" id="btnConfirmDesign">${hasExistingChoice ? 'Update Selection' : 'Confirm Selection'}</button>`;
+    
+    let selectedId = STATE.designChoices[elId] || null;
+    
+    const designCards = document.querySelectorAll('.design-card:not(.disabled)');
+    const confirmBtn = document.getElementById('btnConfirmDesign');
+    
+    designCards.forEach(card => {
+        card.addEventListener('click', function() {
             document.querySelectorAll('.design-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            selected = card.dataset.id;
-        };
+            this.classList.add('selected');
+            selectedId = this.dataset.id;
+        });
     });
     
-    const hasExistingChoice = !!STATE.designChoices[elId];
-    document.getElementById('modalFooter').innerHTML = `<button class="btn btn-primary" id="btnConfirm">${hasExistingChoice ? 'Update Selection' : 'Confirm Selection'}</button>`;
-    document.getElementById('btnConfirm').onclick = () => {
-        if (!selected) return;
+    confirmBtn.addEventListener('click', function() {
+        if (!selectedId) {
+            alert('Please select an option first');
+            return;
+        }
         
-        const opt = data.options.find(o => o.id === selected);
+        const opt = data.options.find(o => o.id === selectedId);
         
         // Refund old if changing
         if (STATE.designChoices[elId]) {
@@ -5377,7 +5385,7 @@ function renderDesignModal(elId, element) {
             STATE.totals.cost -= old.cost;
         }
         
-        STATE.designChoices[elId] = selected;
+        STATE.designChoices[elId] = selectedId;
         STATE.completed[1][elId] = true;
         STATE.totals.cost += opt.cost;
         
@@ -5385,7 +5393,7 @@ function renderDesignModal(elId, element) {
         updateStatsDisplay();
         updateProgressLabel();
         closeModal();
-    };
+    });
 }
 
 // ============================================
