@@ -1009,6 +1009,297 @@
             padding: 40px;
         }
         
+        /* ========================================
+           PHASE TRANSITION SCREEN (Time Skip)
+           ======================================== */
+        #transitionScreen .overlay-content {
+            max-width: 100%;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: transparent;
+        }
+        
+        .phase-intro {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+        }
+        
+        .phase-years-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--mid-grey);
+            margin-bottom: 16px;
+        }
+        
+        .phase-year-big {
+            font-size: 8rem;
+            font-weight: 800;
+            color: var(--white);
+            line-height: 1;
+            margin-bottom: 40px;
+            text-shadow: 0 4px 30px rgba(0, 176, 240, 0.3);
+        }
+        
+        .phase-visual {
+            width: 100%;
+            height: 200px;
+            background: var(--dark-slate);
+            border-radius: 16px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .phase-visual::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0,176,240,0.1) 0%, transparent 50%, rgba(146,208,80,0.1) 100%);
+        }
+        
+        .phase-visual-icon {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .phase-context {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+        
+        .phase-context-line {
+            font-size: 1.25rem;
+            color: var(--light-grey);
+            line-height: 1.6;
+        }
+        
+        .phase-context-line:first-child {
+            color: var(--white);
+            font-weight: 600;
+            font-size: 1.4rem;
+        }
+        
+        .phase-name-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--blue) 0%, #0088cc 100%);
+            color: var(--white);
+            padding: 12px 32px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+        }
+        
+        /* ========================================
+           STAGE SUMMARY SCREEN (End of Phase)
+           ======================================== */
+        #summaryScreen .overlay-content {
+            max-width: 900px;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .summary-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .summary-phase-complete {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--green);
+            margin-bottom: 12px;
+        }
+        
+        .summary-title { 
+            font-size: 2.5rem; 
+            color: var(--white); 
+            margin-bottom: 8px; 
+        }
+        
+        .summary-subtitle { 
+            color: var(--mid-grey); 
+            margin-bottom: 0;
+            font-size: 1.1rem;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        
+        .summary-stat {
+            background: var(--dark-slate);
+            padding: 24px 16px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--slate);
+            transition: transform 0.2s;
+        }
+        
+        .summary-stat:hover {
+            transform: translateY(-2px);
+        }
+        
+        .summary-stat-icon { 
+            font-size: 1.8rem; 
+            margin-bottom: 10px; 
+        }
+        
+        .summary-stat-value { 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            color: var(--white); 
+        }
+        
+        .summary-stat-value.over { color: var(--red); }
+        .summary-stat-value.good { color: var(--green); }
+        
+        .summary-stat-label { 
+            font-size: 0.75rem; 
+            color: var(--mid-grey); 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            margin-top: 6px; 
+        }
+        
+        .summary-section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--amber);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .summary-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--amber), transparent);
+        }
+        
+        .summary-decisions {
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+            margin-bottom: 30px;
+            text-align: left;
+            max-height: none;
+            overflow: visible;
+        }
+        
+        .summary-decisions h4 { 
+            display: none; /* Using section title instead */
+        }
+        
+        .decisions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .decision-card {
+            background: var(--dark-slate);
+            border-radius: 10px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid var(--slate);
+        }
+        
+        .decision-card.this-stage {
+            border-left-color: var(--blue);
+            background: linear-gradient(90deg, rgba(0,176,240,0.1) 0%, var(--dark-slate) 30%);
+        }
+        
+        .decision-element { 
+            color: var(--mid-grey);
+            font-size: 0.85rem;
+        }
+        
+        .decision-choice {
+            color: var(--white);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .decision-cost {
+            color: var(--amber);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .summary-insight {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, rgba(0,176,240,0.1) 100%);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+            border: 1px solid var(--slate);
+        }
+        
+        .insight-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+        
+        .insight-text {
+            color: var(--light-grey);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .insight-text strong {
+            color: var(--white);
+        }
+        
+        .summary-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn-next-phase {
+            padding: 16px 40px;
+            background: linear-gradient(135deg, var(--green) 0%, #7bc050 100%);
+            color: var(--deep-navy);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn-next-phase:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(146, 208, 80, 0.3);
+        }
+        
+        /* Legacy transition styles - keeping for compatibility */
         .trans-years { color: var(--mid-grey); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; }
         .trans-year { font-size: 5rem; color: var(--white); margin-bottom: 30px; }
         
@@ -1024,75 +1315,29 @@
         .trans-text p:last-child { margin-bottom: 0; }
         
         .btn-continue {
-            padding: 12px 30px;
+            padding: 14px 36px;
             background: var(--blue);
             color: var(--deep-navy);
             border: none;
-            border-radius: 6px;
-            font-size: 1rem;
+            border-radius: 8px;
+            font-size: 1.05rem;
             font-weight: 600;
             cursor: pointer;
+            transition: transform 0.2s;
         }
         
-        /* Summary */
-        .summary-title { font-size: 2rem; color: var(--white); margin-bottom: 10px; }
-        .summary-subtitle { color: var(--mid-grey); margin-bottom: 25px; }
-        
-        .summary-stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 25px;
+        .btn-continue:hover {
+            transform: translateY(-2px);
         }
         
-        .summary-stat {
-            background: var(--dark-slate);
-            padding: 15px 10px;
-            border-radius: 8px;
-            text-align: center;
+        @media (max-width: 600px) {
+            .phase-year-big { font-size: 5rem; }
+            .phase-visual { height: 150px; }
+            .summary-stats { grid-template-columns: repeat(2, 1fr); }
+            .decisions-grid { grid-template-columns: 1fr; }
         }
         
-        .summary-stat-icon { font-size: 1.3rem; margin-bottom: 5px; }
-        .summary-stat-value { font-size: 1.2rem; font-weight: 600; color: var(--white); }
-        .summary-stat-value.over { color: var(--red); }
-        .summary-stat-label { font-size: 0.7rem; color: var(--mid-grey); text-transform: uppercase; margin-top: 3px; }
-        
-        .summary-decisions {
-            background: var(--dark-slate);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 25px;
-            text-align: left;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        .summary-decisions h4 { color: var(--white); margin-bottom: 12px; }
-        
-        .decision-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--slate);
-            font-size: 0.9rem;
-        }
-        
-        .decision-row:last-child { border-bottom: none; }
-        .decision-element { color: var(--white); }
-        
-        .decision-tag {
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            max-width: 200px;
-            text-align: right;
-        }
-        
-        .decision-tag.good { background: var(--green); color: var(--deep-navy); }
-        .decision-tag.ok { background: var(--amber); color: var(--deep-navy); }
-        .decision-tag.poor { background: var(--red); color: var(--white); }
+        /* Summary
         
         .btn-next-phase {
             padding: 12px 30px;
@@ -1598,7 +1843,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.14</div>
+<div class="version-tag">v0.15</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -1776,24 +2021,44 @@
     </div>
 </div>
 
-<!-- TRANSITION SCREEN -->
+<!-- TRANSITION SCREEN (Phase Introduction) -->
 <div class="overlay-screen" id="transitionScreen">
     <div class="overlay-content">
-        <p class="trans-years" id="transYears">15 YEARS LATER</p>
-        <h2 class="trans-year" id="transYear">2040</h2>
-        <div class="trans-text" id="transText"></div>
-        <button class="btn-continue" id="btnTransContinue">Continue →</button>
+        <div class="phase-intro">
+            <p class="phase-years-label" id="transYears">15 YEARS LATER</p>
+            <h2 class="phase-year-big" id="transYear">2040</h2>
+            <div class="phase-visual" id="transVisual">
+                <span class="phase-visual-icon">🔧</span>
+            </div>
+            <div class="phase-name-badge" id="transPhaseName">MAINTENANCE</div>
+            <div class="phase-context" id="transText"></div>
+            <button class="btn-continue" id="btnTransContinue">Begin Phase →</button>
+        </div>
     </div>
 </div>
 
-<!-- SUMMARY SCREEN -->
+<!-- SUMMARY SCREEN (End of Phase) -->
 <div class="overlay-screen" id="summaryScreen">
     <div class="overlay-content">
-        <h2 class="summary-title" id="sumTitle">Stage Complete</h2>
-        <p class="summary-subtitle" id="sumSubtitle"></p>
+        <div class="summary-header">
+            <p class="summary-phase-complete">✓ PHASE COMPLETE</p>
+            <h2 class="summary-title" id="sumTitle">Stage Complete</h2>
+            <p class="summary-subtitle" id="sumSubtitle"></p>
+        </div>
+        
         <div class="summary-stats" id="sumStats"></div>
+        
+        <div class="summary-section-title">Your Decisions This Phase</div>
         <div class="summary-decisions" id="sumDecisions"></div>
-        <button class="btn-next-phase" id="btnNextPhase">Continue →</button>
+        
+        <div class="summary-insight" id="sumInsight">
+            <div class="insight-icon">💡</div>
+            <div class="insight-text" id="insightText"></div>
+        </div>
+        
+        <div class="summary-actions">
+            <button class="btn-next-phase" id="btnNextPhase">Continue →</button>
+        </div>
     </div>
 </div>
 
@@ -1853,10 +2118,50 @@ const GAME_DATA = {
     },
     
     transitions: {
-        2: { years: '15 YEARS LATER', year: '2040', text: ['Thornbury Point has been generating power for 14 years.', 'Your design drawings are yellowed paper in a filing cabinet.', 'It\'s time for the first major maintenance outage.'] },
-        3: { years: '15 YEARS LATER', year: '2055', text: ['Thirty years of operation.', 'Regulators want proof everything is still safe.', 'Every weld, every component needs inspection.'] },
-        4: { years: '15 YEARS LATER', year: '2070', text: ['Forty-five years. The plant is showing its age.', 'Tonight, the alarms will test your control room design.'] },
-        5: { years: '15 YEARS LATER', year: '2085', text: ['Sixty years. The reactor is shut down for good.', 'Now comes the hard part: taking it all apart safely.'] }
+        2: { 
+            years: '15 YEARS LATER', 
+            year: '2040', 
+            phaseName: 'MAINTENANCE',
+            icon: '🔧',
+            text: [
+                'Thornbury Point has been generating power for 14 years.',
+                'Your design drawings are yellowed paper in a filing cabinet.',
+                'It\'s time for the first major maintenance outage.'
+            ] 
+        },
+        3: { 
+            years: '15 YEARS LATER', 
+            year: '2055',
+            phaseName: 'INSPECTION',
+            icon: '🔍',
+            text: [
+                'Thirty years of operation.',
+                'Regulators want proof everything is still safe.',
+                'Every weld, every component needs inspection.'
+            ] 
+        },
+        4: { 
+            years: '15 YEARS LATER', 
+            year: '2070',
+            phaseName: 'OPERATIONS',
+            icon: '⚡',
+            text: [
+                'Forty-five years. The plant is showing its age.',
+                'Tonight, the alarms will test your control room design.',
+                'How well did you plan for this moment?'
+            ] 
+        },
+        5: { 
+            years: '15 YEARS LATER', 
+            year: '2085',
+            phaseName: 'DECOMMISSIONING',
+            icon: '🏗️',
+            text: [
+                'Sixty years. The reactor is shut down for good.',
+                'Now comes the hard part: taking it all apart safely.',
+                'Every design decision will be tested one final time.'
+            ] 
+        }
     },
     
     storyTransitions: {
@@ -3624,12 +3929,21 @@ function applyDecision(elId, opt, stageData, previousChoice = null) {
 // ============================================
 document.getElementById('btnNextStage').onclick = showStageSummary;
 
+// Insights for each stage
+const STAGE_INSIGHTS = {
+    1: "Your design is now locked in. Over the next 60 years, every maintenance worker, inspector, and operator will work with the consequences of today's decisions. <strong>Construction is cheap compared to retrofitting.</strong>",
+    2: "First major outage complete. Did your design make this easier or harder? <strong>Access constraints compound over time</strong> - every workaround creates the next problem.",
+    3: "Regulators now have decades of data. Inspection gaps become safety case issues. <strong>If you can't inspect it, you can't prove it's safe.</strong>",
+    4: "45 years of operation tests every design decision. Control room layout matters when alarms are screaming at 3am. <strong>Good design becomes invisible; bad design becomes crisis.</strong>",
+    5: "Decommissioning reveals the true lifecycle cost. What seemed like savings in 2025 may have cost millions more across 60 years. <strong>The plant's final lesson is written in the total cost.</strong>"
+};
+
 function showStageSummary() {
     const stage = GAME_DATA.stages[STATE.stage];
     const st = STATE.stageTotals[STATE.stage];
     
-    document.getElementById('sumTitle').textContent = `${stage.name} Complete`;
-    document.getElementById('sumSubtitle').textContent = `Year ${stage.year}`;
+    document.getElementById('sumTitle').textContent = `${stage.name}`;
+    document.getElementById('sumSubtitle').textContent = `Year ${stage.year} Complete`;
     
     let statsHtml = '';
     if (STATE.stage === 1) {
@@ -3637,38 +3951,131 @@ function showStageSummary() {
         const over = spent > stage.budget;
         const remaining = stage.budget - spent;
         statsHtml = `
-            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value">${formatMoney(spent)}</div><div class="summary-stat-label">Design Spent</div></div>
-            <div class="summary-stat"><div class="summary-stat-icon">📊</div><div class="summary-stat-value">${formatMoney(stage.budget)}</div><div class="summary-stat-label">Design Budget</div></div>
-            <div class="summary-stat"><div class="summary-stat-icon">${over ? '⚠️' : '✓'}</div><div class="summary-stat-value ${over ? 'over' : ''}">${formatMoney(Math.abs(remaining))}</div><div class="summary-stat-label">${over ? 'Over Budget' : 'Under Budget'}</div></div>
-            <div class="summary-stat"><div class="summary-stat-icon">❤️</div><div class="summary-stat-value">${STATE.plantHealth}%</div><div class="summary-stat-label">Health</div></div>
+            <div class="summary-stat">
+                <div class="summary-stat-icon">💰</div>
+                <div class="summary-stat-value">${formatMoney(spent)}</div>
+                <div class="summary-stat-label">Design Cost</div>
+            </div>
+            <div class="summary-stat">
+                <div class="summary-stat-icon">📊</div>
+                <div class="summary-stat-value">${formatMoney(stage.budget)}</div>
+                <div class="summary-stat-label">Budget</div>
+            </div>
+            <div class="summary-stat">
+                <div class="summary-stat-icon">${over ? '⚠️' : '✅'}</div>
+                <div class="summary-stat-value ${over ? 'over' : 'good'}">${formatMoney(Math.abs(remaining))}</div>
+                <div class="summary-stat-label">${over ? 'Over Budget' : 'Remaining'}</div>
+            </div>
+            <div class="summary-stat">
+                <div class="summary-stat-icon">❤️</div>
+                <div class="summary-stat-value">${STATE.plantHealth}%</div>
+                <div class="summary-stat-label">Plant Health</div>
+            </div>
         `;
     } else {
-        // Stages 2-5: Just show what was spent, no budget comparison
         statsHtml = `
-            <div class="summary-stat"><div class="summary-stat-icon">💰</div><div class="summary-stat-value">${formatMoney(st.cost)}</div><div class="summary-stat-label">Stage Cost</div></div>
-            <div class="summary-stat"><div class="summary-stat-icon">☢️</div><div class="summary-stat-value">${st.dose.toFixed(1)} mSv</div><div class="summary-stat-label">Dose</div></div>
-            <div class="summary-stat"><div class="summary-stat-icon">⏱️</div><div class="summary-stat-value">${st.time} days</div><div class="summary-stat-label">Time</div></div>
-            <div class="summary-stat"><div class="summary-stat-icon">❤️</div><div class="summary-stat-value">${STATE.plantHealth}%</div><div class="summary-stat-label">Health</div></div>
+            <div class="summary-stat">
+                <div class="summary-stat-icon">💰</div>
+                <div class="summary-stat-value">${formatMoney(st.cost)}</div>
+                <div class="summary-stat-label">Stage Cost</div>
+            </div>
+            <div class="summary-stat">
+                <div class="summary-stat-icon">☢️</div>
+                <div class="summary-stat-value">${st.dose.toFixed(1)} mSv</div>
+                <div class="summary-stat-label">Dose</div>
+            </div>
+            <div class="summary-stat">
+                <div class="summary-stat-icon">⏱️</div>
+                <div class="summary-stat-value">${st.time} days</div>
+                <div class="summary-stat-label">Time</div>
+            </div>
+            <div class="summary-stat">
+                <div class="summary-stat-icon">❤️</div>
+                <div class="summary-stat-value">${STATE.plantHealth}%</div>
+                <div class="summary-stat-label">Plant Health</div>
+            </div>
         `;
     }
     document.getElementById('sumStats').innerHTML = statsHtml;
     
-    // Decisions summary - just list choices, no quality judgment yet
-    let decHtml = '<h4>Your 2025 Decisions</h4>';
-    Object.keys(GAME_DATA.elements).forEach(elId => {
-        const el = GAME_DATA.elements[elId];
-        const choice = STATE.designChoices[elId];
-        const opt = el.stage1.options.find(o => o.id === choice);
-        decHtml += `
-            <div class="decision-row">
-                <span class="decision-element">${el.title}</span>
-                <span style="color: var(--white);">${opt.name}</span>
-            </div>
-        `;
-    });
+    // Decisions - show as grid cards
+    let decHtml = '<div class="decisions-grid">';
+    
+    if (STATE.stage === 1) {
+        // Stage 1: Show design choices
+        Object.keys(GAME_DATA.elements).forEach(elId => {
+            const el = GAME_DATA.elements[elId];
+            const choice = STATE.designChoices[elId];
+            const opt = el.stage1.options.find(o => o.id === choice);
+            decHtml += `
+                <div class="decision-card this-stage">
+                    <div>
+                        <div class="decision-element">${el.title}</div>
+                        <div class="decision-choice">${opt.name}</div>
+                    </div>
+                    <div class="decision-cost">${formatMoney(opt.cost)}</div>
+                </div>
+            `;
+        });
+    } else {
+        // Stages 2-5: Show this stage's decisions
+        Object.keys(GAME_DATA.elements).forEach(elId => {
+            const el = GAME_DATA.elements[elId];
+            const choiceId = STATE.stageChoices[`${STATE.stage}_${elId}`];
+            const designChoice = STATE.designChoices[elId];
+            
+            if (choiceId) {
+                // Find the option that was chosen
+                const stageData = el[`stage${STATE.stage}`];
+                let chosenOption = null;
+                let optionCost = 0;
+                
+                if (stageData && stageData[designChoice]) {
+                    let sd = stageData[designChoice];
+                    
+                    if (sd.scenarios) {
+                        Object.values(sd.scenarios).forEach(scenario => {
+                            if (scenario.options) {
+                                const found = scenario.options.find(o => o.id === choiceId);
+                                if (found) chosenOption = found;
+                            }
+                        });
+                    } else if (sd.options) {
+                        chosenOption = sd.options.find(o => o.id === choiceId);
+                    } else if (sd.triggered || sd.notTriggered) {
+                        const opts = [...(sd.triggered?.options || []), ...(sd.notTriggered?.options || [])];
+                        chosenOption = opts.find(o => o.id === choiceId);
+                    }
+                }
+                
+                if (chosenOption) {
+                    decHtml += `
+                        <div class="decision-card this-stage">
+                            <div>
+                                <div class="decision-element">${el.title}</div>
+                                <div class="decision-choice">${chosenOption.name}</div>
+                            </div>
+                            <div class="decision-cost">${formatMoney(chosenOption.cost || 0)}</div>
+                        </div>
+                    `;
+                }
+            }
+        });
+    }
+    
+    decHtml += '</div>';
     document.getElementById('sumDecisions').innerHTML = decHtml;
     
-    document.getElementById('btnNextPhase').textContent = 'Continue →';
+    // Insight for this stage
+    document.getElementById('insightText').innerHTML = STAGE_INSIGHTS[STATE.stage];
+    
+    // Button text
+    if (STATE.stage >= 5) {
+        document.getElementById('btnNextPhase').textContent = 'View Final Report →';
+    } else {
+        document.getElementById('btnNextPhase').textContent = 'Continue →';
+    }
+    
     document.getElementById('summaryScreen').classList.add('active');
 }
 
@@ -3728,7 +4135,10 @@ function showTransition() {
     
     document.getElementById('transYears').textContent = trans.years;
     document.getElementById('transYear').textContent = trans.year;
-    document.getElementById('transText').innerHTML = trans.text.map(t => `<p>${t}</p>`).join('');
+    document.getElementById('transVisual').innerHTML = `<span class="phase-visual-icon">${trans.icon}</span>`;
+    document.getElementById('transPhaseName').textContent = trans.phaseName;
+    document.getElementById('transText').innerHTML = trans.text.map(t => `<p class="phase-context-line">${t}</p>`).join('');
+    document.getElementById('btnTransContinue').textContent = `Begin ${trans.phaseName} →`;
     
     document.getElementById('transitionScreen').classList.add('active');
 }
