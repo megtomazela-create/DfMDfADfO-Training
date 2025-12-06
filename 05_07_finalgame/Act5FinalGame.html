@@ -2534,7 +2534,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.36</div>
+<div class="version-tag">v0.37</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -5565,24 +5565,28 @@ function showPipeDecisionOptions() {
     
     document.getElementById('pipeDecisionArea').innerHTML = html;
     document.getElementById('pipeDecisionArea').style.display = 'block';
+    document.getElementById('pipeGameFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirmPipeDecision" disabled>Select an Option</button>';
     
     // Set up option selection
-    let selected = null;
-    document.querySelectorAll('#pipeDecisionArea .option-card').forEach(card => {
-        card.onclick = () => {
-            document.querySelectorAll('#pipeDecisionArea .option-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            selected = card.dataset.id;
-        };
+    let selectedOptId = null;
+    const pipeCards = document.querySelectorAll('#pipeDecisionArea .option-card');
+    const pipeConfirmBtn = document.getElementById('btnConfirmPipeDecision');
+    
+    pipeCards.forEach(card => {
+        card.addEventListener('click', function() {
+            pipeCards.forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedOptId = this.dataset.id;
+            pipeConfirmBtn.disabled = false;
+            pipeConfirmBtn.textContent = 'Confirm Decision';
+        });
     });
     
-    document.getElementById('pipeGameFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirmPipeDecision">Confirm Decision</button>';
-    document.getElementById('btnConfirmPipeDecision').onclick = () => {
-        if (!selected) return;
-        
-        const opt = stageData.options.find(o => o.id === selected);
+    pipeConfirmBtn.addEventListener('click', function() {
+        if (!selectedOptId) return;
+        const opt = stageData.options.find(o => o.id === selectedOptId);
         applyDecision(elId, opt, stageData);
-    };
+    });
 }
 
 // EMBEDDED GAME - Find the leak
