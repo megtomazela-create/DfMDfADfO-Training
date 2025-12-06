@@ -746,13 +746,25 @@
             box-shadow: none;
         }
         
+        .option-header {
+            padding: 16px 16px 12px;
+        }
+        
+        .option-header .option-name {
+            margin-bottom: 12px;
+        }
+        
         .option-cost-badge {
             background: var(--blue);
             color: var(--deep-navy);
-            padding: 12px 16px;
+            padding: 10px 16px;
             font-size: 1.1rem;
             font-weight: 700;
             text-align: center;
+        }
+        
+        .option-header .option-cost-badge {
+            border-radius: 6px;
         }
         
         .option-card.disabled .option-cost-badge {
@@ -775,6 +787,11 @@
             line-height: 1.3;
         }
         
+        .option-card > .option-header + p.option-desc {
+            padding: 0 16px 16px;
+            margin: 0;
+        }
+        
         .option-desc { 
             color: var(--mid-grey); 
             font-size: 0.85rem; 
@@ -785,25 +802,27 @@
         .option-impacts {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 8px;
             padding: 12px 16px;
             background: var(--deep-navy);
             border-top: 1px solid var(--slate);
+            margin-top: auto;
         }
         
         .impact { 
             display: flex; 
             align-items: center; 
             gap: 4px;
-            font-size: 0.75rem;
-            padding: 3px 8px;
+            font-size: 0.8rem;
+            padding: 4px 10px;
             border-radius: 4px;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.08);
         }
         
         .impact.negative { color: var(--red); }
         .impact.positive { color: var(--green); }
         .impact.neutral { color: var(--amber); }
+        .impact.bad { color: var(--red); }
         
         .disabled-reason {
             color: var(--red);
@@ -2515,7 +2534,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.31</div>
+<div class="version-tag">v0.33</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -5523,10 +5542,10 @@ function showPipeDecisionOptions() {
                 <p class="option-desc">${opt.desc}</p>
                 ${hasImpacts ? `
                     <div class="option-impacts">
-                        ${opt.time ? `<span class="impact">⏱️ ${opt.time}d</span>` : ''}
-                        ${opt.dose ? `<span class="impact">☢️ ${opt.dose}mSv</span>` : ''}
-                        ${opt.healthImpact ? `<span class="impact bad">❤️ ${opt.healthImpact}%</span>` : ''}
-                        ${opt.risk ? `<span class="impact bad">⚠️ Risk</span>` : ''}
+                        ${opt.time ? `<span class="impact negative">⏱️ ${opt.time}d</span>` : ''}
+                        ${opt.dose ? `<span class="impact negative">☢️ ${opt.dose}mSv</span>` : ''}
+                        ${opt.healthImpact ? `<span class="impact negative">❤️ ${opt.healthImpact}%</span>` : ''}
+                        ${opt.risk ? `<span class="impact neutral">⚠️ Risk</span>` : ''}
                     </div>
                 ` : ''}
             </div>
@@ -5999,15 +6018,15 @@ function renderDecisionModal(elId, element) {
         
         html += `
             <div class="option-card" data-id="${opt.id}">
-                <div class="option-cost-badge">${formatMoney(cost)}</div>
-                <div class="option-content">
+                <div class="option-header">
                     <div class="option-name">${opt.name}</div>
-                    <div class="option-desc">${opt.desc}</div>
+                    <div class="option-cost-badge">${formatMoney(cost)}</div>
                 </div>
+                <p class="option-desc">${opt.desc}</p>
                 ${hasImpacts ? `
                 <div class="option-impacts">
-                    ${opt.time ? `<span class="impact negative">⏱️ +${opt.time}d</span>` : ''}
-                    ${opt.dose ? `<span class="impact negative">☢️ +${opt.dose}mSv</span>` : ''}
+                    ${opt.time ? `<span class="impact negative">⏱️ ${opt.time}d</span>` : ''}
+                    ${opt.dose ? `<span class="impact negative">☢️ ${opt.dose}mSv</span>` : ''}
                     ${opt.healthImpact ? `<span class="impact ${opt.healthImpact > 0 ? 'positive' : 'negative'}">❤️ ${opt.healthImpact > 0 ? '+' : ''}${opt.healthImpact}%</span>` : ''}
                     ${opt.risk ? `<span class="impact neutral">⚠️ ${opt.risk}%</span>` : ''}
                 </div>
@@ -6021,25 +6040,22 @@ function renderDecisionModal(elId, element) {
     document.getElementById('modalBody').innerHTML = html;
     
     let selected = null;
-    document.querySelectorAll('.option-card').forEach(card => {
+    document.querySelectorAll('#modalBody .option-card').forEach(card => {
         card.onclick = () => {
-            document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('#modalBody .option-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
             selected = card.dataset.id;
+            
+            // Update button state immediately
+            const btn = document.getElementById('btnConfirm');
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = 'Confirm Decision';
+            }
         };
     });
     
     document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirm" disabled>Select an Option</button>';
-    
-    const observer = new MutationObserver(() => {
-        const hasSelection = document.querySelector('.option-card.selected');
-        const btn = document.getElementById('btnConfirm');
-        if (btn) {
-            btn.disabled = !hasSelection;
-            btn.textContent = hasSelection ? 'Confirm Decision' : 'Select an Option';
-        }
-    });
-    observer.observe(document.getElementById('modalBody'), { subtree: true, attributes: true, attributeFilter: ['class'] });
     
     document.getElementById('btnConfirm').onclick = () => {
         if (!selected) return;
