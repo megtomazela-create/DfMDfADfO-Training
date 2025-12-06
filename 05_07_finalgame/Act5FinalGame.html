@@ -2534,7 +2534,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.35</div>
+<div class="version-tag">v0.36</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -5356,7 +5356,9 @@ function renderDesignModal(elId, element) {
     document.getElementById('modalBody').innerHTML = html;
     
     const hasExistingChoice = !!STATE.designChoices[elId];
-    document.getElementById('modalFooter').innerHTML = `<button class="btn btn-primary" id="btnConfirmDesign">${hasExistingChoice ? 'Update Selection' : 'Confirm Selection'}</button>`;
+    const btnText = hasExistingChoice ? 'Update Selection' : 'Confirm Selection';
+    const btnDisabled = hasExistingChoice ? '' : 'disabled';
+    document.getElementById('modalFooter').innerHTML = `<button class="btn btn-primary" id="btnConfirmDesign" ${btnDisabled}>${hasExistingChoice ? btnText : 'Select an Option'}</button>`;
     
     let selectedId = STATE.designChoices[elId] || null;
     
@@ -5368,14 +5370,13 @@ function renderDesignModal(elId, element) {
             document.querySelectorAll('.design-card').forEach(c => c.classList.remove('selected'));
             this.classList.add('selected');
             selectedId = this.dataset.id;
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Confirm Selection';
         });
     });
     
     confirmBtn.addEventListener('click', function() {
-        if (!selectedId) {
-            alert('Please select an option first');
-            return;
-        }
+        if (!selectedId) return;
         
         const opt = data.options.find(o => o.id === selectedId);
         
