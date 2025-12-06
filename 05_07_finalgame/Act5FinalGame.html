@@ -997,8 +997,10 @@
             inset: 0;
             background: rgba(0, 0, 0, 0.95);
             z-index: 600;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
+            overflow-y: auto;
+            padding: 40px 20px;
         }
         
         .overlay-screen.active { display: flex; }
@@ -1012,10 +1014,15 @@
         /* ========================================
            PHASE TRANSITION SCREEN (Time Skip)
            ======================================== */
+        #transitionScreen {
+            align-items: center;
+            padding: 0;
+        }
+        
         #transitionScreen .overlay-content {
             max-width: 100%;
             width: 100%;
-            height: 100%;
+            min-height: 100vh;
             padding: 0;
             display: flex;
             flex-direction: column;
@@ -1843,7 +1850,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.15</div>
+<div class="version-tag">v0.16</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -2714,119 +2721,286 @@ const GAME_DATA = {
             },
             stage2: {
                 '50mm': {
-                    situation: 'Weld repair needed on a pipe section. The 50mm code-minimum clearance from the 2025 design makes welding positions extremely awkward.',
-                    quote: "We've got a weld that needs repair, but that 50mm clearance from 2025 - it's the absolute minimum and now we're paying for it. My welder can barely get in there. How do you want to handle this?",
+                    situation: 'Weld W-247 shows crack indications. Your welder needs to grind out the defect, but standard grinder heads are 75mm diameter - they won\'t fit in the 50mm clearance from the 2025 design.',
+                    quote: "Boss, we've got a problem with weld W-247. I need to grind out this crack, but my grinder head is 75mm and we've only got 50mm clearance. Can't get the angle for a proper prep. We need to think about this.",
                     options: [
-                        { id: 'awkward', name: 'Weld in awkward position', desc: 'Attempt the repair in constrained space. Risk of poor weld quality.', cost: 15000, time: 4, dose: 4, risk: 20, healthImpact: -5 },
-                        { id: 'platform', name: 'Install temporary access platform', desc: 'Better working position, better quality weld.', cost: 35000, time: 6, dose: 2 },
-                        { id: 'defer', name: 'Defer repair to next outage', desc: 'Leave the defect and monitor. Risk of progression.', cost: 0, time: 0, dose: 0, healthImpact: -5, trigger: 'weldDeferred' }
+                        { 
+                            id: 'miniature', 
+                            name: 'Procure miniature tooling', 
+                            desc: 'Specialist 40mm grinder heads. Longer job, higher cost, but proper weld prep achievable.', 
+                            cost: 65000, time: 8, dose: 3,
+                            setState: { specialToolingUsed: true }
+                        },
+                        { 
+                            id: 'platform', 
+                            name: 'Install temporary access platform', 
+                            desc: 'Create better working angle from above. Adds clearance for standard tools.', 
+                            cost: 35000, time: 6, dose: 2,
+                            setState: { clearanceImproved: true }
+                        },
+                        { 
+                            id: 'overlay', 
+                            name: 'Weld overlay from accessible side only', 
+                            desc: 'Skip the grind-out. Overlay weld covers the defect but doesn\'t remove it. ASME Section XI allows this for limited situations, but 40% chance of rejection at next inspection.', 
+                            cost: 25000, time: 3, dose: 4, risk: 40, healthImpact: -5,
+                            setState: { deteriorating: true }
+                        }
                     ]
                 },
                 '150mm': {
-                    situation: 'Weld repair needed on a pipe section. The 150mm clearance specified in 2025 provides adequate working room.',
-                    quote: "Found a weld that needs attention. Good news is that 150mm clearance from 2025 - my welder can get in there comfortably. Standard repair or do you want the enhanced treatment?",
+                    situation: 'Weld repair needed on pipe section. The 150mm clearance specified in 2025 provides adequate room for standard tooling per ASME Section XI access requirements.',
+                    quote: "Found a weld that needs attention - small indication in W-312. Good news is that 150mm clearance from 2025 - exactly what the codes recommend. My grinder fits, I can get proper probe angles. Standard repair or enhanced treatment?",
                     options: [
-                        { id: 'standard', name: 'Standard weld repair', desc: 'Normal repair procedure with good access.', cost: 20000, time: 2, dose: 1 },
-                        { id: 'enhanced', name: 'Enhanced repair with PWHT', desc: 'Post-weld heat treatment for maximum longevity.', cost: 30000, time: 3, dose: 1.5 }
+                        { id: 'standard', name: 'Standard weld repair', desc: 'Grind out, re-weld, UT verify. Normal ASME Section XI procedure.', cost: 20000, time: 2, dose: 1 },
+                        { id: 'enhanced', name: 'Enhanced repair with PWHT', desc: 'Post-weld heat treatment reduces residual stress. Better long-term performance.', cost: 30000, time: 3, dose: 1.5 }
                     ]
                 },
                 '300mm': {
-                    situation: 'Weld repair needed. Plenty of clearance, but the permanent scaffolding installed in 2025 has surface contamination.',
-                    quote: "The 300mm clearance is great for access, but that permanent scaffolding from 2025? It's picked up contamination over 15 years. We need to deal with that before we can work on the weld.",
+                    situation: 'Weld repair needed. Plenty of clearance from the 2025 design, but the permanent scaffolding installed has accumulated surface contamination over 15 years.',
+                    quote: "The 300mm clearance is great - plenty of room for any tooling. But that permanent scaffolding from 2025? It's picked up contamination. Surfaces reading 50 µSv/hr. We need to deal with that before working on the weld.",
                     options: [
-                        { id: 'decon', name: 'Decontaminate scaffolding first', desc: 'Clean the scaffolding surfaces before repair work.', cost: 30000, time: 4, dose: 2 },
-                        { id: 'remove', name: 'Remove contaminated scaffolding sections', desc: 'Take out the affected sections. Creates waste but clears the area.', cost: 25000, time: 3, dose: 1.5 }
+                        { id: 'decon', name: 'Decontaminate scaffolding first', desc: 'Clean the surfaces to reduce dose during repair work.', cost: 30000, time: 4, dose: 2 },
+                        { id: 'remove', name: 'Remove contaminated scaffolding sections', desc: 'Take out affected sections as LLW. Creates waste but clears the area.', cost: 25000, time: 3, dose: 1.5 }
                     ]
                 }
             },
             stage3: {
                 '50mm': {
-                    situation: 'In-Service Inspection of pipe welds required. The UT probe needs 80mm minimum clearance - you only have 50mm.',
-                    quote: "In-service inspection time. That 50mm clearance from 2025 - my probe needs 80mm to get the right angle. I physically cannot achieve full coverage. What do you want me to do?",
-                    options: [
-                        { id: 'partial', name: 'Accept 60% coverage', desc: 'Document the limitation. Regulator will note the gap.', cost: 5000, time: 3, dose: 3, healthImpact: -10, trigger: 'weldInspectionGap' },
-                        { id: 'miniprobe', name: 'Use specialist miniature probes', desc: 'Smaller probes give better access but reduced accuracy.', cost: 40000, time: 5, dose: 4, healthImpact: -5 },
-                        { id: 'excavate', name: 'Excavate wall for permanent access', desc: 'Create the clearance that should have been there from the start.', cost: 90000, time: 10, dose: 3 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        // They improved clearance in 2040
+                        clearanceImproved: {
+                            situation: 'In-Service Inspection of pipe welds due per ASME Section XI. The access platform installed in 2040 provides adequate probe positioning.',
+                            quote: "That platform we put in during 2040 makes all the difference. I can position my 60° and 70° probes properly now - full volumetric coverage on all welds. Standard ISI or enhanced baseline?",
+                            options: [
+                                { id: 'standard', name: 'Standard UT examination', desc: 'Full coverage per ASME Section XI requirements.', cost: 18000, time: 3, dose: 1.5 },
+                                { id: 'enhanced', name: 'Enhanced with phased array', desc: 'PAUT gives better defect characterisation. Worth the investment at midlife.', cost: 28000, time: 4, dose: 2 }
+                            ]
+                        },
+                        // They used specialist tooling but didn't fix access
+                        specialToolingUsed: {
+                            situation: 'In-Service Inspection due. The miniature tooling in 2040 got the repair done, but the 50mm clearance remains - standard UT probes need 80mm minimum.',
+                            quote: "Same clearance problem as 2040. My standard UT probe needs 80mm to get the refracted beam angles right - I've only got 50mm. I can use miniature phased array, but coverage will be limited. What's the call?",
+                            options: [
+                                { 
+                                    id: 'miniprobe', 
+                                    name: 'Miniature phased array inspection', 
+                                    desc: 'Smaller 20mm aperture probes. Achieves ~70% coverage. Document limitations per ONR expectations.', 
+                                    cost: 45000, time: 5, dose: 3,
+                                    setState: { inspectionLimited: true }
+                                },
+                                { 
+                                    id: 'excavate', 
+                                    name: 'Create permanent access opening', 
+                                    desc: 'Cut structural access that should have been designed in from the start. Full coverage thereafter.', 
+                                    cost: 95000, time: 12, dose: 3,
+                                    setState: { clearanceImproved: true, inspectionLimited: false }
+                                },
+                                { 
+                                    id: 'accept', 
+                                    name: 'Accept 50% coverage with standard probes', 
+                                    desc: 'Document gaps in safety case. ONR will note this as deviation from EMT principles.', 
+                                    cost: 8000, time: 2, dose: 2, healthImpact: -10,
+                                    setState: { inspectionLimited: true }
+                                }
+                            ]
+                        },
+                        // They did the overlay weld - now it's deteriorating
+                        deteriorating: {
+                            situation: 'URGENT: The weld overlay from 2040 is showing indications. The underlying defect was never removed - it\'s grown. And you still can\'t get proper access.',
+                            quote: "That overlay weld from 2040 - the one where we couldn't grind out the defect properly? It's showing crack growth. The original flaw is propagating under the overlay. We're in trouble and we STILL have only 50mm clearance.",
+                            options: [
+                                { 
+                                    id: 'emergency', 
+                                    name: 'Emergency cut-out and replacement', 
+                                    desc: 'Remove entire weld section. Replace with new material. Create proper access while there.', 
+                                    cost: 150000, time: 16, dose: 6,
+                                    setState: { clearanceImproved: true, deteriorating: false }
+                                },
+                                { 
+                                    id: 'second_overlay', 
+                                    name: 'Second overlay and enhanced monitoring', 
+                                    desc: 'Another band-aid. Install continuous acoustic monitoring. Regulatory pushback likely.', 
+                                    cost: 40000, time: 4, dose: 4, healthImpact: -15,
+                                    setState: { inspectionLimited: true }
+                                }
+                            ]
+                        },
+                        // Default if no specific state
+                        default: {
+                            situation: 'In-Service Inspection required. The 50mm clearance from 2025 limits UT probe positioning per ASME Section XI requirements.',
+                            quote: "Standard probe needs 80mm minimum clearance for proper beam angles. We've got 50mm. I can try miniature equipment or we excavate for proper access.",
+                            options: [
+                                { id: 'miniprobe', name: 'Use miniature probes', desc: 'Limited coverage but achievable.', cost: 40000, time: 5, dose: 3, setState: { inspectionLimited: true } },
+                                { id: 'excavate', name: 'Create permanent access', desc: 'Fix the problem properly.', cost: 90000, time: 10, dose: 3, setState: { clearanceImproved: true } }
+                            ]
+                        }
+                    }
                 },
                 '150mm': {
-                    situation: 'In-Service Inspection of pipe welds required. The 150mm clearance provides full probe access.',
-                    quote: "Weld inspections due. That 150mm clearance from 2025 - exactly what I need. Full coverage, all angles. Just need to know if you want standard or the enhanced approach.",
+                    situation: 'In-Service Inspection of pipe welds per ASME Section XI. The 150mm clearance provides full probe access - exactly what the industry guidance recommends.',
+                    quote: "Weld inspections due. That 150mm clearance from 2025 - textbook. I can position 45°, 60°, and 70° probes with full skip coverage. 100% volumetric examination achievable. Standard or enhanced?",
                     options: [
-                        { id: 'standard', name: 'Standard UT examination', desc: '100% coverage achieved with standard equipment.', cost: 15000, time: 2, dose: 1 },
-                        { id: 'phased', name: 'Phased array for enhanced detection', desc: 'Better defect characterisation and sizing.', cost: 25000, time: 3, dose: 1.5 }
+                        { id: 'standard', name: 'Standard UT examination', desc: '100% coverage with conventional UT per Section XI.', cost: 15000, time: 2, dose: 1 },
+                        { id: 'phased', name: 'Phased array for enhanced detection', desc: 'PAUT with sector scanning. Better defect sizing and characterisation.', cost: 25000, time: 3, dose: 1.5 }
                     ]
                 },
                 '300mm': {
-                    situation: 'Weld inspection required. The permanent scaffolding from 2025 partially blocks some probe angles.',
-                    quote: "Good clearance overall, but that permanent scaffolding from 2025 is in my way for some of the shots. I can work around it, but it adds time. Or we can survey the scaffolding condition too while we're here.",
+                    situation: 'Weld inspection required. Good clearance overall, but the permanent scaffolding from 2025 partially obscures some probe scan paths.',
+                    quote: "The 300mm clearance is generous, but that permanent scaffolding is in my way for some of the circumferential scans. I can work around it, adds time. Or we survey the scaffolding contamination while here.",
                     options: [
-                        { id: 'workaround', name: 'Work around scaffolding', desc: 'Some awkward angles but achievable.', cost: 20000, time: 4, dose: 2 },
-                        { id: 'survey', name: 'Include scaffolding contamination survey', desc: 'Check the scaffolding condition while doing the inspection.', cost: 30000, time: 5, dose: 2.5 }
+                        { id: 'workaround', name: 'Work around scaffolding', desc: 'Extended scan paths but full coverage achievable.', cost: 22000, time: 4, dose: 2 },
+                        { id: 'survey', name: 'Include scaffolding contamination survey', desc: 'Check contamination levels - may need addressing before decommissioning.', cost: 32000, time: 5, dose: 2.5 }
                     ]
                 }
             },
             stage4: {
                 '50mm': {
-                    checkTrigger: 'weldInspectionGap',
-                    triggered: {
-                        situation: 'Leak detected at a weld location. It is in the area that could not be fully inspected in 2055 due to the 50mm clearance limitation.',
-                        quote: "We've got a leak - and it's at exactly the weld location we couldn't properly inspect in 2055 because of that 50mm clearance. If we'd had proper access, we'd have caught this developing. What now?",
-                        options: [
-                            { id: 'shutdown', name: 'Immediate shutdown and repair', desc: 'Fix it properly. Significant outage required.', cost: 200000, time: 14, dose: 5 },
-                            { id: 'seal', name: 'Online leak sealing', desc: 'Temporary clamp seal. May not hold long-term.', cost: 50000, time: 2, dose: 2, risk: 40, healthImpact: -10 },
-                            { id: 'reduce', name: 'Reduce power and monitor', desc: 'Lower pressure may slow the leak. Live with it until planned outage.', cost: 80000, time: 0, dose: 0, healthImpact: -5 }
-                        ]
-                    },
-                    notTriggered: {
-                        situation: 'Weld operational review. No leaks detected, but the areas with limited inspection coverage remain a concern.',
-                        quote: "No leaks yet, but that 50mm clearance from 2025 still limits what we could see in inspections. We're monitoring the areas we could check - but what we couldn't see still worries me.",
-                        options: [
-                            { id: 'monitor', name: 'Enhanced leak detection', desc: 'Additional monitoring equipment on high-risk areas.', cost: 25000, time: 1, dose: 0 },
-                            { id: 'standard', name: 'Standard monitoring', desc: 'Continue with normal programme.', cost: 10000, time: 0, dose: 0 }
-                        ]
+                    checkElementState: true,
+                    scenarios: {
+                        // Inspection was limited - now we have a leak in an uninspected area
+                        inspectionLimited: {
+                            situation: '⚠️ LEAK ALARM: Weld W-247 - the location where inspection coverage was limited due to 50mm clearance. The area you couldn\'t fully examine is now leaking.',
+                            quote: "Control room, 0300 hours. Leak alarm on W-247 - that's the weld we could only get 50-70% coverage on because of the 50mm clearance from 2025. If we'd had proper access, we'd have caught this developing. What's the call?",
+                            options: [
+                                { 
+                                    id: 'shutdown', 
+                                    name: 'Immediate shutdown for repair', 
+                                    desc: 'Safe shutdown, proper repair. Significant outage and regulatory scrutiny.', 
+                                    cost: 200000, time: 14, dose: 5,
+                                    setState: { leakOccurred: true }
+                                },
+                                { 
+                                    id: 'seal', 
+                                    name: 'Online leak sealing clamp', 
+                                    desc: 'Mechanical clamp over the leak. May hold, may not. 40% chance of escalation.', 
+                                    cost: 50000, time: 2, dose: 2, risk: 40, healthImpact: -10,
+                                    setState: { leakOccurred: true }
+                                },
+                                { 
+                                    id: 'reduce', 
+                                    name: 'Power reduction to 50%', 
+                                    desc: 'Lower pressure reduces leak rate. Limp through to planned outage.', 
+                                    cost: 80000, time: 0, dose: 1, healthImpact: -5,
+                                    setState: { leakOccurred: true }
+                                }
+                            ]
+                        },
+                        // Clearance was improved - smooth operation
+                        clearanceImproved: {
+                            situation: 'Operational review of weld condition. The access improvements made earlier allow full monitoring capability.',
+                            quote: "Good news from the weld monitoring programme. That access opening we cut - full inspection coverage means we know exactly what condition everything is in. No surprises. Just confirming your monitoring strategy.",
+                            options: [
+                                { id: 'standard', name: 'Standard surveillance', desc: 'Continue proven monitoring approach.', cost: 10000, time: 1, dose: 0.5 },
+                                { id: 'enhanced', name: 'Enhanced end-of-life monitoring', desc: 'Extra vigilance as plant ages.', cost: 20000, time: 2, dose: 1 }
+                            ]
+                        },
+                        // Deteriorating weld that was never fixed properly
+                        deteriorating: {
+                            situation: '⚠️ CRITICAL: The deteriorating weld from earlier failures is now showing active crack propagation on acoustic monitoring.',
+                            quote: "The weld we've been worried about - acoustic monitors are picking up active crack growth. This is what happens when you can't properly repair or inspect because of access constraints. We need to act NOW.",
+                            options: [
+                                { 
+                                    id: 'emergency', 
+                                    name: 'Emergency shutdown and section replacement', 
+                                    desc: 'No more half-measures. Replace the entire section.', 
+                                    cost: 280000, time: 21, dose: 8,
+                                    setState: { leakOccurred: true, deteriorating: false }
+                                },
+                                { 
+                                    id: 'limit', 
+                                    name: 'Operating restrictions', 
+                                    desc: 'Reduced power, enhanced monitoring. Hope it holds.', 
+                                    cost: 100000, time: 0, dose: 0, healthImpact: -15,
+                                    setState: { leakOccurred: true }
+                                }
+                            ]
+                        },
+                        // Default - no crisis but ongoing concerns
+                        default: {
+                            situation: 'Weld operational review. No leaks detected, but areas with limited inspection coverage remain a concern.',
+                            quote: "No leaks yet. But that 50mm clearance from 2025 still limits what we can see. We're monitoring what we can access, but the gaps in coverage worry me.",
+                            options: [
+                                { id: 'monitor', name: 'Enhanced leak detection', desc: 'Additional acoustic monitoring on high-risk areas.', cost: 25000, time: 1, dose: 0 },
+                                { id: 'standard', name: 'Standard monitoring', desc: 'Continue existing programme.', cost: 10000, time: 0, dose: 0 }
+                            ]
+                        }
                     }
                 },
                 '150mm': {
-                    situation: 'Weld operational review. All welds were fully inspected at the 30-year mark. No concerns.',
-                    quote: "All those welds we inspected properly in 2055 because of the 150mm clearance? Complete records, no surprises. Full confidence in the system. Just confirming monitoring approach.",
+                    situation: 'Weld operational review. All welds were fully inspected at the 30-year mark with 100% coverage. Complete confidence in condition.',
+                    quote: "All those welds we inspected properly in 2055 because of the 150mm clearance? Complete records, full coverage, no surprises. This is what good design enables. Confirming monitoring approach.",
                     options: [
                         { id: 'maintain', name: 'Maintain inspection programme', desc: 'Continue the proven approach.', cost: 5000, time: 0, dose: 0 },
-                        { id: 'extend', name: 'Extend coverage to additional welds', desc: 'Broaden the surveillance programme.', cost: 15000, time: 1, dose: 0.5 }
+                        { id: 'extend', name: 'Extend to adjacent systems', desc: 'Apply same rigour to connected pipework.', cost: 15000, time: 1, dose: 0.5 }
                     ]
                 },
                 '300mm': {
-                    situation: 'Welds are fine but the permanent scaffolding contamination levels are increasing each year. Annual surveys now required.',
-                    quote: "Welds are all okay, but that scaffolding from 2025 - the contamination keeps building up. We're now doing annual surveys just to track how hot it's getting. Want to deal with it now or keep monitoring?",
+                    situation: 'Welds are fine but the permanent scaffolding contamination levels are increasing. Annual ALARA surveys now required.',
+                    quote: "Welds are all in good condition - the clearance helps. But that scaffolding from 2025 - contamination keeps building. Now requiring annual surveys per ALARA principles. Deal with it now or keep monitoring?",
                     options: [
                         { id: 'survey', name: 'Continue annual scaffolding surveys', desc: 'Track the contamination build-up.', cost: 15000, time: 1, dose: 0.5 },
-                        { id: 'remove', name: 'Remove scaffolding now', desc: 'Deal with it before it becomes ILW.', cost: 40000, time: 3, dose: 2 }
+                        { id: 'remove', name: 'Remove scaffolding now', desc: 'Deal with it as LLW before it becomes ILW.', cost: 40000, time: 3, dose: 2 }
                     ]
                 }
             },
             stage5: {
                 '50mm': {
-                    situation: 'Pipe cutting required for removal. The 50mm clearance leaves no room for standard cutting equipment.',
-                    quote: "Time to cut these pipes out. That 50mm clearance from 2025 - no room for our normal cutting gear. We're going to be doing this the hard way. Confined space work or bring in specialists?",
-                    options: [
-                        { id: 'manual', name: 'Manual cutting in confined space', desc: 'High dose, slow progress, contamination risk.', cost: 30000, time: 8, dose: 5, risk: 40 },
-                        { id: 'specialist', name: 'Specialist confined-space contractor', desc: 'Experts with proper equipment for tight access.', cost: 100000, time: 5, dose: 2 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        // Had a leak - contamination complicates cutting
+                        leakOccurred: {
+                            situation: 'Pipe cutting for removal. The leak that occurred complicated things - contamination spread to surrounding structures. Plus the 50mm clearance still restricts equipment access.',
+                            quote: "That leak we had - contamination migrated into the concrete. Now I'm cutting pipes AND dealing with contaminated aggregate. The 50mm clearance from 2025 means confined space work in a contaminated zone. This is as bad as it gets.",
+                            options: [
+                                { 
+                                    id: 'full', 
+                                    name: 'Full specialist decommissioning', 
+                                    desc: 'Robotic cutting where possible, manual confined space with full containment. Concrete remediation.', 
+                                    cost: 180000, time: 20, dose: 8 
+                                },
+                                { 
+                                    id: 'encapsulate', 
+                                    name: 'Cut and encapsulate in-situ', 
+                                    desc: 'Segment pipes, grout in place. Leaves contamination contained but not removed.', 
+                                    cost: 100000, time: 12, dose: 4, healthImpact: -5 
+                                }
+                            ]
+                        },
+                        // Clearance was improved at some point
+                        clearanceImproved: {
+                            situation: 'Pipe cutting for removal. The access improvements made during operations help - but original constrained sections remain in some areas.',
+                            quote: "That access opening we cut - makes some of this easier. But there are still tight spots from the original 50mm design. Mixed approach needed.",
+                            options: [
+                                { id: 'mixed', name: 'Combined robotic and manual cutting', desc: 'Use robots where we have access, manual in tight spots.', cost: 60000, time: 10, dose: 3 },
+                                { id: 'demolish', name: 'Demolish surrounding structure', desc: 'Create access by removing walls. More waste, easier cutting.', cost: 80000, time: 8, dose: 2 }
+                            ]
+                        },
+                        // Default - original 50mm, no improvements
+                        default: {
+                            situation: 'Pipe cutting required for removal. The 50mm clearance from 2025 leaves no room for standard cutting equipment - plasma torches need 100mm minimum.',
+                            quote: "Time to cut these pipes out. That 50mm clearance from 2025 - no room for plasma cutting gear. We're doing this in confined space with hand tools, or bringing in robotic systems. Either way, the 2025 design decision costs us at the end.",
+                            options: [
+                                { id: 'manual', name: 'Manual cutting in confined space', desc: 'Reciprocating saws, high dose, slow progress. Contamination control challenging.', cost: 45000, time: 10, dose: 6 },
+                                { id: 'robotic', name: 'Robotic cutting systems', desc: 'Snake-arm robots designed for confined space. Expensive but lower dose.', cost: 120000, time: 7, dose: 2 }
+                            ]
+                        }
+                    }
                 },
                 '150mm': {
-                    situation: 'Pipe cutting for removal. Good access for standard cutting equipment.',
-                    quote: "That 150mm clearance from 2025 - still paying dividends at the end. Standard cutting gear fits perfectly. Clean cuts, professional job. What's the approach?",
+                    situation: 'Pipe cutting for removal. The 150mm clearance from 2025 accommodates standard decommissioning equipment - exactly as design guidance recommends.',
+                    quote: "That 150mm clearance from 2025 - still paying dividends 60 years later. Standard plasma cutting gear fits, clean cuts, good contamination control. This is what proper design-for-decommissioning looks like.",
                     options: [
-                        { id: 'standard', name: 'Standard cutting and removal', desc: 'Normal decommissioning procedures.', cost: 25000, time: 3, dose: 1 },
-                        { id: 'segregate', name: 'Cut with material segregation', desc: 'Additional effort to separate materials for recycling.', cost: 35000, time: 4, dose: 1.5 }
+                        { id: 'standard', name: 'Standard cutting and removal', desc: 'Normal decommissioning procedures. Efficient and controlled.', cost: 25000, time: 4, dose: 1.5 },
+                        { id: 'segregate', name: 'Cut with material segregation', desc: 'Additional effort to separate materials. Some may qualify as LLW instead of ILW.', cost: 35000, time: 5, dose: 2 }
                     ]
                 },
                 '300mm': {
-                    situation: 'Weld cutting is easy with the clearance, but the permanent scaffolding has become ILW after 30 years of contamination accumulation.',
-                    quote: "Easy access for the welds - that's the good news. The bad news? That scaffolding from 2025 has been accumulating activity for 60 years. It's now intermediate level waste. Another disposal headache.",
+                    situation: 'Pipe cutting is straightforward with the clearance, but the permanent scaffolding has become ILW after 60 years of activation.',
+                    quote: "Easy access for the pipe cutting - 300mm is plenty. But that scaffolding from 2025 has been accumulating activation and contamination for 60 years. It's ILW now - significant additional waste volume to dispose of.",
                     options: [
-                        { id: 'both', name: 'Remove welds and scaffolding together', desc: 'Deal with the additional waste now.', cost: 85000, time: 8, dose: 3 },
-                        { id: 'defer', name: 'Welds now, scaffolding later', desc: 'Split the work. Extends overall project.', cost: 50000, time: 5, dose: 2, healthImpact: -3 }
+                        { id: 'both', name: 'Remove pipes and scaffolding together', desc: 'Deal with all the waste in one campaign.', cost: 85000, time: 8, dose: 3 },
+                        { id: 'defer', name: 'Pipes now, scaffolding deferred', desc: 'Two-phase approach. Extends project timeline.', cost: 55000, time: 5, dose: 2, healthImpact: -3 }
                     ]
                 }
             }
@@ -2840,138 +3014,280 @@ const GAME_DATA = {
             stage1: {
                 description: 'How should the control panel be organised?',
                 options: [
-                    { id: 'system', name: 'System-Based Layout', desc: 'Grouped by system (all pump controls together).', cost: 70000, quality: 'poor' },
-                    { id: 'task', name: 'Task-Based Layout', desc: 'Grouped by workflow. Emergency sequence left-to-right.', cost: 100000, quality: 'good' },
-                    { id: 'touch', name: 'Touchscreen Interface', desc: 'Modern digital displays. Impressive technology.', cost: 150000, quality: 'poor' }
+                    { id: 'task', name: 'Task-Based Layout', desc: 'Controls grouped by operator workflow. Emergency sequences flow left-to-right. Matches mental model.', cost: 120000, quality: 'good' },
+                    { id: 'system', name: 'System-Based Layout', desc: 'Controls grouped by physical system (all pump controls together). Logical to engineers, confusing to operators.', cost: 80000, quality: 'poor' },
+                    { id: 'digital', name: 'Software-Based Interface', desc: 'Modern touchscreens with configurable displays. Impressive technology, unproven in emergencies.', cost: 160000, quality: 'wasteful' }
                 ]
             },
             stage2: {
-                system: {
-                    situation: 'Operators have submitted 15 human factors concern reports in 15 years. The system-based layout causes confusion during abnormal conditions - controls for related actions are scattered across different panels.',
-                    quote: "We've had 15 formal complaints about the control panel since 2025. The system-based layout - when things go wrong, operators can't find what they need quickly. Controls for emergency sequences are all over the place. How do you want to address this?",
-                    options: [
-                        { id: 'redesign', name: 'Commission HF review and redesign', desc: 'Proper human factors assessment and panel modifications.', cost: 60000, time: 0, dose: 0, setFlag: 'panelRedesigned' },
-                        { id: 'labels', name: 'Add labels and colour coding', desc: 'Cheap visual improvements. Limited real benefit.', cost: 15000, time: 0, dose: 0 },
-                        { id: 'nothing', name: 'Issue training reminder', desc: 'Tell operators to try harder.', cost: 5000, time: 0, dose: 0 }
-                    ]
-                },
                 task: {
                     situation: 'Control room operations review. The task-based layout from 2025 is working well - operators report intuitive workflow during both normal and abnormal conditions.',
-                    quote: "The operators love the panel layout from 2025. Task-based design - emergency sequences flow left to right, everything's where they expect it. Just needs standard maintenance. Any enhancements you want to add?",
+                    quote: "The operators love this panel layout. Task-based design from 2025 - emergency sequences flow left to right, everything's where they expect it. Response times are 40% faster than industry average. Just needs standard maintenance.",
                     options: [
-                        { id: 'maintain', name: 'Standard maintenance', desc: 'Keep it running as designed.', cost: 10000, time: 0, dose: 0 },
-                        { id: 'enhance', name: 'Add status display enhancements', desc: 'Minor improvements to status indicators.', cost: 20000, time: 0, dose: 0 }
+                        { id: 'maintain', name: 'Standard maintenance', desc: 'Keep it running as designed. It\'s working.', cost: 10000, time: 0, dose: 0 },
+                        { id: 'enhance', name: 'Add status display enhancements', desc: 'Additional trending displays for early warning.', cost: 25000, time: 0, dose: 0 }
                     ]
                 },
-                touch: {
-                    situation: 'Three touchscreen failures in 15 years. Operators report issues with gloves, low-light conditions, and response lag during high-activity periods.',
-                    quote: "That touchscreen system from 2025 - we've had three complete failures already. Operators can't use it with gloves, it's hard to see in emergency lighting, and it lags when they need it most. I'm concerned about the next emergency. What do you want to do?",
+                system: {
+                    situation: 'Operators have submitted 18 human factors concern reports since 2025. The system-based layout causes confusion during abnormal conditions - controls for emergency response are scattered across different panels.',
+                    quote: "We've had 18 formal HF complaints about this panel. System-based layout from 2025 - when something goes wrong, operators can't find controls quickly. The PORV isolation is on Panel 3, but the status indicator is on Panel 7. It's like the lessons from Three Mile Island were ignored.",
                     options: [
-                        { id: 'backup', name: 'Install hardwired backup panel', desc: 'Physical buttons as safety backup.', cost: 70000, time: 0, dose: 0, setFlag: 'backupPanel' },
-                        { id: 'upgrade', name: 'Upgrade to industrial touchscreens', desc: 'Better screens, but still touchscreens.', cost: 50000, time: 0, dose: 0 },
-                        { id: 'train', name: 'Additional operator training', desc: 'Train them to work around the limitations.', cost: 10000, time: 0, dose: 0 }
+                        { 
+                            id: 'redesign', 
+                            name: 'Commission HF review and partial redesign', 
+                            desc: 'Human factors assessment per ONR TAG NS-TAST-GD-058. Relocate critical emergency controls.', 
+                            cost: 80000, time: 0, dose: 0,
+                            setState: { layoutModified: true }
+                        },
+                        { 
+                            id: 'decision_support', 
+                            name: 'Install decision support system', 
+                            desc: 'Computerised system guides operators to correct controls. Band-aid but better than nothing.', 
+                            cost: 50000, time: 0, dose: 0,
+                            setState: { backupInstalled: true }
+                        },
+                        { 
+                            id: 'training', 
+                            name: 'Enhanced operator training', 
+                            desc: 'More simulator time. Operators learn to work around the poor design.', 
+                            cost: 25000, time: 0, dose: 0,
+                            setState: { trainingEnhanced: true }
+                        }
+                    ]
+                },
+                digital: {
+                    situation: 'Three touchscreen failures in 15 years. Operators report issues with gloved hands, low-light conditions, and response lag during high-activity periods. No haptic feedback like physical switches.',
+                    quote: "That touchscreen system from 2025 - we've had three complete failures. Operators can't use it with gloves, screens wash out in emergency lighting, and it lags when they need it most. During the last transient, an operator was jabbing the screen trying to get a response. No tactile confirmation like physical buttons.",
+                    options: [
+                        { 
+                            id: 'backup', 
+                            name: 'Install hardwired backup panel', 
+                            desc: 'Physical buttons for safety-critical functions. Defence in depth.', 
+                            cost: 90000, time: 0, dose: 0,
+                            setState: { backupInstalled: true }
+                        },
+                        { 
+                            id: 'upgrade', 
+                            name: 'Upgrade to industrial-grade touchscreens', 
+                            desc: 'Better screens with improved response. Still touchscreens.', 
+                            cost: 60000, time: 0, dose: 0 
+                        },
+                        { 
+                            id: 'train', 
+                            name: 'Additional operator training', 
+                            desc: 'Train them to work around the limitations.', 
+                            cost: 15000, time: 0, dose: 0,
+                            setState: { trainingEnhanced: true }
+                        }
                     ]
                 }
             },
             stage3: {
-                system: {
-                    situation: 'Regulatory safety review of control systems. Human-Machine Interface assessment is part of the inspection programme.',
-                    quote: "Regulator is here for the HMI assessment. That system-based layout from 2025 - they're going to note the operator complaints. We should have the review documentation ready. How thorough do you want us to be?",
-                    options: [
-                        { id: 'review', name: 'Full HMI review with action plan', desc: 'Comprehensive assessment and improvement recommendations.', cost: 20000, time: 2, dose: 0 },
-                        { id: 'minimal', name: 'Minimal compliance documentation', desc: 'Meet the minimum requirements.', cost: 8000, time: 1, dose: 0 }
-                    ]
-                },
                 task: {
-                    situation: 'Regulatory safety review of control systems. The task-based panel from 2025 receives consistently high human factors ratings.',
-                    quote: "Regulator's reviewing our control systems. That task-based layout from 2025? Operators score it highly, incident response times are good. We're in good shape. Standard review or go above and beyond?",
+                    situation: 'Regulatory human factors review per ONR expectations. The task-based panel from 2025 receives consistently high ratings from independent assessors.',
+                    quote: "Regulator's HF team reviewing our control room. That task-based layout from 2025? They're impressed. Operator response times are excellent, error rates are low. We're being cited as good practice. Standard documentation or go further?",
                     options: [
-                        { id: 'standard', name: 'Standard review', desc: 'Confirm continued good performance.', cost: 10000, time: 1, dose: 0 },
-                        { id: 'benchmark', name: 'Benchmark against industry best practice', desc: 'Compare to leading facilities worldwide.', cost: 18000, time: 2, dose: 0 }
+                        { id: 'standard', name: 'Standard review documentation', desc: 'Confirm continued good performance.', cost: 10000, time: 1, dose: 0 },
+                        { id: 'benchmark', name: 'Full NUREG-0700 benchmark', desc: 'Compare against latest international HF guidance. Demonstrate excellence.', cost: 22000, time: 2, dose: 0 }
                     ]
                 },
-                touch: {
-                    situation: 'Safety review identifies display artefacts and intermittent software glitches in the touchscreen system. System is showing its age.',
-                    quote: "The touchscreens from 2025 - they're 30 years old and the software is getting flaky. Display glitches, slow response. The regulator wants to see our maintenance plan. What level of fix are we looking at?",
+                system: {
+                    checkElementState: true,
+                    scenarios: {
+                        layoutModified: {
+                            situation: 'Regulatory human factors review. The 2040 modifications improved critical control placement. Assessors note the improvement.',
+                            quote: "HF review time. They're looking at our modifications from 2040 - relocating those emergency controls helped. Still not as good as if we'd designed it right in 2025, but better than it was. Standard review?",
+                            options: [
+                                { id: 'review', name: 'Standard review with improvement documentation', desc: 'Show the journey from poor design to improved state.', cost: 15000, time: 2, dose: 0 },
+                                { id: 'benchmark', name: 'Benchmark against original design', desc: 'Quantify the improvement for lessons learned.', cost: 25000, time: 3, dose: 0 }
+                            ]
+                        },
+                        backupInstalled: {
+                            situation: 'Regulatory review of control systems. The decision support system helps, but fundamental layout issues remain.',
+                            quote: "HF assessors are here. That decision support system from 2040 helps operators find controls faster, but they're still noting the underlying layout problems from 2025. It's documented as \'managed weakness\'.",
+                            options: [
+                                { id: 'document', name: 'Document compensatory measures', desc: 'Show how decision support mitigates design weaknesses.', cost: 18000, time: 2, dose: 0 },
+                                { id: 'enhance', name: 'Propose layout improvements', desc: 'Commit to further modifications.', cost: 30000, time: 2, dose: 0, setState: { layoutModified: true } }
+                            ]
+                        },
+                        trainingEnhanced: {
+                            situation: 'Regulatory human factors audit. Enhanced training helps but assessors note operators are compensating for poor design.',
+                            quote: "The HF auditors are concerned. Our operators perform well in simulators because of the extra training, but they're documenting that we're relying on human adaptation rather than good design. That's exactly what TMI taught us NOT to do.",
+                            options: [
+                                { id: 'accept', name: 'Accept findings with action plan', desc: 'Acknowledge the gap. Commit to improvements.', cost: 12000, time: 1, dose: 0 },
+                                { id: 'redesign', name: 'Commission proper redesign', desc: 'Finally fix the underlying problem.', cost: 80000, time: 3, dose: 0, setState: { layoutModified: true } }
+                            ]
+                        },
+                        default: {
+                            situation: 'Regulatory human factors audit. The system-based layout from 2025 receives critical findings.',
+                            quote: "HF audit results are in. That system-based layout from 2025 - they've cited us for poor emergency control accessibility. Response times 40% slower than task-based designs. We need an action plan.",
+                            options: [
+                                { id: 'minimal', name: 'Minimal compliance response', desc: 'Promise improvements. Hope they accept.', cost: 10000, time: 1, dose: 0, healthImpact: -5 },
+                                { id: 'comprehensive', name: 'Comprehensive improvement plan', desc: 'Detailed roadmap to address all findings.', cost: 35000, time: 2, dose: 0 }
+                            ]
+                        }
+                    }
+                },
+                digital: {
+                    situation: 'Safety review identifies display artefacts, software glitches, and cybersecurity concerns in the 30-year-old touchscreen system.',
+                    quote: "The touchscreens from 2025 - they're 30 years old. Software is showing its age, screens have burn-in, and the assessors are asking about cybersecurity. 2025 systems weren't designed with modern threat awareness. What level of fix?",
                     options: [
-                        { id: 'software', name: 'Full software update and hardware refresh', desc: 'Comprehensive system update.', cost: 35000, time: 2, dose: 0 },
-                        { id: 'patch', name: 'Critical patches only', desc: 'Fix the worst bugs. Hope for the best.', cost: 15000, time: 1, dose: 0, healthImpact: -3 }
+                        { id: 'comprehensive', name: 'Full software update, hardware refresh, cyber review', desc: 'Comprehensive modernisation. Address all concerns.', cost: 55000, time: 3, dose: 0 },
+                        { id: 'patch', name: 'Critical patches and cyber hardening only', desc: 'Fix the worst issues. Accept residual risk.', cost: 25000, time: 2, dose: 0, healthImpact: -3 }
                     ]
                 }
             },
             stage4: {
-                system: {
-                    checkFlag: 'panelRedesigned',
-                    hasFlag: {
-                        situation: 'ALARM: Loss of Coolant Flow indication. The panel was redesigned after the 2040 review - improved layout helps operator response.',
-                        quote: "LOCA indication! Good news - we fixed that panel layout after 2040. Operators are finding controls faster than before. Still not as good as it could have been from the start, but better. What's your call on the response?",
-                        options: [
-                            { id: 'respond', name: 'Standard emergency response', desc: 'Follow procedure with improved panel.', cost: 20000, time: 1, dose: 1 },
-                            { id: 'senior', name: 'Call shift supervisor for support', desc: 'Extra verification for complex event.', cost: 5000, time: 1, dose: 0.5 }
-                        ]
-                    },
-                    noFlag: {
-                        situation: 'ALARM: Loss of Coolant Flow indication. The system-based panel layout from 2025 was never fixed. Operators are struggling to locate the correct controls.',
-                        quote: "LOCA indication at 3am! Operators can't find the isolation valves - that system-based layout from 2025 has controls scattered everywhere. We never fixed it after the complaints. This is exactly the scenario we worried about!",
-                        options: [
-                            { id: 'search', name: 'Search for correct controls', desc: 'Delayed response while operators hunt for switches.', cost: 50000, time: 2, dose: 3, risk: 40, healthImpact: -10 },
-                            { id: 'senior', name: 'Immediately call senior operator', desc: 'Get experienced help. Your failure is on record.', cost: 10000, time: 1, dose: 1, trigger: 'operatorFailure' },
-                            { id: 'procedure', name: 'Follow procedure step by step', desc: 'Slow but systematic reduces error chance.', cost: 30000, time: 3, dose: 2 }
-                        ]
-                    }
-                },
                 task: {
-                    situation: 'ALARM: Loss of Coolant Flow indication. The task-based panel layout from 2025 means emergency controls are exactly where operators expect them.',
-                    quote: "LOCA indication - but watch this. Task-based layout from 2025: reactor trip here, safety injection there, isolation valves in sequence. Operators are executing the response exactly as trained. Textbook.",
+                    situation: '⚠️ ALARM: Loss of Coolant Flow indication at 0300 hours. The task-based panel layout means emergency controls are exactly where operators expect them.',
+                    quote: "LOCA indication at 3am - but watch this. Task-based layout from 2025: reactor trip button here, safety injection there, isolation valves in sequence left-to-right. Operators executing the response exactly as trained. This is what good HF design delivers.",
                     options: [
                         { id: 'respond', name: 'Execute standard emergency response', desc: 'Smooth response using well-designed panel.', cost: 5000, time: 0, dose: 0.5 },
-                        { id: 'verify', name: 'Execute with additional verification', desc: 'Extra checks at each step.', cost: 8000, time: 0, dose: 0.5 }
+                        { id: 'verify', name: 'Execute with enhanced verification', desc: 'Extra peer-checks at each step. Conservative approach.', cost: 8000, time: 0, dose: 0.5 }
                     ]
                 },
-                touch: {
-                    checkFlag: 'backupPanel',
-                    hasFlag: {
-                        situation: 'ALARM: System transient. Touchscreens are lagging under heavy demand, but the backup hardwired panel installed after 2040 is available.',
-                        quote: "Transient in progress - touchscreens are struggling with the load. But that backup panel we installed after 2040 is right there. Physical switches, instant response. Thank God we put that in. Switching over?",
-                        options: [
-                            { id: 'backup', name: 'Switch to hardwired backup', desc: 'Reliable physical controls.', cost: 15000, time: 1, dose: 1 },
-                            { id: 'wait', name: 'Wait for touchscreens to recover', desc: 'They might speed up. Risky delay.', cost: 0, time: 2, dose: 0, risk: 30, healthImpact: -5 }
-                        ]
-                    },
-                    noFlag: {
-                        situation: 'ALARM: System transient. Touchscreens are frozen. Gloved fingers not registering. No backup panel available.',
-                        quote: "Touchscreens are frozen solid! Operators can't get any response - gloves don't work, the screens have locked up. We never installed that backup panel after 2040. We have no control interface. What do we do?!",
-                        options: [
-                            { id: 'reboot', name: 'Emergency system reboot', desc: 'Fast but everything goes dark during restart.', cost: 0, time: 2, dose: 0, risk: 50, healthImpact: -15 },
-                            { id: 'manual', name: 'Send operators to local panels', desc: 'Manual operation from field locations.', cost: 30000, time: 4, dose: 4 },
-                            { id: 'scram', name: 'Manual reactor trip', desc: 'Safe shutdown. Major investigation follows.', cost: 100000, time: 5, dose: 1 }
-                        ]
+                system: {
+                    checkElementState: true,
+                    scenarios: {
+                        layoutModified: {
+                            situation: '⚠️ ALARM: Loss of Coolant indication. The 2040 panel modifications help - emergency controls are now grouped together.',
+                            quote: "LOCA at 0300! The panel modifications from 2040 are helping - emergency controls are grouped now. Still not perfect, but operators are finding things faster than before. Executing response.",
+                            options: [
+                                { id: 'respond', name: 'Standard emergency response', desc: 'Modified panel enables adequate response.', cost: 15000, time: 1, dose: 1 },
+                                { id: 'senior', name: 'Call shift supervisor for verification', desc: 'Extra verification given panel history.', cost: 8000, time: 1, dose: 0.5 }
+                            ]
+                        },
+                        backupInstalled: {
+                            situation: '⚠️ ALARM: Loss of Coolant indication. Decision support system guiding operators to correct controls.',
+                            quote: "LOCA indication! That decision support system from 2040 is flashing - guiding operators to the isolation valves. They're still hunting across panels, but at least the computer is telling them where to look.",
+                            options: [
+                                { id: 'follow', name: 'Follow decision support guidance', desc: 'Let the computer guide the response.', cost: 20000, time: 1, dose: 1 },
+                                { id: 'manual', name: 'Experienced operators from memory', desc: 'Senior operators know this panel despite the layout.', cost: 10000, time: 1, dose: 1, risk: 20 }
+                            ]
+                        },
+                        trainingEnhanced: {
+                            situation: '⚠️ ALARM: Loss of Coolant indication. Enhanced training being tested - operators must remember where scattered controls are located.',
+                            quote: "LOCA at 3am! Operators searching for controls - the training helps but under stress they're reverting to instinct. PORV isolation is... wait, which panel? The system-based layout is fighting them.",
+                            options: [
+                                { 
+                                    id: 'systematic', 
+                                    name: 'Systematic procedure-driven response', 
+                                    desc: 'Slow and methodical. Follow procedures exactly.', 
+                                    cost: 35000, time: 2, dose: 2
+                                },
+                                { 
+                                    id: 'senior', 
+                                    name: 'Call all senior operators to control room', 
+                                    desc: 'Get everyone who knows this panel layout.', 
+                                    cost: 15000, time: 1, dose: 1,
+                                    setState: { operatorError: true }
+                                }
+                            ]
+                        },
+                        default: {
+                            situation: '⚠️ ALARM: Loss of Coolant indication at 0300 hours. The system-based panel layout from 2025 was never improved. Operators struggling to locate correct controls.',
+                            quote: "LOCA indication at 3am! Operators can't find the isolation valves quickly - that system-based layout from 2025 has controls scattered across four panels. This is exactly what happened at TMI - poor HF design failing when it matters most!",
+                            options: [
+                                { 
+                                    id: 'search', 
+                                    name: 'Search for correct controls', 
+                                    desc: 'Delayed response while operators hunt for switches. Time is critical.', 
+                                    cost: 60000, time: 2, dose: 3, risk: 40, healthImpact: -10,
+                                    setState: { operatorError: true }
+                                },
+                                { 
+                                    id: 'procedure', 
+                                    name: 'Slow procedural response', 
+                                    desc: 'Read each step aloud, locate controls methodically. Slower but fewer errors.', 
+                                    cost: 40000, time: 3, dose: 2,
+                                    setState: { operatorError: true }
+                                },
+                                { 
+                                    id: 'scram', 
+                                    name: 'Immediate reactor trip', 
+                                    desc: 'If in doubt, shut it down. Safe but conservative. Full investigation follows.', 
+                                    cost: 100000, time: 1, dose: 0.5
+                                }
+                            ]
+                        }
+                    }
+                },
+                digital: {
+                    checkElementState: true,
+                    scenarios: {
+                        backupInstalled: {
+                            situation: '⚠️ ALARM: System transient. Touchscreens lagging under demand, but hardwired backup panel from 2040 is available.',
+                            quote: "Transient in progress - touchscreens struggling with the update rate. But that backup panel we installed after 2040? Physical switches, instant response. No lag, no gloves problem. Switching to backup.",
+                            options: [
+                                { id: 'backup', name: 'Switch to hardwired backup', desc: 'Reliable physical controls with haptic feedback.', cost: 15000, time: 1, dose: 0.5 },
+                                { id: 'wait', name: 'Wait for touchscreens to recover', desc: 'They might speed up once the transient stabilises.', cost: 0, time: 2, dose: 0, risk: 30, healthImpact: -5 }
+                            ]
+                        },
+                        default: {
+                            situation: '⚠️ ALARM: System transient. Touchscreens frozen. Gloved fingers not registering. No backup panel available.',
+                            quote: "Touchscreens are frozen solid! Operators jabbing at the screen - gloves don't register, system locked up. We never installed that backup panel after 2040. We have NO control interface. This is a design failure!",
+                            options: [
+                                { 
+                                    id: 'reboot', 
+                                    name: 'Emergency system reboot', 
+                                    desc: 'Power cycle the displays. Everything goes dark during restart.', 
+                                    cost: 0, time: 2, dose: 0, risk: 50, healthImpact: -15,
+                                    setState: { operatorError: true }
+                                },
+                                { 
+                                    id: 'local', 
+                                    name: 'Send operators to local panels', 
+                                    desc: 'Manual operation from field locations. High dose, communication challenges.', 
+                                    cost: 35000, time: 4, dose: 4,
+                                    setState: { operatorError: true }
+                                },
+                                { 
+                                    id: 'scram', 
+                                    name: 'Manual reactor trip', 
+                                    desc: 'The big red button still works. Safe shutdown. Major investigation.', 
+                                    cost: 120000, time: 1, dose: 0.5
+                                }
+                            ]
+                        }
                     }
                 }
             },
             stage5: {
-                system: {
-                    situation: 'Control panel decommissioning. Standard electrical equipment removal.',
-                    quote: "Taking out the control panels. That system-based layout from 2025 caused headaches for 60 years - at least it comes out easily. Standard removal or do you want it preserved for lessons learned?",
-                    options: [
-                        { id: 'standard', name: 'Standard removal', desc: 'Normal decommissioning procedure.', cost: 10000, time: 2, dose: 0.5 },
-                        { id: 'preserve', name: 'Preserve as training example', desc: 'Document what not to do for future projects.', cost: 20000, time: 3, dose: 0.5 }
-                    ]
-                },
                 task: {
                     situation: 'Control panel decommissioning. The well-designed panel served operators well for 60 years.',
-                    quote: "End of the line for the control panel. That task-based design from 2025 served us well - 60 years of reliable operation, operators loved it. Any interest in documenting this as a best practice example?",
+                    quote: "End of the line for the control room. That task-based design from 2025 served us well - 60 years of reliable operation, operators loved it, response times were excellent. Worth documenting as industry best practice.",
                     options: [
                         { id: 'standard', name: 'Standard removal', desc: 'Normal decommissioning procedure.', cost: 10000, time: 2, dose: 0.5 },
-                        { id: 'document', name: 'Document as best practice', desc: 'Capture the design principles for future projects.', cost: 15000, time: 2, dose: 0.5 }
+                        { id: 'document', name: 'Document as HF case study', desc: 'Capture the design principles for future projects and training.', cost: 18000, time: 3, dose: 0.5 }
                     ]
                 },
-                touch: {
-                    situation: 'Touchscreen system decommissioning. Electronic waste requires specialist disposal.',
-                    quote: "The touchscreen system from 2025 - finally taking it out. E-waste disposal requirements for all this electronics. Plus the usual radioactive contamination on the surfaces. Specialist handling needed.",
+                system: {
+                    checkElementState: true,
+                    scenarios: {
+                        operatorError: {
+                            situation: 'Control panel decommissioning. The poor HF design contributed to the incident during operations - now part of lessons learned.',
+                            quote: "Taking out this panel that caused us problems. That system-based layout from 2025 - remember the night of the incident? Operators searching for controls... This needs to be preserved as a training example of what not to do.",
+                            options: [
+                                { id: 'preserve', name: 'Preserve panel as training example', desc: 'Document the HF failures for future designers.', cost: 25000, time: 4, dose: 0.5 },
+                                { id: 'standard', name: 'Standard removal with documentation', desc: 'Photographs and reports, then dispose.', cost: 12000, time: 2, dose: 0.5 }
+                            ]
+                        },
+                        default: {
+                            situation: 'Control panel decommissioning. The system-based layout caused frustration but no major incidents.',
+                            quote: "Taking out the control panels. That system-based layout from 2025 caused headaches for 60 years - operators always complained, HF auditors always noted it. At least it comes out easily. Lessons learned documentation?",
+                            options: [
+                                { id: 'standard', name: 'Standard removal', desc: 'Normal decommissioning procedure.', cost: 10000, time: 2, dose: 0.5 },
+                                { id: 'document', name: 'Document HF lessons learned', desc: 'Record what not to do for future projects.', cost: 15000, time: 3, dose: 0.5 }
+                            ]
+                        }
+                    }
+                },
+                digital: {
+                    situation: 'Touchscreen system decommissioning. Electronic waste with potential radioactive contamination requires specialist disposal.',
+                    quote: "The touchscreen system from 2025 - finally removing it. E-waste disposal requirements for all this electronics, plus surface contamination on the screens and cabinets. The technology that was \'cutting edge\' in 2025 is now hazardous waste.",
                     options: [
-                        { id: 'ewaste', name: 'Specialist e-waste disposal', desc: 'Proper handling of contaminated electronics.', cost: 30000, time: 3, dose: 0 },
-                        { id: 'strip', name: 'Strip valuable components first', desc: 'Recover materials before disposal.', cost: 20000, time: 4, dose: 0.5 }
+                        { id: 'ewaste', name: 'Specialist e-waste disposal', desc: 'Proper handling of contaminated electronics per regulations.', cost: 35000, time: 4, dose: 0.5 },
+                        { id: 'separate', name: 'Separate electronic and radioactive disposal', desc: 'Decontaminate first, then e-waste. More handling but cleaner streams.', cost: 45000, time: 5, dose: 1 }
                     ]
                 }
             }
@@ -3237,119 +3553,289 @@ const GAME_DATA = {
             stage1: {
                 description: 'What material for primary circuit pipework?',
                 options: [
-                    { id: 'standard', name: 'Standard Stainless Steel', desc: '304/316 with ~2,500ppm cobalt. Industry standard.', cost: 110000, quality: 'poor' },
-                    { id: 'lowCobalt', name: 'Low-Cobalt Stainless', desc: 'Cobalt <500ppm. Reduced activation.', cost: 170000, quality: 'good' },
-                    { id: 'exotic', name: 'Exotic Nickel Alloy', desc: 'Premium aerospace-grade alloy. Top specification.', cost: 250000, quality: 'poor' }
+                    { id: 'standard', name: 'Standard Stainless (Type 304)', desc: 'Industry standard austenitic. Susceptible to sensitization and IGSCC in BWR environments. ~2,500ppm cobalt.', cost: 100000, quality: 'poor' },
+                    { id: 'duplex', name: 'Duplex Stainless Steel', desc: 'Better resistance to stress corrosion cracking. Low cobalt (<500ppm). Slightly harder to weld.', cost: 140000, quality: 'good' },
+                    { id: 'exotic', name: 'Super Duplex / Nickel Alloy', desc: 'Premium corrosion resistance. Expensive, difficult fabrication. May contain problematic activation elements.', cost: 220000, quality: 'wasteful' }
                 ]
             },
             stage2: {
                 standard: {
-                    situation: 'Dose rates around the primary circuit are higher than predicted. The standard stainless steel from 2025 contains ~2,500ppm cobalt, which is activating under neutron flux.',
-                    quote: "Dose rates are running hot. That standard stainless from 2025 - 2,500ppm cobalt content. It's activating and making every maintenance job take longer because of ALARP controls. How do you want to approach this outage?",
-                    isModifier: true,
+                    situation: 'Routine weld inspection reveals intergranular attack at heat-affected zones. Type 304 from 2025 is showing signs of sensitization - chromium depletion at grain boundaries.',
+                    quote: "We've found intergranular corrosion starting at the HAZ of weld W-156. That Type 304 from 2025 - classic sensitization problem. Chromium is depleting at grain boundaries. This is exactly what the IGSCC literature warns about. We need to address it now.",
                     options: [
-                        { id: 'accept', name: 'Accept higher dose rates', desc: 'Work with what we have. Jobs take longer.', cost: 0, time: 2, dose: 3 },
-                        { id: 'shield', name: 'Install temporary shielding', desc: 'Reduce dose exposure for this outage.', cost: 25000, time: 3, dose: 1.5 }
+                        { 
+                            id: 'treatment', 
+                            name: 'Solution heat treatment of affected welds', 
+                            desc: 'Restore chromium distribution. Delays sensitization progression.', 
+                            cost: 45000, time: 6, dose: 3,
+                            setState: { corrosionDetected: true }
+                        },
+                        { 
+                            id: 'replace', 
+                            name: 'Replace affected section with duplex', 
+                            desc: 'Cut out sensitized material, weld in duplex section. Permanent fix.', 
+                            cost: 95000, time: 12, dose: 5,
+                            setState: { earlyReplacement: true }
+                        },
+                        { 
+                            id: 'monitor', 
+                            name: 'Enhanced monitoring only', 
+                            desc: 'Document and watch. Hope the operating chemistry controls slow progression.', 
+                            cost: 20000, time: 2, dose: 1, healthImpact: -5,
+                            setState: { corrosionDetected: true }
+                        }
                     ]
                 },
-                lowCobalt: {
-                    situation: 'Dose rates as predicted in the design basis. The low-cobalt stainless from 2025 is performing as expected with minimal activation.',
-                    quote: "Dose rates exactly where we predicted. That low-cobalt steel from 2025 - worth every penny. Work areas are clean, jobs go smoothly. Just confirming the maintenance approach.",
+                duplex: {
+                    situation: 'Material examination shows excellent corrosion resistance. The duplex stainless from 2025 shows no sensitization or IGSCC initiation. Dose rates are manageable.',
+                    quote: "Material condition looks excellent. That duplex steel from 2025 - no intergranular attack, no sensitization, dose rates as predicted. The extra cost in 2025 is paying off. Just confirming the maintenance approach.",
                     options: [
-                        { id: 'standard', name: 'Standard maintenance procedures', desc: 'Normal approach - no special measures needed.', cost: 0, time: 0, dose: 0.5 },
-                        { id: 'optimise', name: 'Optimise future dose budgets', desc: 'Bank the dose savings for contingencies.', cost: 5000, time: 0, dose: 0.5 }
+                        { id: 'standard', name: 'Standard maintenance procedures', desc: 'Normal approach - material is performing well.', cost: 15000, time: 2, dose: 1 },
+                        { id: 'baseline', name: 'Detailed corrosion baseline', desc: 'Establish reference data for future comparison.', cost: 25000, time: 3, dose: 1.5 }
                     ]
                 },
                 exotic: {
-                    situation: 'Dose rates significantly higher than predicted. The exotic nickel alloy from 2025 contains Nickel-59 which is creating unexpected activation products.',
-                    quote: "Big problem. That exotic alloy from 2025 - it looked great on paper, but the nickel content is activating badly. Dose rates are twice what we planned for. Every job is a challenge. What's the strategy?",
+                    situation: 'Dose rates significantly higher than predicted. The exotic nickel alloy from 2025 contains Ni-59 and Co-59 isotopes creating unexpected activation products.',
+                    quote: "Major problem. That exotic alloy looked great for corrosion resistance, but it's activating badly under neutron flux. Ni-59 has a 76,000 year half-life and we're making it by the gram. Plus the cobalt impurities are creating Co-60. Dose rates are double prediction.",
                     isModifier: true,
                     options: [
-                        { id: 'accept', name: 'Accept enhanced dose controls', desc: 'More restrictions, slower work, higher doses.', cost: 0, time: 4, dose: 5 },
-                        { id: 'remote', name: 'Invest in remote tooling', desc: 'Reduce direct worker exposure.', cost: 40000, time: 5, dose: 3 }
+                        { 
+                            id: 'accept', 
+                            name: 'Accept enhanced ALARP controls', 
+                            desc: 'Stricter dose restrictions, shorter work windows, more personnel rotation.', 
+                            cost: 10000, time: 4, dose: 5,
+                            setState: { doseConstraints: true }
+                        },
+                        { 
+                            id: 'shield', 
+                            name: 'Install permanent shielding', 
+                            desc: 'Lead blankets and shadow shields on hot spots. Reduces dose but adds complexity.', 
+                            cost: 55000, time: 6, dose: 3,
+                            setState: { shieldingAdded: true }
+                        },
+                        { 
+                            id: 'remote', 
+                            name: 'Develop remote tooling capability', 
+                            desc: 'Invest in manipulators and remote inspection. Long-term dose reduction.', 
+                            cost: 80000, time: 8, dose: 4,
+                            setState: { remoteTooling: true }
+                        }
                     ]
                 }
             },
             stage3: {
                 standard: {
-                    situation: 'Elevated dose rates require stand-off inspection techniques. The activated standard steel from 2025 limits close-approach work.',
-                    quote: "Inspection time, but that standard steel from 2025 is running hot. I need to keep my distance, which limits probe positioning. Extended reach equipment or accept the limitations?",
-                    isModifier: true,
-                    options: [
-                        { id: 'standoff', name: 'Extended reach inspection', desc: 'Longer probe extensions, some accuracy loss.', cost: 15000, time: 3, dose: 4 },
-                        { id: 'shielded', name: 'Invest in shielded inspection equipment', desc: 'Better equipment for close-approach work.', cost: 35000, time: 4, dose: 2 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        // Early replacement with duplex means no ongoing issues
+                        earlyReplacement: {
+                            situation: 'In-service inspection of pipework. The duplex sections installed in 2040 are performing excellently. Original 304 sections remain under surveillance.',
+                            quote: "Good news on the duplex sections we installed in 2040 - no issues, excellent corrosion resistance. The original 304 areas need careful monitoring but we've addressed the worst spots. Standard ISI or enhanced scope?",
+                            options: [
+                                { id: 'standard', name: 'Standard in-service inspection', desc: 'Normal UT and visual per ASME XI.', cost: 20000, time: 3, dose: 1.5 },
+                                { id: 'enhanced', name: 'Enhanced surveillance on remaining 304', desc: 'Extra attention to sensitized-prone areas.', cost: 35000, time: 5, dose: 2 }
+                            ]
+                        },
+                        // Corrosion detected and only monitored - getting worse
+                        corrosionDetected: {
+                            situation: 'URGENT: Intergranular corrosion has progressed. Wall thickness measurements show thinning approaching minimum. IGSCC cracks detected at multiple welds.',
+                            quote: "That sensitization we saw in 2040 - it's progressed exactly as the literature predicted. Wall thickness at 3 locations is approaching code minimum. We've got IGSCC cracks growing. The Type 304 from 2025 is failing. This needs major intervention.",
+                            options: [
+                                { 
+                                    id: 'replace', 
+                                    name: 'Major piping replacement campaign', 
+                                    desc: 'Replace all affected 304 sections with duplex. Significant outage but permanent fix.', 
+                                    cost: 200000, time: 18, dose: 8,
+                                    setState: { earlyReplacement: true, corrosionDetected: false }
+                                },
+                                { 
+                                    id: 'overlay', 
+                                    name: 'Weld overlay reinforcement', 
+                                    desc: 'Add material over thin areas. Buys time but doesn\'t fix root cause.', 
+                                    cost: 80000, time: 8, dose: 5,
+                                    setState: { doseConstraints: true }
+                                },
+                                { 
+                                    id: 'chemistry', 
+                                    name: 'Modified water chemistry controls', 
+                                    desc: 'Hydrogen water chemistry to slow IGSCC. Industry standard mitigation.', 
+                                    cost: 45000, time: 3, dose: 2, healthImpact: -5
+                                }
+                            ]
+                        },
+                        // Default - 304 showing age
+                        default: {
+                            situation: 'In-service inspection reveals elevated dose rates limiting close-approach work. The activated standard steel from 2025 constrains inspection techniques.',
+                            quote: "Inspection time, but that standard 304 from 2025 is running hot - 15 years of Co-60 buildup. I need to keep my distance, which affects probe positioning. Extended reach equipment or accept constraints?",
+                            isModifier: true,
+                            options: [
+                                { 
+                                    id: 'standoff', 
+                                    name: 'Extended reach inspection', 
+                                    desc: 'Longer probe extensions, some accuracy loss.', 
+                                    cost: 18000, time: 4, dose: 4,
+                                    setState: { doseConstraints: true }
+                                },
+                                { 
+                                    id: 'shielded', 
+                                    name: 'Invest in shielded inspection equipment', 
+                                    desc: 'Better equipment for close-approach work in hot areas.', 
+                                    cost: 40000, time: 5, dose: 2,
+                                    setState: { shieldingAdded: true }
+                                }
+                            ]
+                        }
+                    }
                 },
-                lowCobalt: {
-                    situation: 'Manageable dose rates allow standard inspection approaches. The low-cobalt specification from 2025 continues to pay dividends.',
-                    quote: "Inspection programme running smoothly. That low-cobalt steel from 2025 - dose rates are low enough for normal close-approach work. No special equipment needed. Standard or enhanced baseline?",
+                duplex: {
+                    situation: 'In-service inspection shows excellent material condition. The duplex stainless from 2025 has no IGSCC susceptibility and low activation. Straightforward ISI.',
+                    quote: "Material examination going smoothly. That duplex specification from 2025 - no sensitization issues, no IGSCC concerns, dose rates manageable. The premium specification is proving its worth. Standard ISI or detailed baseline?",
                     options: [
-                        { id: 'standard', name: 'Standard inspection', desc: 'Normal techniques, full coverage.', cost: 10000, time: 2, dose: 1 },
-                        { id: 'baseline', name: 'Establish detailed baseline', desc: 'Extra measurements for future reference.', cost: 18000, time: 3, dose: 1.5 }
+                        { id: 'standard', name: 'Standard in-service inspection', desc: 'Normal techniques, full coverage. Easy access due to low dose rates.', cost: 12000, time: 2, dose: 1 },
+                        { id: 'baseline', name: 'Detailed condition baseline', desc: 'Extra measurements for future trending.', cost: 20000, time: 3, dose: 1.5 }
                     ]
                 },
                 exotic: {
-                    situation: 'Very high dose rates make inspection extremely challenging. The exotic alloy from 2025 requires specialist contractors with high-dose experience.',
-                    quote: "That exotic alloy from 2025 - it's so hot now our regular teams can't get near it safely. We need specialists who handle high-dose work. Or we accept limited inspection coverage.",
-                    isModifier: true,
-                    options: [
-                        { id: 'specialist', name: 'Hire specialist high-dose contractor', desc: 'Experts with special shielding and experience.', cost: 50000, time: 5, dose: 3 },
-                        { id: 'limited', name: 'Accept limited inspection coverage', desc: 'Do what we can safely. Document gaps.', cost: 20000, time: 3, dose: 4, healthImpact: -5 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        remoteTooling: {
+                            situation: 'Inspection using remote systems developed in 2040. The exotic alloy remains extremely active but we can work around it.',
+                            quote: "That remote inspection kit we bought in 2040 is earning its keep. The exotic alloy is still extremely hot, but I can get full coverage without exceeding dose limits. Technology compensating for poor material choice.",
+                            options: [
+                                { id: 'remote', name: 'Full remote inspection campaign', desc: 'Complete ISI using manipulators and robots.', cost: 35000, time: 4, dose: 1 },
+                                { id: 'hybrid', name: 'Hybrid remote/manual approach', desc: 'Remote for hot spots, hands-on elsewhere.', cost: 25000, time: 3, dose: 2 }
+                            ]
+                        },
+                        shieldingAdded: {
+                            situation: 'Inspection behind permanent shielding. Access is constrained but dose rates are manageable.',
+                            quote: "Working behind the shielding we installed in 2040. The exotic alloy would kill dose budgets otherwise. Some access constraints from the lead blankets but we can get the job done.",
+                            options: [
+                                { id: 'careful', name: 'Careful inspection around shielding', desc: 'Work within the constraints.', cost: 30000, time: 5, dose: 2 },
+                                { id: 'temporary', name: 'Temporarily remove shielding for full access', desc: 'Better inspection but higher dose.', cost: 25000, time: 4, dose: 4 }
+                            ]
+                        },
+                        default: {
+                            situation: 'Extremely high dose rates make inspection challenging. The exotic alloy from 2025 requires specialist high-dose contractors.',
+                            quote: "That exotic alloy from 2025 - it's so hot now our regular inspection teams can't get near it safely. Specialist contractors needed, or we accept limited coverage.",
+                            isModifier: true,
+                            options: [
+                                { 
+                                    id: 'specialist', 
+                                    name: 'Hire specialist high-dose contractor', 
+                                    desc: 'Experts with special shielding and experience.', 
+                                    cost: 60000, time: 6, dose: 3,
+                                    setState: { doseConstraints: true }
+                                },
+                                { 
+                                    id: 'limited', 
+                                    name: 'Accept limited inspection coverage', 
+                                    desc: 'Do what we can safely. Document gaps.', 
+                                    cost: 25000, time: 3, dose: 4, healthImpact: -5,
+                                    setState: { doseConstraints: true }
+                                }
+                            ]
+                        }
+                    }
                 }
             },
             stage4: {
                 standard: {
-                    situation: 'Cumulative workforce dose approaching annual limits. The activated standard steel from 2025 constrains operational flexibility.',
-                    quote: "We're running into dose limit problems. That standard steel from 2025 - 45 years of activation means we're burning through dose budget fast. Need to bring in more workers or slow down.",
-                    options: [
-                        { id: 'contractors', name: 'Bring in additional contractors', desc: 'More workers to share the dose burden.', cost: 80000, time: 0, dose: 0 },
-                        { id: 'shielding', name: 'Install permanent shielding', desc: 'Long-term dose reduction investment.', cost: 50000, time: 5, dose: 0 },
-                        { id: 'slow', name: 'Accept schedule extension', desc: 'Work slower to spread dose over time.', cost: 20000, time: 10, dose: 0 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        earlyReplacement: {
+                            situation: 'Operations running smoothly. The 2055 replacement campaign eliminated the worst IGSCC-susceptible material. Remaining 304 is stable.',
+                            quote: "That replacement campaign in 2055 was the right call. The new duplex sections are performing perfectly, and the remaining original 304 has stabilised with the chemistry controls. No operational constraints.",
+                            options: [
+                                { id: 'maintain', name: 'Maintain current approach', desc: 'Continue with proven strategy.', cost: 10000, time: 0, dose: 0.5 },
+                                { id: 'extend', name: 'Extend replacement to additional sections', desc: 'Proactive replacement before problems develop.', cost: 45000, time: 5, dose: 2 }
+                            ]
+                        },
+                        doseConstraints: {
+                            situation: 'Cumulative workforce dose approaching annual limits. The activated standard steel from 2025 constrains operational flexibility. Dose budgets are tight.',
+                            quote: "We're running into dose limit problems. That Type 304 from 2025 with all its cobalt - 45 years of activation means we're burning through dose budget fast. Every job is a dose planning exercise.",
+                            options: [
+                                { id: 'contractors', name: 'Bring in additional contractors', desc: 'More workers to share the dose burden.', cost: 90000, time: 0, dose: 0 },
+                                { id: 'permanent_shield', name: 'Install permanent walk-in shielding', desc: 'Major investment but long-term dose reduction.', cost: 70000, time: 8, dose: 0 },
+                                { id: 'extend', name: 'Accept extended work schedules', desc: 'Spread dose over more time. Delays projects.', cost: 30000, time: 12, dose: 0 }
+                            ]
+                        },
+                        default: {
+                            situation: 'Operations constrained by dose rates from activated 304 stainless steel. The 2025 material choice affecting daily work even 45 years later.',
+                            quote: "Every time we need work done in that area, it's a dose planning headache. The Type 304 from 2025 has been accumulating Co-60 for 45 years. We're constantly rotating workers to stay under limits.",
+                            options: [
+                                { id: 'manage', name: 'Continue dose management programme', desc: 'Keep rotating workers, planning around hot spots.', cost: 25000, time: 2, dose: 0 },
+                                { id: 'invest', name: 'Invest in permanent dose reduction', desc: 'Shielding and remote access improvements.', cost: 80000, time: 6, dose: 0 }
+                            ]
+                        }
+                    }
                 },
-                lowCobalt: {
-                    situation: 'Dose rates remain low. Full operational flexibility maintained thanks to the low-cobalt specification from 2025.',
-                    quote: "Dose budgets looking healthy. That low-cobalt decision in 2025 gives us complete flexibility - no constraints on work planning, no limit problems. How do you want to manage the surplus?",
+                duplex: {
+                    situation: 'Full operational flexibility maintained. Dose rates remain low thanks to the low-cobalt duplex specification from 2025.',
+                    quote: "Dose budgets looking healthy even at 45 years. That duplex decision in 2025 gives us complete flexibility - no constraints on work planning, no limit problems. This is how it should be.",
                     options: [
                         { id: 'maintain', name: 'Standard operations', desc: 'Continue normal working.', cost: 5000, time: 0, dose: 0.5 },
                         { id: 'bank', name: 'Bank dose margin for contingencies', desc: 'Reserve capacity for unexpected work.', cost: 5000, time: 0, dose: 0 }
                     ]
                 },
                 exotic: {
-                    situation: 'Severe dose constraints limit work. The exotic alloy from 2025 has created extreme activation levels after 45 years.',
-                    quote: "We can barely get near the primary circuit. That exotic alloy from 2025 - after 45 years of activation, work windows are measured in minutes. Major operational constraints. How do we manage this?",
-                    options: [
-                        { id: 'contractors', name: 'Rotating contractor teams', desc: 'Many workers, very short exposures each.', cost: 120000, time: 5, dose: 0 },
-                        { id: 'remote', name: 'Remote operations only', desc: 'No direct human access to affected areas.', cost: 80000, time: 8, dose: 0 },
-                        { id: 'restrict', name: 'Severely restrict operations', desc: 'Accept major operational limitations.', cost: 30000, time: 0, dose: 0, healthImpact: -10 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        remoteTooling: {
+                            situation: 'Operations only possible with remote systems. The exotic alloy from 2025 creates extreme activation but remote capabilities allow continued operation.',
+                            quote: "That remote investment in 2040 - we'd be shut down without it. The exotic alloy areas are essentially no-go zones for humans now. But the robots don't care about dose rates.",
+                            options: [
+                                { id: 'continue', name: 'Continue remote-only operations', desc: 'Maintain current remote capability.', cost: 45000, time: 2, dose: 0 },
+                                { id: 'expand', name: 'Expand remote operational capability', desc: 'More tasks remotely. Less human involvement.', cost: 80000, time: 5, dose: 0 }
+                            ]
+                        },
+                        default: {
+                            situation: 'Severe dose constraints limit all work. The exotic nickel alloy from 2025 has created extreme activation levels after 45 years.',
+                            quote: "We can barely get near the primary circuit. That exotic alloy from 2025 - after 45 years of activation, work windows are measured in minutes. Major operational constraints affecting availability.",
+                            options: [
+                                { id: 'rotating', name: 'Rotating contractor teams', desc: 'Many workers, very short exposures each.', cost: 130000, time: 6, dose: 0 },
+                                { id: 'restrict', name: 'Severely restrict operations', desc: 'Accept major operational limitations.', cost: 40000, time: 0, dose: 0, healthImpact: -10 }
+                            ]
+                        }
+                    }
                 }
             },
             stage5: {
                 standard: {
-                    situation: 'After the 5-year decay period, components with standard steel remain highly active. Remote handling required for most work.',
-                    quote: "Five years of decay storage and that standard steel from 2025 is still too hot for hands-on work. 2,500ppm cobalt means decades more before it cools. Remote handling for everything. In-house or specialist?",
-                    options: [
-                        { id: 'remote', name: 'In-house remote handling', desc: 'Our teams with manipulators. Learning curve.', cost: 120000, time: 18, dose: 6, risk: 30 },
-                        { id: 'specialist', name: 'Specialist remote handling contractor', desc: 'Experienced operators, proven techniques.', cost: 200000, time: 12, dose: 2 }
-                    ]
+                    checkElementState: true,
+                    scenarios: {
+                        earlyReplacement: {
+                            situation: 'Decommissioning with mixed materials. Duplex replacement sections can potentially be hands-on. Original 304 sections require careful characterisation.',
+                            quote: "Mixed picture for decommissioning. The duplex sections we installed are manageable - might even be LLW after decay storage. The original 304 from 2025 is still too active for hands-on work. Two-stream approach needed.",
+                            options: [
+                                { id: 'segregate', name: 'Material-segregated decommissioning', desc: 'Handle duplex and 304 separately. Optimise waste routing.', cost: 90000, time: 12, dose: 3 },
+                                { id: 'combined', name: 'Combined removal approach', desc: 'Treat everything as higher category waste. Simpler but more expensive disposal.', cost: 120000, time: 10, dose: 4 }
+                            ]
+                        },
+                        default: {
+                            situation: 'After 5-year decay storage, components with standard 304 steel remain highly active from Co-60. Remote handling required for most work.',
+                            quote: "Five years of decay storage and that Type 304 from 2025 is still too hot for hands-on work. 2,500ppm cobalt means decades more before it cools to manageable levels. Full remote handling required.",
+                            options: [
+                                { id: 'remote', name: 'In-house remote handling', desc: 'Our teams with manipulators. Learning curve but we have time.', cost: 140000, time: 20, dose: 6 },
+                                { id: 'specialist', name: 'Specialist remote handling contractor', desc: 'Experienced operators, proven techniques, faster completion.', cost: 220000, time: 14, dose: 2 }
+                            ]
+                        }
+                    }
                 },
-                lowCobalt: {
-                    situation: 'After 5-year decay, the low-cobalt materials from 2025 allow hands-on work with standard PPE. Some components may qualify as LLW.',
-                    quote: "Five years decay and that low-cobalt steel from 2025 is cool enough for hands-on work. Some of it might even go as low-level waste instead of ILW. This is exactly what we hoped for.",
+                duplex: {
+                    situation: 'After 5-year decay, the low-cobalt duplex materials from 2025 allow hands-on work with standard PPE. Some components may qualify as LLW.',
+                    quote: "Five years decay and that duplex steel from 2025 is cool enough for hands-on work. The low cobalt specification - some of this might even qualify as LLW instead of ILW. Major cost saving at the end.",
                     options: [
-                        { id: 'handson', name: 'Hands-on removal and segregation', desc: 'Direct handling with standard PPE.', cost: 60000, time: 8, dose: 2 },
-                        { id: 'segregate', name: 'Detailed segregation for waste minimisation', desc: 'Maximum effort to classify materials correctly.', cost: 80000, time: 10, dose: 2.5 }
+                        { id: 'handson', name: 'Hands-on removal and characterisation', desc: 'Direct handling with standard PPE. Efficient and controlled.', cost: 65000, time: 10, dose: 2 },
+                        { id: 'optimise', name: 'Detailed waste characterisation for LLW', desc: 'Maximum effort to classify as lower category waste.', cost: 85000, time: 12, dose: 2.5 }
                     ]
                 },
                 exotic: {
-                    situation: 'The exotic nickel alloy from 2025 contains Nickel-63 with a 100-year half-life. These components will remain highly active for centuries.',
-                    quote: "That exotic alloy from 2025 - Nickel-63 has a hundred-year half-life. Five years of decay makes no difference. This stuff will be active long after everyone here is dead. Long-term storage or extreme remote handling?",
+                    situation: 'The exotic nickel alloy from 2025 contains Ni-63 with a 100-year half-life. These components will remain highly active for centuries.',
+                    quote: "That exotic alloy from 2025 - the Nickel-63 has a 100-year half-life. Five years of decay makes essentially no difference. This material will be highly active long after we're all dead. Century-scale storage required.",
                     options: [
-                        { id: 'extended', name: 'Extended remote decommissioning', desc: 'Very slow, very careful, very expensive.', cost: 250000, time: 30, dose: 15 },
-                        { id: 'storage', name: 'Long-term interim storage', desc: 'Store for decades. Wait for decay. Pass to future.', cost: 200000, time: 10, dose: 3 },
-                        { id: 'specialist', name: 'Specialist handling plus storage', desc: 'Expert removal then long-term storage.', cost: 300000, time: 20, dose: 5 }
+                        { id: 'extended', name: 'Extended remote decommissioning', desc: 'Very slow, very careful, very expensive. Minimise secondary waste.', cost: 280000, time: 35, dose: 15 },
+                        { id: 'storage', name: 'Long-term interim storage', desc: 'Store for decades, let decay reduce activity. Pass the problem to the future.', cost: 220000, time: 12, dose: 4 },
+                        { id: 'specialist', name: 'Specialist handling plus GDF disposal', desc: 'Expert removal, direct to geological disposal. Expensive but final.', cost: 350000, time: 25, dose: 6 }
                     ]
                 }
             }
@@ -3379,11 +3865,39 @@ const STATE = {
             inspectionGap: false,
             deteriorating: false
         },
-        weldClearance: {},
-        controlPanel: {},
-        pipeConnections: {},
-        pipeRouting: {},
-        materialSpec: {}
+        weldClearance: {
+            clearanceImproved: false,
+            specialToolingUsed: false,
+            inspectionLimited: false,
+            deteriorating: false,
+            leakOccurred: false
+        },
+        controlPanel: {
+            layoutModified: false,
+            backupInstalled: false,
+            trainingEnhanced: false,
+            operatorError: false
+        },
+        pipeConnections: {
+            flangingAdded: false,
+            weldCutMade: false,
+            inspectionLimited: false,
+            boltDegradation: false,
+            leakHistory: false
+        },
+        pipeRouting: {
+            accessCreated: false,
+            cableConflict: false,
+            contaminationSpread: false,
+            inspectionLimited: false
+        },
+        materialSpec: {
+            corrosionDetected: false,
+            earlyReplacement: false,
+            shieldingAdded: false,
+            remoteTooling: false,
+            doseConstraints: false
+        }
     }
 };
 
@@ -4156,11 +4670,11 @@ function showFinalResults() {
     // Optimal costs - if you made all good choices
     const OPTIMAL_COSTS = {
         pumpAccess: { design: 120000, lifecycle: 65000 },      // Open Bay + standard ops
-        weldClearance: { design: 130000, lifecycle: 50000 },   // 600mm gaps + standard
-        controlPanel: { design: 120000, lifecycle: 40000 },    // System-based + standard
+        weldClearance: { design: 90000, lifecycle: 55000 },    // 150mm clearance + standard
+        controlPanel: { design: 120000, lifecycle: 45000 },    // Task-based + standard
         pipeConnections: { design: 100000, lifecycle: 45000 }, // Flanged + standard
-        pipeRouting: { design: 100000, lifecycle: 50000 },     // Service tunnel + standard
-        materialSpec: { design: 140000, lifecycle: 40000 }     // Duplex + standard
+        pipeRouting: { design: 100000, lifecycle: 50000 },     // Ducted + standard
+        materialSpec: { design: 140000, lifecycle: 50000 }     // Duplex + standard
     };
     
     const ELEMENT_ICONS = {
@@ -4179,29 +4693,29 @@ function showFinalResults() {
             poor: "The corner position saved £40k in 2025 but created problems at every subsequent stage. Access constraints compound - each workaround creates the next problem."
         },
         weldClearance: {
-            good: "600mm clearance allowed standard tooling throughout the lifecycle. Welds were accessible for inspection, repair, and eventual cutting during decommissioning.",
-            wasteful: "800mm was more than needed. The extra space was never utilised and added unnecessary structural cost.",
-            poor: "400mm seemed adequate on paper but real-world tooling needs more space. Restricted access meant specialists, adapters, and compromises at every intervention."
+            good: "150mm clearance allowed standard UT probes and welding equipment throughout the lifecycle. Full ASME Section XI inspection coverage achievable at every ISI.",
+            wasteful: "300mm with permanent scaffolding was more than needed. The scaffolding accumulated contamination and became ILW - adding waste volume at decommissioning.",
+            poor: "50mm met code minimum but real UT probes need 80mm for proper beam angles. Limited inspection coverage meant inspection gaps, and gaps became leaks."
         },
         controlPanel: {
-            good: "System-based grouping meant operators and maintainers could find what they needed quickly. Logical layout reduces human error and training time.",
-            wasteful: "Separate rooms provided isolation but the walking distances and duplication added cost. Maintenance required covering more ground.",
-            poor: "The crowded layout saved space initially but created a maze. Finding the right control during an incident is harder. Modifications require relocating existing equipment."
+            good: "Task-based layout matches operator mental model. Emergency controls flow left-to-right as trained. Post-TMI human factors principles applied correctly - response times 40% faster than industry average.",
+            wasteful: "Software-based touchscreens offered flexibility but failed when needed most. No haptic feedback, glove incompatibility, and 30-year software obsolescence. Defence in depth requires physical backup.",
+            poor: "System-based layout is logical to engineers but confusing to operators under stress. Controls for emergency sequences scattered across panels - exactly the TMI lesson we should have learned."
         },
         pipeConnections: {
             good: "Flanged connections at strategic points allowed sections to be isolated and removed without cutting. Faster maintenance, less dose, easier decommissioning.",
-            wasteful: "Excessive flanges meant more potential leak points and more bolts to manage. Some connections never needed to be broken.",
-            poor: "All-welded seemed simpler but every intervention required cutting and re-welding. More dose, more time, more cost throughout the lifecycle."
+            wasteful: "Excessive flanges meant more potential leak points and 47 bolted connections to maintain. Gasket failures accumulated over 60 years.",
+            poor: "All-welded seemed simpler but every intervention required cutting and re-welding. No isolation points for online maintenance. More dose, more time, more cost throughout the lifecycle."
         },
         pipeRouting: {
-            good: "The service tunnel provided walk-in access for all pipe maintenance. Inspectors and maintainers could work in comfort with good lighting and minimal dose.",
-            wasteful: "The walk-in tunnel was oversized for the actual pipe runs. Construction cost was high for the access frequency needed.",
-            poor: "The cable tray route saved construction cost but every pipe inspection required removing cable covers first. Two jobs became interlinked."
+            good: "Ducted routing with removable covers provided easy access while controlling contamination spread. Clean decommissioning - ducts remained as clean concrete.",
+            wasteful: "The walk-in tunnel provided excellent access but accumulated contamination over 60 years, becoming ILW and a major disposal volume.",
+            poor: "Embedded pipes saved construction cost but created inspection gaps and made leak location impossible. What you can't inspect, you can't prove is safe."
         },
         materialSpec: {
-            good: "Duplex stainless provided the right balance of corrosion resistance and cost. It performed well throughout the lifecycle with predictable degradation.",
-            wasteful: "Super duplex was overspecified for this application. The premium paid in 2025 never delivered additional value.",
-            poor: "Standard stainless seemed adequate but corrosion appeared earlier than expected. Repairs and early replacements added up over 60 years."
+            good: "Duplex stainless provided the right balance - no IGSCC susceptibility, low cobalt activation, good weldability. Predictable performance through 60 years.",
+            wasteful: "Super duplex/exotic nickel alloy had excellent corrosion resistance but created extreme activation problems. Ni-63 with 100-year half-life complicated decommissioning for centuries.",
+            poor: "Type 304 seemed adequate but sensitization and IGSCC are known issues in nuclear environments. Intergranular corrosion appeared exactly as the literature predicted. Co-60 activation constrained dose budgets for decades."
         }
     };
     
