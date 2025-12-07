@@ -2351,11 +2351,349 @@
             font-size: 0.75rem;
             color: #8899a6;
         }
+        /* ========================================
+           WELD INSPECTION GAME CSS
+           ======================================== */
+        .weld-game-container {
+            background: linear-gradient(135deg, #0d1a2d 0%, #1a2a3a 100%);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .weld-game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--slate);
+        }
+        .weld-game-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--blue);
+        }
+        .weld-game-stats {
+            display: flex;
+            gap: 15px;
+        }
+        .weld-stat {
+            font-size: 0.8rem;
+            color: var(--light-grey);
+        }
+        .weld-stat-value {
+            font-weight: 600;
+            color: var(--white);
+        }
+        .weld-viewport {
+            position: relative;
+            background: #0a1424;
+            border-radius: 8px;
+            height: 320px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .weld-wall {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, #4a5568 0%, #374151 80%, #2d3748 100%);
+            border-right: 3px solid #6b7280;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: width 0.4s ease, opacity 0.4s ease;
+        }
+        .weld-wall-label {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            color: var(--mid-grey);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .weld-wall-dim {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            background: var(--slate);
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-size: 0.6rem;
+            color: var(--amber);
+            white-space: nowrap;
+        }
+        .weld-scaffold-rail {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 10px;
+            background: repeating-linear-gradient(0deg, #f59e0b 0px, #f59e0b 3px, #1a1a1a 3px, #1a1a1a 6px);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .weld-scaffold-rail.left { left: 20px; }
+        .weld-scaffold-rail.right { right: 20px; }
+        .weld-scaffold-rail.visible { opacity: 1; }
+        .weld-scaffold-label {
+            position: absolute;
+            top: 10px;
+            font-size: 0.6rem;
+            color: var(--amber);
+            text-transform: uppercase;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .weld-scaffold-label.left { left: 8px; }
+        .weld-scaffold-label.right { right: 8px; }
+        .weld-scaffold-label.visible { opacity: 1; }
+        .weld-robot-badge {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--green), #6ab04c);
+            color: var(--deep-navy);
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 15;
+        }
+        .weld-robot-badge.visible { opacity: 1; }
+        .weld-pipe-section {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: left 0.4s ease;
+        }
+        .weld-pipe-outer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 50%, #1a202c 100%);
+            box-shadow: 0 0 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .weld-pipe-inner {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            left: 25%;
+            top: 25%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a202c 0%, #0d1a2d 100%);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .weld-pipe-inner-label {
+            color: var(--mid-grey);
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            text-align: center;
+        }
+        .weld-ring {
+            position: absolute;
+            width: 78%;
+            height: 78%;
+            left: 11%;
+            top: 11%;
+            border-radius: 50%;
+            border: 3px solid var(--red);
+            box-shadow: 0 0 8px rgba(220, 53, 69, 0.4);
+        }
+        .weld-ring-label {
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark-slate);
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.6rem;
+            color: var(--red);
+            white-space: nowrap;
+            border: 1px solid var(--red);
+        }
+        .weld-point {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 700;
+            z-index: 5;
+        }
+        .weld-point.pending {
+            background: rgba(100, 116, 139, 0.5);
+            border: 2px solid var(--mid-grey);
+            color: var(--mid-grey);
+        }
+        .weld-point.pending:hover {
+            background: rgba(0, 176, 240, 0.4);
+            border-color: var(--blue);
+            color: var(--white);
+            transform: translate(-50%, -50%) scale(1.2);
+            box-shadow: 0 0 15px rgba(0, 176, 240, 0.5);
+        }
+        .weld-point.complete {
+            background: rgba(146, 208, 80, 0.4);
+            border: 2px solid var(--green);
+            color: var(--green);
+        }
+        .weld-point.blocked {
+            background: rgba(220, 53, 69, 0.4);
+            border: 2px solid var(--red);
+            color: var(--red);
+            cursor: not-allowed;
+        }
+        .weld-point.scanning {
+            animation: weldScanPulse 0.4s ease;
+            background: rgba(0, 176, 240, 0.5);
+            border-color: var(--blue);
+            color: var(--white);
+        }
+        @keyframes weldScanPulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 176, 240, 0.7); }
+            100% { box-shadow: 0 0 0 12px rgba(0, 176, 240, 0); }
+        }
+        .weld-probe {
+            position: absolute;
+            width: 70px;
+            transition: all 0.35s ease;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0;
+        }
+        .weld-probe img {
+            width: 100%;
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));
+        }
+        .weld-probe.blocked {
+            animation: weldProbeBlocked 0.4s ease;
+        }
+        @keyframes weldProbeBlocked {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(12px); }
+            40% { transform: translateX(-10px); }
+            60% { transform: translateX(6px); }
+            80% { transform: translateX(-3px); }
+        }
+        .weld-blocked-msg {
+            position: absolute;
+            background: rgba(220, 53, 69, 0.95);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 20;
+            white-space: nowrap;
+        }
+        .weld-blocked-msg.visible { opacity: 1; }
+        .weld-coverage-panel {
+            background: var(--slate);
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-bottom: 12px;
+        }
+        .weld-coverage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .weld-coverage-label {
+            font-size: 0.8rem;
+            color: var(--light-grey);
+        }
+        .weld-coverage-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .weld-coverage-value.full { color: var(--green); }
+        .weld-coverage-value.partial { color: var(--amber); }
+        .weld-coverage-value.poor { color: var(--red); }
+        .weld-coverage-bar {
+            height: 6px;
+            background: var(--dark-slate);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .weld-coverage-fill {
+            height: 100%;
+            background: var(--green);
+            transition: width 0.4s ease, background 0.3s;
+            border-radius: 3px;
+        }
+        .weld-coverage-fill.partial { background: var(--amber); }
+        .weld-coverage-fill.poor { background: var(--red); }
+        .weld-coverage-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.7rem;
+            color: var(--mid-grey);
+        }
+        .weld-coverage-detail span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .weld-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .weld-dot.complete { background: var(--green); }
+        .weld-dot.blocked { background: var(--red); }
+        .weld-dot.pending { background: var(--mid-grey); }
+        .weld-status-msg {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 176, 240, 0.1);
+            border: 1px solid rgba(0, 176, 240, 0.3);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--light-grey);
+        }
+        .weld-status-msg.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        .weld-status-msg.error {
+            background: rgba(220, 53, 69, 0.1);
+            border-color: rgba(220, 53, 69, 0.3);
+        }
+        .weld-status-msg.success {
+            background: rgba(146, 208, 80, 0.1);
+            border-color: rgba(146, 208, 80, 0.3);
+        }
     </style>
 </head>
 <body>
 <!-- VERSION TAG -->
-<div class="version-tag">v0.44</div>
+<div class="version-tag">v0.45</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -3337,11 +3675,11 @@ const GAME_DATA = {
                     ]
                 },
                 '300mm': {
-                    situation: 'Weld inspection required. Good clearance overall, but the permanent scaffolding from 2025 partially obscures some probe scan paths.',
-                    quote: "The 300mm clearance is generous, but that permanent scaffolding is in my way for some of the circumferential scans. I can work around it, adds time. Or we survey the scaffolding contamination while here.",
+                    situation: 'Weld inspection required. The permanent scaffolding from 2025 provides 360° access around the pipe - perfect for deploying robotic inspection equipment.',
+                    quote: "This is the payoff from that 2025 investment. The scaffolding gives us full robot access - I can deploy the automated UT scanner and it'll do the whole circumference in one pass. Minimal dose to personnel, quick turnaround. Standard robot scan or comprehensive deep analysis?",
                     options: [
-                        { id: 'workaround', name: 'Work around scaffolding', desc: 'Extended scan paths but full coverage achievable.', cost: 22000, time: 4, dose: 2 },
-                        { id: 'survey', name: 'Include scaffolding contamination survey', desc: 'Check contamination levels - may need addressing before decommissioning.', cost: 32000, time: 5, dose: 2.5 }
+                        { id: 'robot_standard', name: 'Robotic Standard Inspection', desc: 'Automated 360° UT scan. Full coverage with minimal human exposure.', cost: 8000, time: 0.5, dose: 0.1 },
+                        { id: 'robot_comprehensive', name: 'Robotic Deep Analysis', desc: 'Comprehensive volumetric scan with advanced defect characterisation.', cost: 15000, time: 1, dose: 0.2 }
                     ]
                 }
             },
@@ -5157,6 +5495,455 @@ function renderDesignModal(elId, element) {
     };
 }
 // ============================================
+// WELD INSPECTION MINI-GAME (Stage 3 - Weld Clearance)
+// ============================================
+let weldGameState = {
+    variant: null,
+    totalPoints: 8,
+    scannedPoints: [],
+    blockedPoints: [],
+    isAnimating: false,
+    roboticInspection: false,
+    currentStageData: null,
+    currentElId: null,
+    currentElement: null
+};
+
+const WELD_POINT_ANGLES = [
+    { id: 'A', angle: 180 },
+    { id: 'B', angle: 225 },
+    { id: 'C', angle: 270 },
+    { id: 'D', angle: 315 },
+    { id: 'E', angle: 0 },
+    { id: 'F', angle: 45 },
+    { id: 'G', angle: 90 },
+    { id: 'H', angle: 135 }
+];
+
+const WELD_VARIANTS = {
+    '50mm': {
+        wallWidth: 150,
+        pipeLeft: 220,
+        blockedPoints: ['A', 'B', 'H'],
+        useScaffolding: false,
+        roboticInspection: false
+    },
+    '150mm': {
+        wallWidth: 80,
+        pipeLeft: 180,
+        blockedPoints: [],
+        useScaffolding: false,
+        roboticInspection: false
+    },
+    '300mm': {
+        wallWidth: 0,
+        pipeLeft: 250,
+        blockedPoints: [],
+        useScaffolding: true,
+        roboticInspection: true
+    }
+};
+
+function renderWeldInspectionGame(elId, element) {
+    const stageKey = `stage${STATE.stage}`;
+    const designChoice = STATE.designChoices[elId];
+    const designOpt = element.stage1.options.find(o => o.id === designChoice);
+    const stage = GAME_DATA.stages[STATE.stage];
+    let stageData = element[stageKey]?.[designChoice];
+    
+    if (!stageData) {
+        document.getElementById('modalBody').innerHTML = '<p>No data for this element at this stage.</p>';
+        document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" onclick="closeModal()">Close</button>';
+        return;
+    }
+    
+    // Handle element state-based scenarios
+    if (stageData.checkElementState && stageData.scenarios) {
+        const elState = STATE.elementState[elId] || {};
+        const statePriority = [
+            'deteriorating', 'inspectionLimited', 'clearanceImproved', 'specialToolingUsed'
+        ];
+        let matchedScenario = null;
+        for (const state of statePriority) {
+            if (elState[state] && stageData.scenarios[state]) {
+                matchedScenario = stageData.scenarios[state];
+                break;
+            }
+        }
+        if (!matchedScenario) {
+            matchedScenario = stageData.scenarios.default || stageData.scenarios[Object.keys(stageData.scenarios)[0]];
+        }
+        stageData = matchedScenario;
+    }
+    
+    // Store for later
+    weldGameState.currentStageData = stageData;
+    weldGameState.currentElId = elId;
+    weldGameState.currentElement = element;
+    
+    const variantConfig = WELD_VARIANTS[designChoice] || WELD_VARIANTS['150mm'];
+    weldGameState.variant = designChoice;
+    weldGameState.scannedPoints = [];
+    weldGameState.blockedPoints = [...variantConfig.blockedPoints];
+    weldGameState.isAnimating = false;
+    weldGameState.roboticInspection = variantConfig.roboticInspection;
+    
+    const char = GAME_DATA.characters[stage.char];
+    const stageCost = STATE.stageTotals[STATE.stage]?.cost || 0;
+    
+    let html = `
+        <div class="context-bar">
+            <span class="context-design">📅 Year ${stage.year} · 2025 Design: <strong>${designOpt.name}</strong></span>
+            <span class="context-cost">💰 Stage Cost: ${formatMoney(stageCost)}</span>
+        </div>
+        <div class="situation-panel">
+            <div class="situation-label">Current Situation</div>
+            <div class="situation-text">${stageData.situation}</div>
+        </div>
+        <div class="weld-game-container">
+            <div class="weld-game-header">
+                <span class="weld-game-title">🔬 Ultrasonic Weld Inspection</span>
+                <div class="weld-game-stats">
+                    <div class="weld-stat">📐 Clearance: <span class="weld-stat-value">${designChoice}</span></div>
+                    <div class="weld-stat">🎯 Scanned: <span class="weld-stat-value" id="weldPointsValue">0 / 8</span></div>
+                </div>
+            </div>
+            <div class="weld-viewport" id="weldViewport">
+                <div class="weld-wall" id="weldWall" style="width: ${variantConfig.wallWidth}px;">
+                    <span class="weld-wall-label">Concrete Wall</span>
+                    ${variantConfig.wallWidth > 0 ? `<span class="weld-wall-dim">Gap: ${designChoice}</span>` : ''}
+                </div>
+                <div class="weld-scaffold-rail left ${variantConfig.useScaffolding ? 'visible' : ''}" id="weldScaffoldL"></div>
+                <div class="weld-scaffold-rail right ${variantConfig.useScaffolding ? 'visible' : ''}" id="weldScaffoldR"></div>
+                <span class="weld-scaffold-label left ${variantConfig.useScaffolding ? 'visible' : ''}">◀ Scaffold</span>
+                <span class="weld-scaffold-label right ${variantConfig.useScaffolding ? 'visible' : ''}">Scaffold ▶</span>
+                <div class="weld-robot-badge" id="weldRobotBadge">🤖 ROBOTIC INSPECTION ENABLED</div>
+                <div class="weld-blocked-msg" id="weldBlockedMsg">⚠️ ACCESS BLOCKED</div>
+                <div class="weld-pipe-section" id="weldPipeSection" style="left: ${variantConfig.pipeLeft}px;">
+                    <div class="weld-pipe-outer"></div>
+                    <div class="weld-ring">
+                        <span class="weld-ring-label">WELD SEAM</span>
+                    </div>
+                    <div class="weld-pipe-inner">
+                        <span class="weld-pipe-inner-label">Pipe<br>Interior</span>
+                    </div>
+                    <div id="weldPoints"></div>
+                </div>
+                <div class="weld-probe" id="weldProbe">
+                    <img src="images/prop_probe.png" alt="UT Probe">
+                </div>
+            </div>
+            <div class="weld-coverage-panel">
+                <div class="weld-coverage-header">
+                    <span class="weld-coverage-label">Weld Coverage</span>
+                    <span class="weld-coverage-value" id="weldCoverageValue">0%</span>
+                </div>
+                <div class="weld-coverage-bar">
+                    <div class="weld-coverage-fill" id="weldCoverageFill" style="width: 0%"></div>
+                </div>
+                <div class="weld-coverage-detail">
+                    <span><span class="weld-dot complete"></span> Scanned: <span id="weldScannedCount">0</span></span>
+                    <span><span class="weld-dot blocked"></span> Blocked: <span id="weldBlockedCount">${variantConfig.blockedPoints.length}</span></span>
+                    <span><span class="weld-dot pending"></span> Remaining: <span id="weldRemainingCount">${8 - variantConfig.blockedPoints.length}</span></span>
+                </div>
+            </div>
+            <div class="weld-status-msg" id="weldStatusMsg">Click inspection points (A-H) around the weld to scan each location.</div>
+        </div>
+        <div class="speech-bubble">
+            <div class="speech-portrait">${char.image ? `<img src="${char.image}" alt="${char.name}">` : char.emoji}</div>
+            <div class="speech-name">${char.name}, ${char.role}</div>
+            <div class="speech-text">"${stageData.quote}"</div>
+        </div>
+        <div id="weldDecisionArea" style="display: none;"></div>
+    `;
+    
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('modalFooter').innerHTML = '<div id="weldGameFooter"></div>';
+    
+    createWeldInspectionPoints();
+    
+    // Show probe
+    const probe = document.getElementById('weldProbe');
+    probe.style.opacity = '1';
+    probe.style.right = '20px';
+    probe.style.top = '140px';
+    probe.style.transform = 'rotate(180deg)';
+}
+
+function createWeldInspectionPoints() {
+    const container = document.getElementById('weldPoints');
+    const radius = 82;
+    const centerX = 100;
+    const centerY = 100;
+    
+    container.innerHTML = WELD_POINT_ANGLES.map(point => {
+        const angleRad = (point.angle * Math.PI) / 180;
+        const x = centerX + radius * Math.cos(angleRad);
+        const y = centerY + radius * Math.sin(angleRad);
+        const isBlocked = weldGameState.blockedPoints.includes(point.id);
+        const statusClass = isBlocked ? 'blocked' : 'pending';
+        
+        return `
+            <div class="weld-point ${statusClass}" 
+                 id="weldPoint-${point.id}"
+                 data-id="${point.id}"
+                 data-angle="${point.angle}"
+                 style="left: ${x}px; top: ${y}px;"
+                 onclick="inspectWeldPoint('${point.id}')">
+                ${point.id}
+            </div>
+        `;
+    }).join('');
+}
+
+function inspectWeldPoint(pointId) {
+    if (weldGameState.isAnimating) return;
+    if (weldGameState.scannedPoints.includes(pointId)) return;
+    
+    // Robotic inspection - scan all points automatically
+    if (weldGameState.roboticInspection) {
+        performRoboticWeldInspection(pointId);
+        return;
+    }
+    
+    const point = document.getElementById(`weldPoint-${pointId}`);
+    const pointData = WELD_POINT_ANGLES.find(p => p.id === pointId);
+    const viewport = document.getElementById('weldViewport');
+    const pipeSection = document.getElementById('weldPipeSection');
+    const probe = document.getElementById('weldProbe');
+    const blockedMsg = document.getElementById('weldBlockedMsg');
+    
+    const viewportRect = viewport.getBoundingClientRect();
+    const pointRect = point.getBoundingClientRect();
+    
+    const pointCenterX = pointRect.left - viewportRect.left + pointRect.width / 2;
+    const pointCenterY = pointRect.top - viewportRect.top + pointRect.height / 2;
+    
+    let probeRotation = pointData.angle + 180;
+    const offsetDistance = 45;
+    const angleRad = (pointData.angle * Math.PI) / 180;
+    const probeX = pointCenterX + Math.cos(angleRad) * offsetDistance - 35;
+    const probeY = pointCenterY + Math.sin(angleRad) * offsetDistance - 20;
+    
+    weldGameState.isAnimating = true;
+    
+    probe.style.left = probeX + 'px';
+    probe.style.right = 'auto';
+    probe.style.top = probeY + 'px';
+    probe.style.transform = `rotate(${probeRotation}deg)`;
+    
+    if (weldGameState.blockedPoints.includes(pointId)) {
+        setTimeout(() => {
+            probe.classList.add('blocked');
+            blockedMsg.style.left = (pointCenterX - 70) + 'px';
+            blockedMsg.style.top = (pointCenterY - 35) + 'px';
+            blockedMsg.classList.add('visible');
+            updateWeldStatus(`⚠️ Point ${pointId} is BLOCKED! Probe cannot fit.`, 'error');
+            
+            setTimeout(() => {
+                probe.classList.remove('blocked');
+                blockedMsg.classList.remove('visible');
+                weldGameState.isAnimating = false;
+                checkWeldCompletion();
+            }, 1000);
+        }, 350);
+    } else {
+        setTimeout(() => {
+            point.classList.remove('pending');
+            point.classList.add('scanning');
+            
+            setTimeout(() => {
+                point.classList.remove('scanning');
+                point.classList.add('complete');
+                weldGameState.scannedPoints.push(pointId);
+                updateWeldCoverage();
+                
+                const remaining = weldGameState.totalPoints - weldGameState.scannedPoints.length - weldGameState.blockedPoints.length;
+                if (remaining > 0) {
+                    updateWeldStatus(`✓ Point ${pointId} scanned! ${remaining} point(s) remaining.`, 'success');
+                }
+                
+                weldGameState.isAnimating = false;
+                checkWeldCompletion();
+            }, 350);
+        }, 350);
+    }
+}
+
+function performRoboticWeldInspection(triggerPointId) {
+    weldGameState.isAnimating = true;
+    
+    document.getElementById('weldProbe').style.opacity = '0';
+    document.getElementById('weldRobotBadge').classList.add('visible');
+    
+    updateWeldStatus('🤖 Deploying robotic inspection system... Full 360° automated scan!', 'success');
+    
+    const allPoints = WELD_POINT_ANGLES.map(p => p.id);
+    let scanIndex = 0;
+    
+    const scanNextPoint = () => {
+        if (scanIndex >= allPoints.length) {
+            setTimeout(() => {
+                updateWeldStatus('🤖 Robotic inspection complete! 100% coverage achieved in record time.', 'success');
+                weldGameState.isAnimating = false;
+                checkWeldCompletion();
+            }, 200);
+            return;
+        }
+        
+        const pointId = allPoints[scanIndex];
+        const point = document.getElementById(`weldPoint-${pointId}`);
+        
+        if (!weldGameState.scannedPoints.includes(pointId)) {
+            point.classList.remove('pending');
+            point.classList.add('scanning');
+            
+            setTimeout(() => {
+                point.classList.remove('scanning');
+                point.classList.add('complete');
+                weldGameState.scannedPoints.push(pointId);
+                updateWeldCoverage();
+                
+                scanIndex++;
+                scanNextPoint();
+            }, 120);
+        } else {
+            scanIndex++;
+            scanNextPoint();
+        }
+    };
+    
+    setTimeout(scanNextPoint, 400);
+}
+
+function updateWeldCoverage() {
+    const scanned = weldGameState.scannedPoints.length;
+    const blocked = weldGameState.blockedPoints.length;
+    const total = weldGameState.totalPoints;
+    const remaining = total - scanned - blocked;
+    const coverage = Math.round((scanned / total) * 100);
+    
+    document.getElementById('weldScannedCount').textContent = scanned;
+    document.getElementById('weldBlockedCount').textContent = blocked;
+    document.getElementById('weldRemainingCount').textContent = remaining;
+    document.getElementById('weldPointsValue').textContent = `${scanned} / ${total}`;
+    
+    const coverageValue = document.getElementById('weldCoverageValue');
+    const coverageFill = document.getElementById('weldCoverageFill');
+    
+    coverageValue.textContent = coverage + '%';
+    coverageFill.style.width = coverage + '%';
+    
+    if (coverage === 100) {
+        coverageValue.className = 'weld-coverage-value full';
+        coverageFill.className = 'weld-coverage-fill';
+    } else if (coverage >= 60) {
+        coverageValue.className = 'weld-coverage-value partial';
+        coverageFill.className = 'weld-coverage-fill partial';
+    } else {
+        coverageValue.className = 'weld-coverage-value poor';
+        coverageFill.className = 'weld-coverage-fill poor';
+    }
+}
+
+function checkWeldCompletion() {
+    const scanned = weldGameState.scannedPoints.length;
+    const blocked = weldGameState.blockedPoints.length;
+    const accessible = weldGameState.totalPoints - blocked;
+    
+    if (scanned === accessible) {
+        showWeldDecisionOptions();
+    }
+}
+
+function showWeldDecisionOptions() {
+    const stageData = weldGameState.currentStageData;
+    const elId = weldGameState.currentElId;
+    const coverage = Math.round((weldGameState.scannedPoints.length / weldGameState.totalPoints) * 100);
+    
+    let decisionTitle = coverage === 100 
+        ? '✓ 100% Coverage — Select Report Type' 
+        : `⚠️ ${weldGameState.blockedPoints.length} Point(s) Inaccessible — ${coverage}% Coverage`;
+    
+    const numOptions = stageData.options.length;
+    const gridClass = numOptions === 2 ? 'two-options' : (numOptions === 3 ? 'three-options' : '');
+    const sortedOpts = [...stageData.options].sort((a, b) => (a.cost || 0) - (b.cost || 0));
+    
+    let html = `
+        <div class="decision-section">
+            <div class="decision-header">
+                <span class="decision-label">${decisionTitle}</span>
+                <div class="decision-line"></div>
+            </div>
+            <div class="options-list ${gridClass}">
+    `;
+    
+    sortedOpts.forEach(opt => {
+        const cost = opt.cost || 0;
+        const hasImpacts = opt.time || opt.dose || opt.healthImpact || opt.risk;
+        html += `
+            <div class="option-card" data-id="${opt.id}">
+                <div class="option-header">
+                    <div class="option-name">${opt.name}</div>
+                    <div class="option-cost-badge">${formatMoney(cost)}</div>
+                </div>
+                <p class="option-desc">${opt.desc}</p>
+                ${hasImpacts ? `
+                <div class="option-impacts">
+                    ${opt.time ? `<span class="impact negative">⏱️ ${opt.time}d</span>` : ''}
+                    ${opt.dose ? `<span class="impact negative">☢️ ${opt.dose}mSv</span>` : ''}
+                    ${opt.healthImpact ? `<span class="impact negative">❤️ ${opt.healthImpact}%</span>` : ''}
+                    ${opt.risk ? `<span class="impact neutral">⚠️ ${opt.risk}%</span>` : ''}
+                </div>
+                ` : ''}
+            </div>
+        `;
+    });
+    
+    html += '</div></div>';
+    
+    document.getElementById('weldDecisionArea').innerHTML = html;
+    document.getElementById('weldDecisionArea').style.display = 'block';
+    document.getElementById('weldGameFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirmWeldDecision" disabled>Select an Option</button>';
+    
+    const weldOptionsArray = sortedOpts;
+    let selectedWeldOptId = null;
+    const weldCards = document.querySelectorAll('#weldDecisionArea .option-card');
+    const weldBtn = document.getElementById('btnConfirmWeldDecision');
+    
+    for (let i = 0; i < weldCards.length; i++) {
+        weldCards[i].onclick = function() {
+            for (let j = 0; j < weldCards.length; j++) {
+                weldCards[j].classList.remove('selected');
+            }
+            this.classList.add('selected');
+            selectedWeldOptId = this.getAttribute('data-id');
+            weldBtn.disabled = false;
+            weldBtn.textContent = 'Confirm Decision';
+        };
+    }
+    
+    weldBtn.onclick = function() {
+        if (!selectedWeldOptId) return;
+        let opt = null;
+        for (let i = 0; i < weldOptionsArray.length; i++) {
+            if (weldOptionsArray[i].id === selectedWeldOptId) {
+                opt = weldOptionsArray[i];
+                break;
+            }
+        }
+        if (!opt) return;
+        applyDecision(elId, opt, stageData);
+    };
+}
+
+function updateWeldStatus(message, type) {
+    const el = document.getElementById('weldStatusMsg');
+    el.textContent = message;
+    el.className = 'weld-status-msg' + (type ? ' ' + type : '');
+}
+
+// ============================================
 // PIPE ROUTING MINI-GAME (Stage 2+ Consequence Illustration)
 // ============================================
 let pipeGameState = {
@@ -5608,6 +6395,11 @@ function renderDecisionModal(elId, element) {
     // Stage 2 + pipeRouting = show the pipe game
     if (STATE.stage === 2 && elId === 'pipeRouting') {
         renderPipeRoutingDecision(elId, element);
+        return;
+    }
+    // Stage 3 + weldClearance = show weld inspection game
+    if (STATE.stage === 3 && elId === 'weldClearance') {
+        renderWeldInspectionGame(elId, element);
         return;
     }
     const stageKey = `stage${STATE.stage}`;
