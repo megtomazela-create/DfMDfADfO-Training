@@ -566,7 +566,7 @@
             background: linear-gradient(180deg, #1a2634 0%, #0d1b2a 100%);
             border-radius: 16px;
             width: 100%;
-            max-width: 750px;
+            max-width: 980px;
             max-height: 90vh;
             overflow-y: auto;
             animation: modalIn 0.3s ease;
@@ -3489,6 +3489,7 @@
             background: linear-gradient(135deg, #0d1a2d 0%, #1a2a3a 100%);
             border-radius: 12px;
             padding: 15px;
+            width: 950px;
         }
         .crane-game-header {
             display: flex;
@@ -3531,6 +3532,7 @@
             position: relative;
             background: linear-gradient(180deg, #1a2535 0%, #0d1520 100%);
             border-radius: 8px;
+            width: 920px;
             height: 400px;
             overflow: hidden;
             margin-bottom: 12px;
@@ -4065,7 +4067,7 @@
 </head>
 <body>
 <!-- VERSION TAG -->
-<div class="version-tag">v0.58</div>
+<div class="version-tag">v0.59</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -8315,9 +8317,13 @@ function checkCraneCollision(box) {
     }
     
     // Removable obstacles
-    for (const [id, obs] of Object.entries(craneGameState.obstacles)) {
+    const obsEntries = Object.entries(craneGameState.obstacles);
+    console.log('Checking collision against', obsEntries.length, 'obstacles:', Object.keys(craneGameState.obstacles));
+    for (const [id, obs] of obsEntries) {
         if (obs.removed) continue;
-        if (craneRectsOverlap(box.x, box.y, box.w, box.h, obs.x, obs.y, obs.w, obs.h, buffer)) {
+        const overlaps = craneRectsOverlap(box.x, box.y, box.w, box.h, obs.x, obs.y, obs.w, obs.h, buffer);
+        if (overlaps) {
+            console.log('Collision with', id, obs);
             return { 
                 type: 'removable', 
                 id, 
