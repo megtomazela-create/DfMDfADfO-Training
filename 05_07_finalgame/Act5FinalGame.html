@@ -4071,7 +4071,7 @@
 </head>
 <body>
 <!-- VERSION TAG -->
-<div class="version-tag">v0.63</div>
+<div class="version-tag">v0.64</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -8575,40 +8575,35 @@ function updateCraneMessage(type, title, text) {
 function completeCraneGame() {
     try {
         const elId = craneGameState.currentElId;
-        console.log('completeCraneGame: elId=', elId);
+        
+        // Ensure state objects exist for this stage
+        if (!STATE.stageTotals[STATE.stage]) {
+            STATE.stageTotals[STATE.stage] = { cost: 0, dose: 0, time: 0 };
+        }
+        if (!STATE.completed[STATE.stage]) {
+            STATE.completed[STATE.stage] = {};
+        }
         
         // Apply costs to game state
         STATE.totals.cost += craneGameState.cost;
         STATE.totals.dose += craneGameState.dose;
-        console.log('totals updated');
-        
         STATE.stageTotals[STATE.stage].cost += craneGameState.cost;
         STATE.stageTotals[STATE.stage].dose += craneGameState.dose;
-        console.log('stageTotals updated');
         
         // Mark element as complete
         STATE.elementCompleted[elId] = true;
         STATE.completed[STATE.stage][elId] = true;
-        console.log('completed flags set');
         
         // Update hotspot square
         const square = document.getElementById('square-' + elId);
         if (square) {
             square.classList.add('done');
         }
-        console.log('square updated');
         
         updateElementSquare(elId);
-        console.log('updateElementSquare done');
-        
         updateStatsDisplay();
-        console.log('updateStatsDisplay done');
-        
         closeModal();
-        console.log('closeModal done');
-        
         checkStageComplete();
-        console.log('checkStageComplete done');
     } catch (err) {
         alert('Error in completeCraneGame: ' + err.message);
         console.error('completeCraneGame error:', err);
