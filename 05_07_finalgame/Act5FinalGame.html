@@ -2534,7 +2534,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.41-debug</div>
+<div class="version-tag">v0.42</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -6228,7 +6228,8 @@ function showFailure(elId, opt, stageData) {
         console.log(`Failure state for ${elId}:`, STATE.elementState[elId]);
         
         STATE.completed[STATE.stage][elId] = true;
-        document.querySelector(`[data-element="${elId}"] .hotspot-dot`).classList.add('done');
+        const failDot = document.querySelector(`[data-element="${elId}"] .hotspot-dot`);
+        if (failDot) failDot.classList.add('done');
         
         updateStatsDisplay();
         updateProgressLabel();
@@ -6280,9 +6281,11 @@ function applyDecision(elId, opt, stageData, previousChoice = null) {
     STATE.completed[STATE.stage][elId] = true;
     STATE.stageChoices[`${STATE.stage}_${elId}`] = opt.id;
     
-    // Mark hotspot as done
+    // Mark hotspot as done (if it exists)
     const dot = document.querySelector(`[data-element="${elId}"] .hotspot-dot`);
-    dot.classList.add('done');
+    if (dot) {
+        dot.classList.add('done');
+    }
     
     updateStatsDisplay();
     updateProgressLabel();
