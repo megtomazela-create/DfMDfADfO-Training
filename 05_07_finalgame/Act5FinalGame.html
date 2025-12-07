@@ -80,6 +80,119 @@
         .intro-company { color: var(--blue); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 20px; }
         .intro-title { font-size: 3rem; color: var(--white); margin-bottom: 20px; }
         .intro-subtitle { font-size: 1.2rem; color: var(--light-grey); }
+        /* Enhanced intro - lifecycle phases */
+        .intro-phases {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 30px 0 20px;
+            flex-wrap: wrap;
+        }
+        .intro-phase {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--mid-grey);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .intro-phase-icon {
+            font-size: 1rem;
+        }
+        .intro-phase-connector {
+            color: var(--slate);
+            font-size: 0.8rem;
+        }
+        .intro-tagline {
+            font-size: 1.1rem;
+            color: var(--light-grey);
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .intro-tagline strong {
+            color: var(--amber);
+            font-style: normal;
+        }
+        /* Animated timeline preview */
+        .intro-timeline-preview {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin: 25px 0 15px;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+        }
+        .intro-timeline-node {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            background: var(--dark-slate);
+            border: 2px solid var(--slate);
+            transition: all 0.3s ease;
+        }
+        .intro-timeline-node.active {
+            border-color: var(--blue);
+            background: rgba(0, 176, 240, 0.15);
+            animation: nodePulse 2s ease-in-out infinite;
+        }
+        @keyframes nodePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 176, 240, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(0, 176, 240, 0); }
+        }
+        .intro-timeline-line {
+            width: 30px;
+            height: 2px;
+            background: var(--slate);
+        }
+        .intro-timeline-label {
+            font-size: 0.65rem;
+            color: var(--mid-grey);
+            margin-top: 6px;
+            text-align: center;
+        }
+        .intro-timeline-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .intro-stakes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .intro-stake {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        .intro-stake-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        .intro-stake-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--mid-grey);
+            margin-bottom: 4px;
+        }
+        .intro-stake-value {
+            font-size: 1rem;
+            color: var(--white);
+            font-weight: 600;
+        }
         .intro-text-box {
             background: rgba(31, 41, 55, 0.9);
             border-left: 4px solid var(--blue);
@@ -3283,7 +3396,7 @@
 </head>
 <body>
 <!-- VERSION TAG -->
-<div class="version-tag">v0.50</div>
+<div class="version-tag">v0.51</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -3294,7 +3407,16 @@
             </div>
             <p class="intro-company">Presents</p>
             <h1 class="intro-title">The 60-Year Journey</h1>
-            <p class="intro-subtitle">An interactive experience in design for decommissioning</p>
+            <div class="intro-phases">
+                <span class="intro-phase"><span class="intro-phase-icon">📐</span> Design</span>
+                <span class="intro-phase-connector">→</span>
+                <span class="intro-phase"><span class="intro-phase-icon">🔧</span> Operations</span>
+                <span class="intro-phase-connector">→</span>
+                <span class="intro-phase"><span class="intro-phase-icon">🔍</span> Inspection</span>
+                <span class="intro-phase-connector">→</span>
+                <span class="intro-phase"><span class="intro-phase-icon">🏗️</span> Decommissioning</span>
+            </div>
+            <p class="intro-tagline">Every decision you make today will be <strong>lived with for decades</strong></p>
         </div>
     </div>
     <div class="intro-slide" data-slide="2">
@@ -3304,7 +3426,8 @@
             <h2 class="intro-year">2025</h2>
             <div class="intro-text-box">
                 <p><strong>Thornbury Point Nuclear Power Station.</strong></p>
-                <p>Sixty years of operation ahead. Someone needs to design it right.</p>
+                <p>Construction begins. Sixty years of operation, maintenance, inspection, and eventual decommissioning lie ahead.</p>
+                <p>Someone needs to design it right — that someone is you.</p>
             </div>
         </div>
     </div>
@@ -3313,8 +3436,34 @@
         <div class="intro-content">
             <div class="intro-text-box">
                 <p>You've been assigned <span class="highlight">Section 4B</span>: Primary coolant system auxiliaries.</p>
-                <p>Your design will be built, operated, inspected, and decommissioned over <strong>sixty years</strong>.</p>
-                <p>Four people will inherit your choices. Their success depends on what you decide.</p>
+                <p>Your choices will affect <strong>maintenance access</strong>, <strong>inspection coverage</strong>, <strong>dose uptake</strong>, and <strong>regulatory compliance</strong> — right through to final site clearance.</p>
+                <div class="intro-timeline-preview">
+                    <div class="intro-timeline-wrapper">
+                        <div class="intro-timeline-node active">📐</div>
+                        <div class="intro-timeline-label">2025</div>
+                    </div>
+                    <div class="intro-timeline-line"></div>
+                    <div class="intro-timeline-wrapper">
+                        <div class="intro-timeline-node">⚡</div>
+                        <div class="intro-timeline-label">2040</div>
+                    </div>
+                    <div class="intro-timeline-line"></div>
+                    <div class="intro-timeline-wrapper">
+                        <div class="intro-timeline-node">🔍</div>
+                        <div class="intro-timeline-label">2055</div>
+                    </div>
+                    <div class="intro-timeline-line"></div>
+                    <div class="intro-timeline-wrapper">
+                        <div class="intro-timeline-node">⚠️</div>
+                        <div class="intro-timeline-label">2070</div>
+                    </div>
+                    <div class="intro-timeline-line"></div>
+                    <div class="intro-timeline-wrapper">
+                        <div class="intro-timeline-node">🏗️</div>
+                        <div class="intro-timeline-label">2085</div>
+                    </div>
+                </div>
+                <p style="text-align: center; color: var(--mid-grey); font-size: 0.9rem;">Four people will inherit your decisions. Their success depends on what you choose.</p>
             </div>
         </div>
     </div>
@@ -3322,8 +3471,25 @@
         <div class="bg dark"></div>
         <div class="intro-content">
             <div class="intro-text-box" style="text-align: center; border-left: none; border: 2px solid var(--blue);">
-                <p><strong>Six design decisions. Each has consequences.</strong></p>
-                <p>Good choices make future decisions easier and cheaper.<br>Poor choices force compromises for decades.</p>
+                <p><strong>Six design decisions. Sixty years of consequences.</strong></p>
+                <p>Good choices enable safe operations and straightforward decommissioning.<br>Poor choices create workarounds that compound into crises.</p>
+                <div class="intro-stakes">
+                    <div class="intro-stake">
+                        <div class="intro-stake-icon">💷</div>
+                        <div class="intro-stake-label">Lifecycle Cost</div>
+                        <div class="intro-stake-value">£1M – £3M+</div>
+                    </div>
+                    <div class="intro-stake">
+                        <div class="intro-stake-icon">☢️</div>
+                        <div class="intro-stake-label">Dose Uptake</div>
+                        <div class="intro-stake-value">Your choices</div>
+                    </div>
+                    <div class="intro-stake">
+                        <div class="intro-stake-icon">📋</div>
+                        <div class="intro-stake-label">Regulatory Record</div>
+                        <div class="intro-stake-value">At stake</div>
+                    </div>
+                </div>
                 <div class="intro-budget">Design Budget: £800,000</div>
             </div>
         </div>
