@@ -462,6 +462,33 @@
             font-size: 0.65rem;
         }
         
+        /* Completed state for Stage 2+ */
+        .hotspot-square.done {
+            background: rgba(245, 158, 11, 0.15);
+            border: 2px solid rgba(245, 158, 11, 0.7);
+        }
+        
+        .hotspot-square.done:hover {
+            background: rgba(245, 158, 11, 0.25);
+            border-color: var(--amber);
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.3);
+        }
+        
+        .hotspot-square.done .hotspot-square-label {
+            color: var(--amber);
+        }
+        
+        .hotspot-square.done::after {
+            content: '✓';
+            position: absolute;
+            top: 4px;
+            right: 6px;
+            font-size: 1rem;
+            color: var(--amber);
+            font-weight: bold;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+        
         @keyframes hotspotPulse {
             0%, 100% { box-shadow: 0 0 0 0 rgba(0, 176, 240, 0.4); }
             50% { box-shadow: 0 0 0 12px rgba(0, 176, 240, 0); }
@@ -2534,7 +2561,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.42</div>
+<div class="version-tag">v0.43</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -5129,9 +5156,9 @@ function startStage(stageNum) {
         banner.classList.remove('visible');
     }
     
-    // Reset hotspot squares for new stage
+    // Reset hotspot squares for new stage - remove done state
     document.querySelectorAll('.hotspot-square').forEach(sq => {
-        // Keep selected state but remove done state
+        sq.classList.remove('done');
     });
     
     document.getElementById('btnNextStage').classList.remove('visible');
@@ -6228,8 +6255,14 @@ function showFailure(elId, opt, stageData) {
         console.log(`Failure state for ${elId}:`, STATE.elementState[elId]);
         
         STATE.completed[STATE.stage][elId] = true;
-        const failDot = document.querySelector(`[data-element="${elId}"] .hotspot-dot`);
-        if (failDot) failDot.classList.add('done');
+        
+        // Mark hotspot square as done for Stage 2+
+        if (STATE.stage > 1) {
+            const square = document.getElementById(`square-${elId}`);
+            if (square) {
+                square.classList.add('done');
+            }
+        }
         
         updateStatsDisplay();
         updateProgressLabel();
@@ -6281,10 +6314,12 @@ function applyDecision(elId, opt, stageData, previousChoice = null) {
     STATE.completed[STATE.stage][elId] = true;
     STATE.stageChoices[`${STATE.stage}_${elId}`] = opt.id;
     
-    // Mark hotspot as done (if it exists)
-    const dot = document.querySelector(`[data-element="${elId}"] .hotspot-dot`);
-    if (dot) {
-        dot.classList.add('done');
+    // Mark hotspot square as done for Stage 2+
+    if (STATE.stage > 1) {
+        const square = document.getElementById(`square-${elId}`);
+        if (square) {
+            square.classList.add('done');
+        }
     }
     
     updateStatsDisplay();
