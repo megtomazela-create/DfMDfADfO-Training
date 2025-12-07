@@ -1780,6 +1780,120 @@
         .takeaway-text strong {
             color: var(--white);
         }
+        /* Lifecycle Summary Panel */
+        .lifecycle-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        .lifecycle-stat {
+            background: var(--dark-slate);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--slate);
+        }
+        .lifecycle-stat.warning {
+            border-color: var(--amber);
+            background: rgba(255, 193, 7, 0.05);
+        }
+        .lifecycle-stat.danger {
+            border-color: var(--red);
+            background: rgba(220, 53, 69, 0.05);
+        }
+        .lifecycle-stat.good {
+            border-color: var(--green);
+            background: rgba(146, 208, 80, 0.05);
+        }
+        .lifecycle-stat-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        .lifecycle-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+        .lifecycle-stat.warning .lifecycle-stat-value { color: var(--amber); }
+        .lifecycle-stat.danger .lifecycle-stat-value { color: var(--red); }
+        .lifecycle-stat.good .lifecycle-stat-value { color: var(--green); }
+        .lifecycle-stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--mid-grey);
+            margin-bottom: 6px;
+        }
+        .lifecycle-stat-context {
+            font-size: 0.8rem;
+            color: var(--light-grey);
+        }
+        /* Safety & Regulatory Record */
+        .record-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        .record-card {
+            background: var(--dark-slate);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 3px solid var(--slate);
+        }
+        .record-card.issues { border-left-color: var(--red); }
+        .record-card.concerns { border-left-color: var(--amber); }
+        .record-card.clean { border-left-color: var(--green); }
+        .record-card-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--mid-grey);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .record-card-title span {
+            font-size: 1rem;
+        }
+        .record-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .record-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--light-grey);
+        }
+        .record-item-icon {
+            width: 20px;
+            text-align: center;
+        }
+        .record-item.bad .record-item-icon { color: var(--red); }
+        .record-item.warning .record-item-icon { color: var(--amber); }
+        .record-item.good .record-item-icon { color: var(--green); }
+        .record-card-summary {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.85rem;
+            color: var(--light-grey);
+            font-style: italic;
+        }
+        @media (max-width: 700px) {
+            .lifecycle-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .record-grid {
+                grid-template-columns: 1fr;
+            }
+        }
         /* Report actions */
         .report-actions {
             display: flex;
@@ -3169,7 +3283,7 @@
 </head>
 <body>
 <!-- VERSION TAG -->
-<div class="version-tag">v0.49</div>
+<div class="version-tag">v0.50</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -8064,6 +8178,147 @@ function showFinalResults() {
             </div>
         </div>
     `;
+    
+    // Calculate lifecycle metrics
+    const totalDose = STATE.totals.dose;
+    const plantHealth = STATE.plantHealth;
+    const totalTime = STATE.totals.time;
+    
+    // Analyse element states for issues
+    const elState = STATE.elementState;
+    let inspectionGaps = 0;
+    let operatorErrors = 0;
+    let contaminationEvents = 0;
+    let deterioratingItems = 0;
+    let leakEvents = 0;
+    
+    if (elState.pumpAccess.inspectionGap) inspectionGaps++;
+    if (elState.pumpAccess.deteriorating) deterioratingItems++;
+    if (elState.weldClearance.inspectionLimited) inspectionGaps++;
+    if (elState.weldClearance.deteriorating) deterioratingItems++;
+    if (elState.weldClearance.leakOccurred) leakEvents++;
+    if (elState.controlPanel.operatorError) operatorErrors++;
+    if (elState.pipeConnections.inspectionLimited) inspectionGaps++;
+    if (elState.pipeConnections.boltDegradation) deterioratingItems++;
+    if (elState.pipeConnections.leakHistory) leakEvents++;
+    if (elState.pipeConnections.deteriorating) deterioratingItems++;
+    if (elState.pipeRouting.contaminationSpread) contaminationEvents++;
+    if (elState.pipeRouting.inspectionLimited) inspectionGaps++;
+    if (elState.materialSpec.corrosionDetected) deterioratingItems++;
+    if (elState.materialSpec.doseConstraints) operatorErrors++;
+    
+    // Determine status classes
+    const doseClass = totalDose < 25 ? 'good' : (totalDose < 50 ? 'warning' : 'danger');
+    const healthClass = plantHealth >= 80 ? 'good' : (plantHealth >= 50 ? 'warning' : 'danger');
+    const doseContext = totalDose < 25 ? 'Well managed' : (totalDose < 50 ? 'Above target' : 'Regulatory concern');
+    const healthContext = plantHealth >= 80 ? 'Strong record' : (plantHealth >= 50 ? 'Some incidents' : 'Significant issues');
+    
+    // Calculate decommissioning complexity
+    let decommComplexity = 'Standard';
+    let decommYears = '10-15';
+    let decommClass = 'good';
+    if (contaminationEvents > 0 || deterioratingItems >= 3) {
+        decommComplexity = 'Complex';
+        decommYears = '20-30';
+        decommClass = 'danger';
+    } else if (inspectionGaps >= 2 || deterioratingItems >= 1) {
+        decommComplexity = 'Extended';
+        decommYears = '15-20';
+        decommClass = 'warning';
+    }
+    
+    // Lifecycle Summary Panel
+    html += `<div class="report-section-title">Plant Lifecycle Summary</div>`;
+    html += `
+        <div class="lifecycle-summary">
+            <div class="lifecycle-stat ${doseClass}">
+                <div class="lifecycle-stat-icon">☢️</div>
+                <div class="lifecycle-stat-value">${totalDose.toFixed(1)} mSv</div>
+                <div class="lifecycle-stat-label">Collective Dose</div>
+                <div class="lifecycle-stat-context">${doseContext}</div>
+            </div>
+            <div class="lifecycle-stat ${healthClass}">
+                <div class="lifecycle-stat-icon">🏥</div>
+                <div class="lifecycle-stat-value">${plantHealth}%</div>
+                <div class="lifecycle-stat-label">Safety Record</div>
+                <div class="lifecycle-stat-context">${healthContext}</div>
+            </div>
+            <div class="lifecycle-stat">
+                <div class="lifecycle-stat-icon">📋</div>
+                <div class="lifecycle-stat-value">${inspectionGaps}</div>
+                <div class="lifecycle-stat-label">Inspection Gaps</div>
+                <div class="lifecycle-stat-context">${inspectionGaps === 0 ? 'Full coverage' : 'Safety case gaps'}</div>
+            </div>
+            <div class="lifecycle-stat ${decommClass}">
+                <div class="lifecycle-stat-icon">🏗️</div>
+                <div class="lifecycle-stat-value">${decommYears} yrs</div>
+                <div class="lifecycle-stat-label">Decommissioning</div>
+                <div class="lifecycle-stat-context">${decommComplexity}</div>
+            </div>
+        </div>
+    `;
+    
+    // Safety & Regulatory Record
+    html += `<div class="report-section-title">Safety & Regulatory Record</div>`;
+    html += `<div class="record-grid">`;
+    
+    // Safety Record Card
+    let safetyItems = [];
+    if (operatorErrors > 0) safetyItems.push({ icon: '⚠️', text: `${operatorErrors} operator error event(s) during emergencies`, class: 'bad' });
+    if (leakEvents > 0) safetyItems.push({ icon: '💧', text: `${leakEvents} leak event(s) requiring intervention`, class: 'warning' });
+    if (deterioratingItems > 0) safetyItems.push({ icon: '📉', text: `${deterioratingItems} component(s) in degraded condition`, class: 'warning' });
+    if (contaminationEvents > 0) safetyItems.push({ icon: '☢️', text: `Contamination spread event(s) — environmental impact`, class: 'bad' });
+    if (safetyItems.length === 0) safetyItems.push({ icon: '✓', text: 'No significant safety events recorded', class: 'good' });
+    
+    const safetyClass = contaminationEvents > 0 || operatorErrors > 0 ? 'issues' : (deterioratingItems > 0 || leakEvents > 0 ? 'concerns' : 'clean');
+    html += `
+        <div class="record-card ${safetyClass}">
+            <div class="record-card-title"><span>🛡️</span> Safety Events</div>
+            <div class="record-items">
+                ${safetyItems.map(item => `
+                    <div class="record-item ${item.class}">
+                        <span class="record-item-icon">${item.icon}</span>
+                        <span>${item.text}</span>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="record-card-summary">
+                ${safetyClass === 'clean' ? 'Clean operational record — design supported safe operations throughout.' : 
+                  safetyClass === 'concerns' ? 'Some concerns arose — design choices contributed to operational challenges.' :
+                  'Significant events occurred — design limitations manifested as safety issues.'}
+            </div>
+        </div>
+    `;
+    
+    // Regulatory Record Card
+    let regItems = [];
+    if (inspectionGaps > 0) regItems.push({ icon: '🔍', text: `${inspectionGaps} area(s) with limited inspection access — safety case gaps`, class: 'bad' });
+    if (elState.pipeRouting.contaminationSpread) regItems.push({ icon: '📄', text: 'Environmental permit breach — regulatory investigation', class: 'bad' });
+    if (plantHealth < 60) regItems.push({ icon: '⚖️', text: 'Enhanced regulatory scrutiny applied', class: 'warning' });
+    if (deterioratingItems >= 2) regItems.push({ icon: '📝', text: 'Licence conditions imposed on degraded components', class: 'warning' });
+    if (regItems.length === 0) regItems.push({ icon: '✓', text: 'Full regulatory compliance maintained', class: 'good' });
+    
+    const regClass = inspectionGaps >= 2 || contaminationEvents > 0 ? 'issues' : (inspectionGaps > 0 || plantHealth < 70 ? 'concerns' : 'clean');
+    html += `
+        <div class="record-card ${regClass}">
+            <div class="record-card-title"><span>📜</span> Regulatory Standing</div>
+            <div class="record-items">
+                ${regItems.map(item => `
+                    <div class="record-item ${item.class}">
+                        <span class="record-item-icon">${item.icon}</span>
+                        <span>${item.text}</span>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="record-card-summary">
+                ${regClass === 'clean' ? 'Strong regulatory relationship — design enabled full compliance with LC 28 inspection requirements.' : 
+                  regClass === 'concerns' ? 'Some regulatory findings — inspection limitations required safety case justification.' :
+                  'Regulatory challenges — design choices created ongoing compliance burden.'}
+            </div>
+        </div>
+    `;
+    html += `</div>`;
+    
     // Element journeys
     html += `<div class="report-section-title">Your 60-Year Journey by Element</div>`;
     html += `<div class="element-journeys">`;
