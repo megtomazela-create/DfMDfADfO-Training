@@ -3490,6 +3490,7 @@
             border-radius: 12px;
             padding: 15px;
             width: 950px;
+            position: relative;
         }
         .crane-game-header {
             display: flex;
@@ -3971,10 +3972,10 @@
         }
         .crane-result-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 55px;
+            left: 15px;
+            width: 920px;
+            height: 400px;
             background: rgba(0, 0, 0, 0.92);
             display: none;
             align-items: center;
@@ -4067,7 +4068,7 @@
 </head>
 <body>
 <!-- VERSION TAG -->
-<div class="version-tag">v0.59</div>
+<div class="version-tag">v0.60</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -8136,27 +8137,28 @@ function renderCraneGameUI() {
                 <div class="crane-pump-base"></div>
             </div>
             <div class="crane-collision-indicator" id="craneCollision">⚠️ BLOCKED</div>
-            <div class="crane-result-overlay" id="craneResultOverlay">
-                <div class="crane-result-icon">✅</div>
-                <div class="crane-result-title">Pump Removed Successfully</div>
-                <div class="crane-result-stats">
-                    <div class="crane-result-stat">
-                        <div class="crane-result-stat-value" id="craneResultCost">£0</div>
-                        <div class="crane-result-stat-label">Total Cost</div>
-                    </div>
-                    <div class="crane-result-stat">
-                        <div class="crane-result-stat-value" id="craneResultDose">0 mSv</div>
-                        <div class="crane-result-stat-label">Dose</div>
-                    </div>
-                    <div class="crane-result-stat">
-                        <div class="crane-result-stat-value" id="craneResultTime">0 days</div>
-                        <div class="crane-result-stat-label">Duration</div>
-                    </div>
+        </div>
+        
+        <div class="crane-result-overlay" id="craneResultOverlay">
+            <div class="crane-result-icon">✅</div>
+            <div class="crane-result-title">Pump Removed Successfully</div>
+            <div class="crane-result-stats">
+                <div class="crane-result-stat">
+                    <div class="crane-result-stat-value" id="craneResultCost">£0</div>
+                    <div class="crane-result-stat-label">Total Cost</div>
                 </div>
-                <div class="crane-result-message" id="craneResultMessage"></div>
-                <div class="crane-result-comparison" id="craneResultComparison"></div>
-                <button class="crane-result-btn" onclick="completeCraneGame()">Continue →</button>
+                <div class="crane-result-stat">
+                    <div class="crane-result-stat-value" id="craneResultDose">0 mSv</div>
+                    <div class="crane-result-stat-label">Dose</div>
+                </div>
+                <div class="crane-result-stat">
+                    <div class="crane-result-stat-value" id="craneResultTime">0 days</div>
+                    <div class="crane-result-stat-label">Duration</div>
+                </div>
             </div>
+            <div class="crane-result-message" id="craneResultMessage"></div>
+            <div class="crane-result-comparison" id="craneResultComparison"></div>
+            <button class="crane-result-btn" onclick="completeCraneGame()">Continue →</button>
         </div>
         
         <div class="crane-controls-panel">
@@ -8317,13 +8319,9 @@ function checkCraneCollision(box) {
     }
     
     // Removable obstacles
-    const obsEntries = Object.entries(craneGameState.obstacles);
-    console.log('Checking collision against', obsEntries.length, 'obstacles:', Object.keys(craneGameState.obstacles));
-    for (const [id, obs] of obsEntries) {
+    for (const [id, obs] of Object.entries(craneGameState.obstacles)) {
         if (obs.removed) continue;
-        const overlaps = craneRectsOverlap(box.x, box.y, box.w, box.h, obs.x, obs.y, obs.w, obs.h, buffer);
-        if (overlaps) {
-            console.log('Collision with', id, obs);
+        if (craneRectsOverlap(box.x, box.y, box.w, box.h, obs.x, obs.y, obs.w, obs.h, buffer)) {
             return { 
                 type: 'removable', 
                 id, 
@@ -8419,17 +8417,6 @@ function toggleCraneAttach() {
         const pumpLeftX = craneGameState.craneX - C.PUMP_WIDTH / 2;
         const pumpTopY = craneGameState.hookY + C.HOOK_HEIGHT - 10;
         
-        console.log('Release check:', {
-            craneX: craneGameState.craneX,
-            hookY: craneGameState.hookY,
-            pumpLeftX,
-            pumpTopY,
-            dropZone: C.DROP_ZONE,
-            horizontallyOver: pumpLeftX > C.DROP_ZONE.x - 30 && pumpLeftX + C.PUMP_WIDTH < C.DROP_ZONE.x + C.DROP_ZONE.w + 30,
-            loweredInto: pumpTopY > C.DROP_ZONE.y - 20,
-            isOverDropZone: isCraneOverDropZone(pumpLeftX, pumpTopY)
-        });
-        
         if (isCraneOverDropZone(pumpLeftX, pumpTopY)) {
             completeCranePump();
         } else {
@@ -8499,11 +8486,7 @@ function checkCraneDropZone() {
     const horizontallyOver = pumpLeftX > C.DROP_ZONE.x - 30 && 
                              pumpLeftX + C.PUMP_WIDTH < C.DROP_ZONE.x + C.DROP_ZONE.w + 30;
     
-    const isOver = isCraneOverDropZone(pumpLeftX, pumpTopY);
-    
-    console.log('checkCraneDropZone:', { pumpLeftX, pumpTopY, horizontallyOver, isOver });
-    
-    if (isOver) {
+    if (isCraneOverDropZone(pumpLeftX, pumpTopY)) {
         dropZone?.classList.add('active');
         updateCraneMessage('success', '📍 Over Drop Zone!', 'Press RELEASE to complete!');
     } else if (horizontallyOver) {
