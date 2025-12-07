@@ -12,7 +12,7 @@
             --mid-grey: #9babc2;
             --slate: #4a5d6b;
             --dark-slate: #364451;
-            --deep-navy: #0a0e17;
+            --deep-navy: #1f2937;
             --green: #92d050;
             --blue: #00b0f0;
             --orange: #cc5500;
@@ -66,7 +66,7 @@
             filter: brightness(0.35);
         }
         .intro-slide .bg.dark {
-            background: linear-gradient(135deg, #080c14, #0a1018, #080c14);
+            background: linear-gradient(135deg, #0a0e17, #0d1220, #0a0e17);
             filter: none;
         }
         .intro-content {
@@ -438,7 +438,7 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            background: #1a1a2e;
+            background: #0a0e17;
         }
         .map-wrapper { position: relative; max-width: 100%; max-height: 100%; }
         .map-wrapper img {
@@ -2013,6 +2013,95 @@
             justify-content: center;
             gap: 16px;
             margin-top: 30px;
+        }
+        /* Replay Call-to-Action */
+        .replay-cta {
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(0, 176, 240, 0.1) 0%, rgba(146, 208, 80, 0.1) 100%);
+            border: 2px solid rgba(0, 176, 240, 0.3);
+            border-radius: 16px;
+            text-align: center;
+        }
+        .replay-cta-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        .replay-cta-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+        .replay-cta-text {
+            color: var(--light-grey);
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto 20px;
+        }
+        .replay-cta-questions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .replay-cta-question {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            color: var(--mid-grey);
+        }
+        .replay-cta-question:hover {
+            border-color: var(--blue);
+            color: var(--light-grey);
+        }
+        .replay-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, var(--blue) 0%, #0088cc 100%);
+            color: var(--deep-navy);
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 176, 240, 0.3);
+        }
+        .replay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 176, 240, 0.4);
+        }
+        .replay-btn-icon {
+            font-size: 1.2rem;
+        }
+        .replay-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .replay-stat {
+            text-align: center;
+        }
+        .replay-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--amber);
+        }
+        .replay-stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--mid-grey);
         }
         @media (max-width: 700px) {
             .report-comparison {
@@ -3976,7 +4065,7 @@
 </head>
 <body>
 <!-- VERSION TAG -->
-<div class="version-tag">v0.53</div>
+<div class="version-tag">v0.56</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -7878,6 +7967,12 @@ const CRANE_CONSTANTS = {
     DROP_ZONE: { x: 810, y: 230, w: 95, h: 140 }
 };
 
+// Fixed walls for crane game collision
+const CRANE_FIXED_WALLS = [
+    { x: 0, y: 27, w: 35, h: 343 },           // Left containment wall
+    { x: 765, y: 250, w: 35, h: 120 },        // Right building wall - short
+];
+
 const CRANE_VARIANTS = {
     corner: {
         name: 'Corner Position',
@@ -8169,108 +8264,97 @@ function moveCrane() {
     if (craneGameState.activeKeys.has('up')) newY -= SPEED;
     if (craneGameState.activeKeys.has('down')) newY += SPEED;
     
-    // Clamp hook Y
+    // Clamp to rail bounds
+    newX = Math.max(50, Math.min(C.VIEWPORT_WIDTH - 30, newX));
     newY = Math.max(C.HOOK_MIN_Y, Math.min(C.HOOK_MAX_Y, newY));
     
-    // Calculate positions
-    const trolleyLeft = newX - C.TROLLEY_WIDTH / 2;
-    const trolleyRight = newX + C.TROLLEY_WIDTH / 2;
-    const hookLeft = newX - C.HOOK_WIDTH / 2;
-    const hookRight = newX + C.HOOK_WIDTH / 2;
-    const hookBottom = newY + C.HOOK_HEIGHT;
-    
-    let pumpLeft, pumpRight, pumpTop, pumpBottom;
+    // Determine what to check for collision
+    let checkBox;
     if (craneGameState.attached) {
-        pumpLeft = newX - C.PUMP_WIDTH / 2;
-        pumpRight = newX + C.PUMP_WIDTH / 2;
-        pumpTop = newY + C.HOOK_HEIGHT - 10;
-        pumpBottom = pumpTop + C.PUMP_HEIGHT;
-    }
-    
-    // Collision detection
-    let blocked = false;
-    
-    // Fixed walls
-    if (trolleyLeft < 35) { newX = 35 + C.TROLLEY_WIDTH / 2; blocked = true; }
-    if (trolleyRight > 920) { newX = 920 - C.TROLLEY_WIDTH / 2; blocked = true; }
-    
-    // Left containment wall collision (for hook/pump)
-    if (hookLeft < 35) { newX = 35 + C.HOOK_WIDTH / 2; blocked = true; }
-    if (craneGameState.attached && pumpLeft < 35) { newX = 35 + C.PUMP_WIDTH / 2; blocked = true; }
-    
-    // Right building wall collision
-    const rightWallX = 800;
-    const rightWallTop = 250;
-    if (craneGameState.attached) {
-        pumpLeft = newX - C.PUMP_WIDTH / 2;
-        pumpRight = newX + C.PUMP_WIDTH / 2;
-        pumpTop = newY + C.HOOK_HEIGHT - 10;
-        pumpBottom = pumpTop + C.PUMP_HEIGHT;
-        
-        if (pumpRight > rightWallX && pumpBottom > rightWallTop) {
-            newX = rightWallX - C.PUMP_WIDTH / 2;
-            blocked = true;
-        }
-    }
-    
-    // Floor collision
-    if (craneGameState.attached) {
-        pumpTop = newY + C.HOOK_HEIGHT - 10;
-        pumpBottom = pumpTop + C.PUMP_HEIGHT;
-        if (pumpBottom > C.FLOOR_TOP) {
-            newY = C.FLOOR_TOP - C.PUMP_HEIGHT - C.HOOK_HEIGHT + 10;
-            blocked = true;
-        }
+        checkBox = {
+            x: newX - C.PUMP_WIDTH / 2,
+            y: newY,
+            w: C.PUMP_WIDTH,
+            h: C.HOOK_HEIGHT + C.PUMP_HEIGHT - 10
+        };
     } else {
-        if (hookBottom > C.FLOOR_TOP - 20) {
-            newY = C.FLOOR_TOP - 20 - C.HOOK_HEIGHT;
-            blocked = true;
-        }
+        checkBox = {
+            x: newX - C.HOOK_WIDTH / 2,
+            y: newY,
+            w: C.HOOK_WIDTH,
+            h: C.HOOK_HEIGHT
+        };
     }
     
-    // Obstacle collision
-    for (const [id, obs] of Object.entries(craneGameState.obstacles)) {
-        if (obs.removed) continue;
-        
-        let checkLeft, checkRight, checkTop, checkBottom;
-        if (craneGameState.attached) {
-            checkLeft = newX - C.PUMP_WIDTH / 2;
-            checkRight = newX + C.PUMP_WIDTH / 2;
-            checkTop = newY + C.HOOK_HEIGHT - 10;
-            checkBottom = checkTop + C.PUMP_HEIGHT;
-        } else {
-            checkLeft = newX - C.HOOK_WIDTH / 2;
-            checkRight = newX + C.HOOK_WIDTH / 2;
-            checkTop = newY;
-            checkBottom = newY + C.HOOK_HEIGHT;
-        }
-        
-        const obsRight = obs.x + obs.w;
-        const obsBottom = obs.y + obs.h;
-        
-        if (checkRight > obs.x && checkLeft < obsRight && checkBottom > obs.y && checkTop < obsBottom) {
-            blocked = true;
-            showCraneCollision(obs.x + obs.w/2, obs.y);
-            break;
-        }
+    const collision = checkCraneCollision(checkBox);
+    if (collision) {
+        showCraneCollision(newX, newY, collision);
+        return;
     }
     
-    if (!blocked) {
-        craneGameState.craneX = newX;
-        craneGameState.hookY = newY;
-    }
-    
+    craneGameState.craneX = newX;
+    craneGameState.hookY = newY;
     updateCranePositions();
     checkCraneDropZone();
 }
 
-function showCraneCollision(x, y) {
+function checkCraneCollision(box) {
+    const C = CRANE_CONSTANTS;
+    const buffer = 2;
+    
+    // Fixed walls
+    for (const wall of CRANE_FIXED_WALLS) {
+        if (craneRectsOverlap(box.x, box.y, box.w, box.h, wall.x, wall.y, wall.w, wall.h, buffer)) {
+            return { type: 'fixed', message: 'Building wall' };
+        }
+    }
+    
+    // Floor collision
+    if (box.y + box.h > C.FLOOR_TOP - 3) {
+        return { type: 'floor', message: 'Floor - cannot lower further' };
+    }
+    
+    // Removable obstacles
+    for (const [id, obs] of Object.entries(craneGameState.obstacles)) {
+        if (obs.removed) continue;
+        if (craneRectsOverlap(box.x, box.y, box.w, box.h, obs.x, obs.y, obs.w, obs.h, buffer)) {
+            return { 
+                type: 'removable', 
+                id, 
+                obs,
+                message: `${obs.label || 'Infrastructure'} blocking — click to remove`
+            };
+        }
+    }
+    
+    return null;
+}
+
+function craneRectsOverlap(x1, y1, w1, h1, x2, y2, w2, h2, buffer = 0) {
+    return x1 < x2 + w2 + buffer &&
+           x1 + w1 > x2 - buffer &&
+           y1 < y2 + h2 + buffer &&
+           y1 + h1 > y2 - buffer;
+}
+
+function showCraneCollision(x, y, collision) {
     const indicator = document.getElementById('craneCollision');
     if (!indicator) return;
-    indicator.style.left = x + 'px';
-    indicator.style.top = (y - 25) + 'px';
+    
+    updateCraneMessage('error', '⚠️ Blocked', collision.message);
+    
+    const hook = document.getElementById('craneHook');
+    if (hook) {
+        hook.classList.add('blocked');
+        setTimeout(() => hook.classList.remove('blocked'), 150);
+    }
+    
+    indicator.textContent = '⚠️ ' + (collision.obs?.label || 'BLOCKED');
+    indicator.style.left = Math.min(x, CRANE_CONSTANTS.VIEWPORT_WIDTH - 120) + 'px';
+    indicator.style.top = (y + 60) + 'px';
     indicator.classList.add('visible');
-    setTimeout(() => indicator.classList.remove('visible'), 300);
+    setTimeout(() => indicator.classList.remove('visible'), 400);
+}
     
     const hook = document.getElementById('craneHook');
     if (hook) {
@@ -9786,6 +9870,67 @@ function showFinalResults() {
         `;
     });
     html += `</div>`;
+    
+    // Replay Call-to-Action
+    const goodCount = elementReports.filter(r => r.quality === 'good').length;
+    const poorCount = elementReports.filter(r => r.quality === 'poor').length;
+    const possiblePaths = Math.pow(3, 6); // 3 choices × 6 elements = 729 combinations
+    
+    let ctaMessage = '';
+    let ctaQuestions = [];
+    
+    if (goodCount === 6) {
+        ctaMessage = "You found the optimal path — but what happens when budgets are tight? Try making some compromises and see how small savings in 2025 compound into major costs over 60 years.";
+        ctaQuestions = [
+            "What if you'd chosen the corner position?",
+            "Could you have saved on material spec?",
+            "What's the real cost of 50mm clearance?"
+        ];
+    } else if (poorCount >= 4) {
+        ctaMessage = "You've seen how poor choices compound. Now try the opposite — what does the optimal path look like? Can you achieve an A grade?";
+        ctaQuestions = [
+            "What if every choice was 'good'?",
+            "Which single change would help most?",
+            "Is the cheapest option ever right?"
+        ];
+    } else {
+        ctaMessage = "Every combination of choices creates a different 60-year story. The plant you just ran is one of hundreds of possible outcomes.";
+        ctaQuestions = [
+            "What if you'd spent more on materials?",
+            "Would better access have paid off?",
+            "Can you beat your current score?"
+        ];
+    }
+    
+    html += `
+        <div class="replay-cta">
+            <div class="replay-cta-icon">🔄</div>
+            <div class="replay-cta-title">What Would You Change?</div>
+            <div class="replay-cta-text">${ctaMessage}</div>
+            <div class="replay-cta-questions">
+                ${ctaQuestions.map(q => `<span class="replay-cta-question">${q}</span>`).join('')}
+            </div>
+            <button class="replay-btn" onclick="location.reload()">
+                <span class="replay-btn-icon">🏭</span>
+                Design Another Plant
+            </button>
+            <div class="replay-stats">
+                <div class="replay-stat">
+                    <div class="replay-stat-value">${possiblePaths}</div>
+                    <div class="replay-stat-label">Possible Paths</div>
+                </div>
+                <div class="replay-stat">
+                    <div class="replay-stat-value">${goodCount}/6</div>
+                    <div class="replay-stat-label">Good Choices</div>
+                </div>
+                <div class="replay-stat">
+                    <div class="replay-stat-value">60</div>
+                    <div class="replay-stat-label">Years Simulated</div>
+                </div>
+            </div>
+        </div>
+    `;
+    
     document.getElementById('finalReportContent').innerHTML = html;
     // Set results background
     const resultsScreen = document.getElementById('resultsScreen');
