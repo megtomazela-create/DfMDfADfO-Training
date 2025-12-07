@@ -4065,7 +4065,7 @@
 </head>
 <body>
 <!-- VERSION TAG -->
-<div class="version-tag">v0.57</div>
+<div class="version-tag">v0.58</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -8391,6 +8391,8 @@ function updateCranePositions() {
         attachBtn.textContent = craneGameState.attached ? '📤 RELEASE' : '🪝 ATTACH';
         attachBtn.classList.toggle('detach', craneGameState.attached);
     }
+    
+    checkCraneDropZone();
 }
 
 function updateCraneStats() {
@@ -8410,6 +8412,17 @@ function toggleCraneAttach() {
         // Try to release
         const pumpLeftX = craneGameState.craneX - C.PUMP_WIDTH / 2;
         const pumpTopY = craneGameState.hookY + C.HOOK_HEIGHT - 10;
+        
+        console.log('Release check:', {
+            craneX: craneGameState.craneX,
+            hookY: craneGameState.hookY,
+            pumpLeftX,
+            pumpTopY,
+            dropZone: C.DROP_ZONE,
+            horizontallyOver: pumpLeftX > C.DROP_ZONE.x - 30 && pumpLeftX + C.PUMP_WIDTH < C.DROP_ZONE.x + C.DROP_ZONE.w + 30,
+            loweredInto: pumpTopY > C.DROP_ZONE.y - 20,
+            isOverDropZone: isCraneOverDropZone(pumpLeftX, pumpTopY)
+        });
         
         if (isCraneOverDropZone(pumpLeftX, pumpTopY)) {
             completeCranePump();
@@ -8480,7 +8493,11 @@ function checkCraneDropZone() {
     const horizontallyOver = pumpLeftX > C.DROP_ZONE.x - 30 && 
                              pumpLeftX + C.PUMP_WIDTH < C.DROP_ZONE.x + C.DROP_ZONE.w + 30;
     
-    if (isCraneOverDropZone(pumpLeftX, pumpTopY)) {
+    const isOver = isCraneOverDropZone(pumpLeftX, pumpTopY);
+    
+    console.log('checkCraneDropZone:', { pumpLeftX, pumpTopY, horizontallyOver, isOver });
+    
+    if (isOver) {
         dropZone?.classList.add('active');
         updateCraneMessage('success', '📍 Over Drop Zone!', 'Press RELEASE to complete!');
     } else if (horizontallyOver) {
