@@ -12,7 +12,7 @@
             --mid-grey: #9babc2;
             --slate: #4a5d6b;
             --dark-slate: #364451;
-            --deep-navy: #1f2937;
+            --deep-navy: #0a0e17;
             --green: #92d050;
             --blue: #00b0f0;
             --orange: #cc5500;
@@ -66,7 +66,7 @@
             filter: brightness(0.35);
         }
         .intro-slide .bg.dark {
-            background: linear-gradient(135deg, #0a1628, #1a2a3a, #0d1a2d);
+            background: linear-gradient(135deg, #080c14, #0a1018, #080c14);
             filter: none;
         }
         .intro-content {
@@ -3392,11 +3392,591 @@
             color: var(--light-grey);
         }
         .trip-consequence-stat span { font-weight: 600; }
+        
+        /* ============================================
+           PUMP DECOMMISSIONING CRANE GAME
+           ============================================ */
+        .crane-game-container {
+            background: linear-gradient(135deg, #0d1a2d 0%, #1a2a3a 100%);
+            border-radius: 12px;
+            padding: 15px;
+        }
+        .crane-game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--slate);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .crane-game-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--blue);
+        }
+        .crane-game-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .crane-game-stat {
+            font-size: 0.75rem;
+            color: var(--light-grey);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 10px;
+            border-radius: 6px;
+        }
+        .crane-game-stat-value {
+            font-weight: 700;
+            color: var(--white);
+        }
+        .crane-game-stat.cost .crane-game-stat-value { color: var(--amber); }
+        .crane-game-stat.dose .crane-game-stat-value { color: var(--red); }
+        .crane-game-stat.time .crane-game-stat-value { color: var(--blue); }
+        .crane-game-viewport {
+            position: relative;
+            background: linear-gradient(180deg, #1a2535 0%, #0d1520 100%);
+            border-radius: 8px;
+            height: 400px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            border: 2px solid #2a3a4a;
+        }
+        .crane-rail {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 24px;
+            background: linear-gradient(180deg, #4a5568 0%, #2d3748 100%);
+            border-bottom: 3px solid #718096;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+        }
+        .crane-rail-label {
+            font-size: 0.55rem;
+            color: var(--mid-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .crane-trolley {
+            position: absolute;
+            top: 27px;
+            width: 60px;
+            height: 28px;
+            background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 5px;
+            border: 2px solid #b45309;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.55rem;
+            font-weight: 700;
+            color: #7c2d12;
+            z-index: 25;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+        }
+        .crane-cable {
+            position: absolute;
+            top: 55px;
+            width: 4px;
+            background: repeating-linear-gradient(180deg, #a0aec0 0px, #a0aec0 5px, #718096 5px, #718096 10px);
+            border-radius: 2px;
+            z-index: 20;
+        }
+        .crane-hook {
+            position: absolute;
+            width: 40px;
+            height: 45px;
+            z-index: 20;
+        }
+        .crane-hook-body {
+            width: 30px;
+            height: 18px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, #a0aec0 0%, #718096 100%);
+            border-radius: 5px;
+            border: 2px solid #4a5568;
+        }
+        .crane-hook-curve {
+            width: 22px;
+            height: 27px;
+            margin: -2px auto 0;
+            border: 4px solid #a0aec0;
+            border-top: none;
+            border-radius: 0 0 11px 11px;
+            background: transparent;
+        }
+        .crane-hook.attached .crane-hook-curve { border-color: var(--green); }
+        .crane-hook.blocked { animation: craneBlockedShake 0.15s ease; }
+        @keyframes craneBlockedShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(4px); }
+            75% { transform: translateX(-4px); }
+        }
+        .crane-floor {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(180deg, #4a5568 0%, #2d3748 100%);
+            border-top: 3px solid #718096;
+            z-index: 5;
+        }
+        .crane-wall {
+            position: absolute;
+            bottom: 30px;
+            width: 35px;
+            background: linear-gradient(90deg, #4a5568 0%, #374151 50%, #2d3748 100%);
+            border: 2px solid #6b7280;
+            z-index: 8;
+        }
+        .crane-wall.left {
+            left: 0;
+            height: 340px;
+            border-left: none;
+            border-radius: 0 5px 0 0;
+        }
+        .crane-wall.right {
+            right: 120px;
+            height: 120px;
+            border-radius: 5px 5px 0 0;
+        }
+        .crane-wall-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-90deg);
+            font-size: 0.45rem;
+            color: var(--mid-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+        .crane-drop-zone {
+            position: absolute;
+            bottom: 30px;
+            right: 15px;
+            width: 95px;
+            height: 140px;
+            border: 3px dashed var(--green);
+            border-radius: 8px;
+            background: rgba(146, 208, 80, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 4;
+        }
+        .crane-drop-zone-label {
+            font-size: 0.6rem;
+            color: var(--green);
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .crane-drop-zone-icon { font-size: 1.5rem; margin-bottom: 5px; }
+        .crane-drop-zone.active {
+            background: rgba(146, 208, 80, 0.3);
+            animation: craneDropPulse 0.5s infinite;
+        }
+        @keyframes craneDropPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(146, 208, 80, 0.4); }
+            50% { box-shadow: 0 0 15px 3px rgba(146, 208, 80, 0.2); }
+        }
+        .crane-pump {
+            position: absolute;
+            width: 80px;
+            height: 115px;
+            z-index: 10;
+        }
+        .crane-pump.attached { z-index: 21; }
+        .crane-pump-motor {
+            width: 48px;
+            height: 35px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, #4a5568 0%, #2d3748 100%);
+            border-radius: 5px 5px 0 0;
+            border: 2px solid #718096;
+            border-bottom: none;
+            position: relative;
+        }
+        .crane-pump-motor::after {
+            content: 'MOTOR';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.4rem;
+            color: var(--mid-grey);
+            letter-spacing: 1px;
+        }
+        .crane-pump-body {
+            width: 80px;
+            height: 70px;
+            background: linear-gradient(135deg, #3182ce 0%, #2c5282 50%, #1a365d 100%);
+            border-radius: 8px;
+            border: 3px solid #2b6cb0;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        .crane-pump-body::before {
+            content: 'RCP-4B';
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .crane-pump-body::after {
+            content: '☢';
+            position: absolute;
+            top: 58%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1rem;
+            opacity: 0.5;
+        }
+        .crane-pump-lift-points {
+            position: absolute;
+            top: 33px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 6px;
+        }
+        .crane-pump-lift-point {
+            width: 10px;
+            height: 10px;
+            background: #f59e0b;
+            border-radius: 50%;
+            border: 2px solid #b45309;
+            animation: craneLiftPointPulse 1.5s infinite;
+        }
+        @keyframes craneLiftPointPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5); }
+            50% { box-shadow: 0 0 8px 2px rgba(245, 158, 11, 0.3); }
+        }
+        .crane-pump.attached .crane-pump-lift-point {
+            animation: none;
+            background: var(--green);
+            border-color: #22c55e;
+        }
+        .crane-pump-base {
+            width: 88px;
+            height: 12px;
+            margin: 0 auto;
+            margin-left: -4px;
+            background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
+            border-radius: 0 0 3px 3px;
+            border: 2px solid #4a5568;
+            border-top: none;
+        }
+        .crane-obstacle {
+            position: absolute;
+            background: linear-gradient(180deg, #4a5568 0%, #374151 100%);
+            border: 3px solid #6b7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 9;
+        }
+        .crane-obstacle:hover:not(.removed) {
+            border-color: var(--red);
+            box-shadow: 0 0 20px rgba(220, 53, 69, 0.5);
+        }
+        .crane-obstacle.removed {
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none;
+        }
+        .crane-obstacle-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.45rem;
+            color: var(--light-grey);
+            text-transform: uppercase;
+            text-align: center;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .crane-obstacle-cost {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.5rem;
+            color: var(--amber);
+            background: rgba(0,0,0,0.7);
+            padding: 2px 6px;
+            border-radius: 3px;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .crane-obstacle.corner-wall {
+            background: linear-gradient(90deg, #4a5568 0%, #374151 50%, #2d3748 100%);
+            border-radius: 5px;
+        }
+        .crane-obstacle.corner-wall .crane-obstacle-label {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: translate(-50%, -50%) rotate(180deg);
+        }
+        .crane-obstacle.hvac-unit {
+            background: linear-gradient(180deg, #065f46 0%, #064e3b 100%);
+            border-color: #059669;
+            border-radius: 5px;
+        }
+        .crane-obstacle.hvac-unit::before {
+            content: '≋';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.3);
+        }
+        .crane-obstacle.room-ceiling {
+            background: linear-gradient(180deg, #4a5568 0%, #374151 100%);
+            border-radius: 3px;
+            z-index: 12;
+        }
+        .crane-obstacle.room-wall-left,
+        .crane-obstacle.room-wall-right {
+            background: linear-gradient(90deg, #374151 0%, #4a5568 50%, #374151 100%);
+        }
+        .crane-obstacle.rad-shield {
+            background: repeating-linear-gradient(45deg, #4a5568 0px, #4a5568 10px, #374151 10px, #374151 20px);
+            border-color: #f59e0b;
+        }
+        .crane-obstacle.rad-shield::before {
+            content: '☢';
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1rem;
+            opacity: 0.6;
+        }
+        .crane-obstacle.rad-shield .crane-obstacle-label {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: translate(-50%, -50%) rotate(180deg);
+            top: 65%;
+        }
+        .crane-controls-panel {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+        .crane-dpad {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0,0,0,0.3);
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .crane-dpad-label {
+            font-size: 0.65rem;
+            color: var(--mid-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+        .crane-dpad-row {
+            display: flex;
+            gap: 5px;
+        }
+        .crane-ctrl-btn {
+            width: 52px;
+            height: 52px;
+            background: var(--dark-slate);
+            border: 2px solid var(--slate);
+            border-radius: 8px;
+            color: var(--white);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+        .crane-ctrl-btn:hover, .crane-ctrl-btn.active {
+            border-color: var(--blue);
+            background: rgba(0, 176, 240, 0.3);
+        }
+        .crane-ctrl-btn:active, .crane-ctrl-btn.pressed {
+            background: var(--blue);
+            border-color: var(--blue);
+            transform: scale(0.95);
+        }
+        .crane-ctrl-btn.attach {
+            width: 114px;
+            height: 44px;
+            font-size: 0.8rem;
+            background: linear-gradient(135deg, var(--green) 0%, #7bc050 100%);
+            border-color: var(--green);
+            color: var(--deep-navy);
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        .crane-ctrl-btn.attach:active {
+            background: linear-gradient(135deg, #7bc050 0%, #5a9030 100%);
+        }
+        .crane-ctrl-btn.attach.detach {
+            background: linear-gradient(135deg, var(--amber) 0%, #d97706 100%);
+            border-color: var(--amber);
+        }
+        .crane-ctrl-btn.placeholder { visibility: hidden; }
+        .crane-message-panel { flex: 1; min-width: 280px; }
+        .crane-message {
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 4px solid var(--blue);
+            min-height: 90px;
+        }
+        .crane-message.warning { border-left-color: var(--amber); }
+        .crane-message.error { border-left-color: var(--red); }
+        .crane-message.success { border-left-color: var(--green); }
+        .crane-message.info { border-left-color: var(--blue); }
+        .crane-message-title {
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+        .crane-message-text {
+            color: var(--light-grey);
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+        .crane-key-hint {
+            font-size: 0.6rem;
+            color: var(--mid-grey);
+            margin-top: 6px;
+        }
+        .crane-key-hint kbd {
+            background: var(--slate);
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: inherit;
+        }
+        .crane-result-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.92);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .crane-result-overlay.visible { display: flex; }
+        .crane-result-icon { font-size: 3rem; }
+        .crane-result-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--green);
+        }
+        .crane-result-stats {
+            display: flex;
+            gap: 25px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .crane-result-stat { text-align: center; }
+        .crane-result-stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+        .crane-result-stat-label {
+            font-size: 0.65rem;
+            color: var(--mid-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .crane-result-message {
+            max-width: 400px;
+            text-align: center;
+            color: var(--light-grey);
+            line-height: 1.4;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+        .crane-result-comparison {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+        .crane-result-comparison-title {
+            color: var(--amber);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .crane-collision-indicator {
+            position: absolute;
+            padding: 4px 8px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            font-size: 0.65rem;
+            border-radius: 4px;
+            pointer-events: none;
+            z-index: 50;
+            display: none;
+        }
+        .crane-collision-indicator.visible {
+            display: block;
+            animation: craneCollisionPop 0.3s ease;
+        }
+        @keyframes craneCollisionPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .crane-result-btn {
+            margin-top: 15px;
+            padding: 12px 30px;
+            background: var(--green);
+            color: var(--deep-navy);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .crane-result-btn:hover { background: #7bc050; }
     </style>
 </head>
 <body>
 <!-- VERSION TAG -->
-<div class="version-tag">v0.51</div>
+<div class="version-tag">v0.53</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -7261,6 +7841,666 @@ let pipeGameState = {
     currentElId: null,
     currentElement: null
 };
+
+// ============================================
+// PUMP DECOMMISSIONING CRANE GAME (Stage 5)
+// ============================================
+let craneGameState = {
+    variant: 'corner',
+    craneX: 400,
+    hookY: 100,
+    pumpX: 200,
+    pumpY: 255,
+    attached: false,
+    complete: false,
+    cost: 0,
+    dose: 0,
+    time: 0,
+    obstacles: {},
+    activeKeys: new Set(),
+    moveInterval: null,
+    currentElId: null,
+    currentElement: null
+};
+
+const CRANE_CONSTANTS = {
+    VIEWPORT_HEIGHT: 400,
+    VIEWPORT_WIDTH: 920,
+    FLOOR_TOP: 370,
+    CRANE_SPEED: 5,
+    HOOK_MIN_Y: 55,
+    HOOK_MAX_Y: 320,
+    PUMP_WIDTH: 80,
+    PUMP_HEIGHT: 115,
+    HOOK_WIDTH: 40,
+    HOOK_HEIGHT: 45,
+    TROLLEY_WIDTH: 60,
+    DROP_ZONE: { x: 810, y: 230, w: 95, h: 140 }
+};
+
+const CRANE_VARIANTS = {
+    corner: {
+        name: 'Corner Position',
+        pumpStartX: 140,
+        baseCost: 15000,
+        baseDose: 0.8,
+        baseTime: 2,
+        message: 'Pump is in corner. Lower hook to attach, then lift and move right to drop zone. The wall blocks your exit path!',
+        obstacles: [
+            { id: 'cornerWall', x: 220, y: 80, w: 50, h: 290, cost: 35000, dose: 2.5, time: 8, label: 'STRUCTURAL WALL', cssClass: 'corner-wall' }
+        ],
+        resultMessage: 'The 2025 corner position required demolishing a structural wall just to get the pump out — exactly the problem industry guidance warns against.'
+    },
+    openBay: {
+        name: 'Open Bay',
+        pumpStartX: 400,
+        baseCost: 15000,
+        baseDose: 0.8,
+        baseTime: 2,
+        message: 'Clear access! Lower hook to pump, attach, lift, and transport to drop zone.',
+        obstacles: [],
+        resultMessage: 'Open bay design = direct crane access. The 2025 design followed OECD best practice: adequate clearance and crane access for lift-out removal.'
+    },
+    dedicated: {
+        name: 'Dedicated Shielded Room',
+        pumpStartX: 320,
+        baseCost: 15000,
+        baseDose: 0.8,
+        baseTime: 2,
+        message: 'Pump is enclosed in a shielded room with HVAC above it. Remove ventilation first, then ceiling, then walls to exit!',
+        obstacles: [
+            { id: 'hvac', x: 310, y: 170, w: 100, h: 50, cost: 18000, dose: 0.6, time: 2, label: 'HVAC UNIT', cssClass: 'hvac-unit' },
+            { id: 'ceiling', x: 100, y: 100, w: 420, h: 25, cost: 45000, dose: 1.5, time: 6, label: 'ROOM CEILING', cssClass: 'room-ceiling' },
+            { id: 'wallLeft', x: 100, y: 125, w: 20, h: 245, cost: 15000, dose: 0.5, time: 2, label: '', cssClass: 'room-wall-left' },
+            { id: 'wallRight', x: 500, y: 125, w: 20, h: 245, cost: 15000, dose: 0.5, time: 2, label: '', cssClass: 'room-wall-right' },
+            { id: 'radShield', x: 580, y: 100, w: 35, h: 270, cost: 28000, dose: 1.2, time: 4, label: 'RAD SHIELD', cssClass: 'rad-shield' }
+        ],
+        resultMessage: 'The shielded room required removing HVAC, ceiling, walls, AND radiation shielding — massive unnecessary work from over-engineering. All that structure is now waste.'
+    }
+};
+
+function renderPumpDecomGame(elId, element) {
+    const designChoice = STATE.designChoices[elId];
+    const designOpt = element.stage1.options.find(o => o.id === designChoice);
+    const stage = GAME_DATA.stages[STATE.stage];
+    const char = GAME_DATA.characters[stage.char];
+    const stageCost = STATE.stageTotals[STATE.stage]?.cost || 0;
+    
+    // Map design choice to crane variant
+    let variant = 'corner';
+    if (designChoice === 'openBay') variant = 'openBay';
+    else if (designChoice === 'dedicated') variant = 'dedicated';
+    
+    craneGameState.currentElId = elId;
+    craneGameState.currentElement = element;
+    
+    const config = CRANE_VARIANTS[variant];
+    
+    let html = `
+        <div class="context-bar">
+            <span class="context-design">📅 Year ${stage.year} · 2025 Design: <strong>${designOpt.name}</strong></span>
+            <span class="context-cost">💰 Stage Cost: ${formatMoney(stageCost)}</span>
+        </div>
+        <div class="situation-panel">
+            <div class="situation-label">Final Decommissioning — Pump Removal</div>
+            <div class="situation-text">Time to remove the pump. Your 2025 design choice determines how difficult this will be. Use the crane to lift the pump and move it to the drop zone outside containment.</div>
+        </div>
+        <div class="speech-bubble">
+            <div class="speech-portrait">${char.image ? `<img src="${char.image}" alt="${char.name}">` : char.emoji}</div>
+            <div class="speech-name">${char.name}, ${char.role}</div>
+            <div class="speech-text">"${config.message}"</div>
+        </div>
+        <div class="crane-game-container" id="craneGameContainer"></div>
+    `;
+    
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('modalFooter').innerHTML = '';
+    
+    // Initialize crane game
+    initCraneGame(variant);
+}
+
+function initCraneGame(variant) {
+    const config = CRANE_VARIANTS[variant];
+    const C = CRANE_CONSTANTS;
+    
+    craneGameState.variant = variant;
+    craneGameState.craneX = config.pumpStartX + C.PUMP_WIDTH / 2;
+    craneGameState.hookY = 100;
+    craneGameState.pumpX = config.pumpStartX;
+    craneGameState.pumpY = C.FLOOR_TOP - C.PUMP_HEIGHT;
+    craneGameState.attached = false;
+    craneGameState.complete = false;
+    craneGameState.cost = 0;
+    craneGameState.dose = 0;
+    craneGameState.time = 0;
+    craneGameState.obstacles = {};
+    craneGameState.activeKeys = new Set();
+    
+    config.obstacles.forEach(obs => {
+        craneGameState.obstacles[obs.id] = { ...obs, removed: false };
+    });
+    
+    renderCraneGameUI();
+    updateCranePositions();
+    setupCraneControls();
+}
+
+function renderCraneGameUI() {
+    const config = CRANE_VARIANTS[craneGameState.variant];
+    const container = document.getElementById('craneGameContainer');
+    
+    let obstaclesHTML = '';
+    config.obstacles.forEach(obs => {
+        obstaclesHTML += `
+            <div class="crane-obstacle ${obs.cssClass}" id="obs_${obs.id}" 
+                 style="left: ${obs.x}px; top: ${obs.y}px; width: ${obs.w}px; height: ${obs.h}px;"
+                 onclick="removeCraneObstacle('${obs.id}')">
+                <span class="crane-obstacle-label">${obs.label}</span>
+                <span class="crane-obstacle-cost">£${obs.cost.toLocaleString()}</span>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = `
+        <div class="crane-game-header">
+            <div class="crane-game-title">🏗️ ${config.name} — Pump Removal</div>
+            <div class="crane-game-stats">
+                <div class="crane-game-stat cost">💰 <span class="crane-game-stat-value" id="craneCost">£${craneGameState.cost.toLocaleString()}</span></div>
+                <div class="crane-game-stat dose">☢️ <span class="crane-game-stat-value" id="craneDose">${craneGameState.dose.toFixed(1)} mSv</span></div>
+                <div class="crane-game-stat time">⏱️ <span class="crane-game-stat-value" id="craneTime">${craneGameState.time} days</span></div>
+            </div>
+        </div>
+        
+        <div class="crane-game-viewport" id="craneViewport">
+            <div class="crane-rail"><span class="crane-rail-label">Overhead Crane Rail</span></div>
+            <div class="crane-trolley" id="craneTrolley">50T</div>
+            <div class="crane-cable" id="craneCable"></div>
+            <div class="crane-hook" id="craneHook">
+                <div class="crane-hook-body"></div>
+                <div class="crane-hook-curve"></div>
+            </div>
+            <div class="crane-wall left"><span class="crane-wall-label">Containment</span></div>
+            <div class="crane-wall right"><span class="crane-wall-label">Building</span></div>
+            <div class="crane-drop-zone" id="craneDropZone">
+                <div class="crane-drop-zone-icon">📍</div>
+                <div class="crane-drop-zone-label">Drop Zone</div>
+            </div>
+            <div class="crane-floor"></div>
+            ${obstaclesHTML}
+            <div class="crane-pump" id="cranePump">
+                <div class="crane-pump-motor"></div>
+                <div class="crane-pump-body">
+                    <div class="crane-pump-lift-points">
+                        <div class="crane-pump-lift-point"></div>
+                        <div class="crane-pump-lift-point"></div>
+                    </div>
+                </div>
+                <div class="crane-pump-base"></div>
+            </div>
+            <div class="crane-collision-indicator" id="craneCollision">⚠️ BLOCKED</div>
+            <div class="crane-result-overlay" id="craneResultOverlay">
+                <div class="crane-result-icon">✅</div>
+                <div class="crane-result-title">Pump Removed Successfully</div>
+                <div class="crane-result-stats">
+                    <div class="crane-result-stat">
+                        <div class="crane-result-stat-value" id="craneResultCost">£0</div>
+                        <div class="crane-result-stat-label">Total Cost</div>
+                    </div>
+                    <div class="crane-result-stat">
+                        <div class="crane-result-stat-value" id="craneResultDose">0 mSv</div>
+                        <div class="crane-result-stat-label">Dose</div>
+                    </div>
+                    <div class="crane-result-stat">
+                        <div class="crane-result-stat-value" id="craneResultTime">0 days</div>
+                        <div class="crane-result-stat-label">Duration</div>
+                    </div>
+                </div>
+                <div class="crane-result-message" id="craneResultMessage"></div>
+                <div class="crane-result-comparison" id="craneResultComparison"></div>
+                <button class="crane-result-btn" onclick="completeCraneGame()">Continue →</button>
+            </div>
+        </div>
+        
+        <div class="crane-controls-panel">
+            <div class="crane-dpad">
+                <div class="crane-dpad-label">Crane Controls</div>
+                <div class="crane-dpad-row">
+                    <button class="crane-ctrl-btn placeholder"></button>
+                    <button class="crane-ctrl-btn" id="craneBtnUp" data-dir="up">↑</button>
+                    <button class="crane-ctrl-btn placeholder"></button>
+                </div>
+                <div class="crane-dpad-row">
+                    <button class="crane-ctrl-btn" id="craneBtnLeft" data-dir="left">←</button>
+                    <button class="crane-ctrl-btn" id="craneBtnDown" data-dir="down">↓</button>
+                    <button class="crane-ctrl-btn" id="craneBtnRight" data-dir="right">→</button>
+                </div>
+                <button class="crane-ctrl-btn attach" id="craneAttachBtn" onclick="toggleCraneAttach()">🪝 ATTACH</button>
+                <div class="crane-key-hint">
+                    <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> move · <kbd>Space</kbd> attach
+                </div>
+            </div>
+            <div class="crane-message-panel">
+                <div class="crane-message info" id="craneMessageBox">
+                    <div class="crane-message-title">🏗️ Crane Ready</div>
+                    <div class="crane-message-text" id="craneMessageText">Lower the hook to the pump lift points, then press ATTACH. Obstacles block the path — click them to remove (costs time, money, and dose).</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function setupCraneControls() {
+    // Button controls
+    ['Up', 'Down', 'Left', 'Right'].forEach(dir => {
+        const btn = document.getElementById('craneBtn' + dir);
+        if (!btn) return;
+        
+        const startMove = (e) => {
+            e.preventDefault();
+            craneGameState.activeKeys.add(dir.toLowerCase());
+            btn.classList.add('pressed');
+            if (!craneGameState.moveInterval) {
+                craneGameState.moveInterval = setInterval(moveCrane, 16);
+            }
+        };
+        
+        const stopMove = (e) => {
+            e.preventDefault();
+            craneGameState.activeKeys.delete(dir.toLowerCase());
+            btn.classList.remove('pressed');
+            if (craneGameState.activeKeys.size === 0 && craneGameState.moveInterval) {
+                clearInterval(craneGameState.moveInterval);
+                craneGameState.moveInterval = null;
+            }
+        };
+        
+        btn.addEventListener('mousedown', startMove);
+        btn.addEventListener('mouseup', stopMove);
+        btn.addEventListener('mouseleave', stopMove);
+        btn.addEventListener('touchstart', startMove, { passive: false });
+        btn.addEventListener('touchend', stopMove, { passive: false });
+    });
+    
+    // Keyboard controls
+    document.addEventListener('keydown', handleCraneKeyDown);
+    document.addEventListener('keyup', handleCraneKeyUp);
+}
+
+function handleCraneKeyDown(e) {
+    if (craneGameState.complete) return;
+    const keyMap = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
+    const dir = keyMap[e.key];
+    if (dir) {
+        e.preventDefault();
+        craneGameState.activeKeys.add(dir);
+        if (!craneGameState.moveInterval) {
+            craneGameState.moveInterval = setInterval(moveCrane, 16);
+        }
+    }
+    if (e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        toggleCraneAttach();
+    }
+}
+
+function handleCraneKeyUp(e) {
+    const keyMap = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
+    const dir = keyMap[e.key];
+    if (dir) {
+        craneGameState.activeKeys.delete(dir);
+        if (craneGameState.activeKeys.size === 0 && craneGameState.moveInterval) {
+            clearInterval(craneGameState.moveInterval);
+            craneGameState.moveInterval = null;
+        }
+    }
+}
+
+function moveCrane() {
+    if (craneGameState.complete) return;
+    const C = CRANE_CONSTANTS;
+    const SPEED = C.CRANE_SPEED;
+    
+    let newX = craneGameState.craneX;
+    let newY = craneGameState.hookY;
+    
+    if (craneGameState.activeKeys.has('left')) newX -= SPEED;
+    if (craneGameState.activeKeys.has('right')) newX += SPEED;
+    if (craneGameState.activeKeys.has('up')) newY -= SPEED;
+    if (craneGameState.activeKeys.has('down')) newY += SPEED;
+    
+    // Clamp hook Y
+    newY = Math.max(C.HOOK_MIN_Y, Math.min(C.HOOK_MAX_Y, newY));
+    
+    // Calculate positions
+    const trolleyLeft = newX - C.TROLLEY_WIDTH / 2;
+    const trolleyRight = newX + C.TROLLEY_WIDTH / 2;
+    const hookLeft = newX - C.HOOK_WIDTH / 2;
+    const hookRight = newX + C.HOOK_WIDTH / 2;
+    const hookBottom = newY + C.HOOK_HEIGHT;
+    
+    let pumpLeft, pumpRight, pumpTop, pumpBottom;
+    if (craneGameState.attached) {
+        pumpLeft = newX - C.PUMP_WIDTH / 2;
+        pumpRight = newX + C.PUMP_WIDTH / 2;
+        pumpTop = newY + C.HOOK_HEIGHT - 10;
+        pumpBottom = pumpTop + C.PUMP_HEIGHT;
+    }
+    
+    // Collision detection
+    let blocked = false;
+    
+    // Fixed walls
+    if (trolleyLeft < 35) { newX = 35 + C.TROLLEY_WIDTH / 2; blocked = true; }
+    if (trolleyRight > 920) { newX = 920 - C.TROLLEY_WIDTH / 2; blocked = true; }
+    
+    // Left containment wall collision (for hook/pump)
+    if (hookLeft < 35) { newX = 35 + C.HOOK_WIDTH / 2; blocked = true; }
+    if (craneGameState.attached && pumpLeft < 35) { newX = 35 + C.PUMP_WIDTH / 2; blocked = true; }
+    
+    // Right building wall collision
+    const rightWallX = 800;
+    const rightWallTop = 250;
+    if (craneGameState.attached) {
+        pumpLeft = newX - C.PUMP_WIDTH / 2;
+        pumpRight = newX + C.PUMP_WIDTH / 2;
+        pumpTop = newY + C.HOOK_HEIGHT - 10;
+        pumpBottom = pumpTop + C.PUMP_HEIGHT;
+        
+        if (pumpRight > rightWallX && pumpBottom > rightWallTop) {
+            newX = rightWallX - C.PUMP_WIDTH / 2;
+            blocked = true;
+        }
+    }
+    
+    // Floor collision
+    if (craneGameState.attached) {
+        pumpTop = newY + C.HOOK_HEIGHT - 10;
+        pumpBottom = pumpTop + C.PUMP_HEIGHT;
+        if (pumpBottom > C.FLOOR_TOP) {
+            newY = C.FLOOR_TOP - C.PUMP_HEIGHT - C.HOOK_HEIGHT + 10;
+            blocked = true;
+        }
+    } else {
+        if (hookBottom > C.FLOOR_TOP - 20) {
+            newY = C.FLOOR_TOP - 20 - C.HOOK_HEIGHT;
+            blocked = true;
+        }
+    }
+    
+    // Obstacle collision
+    for (const [id, obs] of Object.entries(craneGameState.obstacles)) {
+        if (obs.removed) continue;
+        
+        let checkLeft, checkRight, checkTop, checkBottom;
+        if (craneGameState.attached) {
+            checkLeft = newX - C.PUMP_WIDTH / 2;
+            checkRight = newX + C.PUMP_WIDTH / 2;
+            checkTop = newY + C.HOOK_HEIGHT - 10;
+            checkBottom = checkTop + C.PUMP_HEIGHT;
+        } else {
+            checkLeft = newX - C.HOOK_WIDTH / 2;
+            checkRight = newX + C.HOOK_WIDTH / 2;
+            checkTop = newY;
+            checkBottom = newY + C.HOOK_HEIGHT;
+        }
+        
+        const obsRight = obs.x + obs.w;
+        const obsBottom = obs.y + obs.h;
+        
+        if (checkRight > obs.x && checkLeft < obsRight && checkBottom > obs.y && checkTop < obsBottom) {
+            blocked = true;
+            showCraneCollision(obs.x + obs.w/2, obs.y);
+            break;
+        }
+    }
+    
+    if (!blocked) {
+        craneGameState.craneX = newX;
+        craneGameState.hookY = newY;
+    }
+    
+    updateCranePositions();
+    checkCraneDropZone();
+}
+
+function showCraneCollision(x, y) {
+    const indicator = document.getElementById('craneCollision');
+    if (!indicator) return;
+    indicator.style.left = x + 'px';
+    indicator.style.top = (y - 25) + 'px';
+    indicator.classList.add('visible');
+    setTimeout(() => indicator.classList.remove('visible'), 300);
+    
+    const hook = document.getElementById('craneHook');
+    if (hook) {
+        hook.classList.add('blocked');
+        setTimeout(() => hook.classList.remove('blocked'), 150);
+    }
+}
+
+function updateCranePositions() {
+    const C = CRANE_CONSTANTS;
+    
+    const trolley = document.getElementById('craneTrolley');
+    const cable = document.getElementById('craneCable');
+    const hook = document.getElementById('craneHook');
+    const pump = document.getElementById('cranePump');
+    const attachBtn = document.getElementById('craneAttachBtn');
+    
+    if (trolley) {
+        trolley.style.left = (craneGameState.craneX - C.TROLLEY_WIDTH / 2) + 'px';
+    }
+    if (cable) {
+        cable.style.left = (craneGameState.craneX - 2) + 'px';
+        cable.style.height = (craneGameState.hookY - 55) + 'px';
+    }
+    if (hook) {
+        hook.style.left = (craneGameState.craneX - C.HOOK_WIDTH / 2) + 'px';
+        hook.style.top = craneGameState.hookY + 'px';
+        hook.classList.toggle('attached', craneGameState.attached);
+    }
+    if (pump) {
+        if (craneGameState.attached) {
+            pump.style.left = (craneGameState.craneX - C.PUMP_WIDTH / 2) + 'px';
+            pump.style.top = (craneGameState.hookY + C.HOOK_HEIGHT - 10) + 'px';
+        } else {
+            pump.style.left = craneGameState.pumpX + 'px';
+            pump.style.top = craneGameState.pumpY + 'px';
+        }
+        pump.classList.toggle('attached', craneGameState.attached);
+    }
+    if (attachBtn) {
+        attachBtn.textContent = craneGameState.attached ? '📤 RELEASE' : '🪝 ATTACH';
+        attachBtn.classList.toggle('detach', craneGameState.attached);
+    }
+}
+
+function updateCraneStats() {
+    const costEl = document.getElementById('craneCost');
+    const doseEl = document.getElementById('craneDose');
+    const timeEl = document.getElementById('craneTime');
+    if (costEl) costEl.textContent = '£' + craneGameState.cost.toLocaleString();
+    if (doseEl) doseEl.textContent = craneGameState.dose.toFixed(1) + ' mSv';
+    if (timeEl) timeEl.textContent = craneGameState.time + ' days';
+}
+
+function toggleCraneAttach() {
+    if (craneGameState.complete) return;
+    const C = CRANE_CONSTANTS;
+    
+    if (craneGameState.attached) {
+        // Try to release
+        const pumpLeftX = craneGameState.craneX - C.PUMP_WIDTH / 2;
+        const pumpTopY = craneGameState.hookY + C.HOOK_HEIGHT - 10;
+        
+        if (isCraneOverDropZone(pumpLeftX, pumpTopY)) {
+            completeCranePump();
+        } else {
+            const horizontallyOver = pumpLeftX > C.DROP_ZONE.x - 30 && 
+                                     pumpLeftX + C.PUMP_WIDTH < C.DROP_ZONE.x + C.DROP_ZONE.w + 30;
+            
+            if (horizontallyOver) {
+                updateCraneMessage('error', '❌ Lower First', 'Lower the pump INTO the drop zone before releasing.');
+            } else {
+                craneGameState.attached = false;
+                craneGameState.pumpX = craneGameState.craneX - C.PUMP_WIDTH / 2;
+                craneGameState.pumpY = C.FLOOR_TOP - C.PUMP_HEIGHT;
+                updateCraneMessage('warning', '📤 Released', 'Pump dropped. Move hook back to re-attach.');
+            }
+        }
+    } else {
+        // Try to attach
+        const hookCenterX = craneGameState.craneX;
+        const hookBottomY = craneGameState.hookY + C.HOOK_HEIGHT;
+        const pumpCenterX = craneGameState.pumpX + C.PUMP_WIDTH / 2;
+        const pumpTopY = craneGameState.pumpY;
+        const liftPointY = pumpTopY + 35;
+        
+        const distX = Math.abs(hookCenterX - pumpCenterX);
+        const distY = Math.abs(hookBottomY - liftPointY);
+        
+        if (distX < 50 && distY < 100) {
+            craneGameState.attached = true;
+            craneGameState.hookY = pumpTopY - C.HOOK_HEIGHT + 10;
+            craneGameState.craneX = pumpCenterX;
+            updateCraneMessage('success', '🪝 Attached!', 'Lift up with ↑ and move to drop zone.');
+        } else {
+            let hint = '';
+            if (distX >= 50) {
+                hint = 'Move hook ' + (hookCenterX < pumpCenterX ? 'RIGHT →' : 'LEFT ←') + ' to align with pump center.';
+            } else if (hookBottomY < liftPointY - 50) {
+                hint = 'Lower the hook more with ↓';
+            } else {
+                hint = 'Move closer to the yellow lift points.';
+            }
+            updateCraneMessage('error', '❌ Cannot Attach', hint);
+        }
+    }
+    
+    updateCranePositions();
+}
+
+function isCraneOverDropZone(pumpX, pumpY) {
+    const C = CRANE_CONSTANTS;
+    const horizontallyOver = pumpX > C.DROP_ZONE.x - 30 && 
+                             pumpX + C.PUMP_WIDTH < C.DROP_ZONE.x + C.DROP_ZONE.w + 30;
+    const loweredInto = pumpY > C.DROP_ZONE.y - 20;
+    return horizontallyOver && loweredInto;
+}
+
+function checkCraneDropZone() {
+    const C = CRANE_CONSTANTS;
+    const dropZone = document.getElementById('craneDropZone');
+    if (!craneGameState.attached) {
+        dropZone?.classList.remove('active');
+        return;
+    }
+    
+    const pumpLeftX = craneGameState.craneX - C.PUMP_WIDTH / 2;
+    const pumpTopY = craneGameState.hookY + C.HOOK_HEIGHT - 10;
+    
+    const horizontallyOver = pumpLeftX > C.DROP_ZONE.x - 30 && 
+                             pumpLeftX + C.PUMP_WIDTH < C.DROP_ZONE.x + C.DROP_ZONE.w + 30;
+    
+    if (isCraneOverDropZone(pumpLeftX, pumpTopY)) {
+        dropZone?.classList.add('active');
+        updateCraneMessage('success', '📍 Over Drop Zone!', 'Press RELEASE to complete!');
+    } else if (horizontallyOver) {
+        dropZone?.classList.remove('active');
+        updateCraneMessage('info', '↓ Lower the pump', 'Lower the pump into the drop zone, then RELEASE.');
+    } else {
+        dropZone?.classList.remove('active');
+    }
+}
+
+function completeCranePump() {
+    const config = CRANE_VARIANTS[craneGameState.variant];
+    
+    craneGameState.cost += config.baseCost;
+    craneGameState.dose += config.baseDose;
+    craneGameState.time += config.baseTime;
+    craneGameState.complete = true;
+    craneGameState.attached = false;
+    
+    updateCraneStats();
+    showCraneResult();
+}
+
+function showCraneResult() {
+    const config = CRANE_VARIANTS[craneGameState.variant];
+    const overlay = document.getElementById('craneResultOverlay');
+    
+    document.getElementById('craneResultCost').textContent = '£' + craneGameState.cost.toLocaleString();
+    document.getElementById('craneResultDose').textContent = craneGameState.dose.toFixed(1) + ' mSv';
+    document.getElementById('craneResultTime').textContent = craneGameState.time + ' days';
+    document.getElementById('craneResultMessage').textContent = config.resultMessage;
+    
+    const optimal = CRANE_VARIANTS.openBay;
+    const extraCost = craneGameState.cost - optimal.baseCost;
+    
+    let compHTML = '';
+    if (craneGameState.variant !== 'openBay' && extraCost > 0) {
+        compHTML = `
+            <div class="crane-result-comparison-title">vs. Optimal (Open Bay):</div>
+            Extra cost: £${extraCost.toLocaleString()}<br>
+            Extra dose: ${(craneGameState.dose - optimal.baseDose).toFixed(1)} mSv<br>
+            Extra time: ${craneGameState.time - optimal.baseTime} days
+        `;
+    } else {
+        compHTML = `<div class="crane-result-comparison-title">✓ Optimal Design</div>No extra work needed — crane hooks on, pump lifts out.`;
+    }
+    document.getElementById('craneResultComparison').innerHTML = compHTML;
+    
+    overlay.classList.add('visible');
+    
+    // Clean up event listeners
+    document.removeEventListener('keydown', handleCraneKeyDown);
+    document.removeEventListener('keyup', handleCraneKeyUp);
+    if (craneGameState.moveInterval) {
+        clearInterval(craneGameState.moveInterval);
+        craneGameState.moveInterval = null;
+    }
+}
+
+function removeCraneObstacle(id) {
+    const obs = craneGameState.obstacles[id];
+    if (!obs || obs.removed) return;
+    
+    craneGameState.cost += obs.cost;
+    craneGameState.dose += obs.dose;
+    craneGameState.time += obs.time;
+    obs.removed = true;
+    
+    document.getElementById('obs_' + id)?.classList.add('removed');
+    
+    updateCraneStats();
+    updateCraneMessage('warning', '🔧 Obstacle Removed', `+£${obs.cost.toLocaleString()}, +${obs.dose} mSv, +${obs.time} days`);
+}
+
+function updateCraneMessage(type, title, text) {
+    const box = document.getElementById('craneMessageBox');
+    if (!box) return;
+    box.className = 'crane-message ' + type;
+    box.querySelector('.crane-message-title').textContent = title;
+    document.getElementById('craneMessageText').textContent = text;
+}
+
+function completeCraneGame() {
+    // Apply costs to game state
+    applyChoice(craneGameState.currentElId, {
+        cost: craneGameState.cost,
+        time: craneGameState.time,
+        dose: craneGameState.dose
+    });
+    
+    // Mark element as complete
+    STATE.elementCompleted[craneGameState.currentElId] = true;
+    updateElementSquare(craneGameState.currentElId);
+    closeModal();
+    checkStageComplete();
+}
+
 function renderPipeRoutingDecision(elId, element) {
     const stageKey = `stage${STATE.stage}`;
     const designChoice = STATE.designChoices[elId];
@@ -7703,6 +8943,11 @@ function renderDecisionModal(elId, element) {
     // Stage 4 + controlPanel = show emergency trip game
     if (STATE.stage === 4 && elId === 'controlPanel') {
         renderTripGame(elId, element);
+        return;
+    }
+    // Stage 5 + pumpAccess = show crane decommissioning game
+    if (STATE.stage === 5 && elId === 'pumpAccess') {
+        renderPumpDecomGame(elId, element);
         return;
     }
     const stageKey = `stage${STATE.stage}`;
