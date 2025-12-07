@@ -2534,7 +2534,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.38</div>
+<div class="version-tag">v0.40</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -5328,7 +5328,10 @@ function renderDesignModal(elId, element) {
             <div class="design-cards-grid">
     `;
     
-    data.options.forEach(opt => {
+    // Sort options by cost (cheapest first)
+    const sortedOptions = [...data.options].sort((a, b) => a.cost - b.cost);
+    
+    sortedOptions.forEach(opt => {
         const sel = STATE.designChoices[elId] === opt.id ? 'selected' : '';
         const affordable = opt.cost <= availableBudget;
         const disabledClass = affordable ? '' : 'disabled';
@@ -5360,33 +5363,54 @@ function renderDesignModal(elId, element) {
     const btnDisabled = hasExistingChoice ? '' : 'disabled';
     document.getElementById('modalFooter').innerHTML = `<button class="btn btn-primary" id="btnConfirmDesign" ${btnDisabled}>${hasExistingChoice ? btnText : 'Select an Option'}</button>`;
     
-    let selectedId = STATE.designChoices[elId] || null;
+    // Store options for lookup
+    const designOptionsArray = sortedOptions;
+    let selectedDesignId = STATE.designChoices[elId] || null;
     
     const designCards = document.querySelectorAll('.design-card:not(.disabled)');
-    const confirmBtn = document.getElementById('btnConfirmDesign');
+    const designBtn = document.getElementById('btnConfirmDesign');
     
-    designCards.forEach(card => {
-        card.addEventListener('click', function() {
-            document.querySelectorAll('.design-card').forEach(c => c.classList.remove('selected'));
+    for (let i = 0; i < designCards.length; i++) {
+        designCards[i].onclick = function() {
+            for (let j = 0; j < designCards.length; j++) {
+                designCards[j].classList.remove('selected');
+            }
             this.classList.add('selected');
-            selectedId = this.dataset.id;
-            confirmBtn.disabled = false;
-            confirmBtn.textContent = 'Confirm Selection';
-        });
-    });
+            selectedDesignId = this.getAttribute('data-id');
+            designBtn.disabled = false;
+            designBtn.textContent = 'Confirm Selection';
+        };
+    }
     
-    confirmBtn.addEventListener('click', function() {
-        if (!selectedId) return;
+    designBtn.onclick = function() {
+        if (!selectedDesignId) return;
         
-        const opt = data.options.find(o => o.id === selectedId);
+        let opt = null;
+        for (let i = 0; i < designOptionsArray.length; i++) {
+            if (designOptionsArray[i].id === selectedDesignId) {
+                opt = designOptionsArray[i];
+                break;
+            }
+        }
+        
+        if (!opt) {
+            console.error('Design option not found:', selectedDesignId);
+            return;
+        }
         
         // Refund old if changing
         if (STATE.designChoices[elId]) {
-            const old = data.options.find(o => o.id === STATE.designChoices[elId]);
-            STATE.totals.cost -= old.cost;
+            let oldOpt = null;
+            for (let i = 0; i < designOptionsArray.length; i++) {
+                if (designOptionsArray[i].id === STATE.designChoices[elId]) {
+                    oldOpt = designOptionsArray[i];
+                    break;
+                }
+            }
+            if (oldOpt) STATE.totals.cost -= oldOpt.cost;
         }
         
-        STATE.designChoices[elId] = selectedId;
+        STATE.designChoices[elId] = selectedDesignId;
         STATE.completed[1][elId] = true;
         STATE.totals.cost += opt.cost;
         
@@ -5394,7 +5418,7 @@ function renderDesignModal(elId, element) {
         updateStatsDisplay();
         updateProgressLabel();
         closeModal();
-    });
+    };
 }
 
 // ============================================
@@ -5529,6 +5553,9 @@ function showPipeDecisionOptions() {
     const numOptions = stageData.options.length;
     const gridClass = numOptions === 2 ? 'two-options' : (numOptions === 3 ? 'three-options' : '');
     
+    // Sort options by cost (cheapest first)
+    const sortedPipeOpts = [...stageData.options].sort((a, b) => (a.cost || 0) - (b.cost || 0));
+    
     let html = `
         <div class="decision-section">
             <div class="decision-header">
@@ -5538,7 +5565,7 @@ function showPipeDecisionOptions() {
             <div class="options-list ${gridClass}">
     `;
     
-    stageData.options.forEach(opt => {
+    sortedPipeOpts.forEach(opt => {
         const cost = opt.cost || 0;
         const hasImpacts = opt.time || opt.dose || opt.healthImpact || opt.risk;
         
@@ -5567,26 +5594,43 @@ function showPipeDecisionOptions() {
     document.getElementById('pipeDecisionArea').style.display = 'block';
     document.getElementById('pipeGameFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirmPipeDecision" disabled>Select an Option</button>';
     
-    // Set up option selection
-    let selectedOptId = null;
+    // Store options for lookup
+    const pipeOptionsArray = sortedPipeOpts;
+    let selectedPipeOptId = null;
+    
     const pipeCards = document.querySelectorAll('#pipeDecisionArea .option-card');
-    const pipeConfirmBtn = document.getElementById('btnConfirmPipeDecision');
+    const pipeBtn = document.getElementById('btnConfirmPipeDecision');
     
-    pipeCards.forEach(card => {
-        card.addEventListener('click', function() {
-            pipeCards.forEach(c => c.classList.remove('selected'));
+    for (let i = 0; i < pipeCards.length; i++) {
+        pipeCards[i].onclick = function() {
+            for (let j = 0; j < pipeCards.length; j++) {
+                pipeCards[j].classList.remove('selected');
+            }
             this.classList.add('selected');
-            selectedOptId = this.dataset.id;
-            pipeConfirmBtn.disabled = false;
-            pipeConfirmBtn.textContent = 'Confirm Decision';
-        });
-    });
+            selectedPipeOptId = this.getAttribute('data-id');
+            pipeBtn.disabled = false;
+            pipeBtn.textContent = 'Confirm Decision';
+        };
+    }
     
-    pipeConfirmBtn.addEventListener('click', function() {
-        if (!selectedOptId) return;
-        const opt = stageData.options.find(o => o.id === selectedOptId);
+    pipeBtn.onclick = function() {
+        if (!selectedPipeOptId) return;
+        
+        let opt = null;
+        for (let i = 0; i < pipeOptionsArray.length; i++) {
+            if (pipeOptionsArray[i].id === selectedPipeOptId) {
+                opt = pipeOptionsArray[i];
+                break;
+            }
+        }
+        
+        if (!opt) {
+            console.error('Pipe option not found:', selectedPipeOptId);
+            return;
+        }
+        
         applyDecision(elId, opt, stageData);
-    });
+    };
 }
 
 // EMBEDDED GAME - Find the leak
@@ -6016,6 +6060,9 @@ function renderDecisionModal(elId, element) {
     const numOptions = stageData.options.length;
     const gridClass = numOptions === 2 ? 'two-options' : (numOptions === 3 ? 'three-options' : '');
     
+    // Sort options by cost (cheapest first)
+    const sortedDecisionOpts = [...stageData.options].sort((a, b) => (a.cost || 0) - (b.cost || 0));
+    
     html += `
         <div class="decision-section">
             <div class="decision-header">
@@ -6025,7 +6072,7 @@ function renderDecisionModal(elId, element) {
             <div class="options-list ${gridClass}">
     `;
     
-    stageData.options.forEach(opt => {
+    sortedDecisionOpts.forEach(opt => {
         const cost = opt.cost || 0;
         const hasImpacts = opt.time || opt.dose || opt.healthImpact || opt.risk;
         
@@ -6051,28 +6098,48 @@ function renderDecisionModal(elId, element) {
     html += '</div></div>';
     
     document.getElementById('modalBody').innerHTML = html;
-    document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirm" disabled>Select an Option</button>';
+    document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirmDecision" disabled>Select an Option</button>';
     
-    // Store selection and wire up everything after DOM is ready
+    // Store the options array for lookup
+    const optionsArray = sortedDecisionOpts;
     let selectedOptId = null;
     
-    const cards = document.querySelectorAll('#modalBody .option-card');
-    const confirmBtn = document.getElementById('btnConfirm');
+    // Get fresh references after DOM update
+    const allCards = document.querySelectorAll('#modalBody .option-card');
+    const btn = document.getElementById('btnConfirmDecision');
     
-    cards.forEach(card => {
-        card.addEventListener('click', function() {
-            cards.forEach(c => c.classList.remove('selected'));
+    // Card click handlers
+    for (let i = 0; i < allCards.length; i++) {
+        allCards[i].onclick = function() {
+            // Remove selected from all
+            for (let j = 0; j < allCards.length; j++) {
+                allCards[j].classList.remove('selected');
+            }
+            // Add selected to clicked
             this.classList.add('selected');
-            selectedOptId = this.dataset.id;
-            confirmBtn.disabled = false;
-            confirmBtn.textContent = 'Confirm Decision';
-        });
-    });
+            selectedOptId = this.getAttribute('data-id');
+            btn.disabled = false;
+            btn.textContent = 'Confirm Decision';
+        };
+    }
     
-    confirmBtn.addEventListener('click', function() {
+    // Confirm button handler
+    btn.onclick = function() {
         if (!selectedOptId) return;
         
-        const opt = stageData.options.find(o => o.id === selectedOptId);
+        // Find in the options array
+        let opt = null;
+        for (let i = 0; i < optionsArray.length; i++) {
+            if (optionsArray[i].id === selectedOptId) {
+                opt = optionsArray[i];
+                break;
+            }
+        }
+        
+        if (!opt) {
+            console.error('Option not found:', selectedOptId);
+            return;
+        }
         
         // Handle risk
         if (opt.risk && Math.random() * 100 < opt.risk) {
@@ -6081,7 +6148,7 @@ function renderDecisionModal(elId, element) {
         }
         
         applyDecision(elId, opt, stageData, null);
-    });
+    };
 }
 
 function showFailure(elId, opt, stageData) {
