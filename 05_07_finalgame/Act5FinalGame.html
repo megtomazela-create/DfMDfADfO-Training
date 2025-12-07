@@ -3169,7 +3169,7 @@
 </head>
 <body>
 <!-- VERSION TAG -->
-<div class="version-tag">v0.46</div>
+<div class="version-tag">v0.47</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -6936,7 +6936,7 @@ function confirmTripResult() {
     STATE.stageTotals[STATE.stage].cost += cons.cost;
     
     if (cons.healthImpact < 0) {
-        STATE.healthScore = Math.max(0, STATE.healthScore + cons.healthImpact);
+        STATE.plantHealth = Math.max(0, STATE.plantHealth + cons.healthImpact);
     }
     
     // Mark as complete
@@ -6948,10 +6948,15 @@ function confirmTripResult() {
         STATE.elementState[elId].operatorError = true;
     }
     
+    // Mark hotspot square as done
+    const square = document.getElementById('square-' + elId);
+    if (square) {
+        square.classList.add('done');
+    }
+    
     updateStatsDisplay();
-    updateHotspotSquares();
+    updateProgressLabel();
     closeModal();
-    checkStageCompletion();
 }
 
 // ============================================
