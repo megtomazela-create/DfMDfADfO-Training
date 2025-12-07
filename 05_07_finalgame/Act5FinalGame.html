@@ -6,7 +6,6 @@
     <title>The 60-Year Journey</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         :root {
             --white: #f7f8fa;
             --light-grey: #d0d9e0;
@@ -20,7 +19,6 @@
             --red: #dc2626;
             --amber: #f59e0b;
         }
-        
         html, body {
             height: 100%;
             overflow: hidden;
@@ -28,7 +26,6 @@
             background: var(--deep-navy);
             color: var(--light-grey);
         }
-        
         /* Version tag */
         .version-tag {
             position: fixed;
@@ -41,7 +38,6 @@
             font-size: 0.7rem;
             z-index: 9999;
         }
-        
         /* ============================================
            CINEMATIC INTRO
            ============================================ */
@@ -51,9 +47,7 @@
             z-index: 1000;
             background: #000;
         }
-        
         #cinematicIntro.hidden { display: none; }
-        
         .intro-slide {
             position: absolute;
             inset: 0;
@@ -63,9 +57,7 @@
             opacity: 0;
             transition: opacity 0.8s ease;
         }
-        
         .intro-slide.active { opacity: 1; }
-        
         .intro-slide .bg {
             position: absolute;
             inset: 0;
@@ -73,12 +65,10 @@
             background-position: center;
             filter: brightness(0.35);
         }
-        
         .intro-slide .bg.dark {
             background: linear-gradient(135deg, #0a1628, #1a2a3a, #0d1a2d);
             filter: none;
         }
-        
         .intro-content {
             position: relative;
             z-index: 2;
@@ -86,12 +76,10 @@
             max-width: 700px;
             padding: 40px;
         }
-        
         .intro-logo img { max-width: 250px; margin-bottom: 30px; }
         .intro-company { color: var(--blue); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 20px; }
         .intro-title { font-size: 3rem; color: var(--white); margin-bottom: 20px; }
         .intro-subtitle { font-size: 1.2rem; color: var(--light-grey); }
-        
         .intro-text-box {
             background: rgba(31, 41, 55, 0.9);
             border-left: 4px solid var(--blue);
@@ -99,15 +87,12 @@
             text-align: left;
             border-radius: 8px;
         }
-        
         .intro-text-box p { margin-bottom: 15px; font-size: 1.1rem; line-height: 1.7; }
         .intro-text-box p:last-child { margin-bottom: 0; }
         .intro-text-box strong { color: var(--white); }
         .intro-text-box .highlight { color: var(--green); }
-        
         .intro-year { font-size: 4rem; color: var(--blue); margin-bottom: 20px; }
         .intro-location { color: var(--mid-grey); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; }
-        
         .intro-budget {
             display: inline-block;
             background: var(--green);
@@ -118,7 +103,6 @@
             font-weight: 700;
             margin-top: 20px;
         }
-        
         .intro-nav {
             position: absolute;
             bottom: 40px;
@@ -128,7 +112,6 @@
             gap: 20px;
             z-index: 10;
         }
-        
         .intro-nav button {
             padding: 12px 30px;
             border: none;
@@ -137,10 +120,8 @@
             font-weight: 600;
             cursor: pointer;
         }
-        
         .intro-nav .btn-skip { background: transparent; color: var(--mid-grey); border: 1px solid var(--slate); }
         .intro-nav .btn-next { background: var(--blue); color: var(--deep-navy); }
-        
         .intro-dots {
             position: absolute;
             bottom: 100px;
@@ -149,7 +130,6 @@
             display: flex;
             gap: 8px;
         }
-        
         .intro-dot {
             width: 40px;
             height: 4px;
@@ -157,10 +137,8 @@
             border-radius: 2px;
             cursor: pointer;
         }
-        
         .intro-dot.active { background: var(--blue); }
         .intro-dot.done { background: var(--green); }
-        
         /* ============================================
            GAME LAYOUT
            ============================================ */
@@ -170,9 +148,7 @@
             inset: 0;
             flex-direction: column;
         }
-        
         #gameScreen.active { display: flex; }
-        
         .top-bar {
             height: auto;
             background: var(--deep-navy);
@@ -182,28 +158,23 @@
             padding: 10px 20px 0 20px;
             flex-shrink: 0;
         }
-        
         .top-bar-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 15px;
         }
-        
         .top-bar-logo img { height: 32px; }
-        
         .top-bar-stats { display: flex; gap: 20px; font-size: 0.85rem; }
         .stat { display: flex; align-items: center; gap: 5px; }
         .stat-value { color: var(--white); font-weight: 600; }
         .stat-value.warning { color: var(--amber); }
         .stat-value.danger { color: var(--red); }
-        
         /* Timeline */
         .timeline-container {
             position: relative;
             padding: 0 40px 20px 40px;
         }
-        
         .timeline-track {
             position: absolute;
             top: 24px;
@@ -213,7 +184,6 @@
             background: var(--slate);
             border-radius: 2px;
         }
-        
         .timeline-progress {
             position: absolute;
             top: 0;
@@ -223,21 +193,18 @@
             border-radius: 2px;
             transition: width 0.5s ease;
         }
-        
         .timeline-stages {
             display: flex;
             justify-content: space-between;
             position: relative;
             z-index: 2;
         }
-        
         .timeline-stage {
             display: flex;
             flex-direction: column;
             align-items: center;
             min-width: 100px;
         }
-        
         .timeline-node {
             width: 50px;
             height: 50px;
@@ -253,19 +220,16 @@
             transition: all 0.3s ease;
             position: relative;
         }
-        
         .timeline-stage.completed .timeline-node {
             background: var(--green);
             border-color: var(--green);
             color: var(--deep-navy);
         }
-        
         .timeline-stage.completed .timeline-node::after {
             content: '✓';
             position: absolute;
             font-size: 1.2rem;
         }
-        
         .timeline-stage.current .timeline-node {
             background: var(--blue);
             border-color: var(--blue);
@@ -273,35 +237,29 @@
             box-shadow: 0 0 0 6px rgba(0, 176, 240, 0.3);
             animation: currentPulse 2s infinite;
         }
-        
         @keyframes currentPulse {
             0%, 100% { box-shadow: 0 0 0 6px rgba(0, 176, 240, 0.3); }
             50% { box-shadow: 0 0 0 12px rgba(0, 176, 240, 0.1); }
         }
-        
         .timeline-stage.future .timeline-node {
             background: var(--dark-slate);
             border-color: var(--slate);
             color: var(--slate);
         }
-        
         .timeline-label {
             margin-top: 8px;
             text-align: center;
         }
-        
         .timeline-year {
             font-size: 1rem;
             font-weight: 700;
             color: var(--mid-grey);
             transition: color 0.3s;
         }
-        
         .timeline-stage.completed .timeline-year,
         .timeline-stage.current .timeline-year {
             color: var(--white);
         }
-        
         .timeline-name {
             font-size: 0.7rem;
             color: var(--slate);
@@ -310,15 +268,12 @@
             margin-top: 2px;
             transition: color 0.3s;
         }
-        
         .timeline-stage.current .timeline-name {
             color: var(--blue);
         }
-        
         .timeline-stage.completed .timeline-name {
             color: var(--green);
         }
-        
         .btn-next-stage {
             display: none;
             padding: 8px 16px;
@@ -331,14 +286,11 @@
             cursor: pointer;
             animation: pulse 2s infinite;
         }
-        
         .btn-next-stage.visible { display: block; }
-        
         @keyframes pulse {
             0%, 100% { box-shadow: 0 0 0 0 rgba(146, 208, 80, 0.4); }
             50% { box-shadow: 0 0 0 10px rgba(146, 208, 80, 0); }
         }
-        
         .character-banner {
             display: none;
             align-items: center;
@@ -348,13 +300,11 @@
             border-left: 4px solid var(--orange);
             flex-shrink: 0;
         }
-        
         .character-banner.visible { display: flex; }
         .character-banner.dave { border-color: var(--orange); }
         .character-banner.sarah { border-color: var(--blue); }
         .character-banner.mike { border-color: var(--green); }
         .character-banner.janet { border-color: var(--mid-grey); }
-        
         .char-portrait {
             width: 50px; height: 50px;
             border-radius: 8px;
@@ -365,11 +315,9 @@
             font-size: 1.5rem;
             overflow: hidden;
         }
-        
         .char-portrait img { width: 100%; height: 100%; object-fit: cover; }
         .char-info h4 { color: var(--white); margin-bottom: 2px; }
         .char-role { font-size: 0.85rem; color: var(--mid-grey); }
-        
         .map-container {
             flex: 1;
             position: relative;
@@ -379,23 +327,19 @@
             overflow: hidden;
             background: #1a1a2e;
         }
-        
         .map-wrapper { position: relative; max-width: 100%; max-height: 100%; }
-        
         .map-wrapper img {
             display: block;
             max-width: 100%;
             max-height: calc(100vh - 250px);
             object-fit: contain;
         }
-        
         .hotspot {
             position: absolute;
             transform: translate(-50%, -50%);
             cursor: pointer;
             z-index: 10;
         }
-        
         .hotspot-square {
             width: 120px;
             height: 120px;
@@ -409,25 +353,21 @@
             overflow: hidden;
             position: relative;
         }
-        
         .hotspot:hover .hotspot-square {
             background: rgba(0, 176, 240, 0.15);
             border-color: var(--blue);
             box-shadow: 0 0 25px rgba(0, 176, 240, 0.3);
             transform: scale(1.03);
         }
-        
         .hotspot-square.selected {
             background: rgba(146, 208, 80, 0.1);
             border: 2px solid rgba(146, 208, 80, 0.6);
         }
-        
         .hotspot-square.selected:hover {
             background: rgba(146, 208, 80, 0.15);
             border-color: var(--green);
             box-shadow: 0 0 25px rgba(146, 208, 80, 0.3);
         }
-        
         .hotspot-square-label {
             color: rgba(255, 255, 255, 0.7);
             font-size: 0.75rem;
@@ -435,12 +375,10 @@
             padding: 8px;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
         }
-        
         .hotspot-square.selected .hotspot-square-label {
             color: var(--green);
             font-weight: 600;
         }
-        
         .hotspot-square img {
             width: 100%;
             height: 100%;
@@ -450,7 +388,6 @@
             left: 0;
             opacity: 0.9;
         }
-        
         .hotspot-square.selected img + .hotspot-square-label {
             position: absolute;
             bottom: 0;
@@ -461,23 +398,19 @@
             padding: 4px;
             font-size: 0.65rem;
         }
-        
         /* Completed state for Stage 2+ */
         .hotspot-square.done {
             background: rgba(245, 158, 11, 0.15);
             border: 2px solid rgba(245, 158, 11, 0.7);
         }
-        
         .hotspot-square.done:hover {
             background: rgba(245, 158, 11, 0.25);
             border-color: var(--amber);
             box-shadow: 0 0 25px rgba(245, 158, 11, 0.3);
         }
-        
         .hotspot-square.done .hotspot-square-label {
             color: var(--amber);
         }
-        
         .hotspot-square.done::after {
             content: '✓';
             position: absolute;
@@ -488,12 +421,10 @@
             font-weight: bold;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
         }
-        
         @keyframes hotspotPulse {
             0%, 100% { box-shadow: 0 0 0 0 rgba(0, 176, 240, 0.4); }
             50% { box-shadow: 0 0 0 12px rgba(0, 176, 240, 0); }
         }
-        
         .bottom-bar {
             height: 40px;
             background: var(--deep-navy);
@@ -503,9 +434,7 @@
             justify-content: center;
             flex-shrink: 0;
         }
-        
         .progress-label { color: var(--mid-grey); font-size: 0.85rem; }
-        
         /* ============================================
            MODAL
            ============================================ */
@@ -519,9 +448,7 @@
             justify-content: center;
             padding: 20px;
         }
-        
         .modal-overlay.active { display: flex; }
-        
         .modal {
             background: linear-gradient(180deg, #1a2634 0%, #0d1b2a 100%);
             border-radius: 16px;
@@ -532,12 +459,10 @@
             animation: modalIn 0.3s ease;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         }
-        
         @keyframes modalIn {
             from { opacity: 0; transform: scale(0.95) translateY(20px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
-        
         /* Modal Header - Component Name prominent */
         .modal-header {
             display: flex;
@@ -546,7 +471,6 @@
             padding: 24px 24px 16px 24px;
             border-bottom: none;
         }
-        
         .modal-header h3 { 
             color: var(--white); 
             font-size: 1.5rem;
@@ -555,12 +479,10 @@
             align-items: center;
             gap: 12px;
         }
-        
         .modal-header h3::before {
             content: '⚙️';
             font-size: 1.3rem;
         }
-        
         .modal-close {
             background: var(--slate);
             border: none;
@@ -575,14 +497,11 @@
             justify-content: center;
             transition: all 0.2s;
         }
-        
         .modal-close:hover {
             background: var(--red);
             color: var(--white);
         }
-        
         .modal-body { padding: 0 24px 24px 24px; }
-        
         /* Context Bar - Design recall + Stage cost */
         .context-bar {
             display: flex;
@@ -594,16 +513,13 @@
             margin-bottom: 20px;
             font-size: 0.85rem;
         }
-        
         .context-design {
             color: var(--mid-grey);
         }
-        
         .context-design strong {
             color: var(--amber);
             font-weight: 600;
         }
-        
         .context-cost {
             display: flex;
             align-items: center;
@@ -611,7 +527,6 @@
             color: var(--blue);
             font-weight: 600;
         }
-        
         /* Situation Panel - The main story */
         .situation-panel {
             background: linear-gradient(135deg, rgba(0, 176, 240, 0.1) 0%, rgba(0, 176, 240, 0.05) 100%);
@@ -620,7 +535,6 @@
             padding: 20px;
             margin-bottom: 20px;
         }
-        
         .situation-label {
             font-size: 0.7rem;
             text-transform: uppercase;
@@ -629,13 +543,11 @@
             font-weight: 600;
             margin-bottom: 10px;
         }
-        
         .situation-text {
             color: var(--white);
             font-size: 1.05rem;
             line-height: 1.7;
         }
-        
         /* Character Speech Bubble */
         .speech-bubble {
             position: relative;
@@ -645,7 +557,6 @@
             margin-bottom: 24px;
             margin-left: 60px;
         }
-        
         .speech-bubble::before {
             content: '';
             position: absolute;
@@ -655,7 +566,6 @@
             border-right-color: var(--slate);
             border-left: 0;
         }
-        
         .speech-portrait {
             position: absolute;
             left: -60px;
@@ -671,39 +581,33 @@
             border: 2px solid var(--slate);
             overflow: hidden;
         }
-        
         .speech-portrait img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
         .speech-name {
             font-weight: 600;
             color: var(--green);
             font-size: 0.85rem;
             margin-bottom: 8px;
         }
-        
         .speech-text {
             color: var(--light-grey);
             font-style: italic;
             line-height: 1.6;
             font-size: 0.95rem;
         }
-        
         /* Decision Section */
         .decision-section {
             margin-top: 24px;
         }
-        
         .decision-header {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 16px;
         }
-        
         .decision-label {
             font-size: 0.75rem;
             text-transform: uppercase;
@@ -711,28 +615,23 @@
             color: var(--amber);
             font-weight: 700;
         }
-        
         .decision-line {
             flex: 1;
             height: 1px;
             background: linear-gradient(90deg, var(--amber), transparent);
         }
-        
         /* Option Cards - Grid of squares */
         .options-list { 
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 16px;
         }
-        
         .options-list.two-options {
             grid-template-columns: repeat(2, 1fr);
         }
-        
         .options-list.three-options {
             grid-template-columns: repeat(3, 1fr);
         }
-        
         .option-card {
             background: var(--dark-slate);
             border-radius: 12px;
@@ -743,44 +642,36 @@
             display: flex;
             flex-direction: column;
         }
-        
         .option-card:hover { 
             border-color: var(--blue); 
             transform: translateY(-4px);
             box-shadow: 0 8px 20px rgba(0, 176, 240, 0.25);
         }
-        
         .option-card.selected { 
             border-color: var(--green); 
             background: var(--dark-slate);
             box-shadow: 0 0 0 3px rgba(146, 208, 80, 0.3);
             transform: translateY(-4px);
         }
-        
         .option-card.selected .option-cost-badge {
             background: var(--green);
         }
-        
         .option-card.disabled {
             opacity: 0.5;
             cursor: not-allowed;
             border-color: var(--slate);
         }
-        
         .option-card.disabled:hover { 
             border-color: var(--slate); 
             transform: none;
             box-shadow: none;
         }
-        
         .option-header {
             padding: 16px 16px 12px;
         }
-        
         .option-header .option-name {
             margin-bottom: 12px;
         }
-        
         .option-cost-badge {
             background: var(--blue);
             color: var(--deep-navy);
@@ -789,23 +680,19 @@
             font-weight: 700;
             text-align: center;
         }
-        
         .option-header .option-cost-badge {
             border-radius: 6px;
         }
-        
         .option-card.disabled .option-cost-badge {
             background: var(--red);
             color: var(--white);
         }
-        
         .option-content {
             padding: 16px;
             flex: 1;
             display: flex;
             flex-direction: column;
         }
-        
         .option-name { 
             color: var(--white); 
             font-weight: 600;
@@ -813,19 +700,16 @@
             margin-bottom: 10px;
             line-height: 1.3;
         }
-        
         .option-card > .option-header + p.option-desc {
             padding: 0 16px 16px;
             margin: 0;
         }
-        
         .option-desc { 
             color: var(--mid-grey); 
             font-size: 0.85rem; 
             line-height: 1.5;
             flex: 1;
         }
-        
         .option-impacts {
             display: flex;
             flex-wrap: wrap;
@@ -835,7 +719,6 @@
             border-top: 1px solid var(--slate);
             margin-top: auto;
         }
-        
         .impact { 
             display: flex; 
             align-items: center; 
@@ -845,12 +728,10 @@
             border-radius: 4px;
             background: rgba(255,255,255,0.08);
         }
-        
         .impact.negative { color: var(--red); }
         .impact.positive { color: var(--green); }
         .impact.neutral { color: var(--amber); }
         .impact.bad { color: var(--red); }
-        
         .disabled-reason {
             color: var(--red);
             font-size: 0.8rem;
@@ -859,20 +740,17 @@
             background: rgba(220, 53, 69, 0.1);
             text-align: center;
         }
-        
         @media (max-width: 600px) {
             .options-list, .options-list.two-options, .options-list.three-options {
                 grid-template-columns: 1fr;
             }
         }
-        
         /* Stage 1 Design Choice cards - Grid */
         .design-cards-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 16px;
         }
-        
         .design-card {
             background: var(--dark-slate);
             border-radius: 12px;
@@ -883,34 +761,28 @@
             display: flex;
             flex-direction: column;
         }
-        
         .design-card:hover { 
             border-color: var(--blue); 
             transform: translateY(-4px);
             box-shadow: 0 8px 20px rgba(0, 176, 240, 0.25);
         }
-        
         .design-card.selected { 
             border-color: var(--green);
             box-shadow: 0 0 0 3px rgba(146, 208, 80, 0.3);
             transform: translateY(-4px);
         }
-        
         .design-card.selected .design-card-cost {
             background: var(--green);
         }
-        
         .design-card.disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-        
         .design-card.disabled:hover {
             transform: none;
             box-shadow: none;
             border-color: var(--slate);
         }
-        
         .design-card-image {
             width: 100%;
             aspect-ratio: 1 / 1;
@@ -922,13 +794,11 @@
             font-size: 0.65rem;
             overflow: hidden;
         }
-        
         .design-card-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
         .design-card-cost {
             background: var(--blue);
             color: var(--deep-navy);
@@ -937,19 +807,16 @@
             font-size: 1rem;
             text-align: center;
         }
-        
         .design-card.disabled .design-card-cost {
             background: var(--red);
             color: var(--white);
         }
-        
         .design-card-body {
             padding: 14px;
             flex: 1;
             display: flex;
             flex-direction: column;
         }
-        
         .design-card-name {
             color: var(--white);
             font-weight: 600;
@@ -957,20 +824,17 @@
             margin-bottom: 8px;
             line-height: 1.3;
         }
-        
         .design-card-desc {
             color: var(--mid-grey);
             font-size: 0.8rem;
             line-height: 1.4;
             flex: 1;
         }
-        
         @media (max-width: 600px) {
             .design-cards-grid {
                 grid-template-columns: 1fr;
             }
         }
-        
         /* Modal Footer */
         .modal-footer {
             padding: 16px 24px;
@@ -980,12 +844,10 @@
             gap: 12px;
             background: var(--deep-navy);
         }
-        
         .modal-footer .btn {
             padding: 12px 28px;
             font-size: 0.95rem;
         }
-        
         /* Failure Panel */
         .failure-panel {
             background: linear-gradient(135deg, rgba(220, 53, 69, 0.2) 0%, rgba(220, 53, 69, 0.1) 100%);
@@ -995,43 +857,36 @@
             text-align: center;
             margin-bottom: 24px;
         }
-        
         .failure-icon {
             font-size: 3rem;
             margin-bottom: 12px;
         }
-        
         .failure-title {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--red);
             margin-bottom: 10px;
         }
-        
         .failure-text {
             color: var(--light-grey);
             line-height: 1.6;
         }
-        
         .failure-impacts {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 12px;
         }
-        
         .failure-impact {
             background: var(--dark-slate);
             border-radius: 8px;
             padding: 16px 12px;
             text-align: center;
         }
-        
         .failure-impact-icon {
             font-size: 1.5rem;
             display: block;
             margin-bottom: 8px;
         }
-        
         .failure-impact-value {
             display: block;
             color: var(--red);
@@ -1039,21 +894,18 @@
             font-weight: 700;
             margin-bottom: 4px;
         }
-        
         .failure-impact-label {
             font-size: 0.7rem;
             color: var(--mid-grey);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
         @media (max-width: 500px) {
             .failure-impacts {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
         }
-        
         .btn {
             padding: 10px 25px;
             border: none;
@@ -1061,12 +913,10 @@
             font-weight: 600;
             cursor: pointer;
         }
-        
         .btn-primary { background: var(--blue); color: var(--deep-navy); }
         .btn-danger { background: var(--red); color: var(--white); }
         .btn-secondary { background: var(--slate); color: var(--white); }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        
         /* ============================================
            SCREENS (Transition, Summary, Results)
            ============================================ */
@@ -1081,15 +931,12 @@
             overflow-y: auto;
             padding: 40px 20px;
         }
-        
         .overlay-screen.active { display: flex; }
-        
         .overlay-content {
             text-align: center;
             max-width: 650px;
             padding: 40px;
         }
-        
         /* ========================================
            PHASE TRANSITION SCREEN (Time Skip)
            ======================================== */
@@ -1097,7 +944,6 @@
             align-items: center;
             padding: 0;
         }
-        
         #transitionScreen .overlay-content {
             max-width: 100%;
             width: 100%;
@@ -1110,14 +956,12 @@
             text-align: center;
             background: transparent;
         }
-        
         .phase-intro {
             position: relative;
             width: 100%;
             max-width: 800px;
             padding: 40px;
         }
-        
         .phase-years-label {
             font-size: 0.9rem;
             text-transform: uppercase;
@@ -1125,7 +969,6 @@
             color: var(--mid-grey);
             margin-bottom: 16px;
         }
-        
         .phase-year-big {
             font-size: 8rem;
             font-weight: 800;
@@ -1134,7 +977,6 @@
             margin-bottom: 40px;
             text-shadow: 0 4px 30px rgba(0, 176, 240, 0.3);
         }
-        
         .phase-visual {
             width: 100%;
             height: 200px;
@@ -1148,38 +990,32 @@
             position: relative;
             overflow: hidden;
         }
-        
         .phase-visual::before {
             content: '';
             position: absolute;
             inset: 0;
             background: linear-gradient(135deg, rgba(0,176,240,0.1) 0%, transparent 50%, rgba(146,208,80,0.1) 100%);
         }
-        
         .phase-visual-icon {
             position: relative;
             z-index: 1;
         }
-        
         .phase-context {
             display: flex;
             flex-direction: column;
             gap: 12px;
             margin-bottom: 40px;
         }
-        
         .phase-context-line {
             font-size: 1.25rem;
             color: var(--light-grey);
             line-height: 1.6;
         }
-        
         .phase-context-line:first-child {
             color: var(--white);
             font-weight: 600;
             font-size: 1.4rem;
         }
-        
         .phase-name-badge {
             display: inline-block;
             background: linear-gradient(135deg, var(--blue) 0%, #0088cc 100%);
@@ -1192,7 +1028,6 @@
             letter-spacing: 2px;
             margin-bottom: 30px;
         }
-        
         /* ========================================
            STAGE SUMMARY SCREEN (End of Phase)
            ======================================== */
@@ -1201,12 +1036,10 @@
             width: 100%;
             text-align: left;
         }
-        
         .summary-header {
             text-align: center;
             margin-bottom: 40px;
         }
-        
         .summary-phase-complete {
             font-size: 0.85rem;
             text-transform: uppercase;
@@ -1214,26 +1047,22 @@
             color: var(--green);
             margin-bottom: 12px;
         }
-        
         .summary-title { 
             font-size: 2.5rem; 
             color: var(--white); 
             margin-bottom: 8px; 
         }
-        
         .summary-subtitle { 
             color: var(--mid-grey); 
             margin-bottom: 0;
             font-size: 1.1rem;
         }
-        
         .summary-stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 16px;
             margin-bottom: 40px;
         }
-        
         .summary-stat {
             background: var(--dark-slate);
             padding: 24px 16px;
@@ -1242,25 +1071,20 @@
             border: 1px solid var(--slate);
             transition: transform 0.2s;
         }
-        
         .summary-stat:hover {
             transform: translateY(-2px);
         }
-        
         .summary-stat-icon { 
             font-size: 1.8rem; 
             margin-bottom: 10px; 
         }
-        
         .summary-stat-value { 
             font-size: 1.5rem; 
             font-weight: 700; 
             color: var(--white); 
         }
-        
         .summary-stat-value.over { color: var(--red); }
         .summary-stat-value.good { color: var(--green); }
-        
         .summary-stat-label { 
             font-size: 0.75rem; 
             color: var(--mid-grey); 
@@ -1268,7 +1092,6 @@
             letter-spacing: 1px;
             margin-top: 6px; 
         }
-        
         .summary-section-title {
             font-size: 0.85rem;
             text-transform: uppercase;
@@ -1279,14 +1102,12 @@
             align-items: center;
             gap: 12px;
         }
-        
         .summary-section-title::after {
             content: '';
             flex: 1;
             height: 1px;
             background: linear-gradient(90deg, var(--amber), transparent);
         }
-        
         .summary-decisions {
             background: transparent;
             border-radius: 0;
@@ -1296,17 +1117,14 @@
             max-height: none;
             overflow: visible;
         }
-        
         .summary-decisions h4 { 
             display: none; /* Using section title instead */
         }
-        
         .decisions-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
-        
         .decision-card {
             background: var(--dark-slate);
             border-radius: 10px;
@@ -1316,29 +1134,24 @@
             align-items: center;
             border-left: 3px solid var(--slate);
         }
-        
         .decision-card.this-stage {
             border-left-color: var(--blue);
             background: linear-gradient(90deg, rgba(0,176,240,0.1) 0%, var(--dark-slate) 30%);
         }
-        
         .decision-element { 
             color: var(--mid-grey);
             font-size: 0.85rem;
         }
-        
         .decision-choice {
             color: var(--white);
             font-weight: 600;
             font-size: 0.95rem;
         }
-        
         .decision-cost {
             color: var(--amber);
             font-size: 0.85rem;
             font-weight: 600;
         }
-        
         .summary-insight {
             background: linear-gradient(135deg, var(--dark-slate) 0%, rgba(0,176,240,0.1) 100%);
             border-radius: 12px;
@@ -1346,28 +1159,23 @@
             margin-bottom: 30px;
             border: 1px solid var(--slate);
         }
-        
         .insight-icon {
             font-size: 2rem;
             margin-bottom: 12px;
         }
-        
         .insight-text {
             color: var(--light-grey);
             font-size: 1rem;
             line-height: 1.6;
         }
-        
         .insight-text strong {
             color: var(--white);
         }
-        
         .summary-actions {
             display: flex;
             justify-content: center;
             margin-top: 30px;
         }
-        
         .btn-next-phase {
             padding: 16px 40px;
             background: linear-gradient(135deg, var(--green) 0%, #7bc050 100%);
@@ -1379,16 +1187,13 @@
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        
         .btn-next-phase:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(146, 208, 80, 0.3);
         }
-        
         /* Legacy transition styles - keeping for compatibility */
         .trans-years { color: var(--mid-grey); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; }
         .trans-year { font-size: 5rem; color: var(--white); margin-bottom: 30px; }
-        
         .trans-text {
             background: var(--dark-slate);
             padding: 25px;
@@ -1396,10 +1201,8 @@
             text-align: left;
             margin-bottom: 30px;
         }
-        
         .trans-text p { margin-bottom: 12px; line-height: 1.6; }
         .trans-text p:last-child { margin-bottom: 0; }
-        
         .btn-continue {
             padding: 14px 36px;
             background: var(--blue);
@@ -1411,20 +1214,16 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-        
         .btn-continue:hover {
             transform: translateY(-2px);
         }
-        
         @media (max-width: 600px) {
             .phase-year-big { font-size: 5rem; }
             .phase-visual { height: 150px; }
             .summary-stats { grid-template-columns: repeat(2, 1fr); }
             .decisions-grid { grid-template-columns: 1fr; }
         }
-        
         /* Summary
-        
         .btn-next-phase {
             padding: 12px 30px;
             background: var(--green);
@@ -1435,164 +1234,296 @@
             font-weight: 600;
             cursor: pointer;
         }
-        
         /* Story Transition Screen */
         .story-transition {
             display: none;
             position: fixed;
             inset: 0;
-            background: linear-gradient(135deg, var(--deep-navy) 0%, #0a1628 100%);
+            background: linear-gradient(180deg, #0a1628 0%, #0d1f3c 50%, #0a1628 100%);
             z-index: 200;
             overflow-y: auto;
         }
-        
-        .story-transition.visible { display: block; }
-        
+        .story-transition.visible { 
+            display: block; 
+            animation: storyFadeIn 0.5s ease-out;
+        }
+        @keyframes storyFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
         .story-content {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 40px 30px;
+            padding: 40px 30px 60px;
         }
-        
-        .story-header {
+        /* Hero Header */
+        .story-hero {
             text-align: center;
-            margin-bottom: 30px;
+            padding: 40px 20px 50px;
+            margin-bottom: 40px;
+            position: relative;
         }
-        
-        .story-years {
-            font-size: 3rem;
+        .story-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--blue), transparent);
+        }
+        .story-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--slate), transparent);
+        }
+        .story-phase-complete {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--green);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .story-title {
+            font-size: 2.8rem;
             font-weight: 700;
-            background: linear-gradient(90deg, var(--blue), var(--green));
+            background: linear-gradient(135deg, var(--white) 0%, var(--blue) 50%, var(--green) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+            line-height: 1.2;
         }
-        
-        .story-title {
+        .story-years {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.1rem;
+            color: var(--mid-grey);
+        }
+        .story-years .year {
             font-size: 1.5rem;
+            font-weight: 700;
             color: var(--white);
-            font-weight: 600;
         }
-        
-        .story-narrative {
-            background: var(--dark-slate);
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
-            line-height: 1.7;
-            color: var(--light-grey);
-        }
-        
-        .story-narrative p { margin-bottom: 15px; }
-        .story-narrative p:last-child { margin-bottom: 0; }
-        
-        .story-section { margin-bottom: 25px; }
-        
-        .story-section-title {
-            font-size: 1rem;
-            font-weight: 600;
+        .story-years .arrow {
             color: var(--blue);
-            margin-bottom: 12px;
+            font-size: 1.5rem;
+        }
+        /* Narrative Panel */
+        .story-narrative {
+            position: relative;
+            background: linear-gradient(135deg, rgba(0, 176, 240, 0.08) 0%, rgba(146, 208, 80, 0.05) 100%);
+            border: 1px solid rgba(0, 176, 240, 0.2);
+            border-radius: 16px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            color: var(--light-grey);
+            font-size: 1.05rem;
+        }
+        .story-narrative::before {
+            content: '"';
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 4rem;
+            color: var(--blue);
+            opacity: 0.3;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+        .story-narrative p { 
+            margin-bottom: 18px; 
+            position: relative;
+            z-index: 1;
+        }
+        .story-narrative p:last-child { margin-bottom: 0; }
+        /* Section Styling */
+        .story-section { 
+            margin-bottom: 35px;
+        }
+        .story-section-header {
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-        
-        .story-lessons {
-            background: rgba(146, 208, 80, 0.1);
-            border: 1px solid var(--green);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-        
-        .story-lessons ul {
-            margin: 0;
-            padding-left: 20px;
-            color: var(--light-grey);
-        }
-        
-        .story-lessons li { margin-bottom: 8px; }
-        .story-lessons li:last-child { margin-bottom: 0; }
-        
-        .story-regulatory {
-            background: rgba(0, 176, 240, 0.1);
-            border: 1px solid var(--blue);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-        
-        .reg-reference {
-            display: flex;
             gap: 12px;
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--slate);
+            margin-bottom: 20px;
         }
-        
-        .reg-reference:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
+        .story-section-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
         }
-        
-        .reg-code {
-            background: var(--blue);
-            color: var(--deep-navy);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            white-space: nowrap;
-            height: fit-content;
+        .story-section-icon.lessons {
+            background: linear-gradient(135deg, var(--green), #5fa349);
         }
-        
-        .reg-text {
+        .story-section-icon.regulatory {
+            background: linear-gradient(135deg, var(--blue), #0088cc);
+        }
+        .story-section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--white);
+            margin: 0;
+        }
+        /* Lessons Grid */
+        .story-lessons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        .lesson-card {
+            background: linear-gradient(135deg, rgba(146, 208, 80, 0.1) 0%, rgba(146, 208, 80, 0.02) 100%);
+            border: 1px solid rgba(146, 208, 80, 0.25);
+            border-radius: 12px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            transition: all 0.3s ease;
+        }
+        .lesson-card:hover {
+            border-color: var(--green);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(146, 208, 80, 0.15);
+        }
+        .lesson-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(146, 208, 80, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .lesson-text {
             color: var(--light-grey);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             line-height: 1.5;
         }
-        
-        .story-foreshadow {
-            background: rgba(255, 193, 7, 0.1);
-            border: 1px solid var(--amber);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            color: var(--light-grey);
-            font-style: italic;
+        /* Regulatory Cards */
+        .story-regulatory {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
-        
-        .story-continue { text-align: center; }
-        .story-continue .btn { padding: 15px 40px; font-size: 1.1rem; }
-        
+        .reg-card {
+            background: linear-gradient(135deg, rgba(0, 176, 240, 0.08) 0%, rgba(0, 176, 240, 0.02) 100%);
+            border: 1px solid rgba(0, 176, 240, 0.2);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            transition: all 0.3s ease;
+        }
+        .reg-card:hover {
+            border-color: var(--blue);
+            background: linear-gradient(135deg, rgba(0, 176, 240, 0.12) 0%, rgba(0, 176, 240, 0.04) 100%);
+        }
+        .reg-badge {
+            background: linear-gradient(135deg, var(--blue), #0088cc);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .reg-content {
+            flex: 1;
+        }
+        .reg-title {
+            color: var(--white);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+        .reg-desc {
+            color: var(--mid-grey);
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        /* Foreshadow Panel */
+        .story-foreshadow {
+            position: relative;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0.04) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 16px;
+            padding: 25px 30px;
+            margin-bottom: 40px;
+            color: var(--light-grey);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            font-style: italic;
+            text-align: center;
+        }
+        .story-foreshadow::before {
+            content: '⚡';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--deep-navy);
+            padding: 5px 15px;
+            font-size: 1.2rem;
+            font-style: normal;
+        }
+        /* Continue Button */
+        .story-continue { 
+            text-align: center; 
+            padding-top: 10px;
+        }
+        .story-continue .btn { 
+            padding: 18px 50px; 
+            font-size: 1.15rem;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--blue), #0088cc);
+            border: none;
+            box-shadow: 0 4px 20px rgba(0, 176, 240, 0.3);
+            transition: all 0.3s ease;
+        }
+        .story-continue .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 176, 240, 0.4);
+        }
         /* Final Report Styles */
         #resultsScreen .overlay-content {
             max-width: 900px;
             text-align: left;
         }
-        
         .report-header {
             text-align: center;
             margin-bottom: 30px;
         }
-        
         .results-grade {
             font-size: 6rem;
             font-weight: 700;
             margin-bottom: 10px;
         }
-        
         .results-grade.A { color: var(--green); }
         .results-grade.B { color: var(--blue); }
         .results-grade.C { color: var(--amber); }
         .results-grade.D { color: var(--red); }
-        
         .results-title { color: var(--white); margin-bottom: 12px; }
         .results-verdict { color: var(--light-grey); margin-bottom: 0; font-size: 1.1rem; }
-        
         .report-comparison {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
@@ -1603,22 +1534,18 @@
             border-radius: 12px;
             margin-bottom: 30px;
         }
-        
         .comparison-box {
             text-align: center;
             padding: 16px;
             border-radius: 8px;
         }
-        
         .comparison-box.yours {
             background: rgba(255,255,255,0.05);
         }
-        
         .comparison-box.optimal {
             background: rgba(146, 208, 80, 0.1);
             border: 1px solid var(--green);
         }
-        
         .comparison-label {
             font-size: 0.75rem;
             text-transform: uppercase;
@@ -1626,31 +1553,25 @@
             color: var(--mid-grey);
             margin-bottom: 8px;
         }
-        
         .comparison-value {
             font-size: 1.6rem;
             font-weight: 700;
             color: var(--white);
         }
-        
         .comparison-box.optimal .comparison-value {
             color: var(--green);
         }
-        
         .comparison-vs {
             font-size: 1.2rem;
             color: var(--mid-grey);
             font-weight: 600;
         }
-        
         .comparison-diff {
             font-size: 0.85rem;
             margin-top: 6px;
         }
-        
         .comparison-diff.over { color: var(--red); }
         .comparison-diff.under { color: var(--green); }
-        
         .report-section-title {
             font-size: 0.85rem;
             text-transform: uppercase;
@@ -1661,14 +1582,12 @@
             align-items: center;
             gap: 12px;
         }
-        
         .report-section-title::after {
             content: '';
             flex: 1;
             height: 1px;
             background: linear-gradient(90deg, var(--amber), transparent);
         }
-        
         /* Element Journey Cards */
         .element-journeys {
             display: flex;
@@ -1676,18 +1595,15 @@
             gap: 12px;
             margin-bottom: 30px;
         }
-        
         .journey-card {
             background: var(--dark-slate);
             border-radius: 12px;
             overflow: hidden;
             border-left: 4px solid var(--slate);
         }
-        
         .journey-card.good { border-left-color: var(--green); }
         .journey-card.wasteful { border-left-color: var(--amber); }
         .journey-card.poor { border-left-color: var(--red); }
-        
         .journey-header {
             display: flex;
             justify-content: space-between;
@@ -1696,90 +1612,73 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        
         .journey-header:hover {
             background: rgba(255,255,255,0.03);
         }
-        
         .journey-title {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        
         .journey-icon {
             font-size: 1.3rem;
         }
-        
         .journey-name {
             font-weight: 600;
             color: var(--white);
             font-size: 0.95rem;
         }
-        
         .journey-design {
             font-size: 0.8rem;
             color: var(--mid-grey);
         }
-        
         .journey-right {
             display: flex;
             align-items: center;
             gap: 16px;
         }
-        
         .journey-cost {
             text-align: right;
         }
-        
         .journey-cost-value {
             font-weight: 600;
             color: var(--white);
         }
-        
         .journey-cost-label {
             font-size: 0.7rem;
             color: var(--mid-grey);
         }
-        
         .journey-verdict {
             padding: 4px 10px;
             border-radius: 4px;
             font-size: 0.75rem;
             font-weight: 600;
         }
-        
         .journey-verdict.good { background: rgba(146,208,80,0.2); color: var(--green); }
         .journey-verdict.wasteful { background: rgba(255,193,7,0.2); color: var(--amber); }
         .journey-verdict.poor { background: rgba(220,53,69,0.2); color: var(--red); }
-        
         .journey-expand {
             color: var(--mid-grey);
             font-size: 1rem;
             transition: transform 0.3s;
             margin-left: 8px;
         }
-        
         .journey-card.expanded .journey-expand {
             transform: rotate(180deg);
         }
-        
         .journey-content {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease;
         }
-        
         .journey-card.expanded .journey-content {
             max-height: 800px;
         }
-        
         .journey-timeline {
             padding: 16px 18px;
             background: var(--deep-navy);
             text-align: left;
         }
-        
         .journey-stage {
             display: flex;
             flex-direction: row;
@@ -1790,35 +1689,29 @@
             border-bottom: 1px solid rgba(255,255,255,0.05);
             text-align: left;
         }
-        
         .journey-stage:last-child {
             border-bottom: none;
         }
-        
         .journey-stage-year {
             width: 70px;
             flex-shrink: 0;
             text-align: center;
         }
-        
         .journey-stage-year-num {
             font-weight: 700;
             color: var(--blue);
             font-size: 1rem;
         }
-        
         .journey-stage-year-phase {
             font-size: 0.65rem;
             color: var(--mid-grey);
             text-transform: uppercase;
         }
-        
         .journey-stage-event {
             flex: 1;
             padding-right: 12px;
             text-align: left;
         }
-        
         .journey-stage-decision {
             color: var(--white);
             font-weight: 500;
@@ -1826,14 +1719,12 @@
             margin-bottom: 4px;
             text-align: left;
         }
-        
         .journey-stage-consequence {
             font-size: 0.8rem;
             color: var(--mid-grey);
             line-height: 1.4;
             text-align: left;
         }
-        
         .journey-stage-cost {
             width: 80px;
             text-align: right;
@@ -1842,12 +1733,10 @@
             font-size: 0.9rem;
             flex-shrink: 0;
         }
-        
         .journey-lesson {
             padding: 14px 18px;
             border-top: 1px solid var(--slate);
         }
-        
         .lesson-label {
             font-size: 0.65rem;
             text-transform: uppercase;
@@ -1855,13 +1744,11 @@
             color: var(--amber);
             margin-bottom: 6px;
         }
-        
         .lesson-text {
             color: var(--light-grey);
             font-size: 0.85rem;
             line-height: 1.5;
         }
-        
         /* Key Takeaways */
         .takeaways {
             background: var(--dark-slate);
@@ -1869,37 +1756,30 @@
             padding: 20px;
             margin-bottom: 30px;
         }
-        
         .takeaway-item {
             display: flex;
             gap: 12px;
             padding: 10px 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        
         .takeaway-item:last-child {
             border-bottom: none;
             padding-bottom: 0;
         }
-        
         .takeaway-item:first-child {
             padding-top: 0;
         }
-        
         .takeaway-icon {
             font-size: 1.1rem;
         }
-        
         .takeaway-text {
             color: var(--light-grey);
             font-size: 0.9rem;
             line-height: 1.5;
         }
-        
         .takeaway-text strong {
             color: var(--white);
         }
-        
         /* Report actions */
         .report-actions {
             display: flex;
@@ -1907,7 +1787,6 @@
             gap: 16px;
             margin-top: 30px;
         }
-        
         @media (max-width: 700px) {
             .report-comparison {
                 grid-template-columns: 1fr;
@@ -1916,13 +1795,11 @@
             .comparison-vs { display: none; }
             .journey-right { flex-direction: column; gap: 8px; }
         }
-        
         /* Mobile */
         @media (max-width: 768px) {
             .top-bar-stats { display: none; }
             .summary-stats, .results-totals { grid-template-columns: repeat(2, 1fr); }
             .intro-title { font-size: 2rem; }
-            
             .timeline-container { padding: 0 10px 15px 10px; }
             .timeline-track { left: 30px; right: 30px; }
             .timeline-stage { min-width: 60px; }
@@ -1930,12 +1807,10 @@
             .timeline-year { font-size: 0.8rem; }
             .timeline-name { font-size: 0.55rem; }
         }
-        
         @media (max-width: 480px) {
             .timeline-name { display: none; }
             .timeline-node { width: 30px; height: 30px; font-size: 0.6rem; }
         }
-        
         /* ============================================
            PIPE ROUTING MINI-GAME
            ============================================ */
@@ -1946,7 +1821,6 @@
             margin: 15px 0;
             overflow: hidden;
         }
-        
         .pipe-game-header {
             display: flex;
             justify-content: space-between;
@@ -1955,25 +1829,21 @@
             background: rgba(0,0,0,0.3);
             border-bottom: 1px solid #2d4a6f;
         }
-        
         .pipe-game-title {
             color: var(--blue);
             font-size: 0.85rem;
             font-weight: 600;
         }
-        
         .pipe-game-cost {
             color: var(--amber);
             font-size: 0.8rem;
         }
-        
         .pipe-game-tabs {
             display: flex;
             gap: 5px;
             padding: 10px 15px;
             background: rgba(0,0,0,0.2);
         }
-        
         .pipe-game-tab {
             flex: 1;
             padding: 10px 15px;
@@ -1986,58 +1856,47 @@
             transition: all 0.2s;
             text-align: center;
         }
-        
         .pipe-game-tab:hover {
             border-color: var(--blue);
             background: #1f3a52;
         }
-        
         .pipe-game-tab.active {
             border-color: var(--blue);
             background: var(--blue);
             color: #000;
         }
-        
         .pipe-game-tab.completed {
             border-color: var(--green);
         }
-        
         .pipe-game-tab.completed::after {
             content: ' ✓';
             color: var(--green);
         }
-        
         .pipe-game-tab.active.completed::after {
             color: #000;
         }
-        
         .pipe-game-tab.disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-        
         .pipe-game-tab.disabled:hover {
             border-color: #2d4a6f;
             background: #1a2d42;
         }
-        
         .pipe-game-tab-name {
             font-weight: 600;
             margin-bottom: 2px;
         }
-        
         .pipe-game-tab-cost {
             font-size: 0.7rem;
             opacity: 0.8;
         }
-        
         .pipe-game-view {
             position: relative;
             height: 220px;
             background: linear-gradient(180deg, #0d1a2d 0%, #0a1420 100%);
             border-top: 1px solid #1a3050;
         }
-        
         .pipe-game-labels {
             position: absolute;
             top: 8px;
@@ -2050,7 +1909,6 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        
         .pipe-game-floor {
             position: absolute;
             bottom: 0;
@@ -2060,7 +1918,6 @@
             background: #2d3e50;
             border-top: 2px solid #4a6785;
         }
-        
         .pipe-game-floor-label {
             position: absolute;
             bottom: 5px;
@@ -2070,7 +1927,6 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        
         .pipe-game-walls {
             position: absolute;
             top: 30px;
@@ -2081,7 +1937,6 @@
             justify-content: space-between;
             pointer-events: none;
         }
-        
         .pipe-game-wall {
             width: 30px;
             background: linear-gradient(90deg, #3d4a5a 0%, #2d3e50 100%);
@@ -2090,11 +1945,9 @@
             align-items: center;
             justify-content: center;
         }
-        
         .pipe-game-wall.right {
             background: linear-gradient(90deg, #2d3e50 0%, #3d4a5a 100%);
         }
-        
         .pipe-game-wall-label {
             writing-mode: vertical-rl;
             text-orientation: mixed;
@@ -2102,7 +1955,6 @@
             color: #6a8aaa;
             letter-spacing: 1px;
         }
-        
         .pipe-game-area {
             position: absolute;
             top: 30px;
@@ -2111,7 +1963,6 @@
             right: 50px;
             overflow: hidden;
         }
-        
         .pipe-game-message {
             padding: 12px 15px;
             background: rgba(0,0,0,0.3);
@@ -2120,16 +1971,13 @@
             color: var(--light-grey);
             min-height: 60px;
         }
-        
         .pipe-game-message-title {
             color: var(--amber);
             font-weight: 600;
             margin-bottom: 5px;
         }
-        
         .pipe-game-message.success .pipe-game-message-title { color: var(--green); }
         .pipe-game-message.warning .pipe-game-message-title { color: var(--red); }
-        
         /* Embedded game - concrete grid */
         .concrete-grid {
             position: absolute;
@@ -2143,7 +1991,6 @@
             gap: 3px;
             padding: 8px;
         }
-        
         .concrete-block {
             background: linear-gradient(135deg, #4a5568 0%, #3d4a5a 50%, #2d3e50 100%);
             border: 1px solid #5a6a7a;
@@ -2152,18 +1999,15 @@
             transition: all 0.15s;
             position: relative;
         }
-        
         .concrete-block:hover:not(.broken) {
             background: linear-gradient(135deg, #5a6878 0%, #4d5a6a 50%, #3d4e60 100%);
             border-color: #7a8a9a;
         }
-        
         .concrete-block.broken {
             background: #1a2535;
             border-color: #2a3545;
             cursor: default;
         }
-        
         .concrete-block.has-pipe.broken::before {
             content: '';
             position: absolute;
@@ -2176,17 +2020,14 @@
             border-radius: 5px;
             box-shadow: 0 0 8px rgba(0, 176, 240, 0.5);
         }
-        
         .concrete-block.hit {
             animation: blockHit 0.15s ease-out;
         }
-        
         @keyframes blockHit {
             0% { transform: scale(1); }
             50% { transform: scale(0.92); }
             100% { transform: scale(1); }
         }
-        
         .embedded-stats {
             position: absolute;
             top: 8px;
@@ -2195,7 +2036,6 @@
             gap: 10px;
             z-index: 10;
         }
-        
         .embedded-stat {
             background: rgba(0, 0, 0, 0.7);
             padding: 4px 10px;
@@ -2205,10 +2045,8 @@
             align-items: center;
             gap: 4px;
         }
-        
         .embedded-stat.cost { color: #ffc107; border: 1px solid #ffc107; }
         .embedded-stat.found { color: #00b0f0; border: 1px solid #00b0f0; }
-        
         /* Ducted game */
         .ducts-container {
             position: absolute;
@@ -2221,7 +2059,6 @@
             justify-content: center;
             gap: 8px;
         }
-        
         .duct-section {
             position: relative;
             height: 70px;
@@ -2233,18 +2070,15 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-        
         .duct-section:hover:not(.open) {
             border-color: #00b0f0;
             box-shadow: 0 0 10px rgba(0, 176, 240, 0.3);
         }
-        
         .duct-section.open {
             background: #0d1f33;
             border-color: #92d050;
             cursor: default;
         }
-        
         .duct-cover {
             position: absolute;
             top: 0;
@@ -2256,12 +2090,10 @@
             transition: all 0.4s ease;
             transform-origin: top center;
         }
-        
         .duct-section.open .duct-cover {
             transform: rotateX(-100deg);
             opacity: 0.4;
         }
-        
         .duct-cover-handle {
             position: absolute;
             top: 5px;
@@ -2272,7 +2104,6 @@
             background: #4a6785;
             border-radius: 2px;
         }
-        
         .duct-pipe {
             position: absolute;
             top: 26px;
@@ -2285,9 +2116,7 @@
             transition: opacity 0.3s;
             box-shadow: 0 2px 6px rgba(0, 176, 240, 0.4);
         }
-        
         .duct-section.open .duct-pipe { opacity: 1; }
-        
         .duct-label {
             position: absolute;
             bottom: 5px;
@@ -2299,12 +2128,10 @@
             transition: opacity 0.3s;
             white-space: nowrap;
         }
-        
         .duct-section.open .duct-label {
             opacity: 1;
             color: #92d050;
         }
-        
         .duct-click-hint {
             position: absolute;
             top: 50%;
@@ -2315,9 +2142,7 @@
             text-align: center;
             pointer-events: none;
         }
-        
         .duct-section.open .duct-click-hint { opacity: 0; }
-        
         .duct-progress {
             position: absolute;
             bottom: 8px;
@@ -2330,7 +2155,6 @@
             padding: 5px 12px;
             border-radius: 4px;
         }
-        
         .duct-progress-bar {
             width: 100px;
             height: 6px;
@@ -2338,19 +2162,16 @@
             border-radius: 3px;
             overflow: hidden;
         }
-        
         .duct-progress-fill {
             height: 100%;
             background: var(--green);
             width: 0;
             transition: width 0.3s;
         }
-        
         .duct-progress-text {
             font-size: 0.7rem;
             color: var(--light-grey);
         }
-        
         /* Tunnel game */
         .tunnel-interior {
             position: absolute;
@@ -2363,7 +2184,6 @@
             border-radius: 4px;
             overflow: hidden;
         }
-        
         .tunnel-pipe {
             position: absolute;
             height: 20px;
@@ -2374,7 +2194,6 @@
             right: 15px;
             box-shadow: 0 2px 8px rgba(0, 176, 240, 0.4);
         }
-        
         .tunnel-pipe-supports {
             position: absolute;
             top: 35px;
@@ -2384,14 +2203,12 @@
             display: flex;
             justify-content: space-between;
         }
-        
         .tunnel-pipe-support {
             width: 5px;
             height: 25px;
             background: #4a6785;
             border-radius: 2px;
         }
-        
         .tunnel-floor {
             position: absolute;
             bottom: 0;
@@ -2401,7 +2218,6 @@
             background: #2d3e50;
             border-top: 2px solid #4a6785;
         }
-        
         .tunnel-worker {
             position: absolute;
             bottom: 20px;
@@ -2414,7 +2230,6 @@
             transition: left 0.08s, bottom 0.08s;
             z-index: 10;
         }
-        
         .tunnel-worker-head {
             width: 14px;
             height: 14px;
@@ -2422,7 +2237,6 @@
             border-radius: 50%;
             border: 2px solid #e6ac00;
         }
-        
         .tunnel-worker-body {
             width: 16px;
             height: 24px;
@@ -2431,17 +2245,14 @@
             margin-top: -2px;
             border: 2px solid #e55a25;
         }
-        
         .tunnel-worker.contaminated .tunnel-worker-head,
         .tunnel-worker.contaminated .tunnel-worker-body {
             animation: contamFlash 0.2s infinite;
         }
-        
         @keyframes contamFlash {
             0%, 100% { filter: brightness(1); }
             50% { filter: brightness(1.5) hue-rotate(60deg); }
         }
-        
         .tunnel-goal {
             position: absolute;
             right: 10px;
@@ -2454,18 +2265,15 @@
             align-items: center;
             justify-content: center;
         }
-        
         .tunnel-goal-arrow {
             color: #92d050;
             font-size: 1rem;
             animation: goalPulse 1s infinite;
         }
-        
         @keyframes goalPulse {
             0%, 100% { opacity: 0.5; transform: translateX(0); }
             50% { opacity: 1; transform: translateX(2px); }
         }
-        
         .radiation-cloud {
             position: absolute;
             border-radius: 50%;
@@ -2473,7 +2281,6 @@
             pointer-events: none;
             z-index: 5;
         }
-        
         .radiation-cloud::before {
             content: '☢';
             position: absolute;
@@ -2483,35 +2290,28 @@
             font-size: 1rem;
             opacity: 0.8;
         }
-        
         .radiation-cloud.barrier {
             background: radial-gradient(circle, rgba(255, 100, 50, 0.8) 0%, rgba(255, 193, 7, 0.5) 40%, rgba(255, 193, 7, 0) 70%);
             animation: barrierPulse 1.5s ease-in-out infinite;
         }
-        
         .radiation-cloud.moving {
             animation: cloudDrift 3s ease-in-out infinite alternate;
         }
-        
         .radiation-cloud.pulsing {
             animation: cloudPulse 2s ease-in-out infinite;
         }
-        
         @keyframes barrierPulse {
             0%, 100% { opacity: 0.9; }
             50% { opacity: 1; }
         }
-        
         @keyframes cloudDrift {
             0% { transform: translateX(0) translateY(0); }
             100% { transform: translateX(20px) translateY(-8px); }
         }
-        
         @keyframes cloudPulse {
             0%, 100% { transform: scale(1); opacity: 0.8; }
             50% { transform: scale(1.2); opacity: 1; }
         }
-        
         .tunnel-dose-counter {
             position: absolute;
             top: 6px;
@@ -2524,16 +2324,13 @@
             color: #dc3545;
             z-index: 20;
         }
-        
         .tunnel-dose-counter.warning {
             animation: doseWarning 0.5s infinite;
         }
-        
         @keyframes doseWarning {
             0%, 100% { background: rgba(220, 53, 69, 0.2); }
             50% { background: rgba(220, 53, 69, 0.5); }
         }
-        
         .tunnel-controls {
             display: flex;
             align-items: center;
@@ -2541,7 +2338,6 @@
             gap: 8px;
             margin-top: 8px;
         }
-        
         .tunnel-key {
             display: inline-block;
             background: #2d4a6f;
@@ -2551,7 +2347,6 @@
             font-weight: bold;
             font-size: 0.7rem;
         }
-        
         .tunnel-controls-text {
             font-size: 0.75rem;
             color: #8899a6;
@@ -2559,10 +2354,8 @@
     </style>
 </head>
 <body>
-
 <!-- VERSION TAG -->
-<div class="version-tag">v0.43</div>
-
+<div class="version-tag">v0.44</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -2576,7 +2369,6 @@
             <p class="intro-subtitle">An interactive experience in design for decommissioning</p>
         </div>
     </div>
-    
     <div class="intro-slide" data-slide="2">
         <div class="bg" style="background-image: url('images/gamebackground.png');"></div>
         <div class="intro-content">
@@ -2588,7 +2380,6 @@
             </div>
         </div>
     </div>
-    
     <div class="intro-slide" data-slide="3">
         <div class="bg" style="background-image: url('images/gamebackground.png');"></div>
         <div class="intro-content">
@@ -2599,7 +2390,6 @@
             </div>
         </div>
     </div>
-    
     <div class="intro-slide" data-slide="4">
         <div class="bg dark"></div>
         <div class="intro-content">
@@ -2610,20 +2400,17 @@
             </div>
         </div>
     </div>
-    
     <div class="intro-dots">
         <div class="intro-dot active" data-dot="1"></div>
         <div class="intro-dot" data-dot="2"></div>
         <div class="intro-dot" data-dot="3"></div>
         <div class="intro-dot" data-dot="4"></div>
     </div>
-    
     <div class="intro-nav">
         <button class="btn-skip" id="btnSkip">Skip</button>
         <button class="btn-next" id="btnIntroNext">Continue →</button>
     </div>
 </div>
-
 <!-- GAME SCREEN -->
 <div id="gameScreen">
     <div class="top-bar">
@@ -2677,7 +2464,6 @@
             </div>
         </div>
     </div>
-    
     <div class="character-banner" id="characterBanner">
         <div class="char-portrait" id="charPortrait">👷</div>
         <div class="char-info">
@@ -2685,41 +2471,34 @@
             <p class="char-role" id="charRole">Maintenance Supervisor</p>
         </div>
     </div>
-    
     <div class="map-container" id="mapContainer">
         <div class="map-wrapper">
             <img src="images/gamebackground.png" alt="Section 4B">
-            
             <div class="hotspot" data-element="pumpAccess" style="left: 31.2805%; top: 36.4431%;">
                 <div class="hotspot-square" id="square-pumpAccess">
                     <span class="hotspot-square-label">Pump Access</span>
                 </div>
             </div>
-            
             <div class="hotspot" data-element="weldClearance" style="left: 45.9839%; top: 23.9149%;">
                 <div class="hotspot-square" id="square-weldClearance">
                     <span class="hotspot-square-label">Weld Clearance</span>
                 </div>
             </div>
-            
             <div class="hotspot" data-element="controlPanel" style="left: 80.1562%; top: 45.332%;">
                 <div class="hotspot-square" id="square-controlPanel">
                     <span class="hotspot-square-label">Control Panel</span>
                 </div>
             </div>
-            
             <div class="hotspot" data-element="pipeConnections" style="left: 46.156%; top: 56.1654%;">
                 <div class="hotspot-square" id="square-pipeConnections">
                     <span class="hotspot-square-label">Pipe Connections</span>
                 </div>
             </div>
-            
             <div class="hotspot" data-element="pipeRouting" style="left: 56.4526%; top: 80.332%;">
                 <div class="hotspot-square" id="square-pipeRouting">
                     <span class="hotspot-square-label">Pipe Routing</span>
                 </div>
             </div>
-            
             <div class="hotspot" data-element="materialSpec" style="left: 65.2808%; top: 40.4991%;">
                 <div class="hotspot-square" id="square-materialSpec">
                     <span class="hotspot-square-label">Material Spec</span>
@@ -2727,12 +2506,10 @@
             </div>
         </div>
     </div>
-    
     <div class="bottom-bar">
         <span class="progress-label" id="progressLabel">0 of 6 complete</span>
     </div>
 </div>
-
 <!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
@@ -2744,7 +2521,6 @@
         <div class="modal-footer" id="modalFooter"></div>
     </div>
 </div>
-
 <!-- TRANSITION SCREEN (Phase Introduction) -->
 <div class="overlay-screen" id="transitionScreen">
     <div class="overlay-content">
@@ -2760,7 +2536,6 @@
         </div>
     </div>
 </div>
-
 <!-- SUMMARY SCREEN (End of Phase) -->
 <div class="overlay-screen" id="summaryScreen">
     <div class="overlay-content">
@@ -2769,46 +2544,51 @@
             <h2 class="summary-title" id="sumTitle">Stage Complete</h2>
             <p class="summary-subtitle" id="sumSubtitle"></p>
         </div>
-        
         <div class="summary-stats" id="sumStats"></div>
-        
         <div class="summary-section-title">Your Decisions This Phase</div>
         <div class="summary-decisions" id="sumDecisions"></div>
-        
         <div class="summary-insight" id="sumInsight">
             <div class="insight-icon">💡</div>
             <div class="insight-text" id="insightText"></div>
         </div>
-        
         <div class="summary-actions">
             <button class="btn-next-phase" id="btnNextPhase">Continue →</button>
         </div>
     </div>
 </div>
-
 <!-- STORY TRANSITION SCREEN -->
 <div class="story-transition" id="storyTransition">
     <div class="story-content">
-        <div class="story-header">
-            <div class="story-years" id="storyYears">2025 → 2040</div>
-            <div class="story-title" id="storyTitle">15 Years Pass...</div>
+        <div class="story-hero">
+            <div class="story-phase-complete" id="storyPhaseLabel">Design Phase Complete</div>
+            <div class="story-title" id="storyTitle">Your Designs Are Now Set In Concrete</div>
+            <div class="story-years">
+                <span class="year" id="storyYearFrom">2025</span>
+                <span class="arrow">→</span>
+                <span class="year" id="storyYearTo">2040</span>
+            </div>
         </div>
         <div class="story-narrative" id="storyNarrative"></div>
         <div class="story-section">
-            <div class="story-section-title">📚 Key Lessons</div>
+            <div class="story-section-header">
+                <div class="story-section-icon lessons">📚</div>
+                <div class="story-section-title">Key Lessons</div>
+            </div>
             <div class="story-lessons" id="storyLessons"></div>
         </div>
         <div class="story-section">
-            <div class="story-section-title">📋 Regulatory Framework</div>
+            <div class="story-section-header">
+                <div class="story-section-icon regulatory">📋</div>
+                <div class="story-section-title">Regulatory Framework</div>
+            </div>
             <div class="story-regulatory" id="storyRegulatory"></div>
         </div>
         <div class="story-foreshadow" id="storyForeshadow"></div>
         <div class="story-continue">
-            <button class="btn btn-primary" id="btnStoryNext">Begin Stage →</button>
+            <button class="btn btn-primary" id="btnStoryNext">Begin 2040: MAINTENANCE →</button>
         </div>
     </div>
 </div>
-
 <!-- RESULTS SCREEN -->
 <div class="overlay-screen" id="resultsScreen">
     <div class="overlay-content">
@@ -2818,7 +2598,6 @@
         </div>
     </div>
 </div>
-
 <script>
 // ============================================
 // GAME DATA - ALL STAGES HAVE DECISIONS
@@ -2833,14 +2612,12 @@ const GAME_DATA = {
         4: { name: 'OPERATIONS', year: 2070, budget: 200000, time: 7, char: 'mike', bg: 'images/bg_operations.png' },
         5: { name: 'DECOMMISSIONING', year: 2085, budget: 1200000, time: 90, char: 'janet', bg: 'images/bg_decom.png' }
     },
-    
     characters: {
         dave: { name: 'Dave Morton', role: 'Maintenance Supervisor', emoji: '👷', image: 'images/dave.png' },
         sarah: { name: 'Sarah Okonkwo', role: 'Principal Inspector', emoji: '🔍', image: 'images/sarah.png' },
         mike: { name: 'Mike Brennan', role: 'Shift Operations Manager', emoji: '👨‍💼', image: 'images/mike.png' },
         janet: { name: 'Janet Cole', role: 'Decommissioning Lead', emoji: '👩‍🔧', image: 'images/janet.png' }
     },
-    
     transitions: {
         2: { 
             years: '15 YEARS LATER', 
@@ -2887,7 +2664,6 @@ const GAME_DATA = {
             ] 
         }
     },
-    
     storyTransitions: {
         1: {
             yearsLabel: '2025',
@@ -3010,7 +2786,6 @@ const GAME_DATA = {
             foreshadow: 'Your journey through 60 years of nuclear operations is complete. Let\'s see how your choices measured up across the full lifecycle of Thornbury Point.'
         }
     },
-    
     elements: {
         // ==========================================
         // ELEMENT 1: PUMP ACCESS
@@ -3422,7 +3197,6 @@ const GAME_DATA = {
                 }
             }
         },
-        
         // ==========================================
         // ELEMENT 2: WELD CLEARANCE
         // ==========================================
@@ -3722,7 +3496,6 @@ const GAME_DATA = {
                 }
             }
         },
-        
         // ==========================================
         // ELEMENT 3: CONTROL PANEL
         // ==========================================
@@ -4009,7 +3782,6 @@ const GAME_DATA = {
                 }
             }
         },
-        
         // ==========================================
         // ELEMENT 4: PIPE CONNECTIONS
         // ==========================================
@@ -4386,7 +4158,6 @@ const GAME_DATA = {
                 }
             }
         },
-        
         // ==========================================
         // ELEMENT 5: PIPE ROUTING
         // ==========================================
@@ -4720,7 +4491,6 @@ const GAME_DATA = {
                 }
             }
         },
-        
         // ==========================================
         // ELEMENT 6: MATERIAL SPEC
         // ==========================================
@@ -5018,7 +4788,6 @@ const GAME_DATA = {
         }
     }
 };
-
 // ============================================
 // GAME STATE
 // ============================================
@@ -5077,24 +4846,20 @@ const STATE = {
         }
     }
 };
-
 // ============================================
 // UTILITY FUNCTIONS
 // ============================================
 function formatMoney(n) { return '£' + n.toLocaleString(); }
-
 function getRemainingBudget() {
     // Only used for Stage 1
     const stage = GAME_DATA.stages[STATE.stage];
     return stage.budget - STATE.totals.cost;
 }
-
 // ============================================
 // INTRO
 // ============================================
 let currentSlide = 1;
 const totalSlides = 4;
-
 function updateIntroSlide() {
     document.querySelectorAll('.intro-slide').forEach(s => s.classList.remove('active'));
     document.querySelector(`.intro-slide[data-slide="${currentSlide}"]`).classList.add('active');
@@ -5105,7 +4870,6 @@ function updateIntroSlide() {
     });
     document.getElementById('btnIntroNext').textContent = currentSlide === totalSlides ? 'Begin →' : 'Continue →';
 }
-
 document.getElementById('btnIntroNext').onclick = () => {
     if (currentSlide < totalSlides) { currentSlide++; updateIntroSlide(); }
     else endIntro();
@@ -5114,13 +4878,11 @@ document.getElementById('btnSkip').onclick = endIntro;
 document.querySelectorAll('.intro-dot').forEach(d => {
     d.onclick = () => { currentSlide = parseInt(d.dataset.dot); updateIntroSlide(); };
 });
-
 function endIntro() {
     document.getElementById('cinematicIntro').classList.add('hidden');
     document.getElementById('gameScreen').classList.add('active');
     startStage(1);
 }
-
 // ============================================
 // STAGE MANAGEMENT
 // ============================================
@@ -5128,17 +4890,12 @@ function startStage(stageNum) {
     STATE.stage = stageNum;
     STATE.completed[stageNum] = {};
     STATE.stageTotals[stageNum] = { cost: 0, dose: 0, time: 0 };
-    
     const stage = GAME_DATA.stages[stageNum];
-    
     // Update timeline
     updateTimeline(stageNum);
-    
     updateStatsDisplay();
-    
     // Update squares to show selected designs
     updateHotspotSquares();
-    
     // Character banner
     const banner = document.getElementById('characterBanner');
     if (stageNum > 1 && stage.char) {
@@ -5155,22 +4912,17 @@ function startStage(stageNum) {
     } else {
         banner.classList.remove('visible');
     }
-    
     // Reset hotspot squares for new stage - remove done state
     document.querySelectorAll('.hotspot-square').forEach(sq => {
         sq.classList.remove('done');
     });
-    
     document.getElementById('btnNextStage').classList.remove('visible');
-    
     updateProgressLabel();
 }
-
 function updateTimeline(currentStage) {
     document.querySelectorAll('.timeline-stage').forEach(stage => {
         const stageNum = parseInt(stage.dataset.stage);
         stage.classList.remove('completed', 'current', 'future');
-        
         if (stageNum < currentStage) {
             stage.classList.add('completed');
         } else if (stageNum === currentStage) {
@@ -5179,17 +4931,14 @@ function updateTimeline(currentStage) {
             stage.classList.add('future');
         }
     });
-    
     // Update progress bar (0% at stage 1, 100% at stage 5)
     const progressPercent = ((currentStage - 1) / 4) * 100;
     document.getElementById('timelineProgress').style.width = `${progressPercent}%`;
 }
-
 function updateStatsDisplay() {
     const stage = GAME_DATA.stages[STATE.stage];
     const remaining = getRemainingBudget();
     let html = '';
-    
     if (STATE.stage === 1) {
         // Stage 1: Show remaining design budget
         const cls = remaining < 100000 ? (remaining < 0 ? 'danger' : 'warning') : '';
@@ -5206,7 +4955,6 @@ function updateStatsDisplay() {
     }
     document.getElementById('topStats').innerHTML = html;
 }
-
 function updateProgressLabel() {
     const done = Object.keys(STATE.completed[STATE.stage] || {}).length;
     document.getElementById('progressLabel').textContent = `${done} of 6 complete`;
@@ -5214,68 +4962,55 @@ function updateProgressLabel() {
         document.getElementById('btnNextStage').classList.add('visible');
     }
 }
-
 // ============================================
 // HOTSPOT CLICKS
 // ============================================
 document.querySelectorAll('.hotspot').forEach(h => {
     h.onclick = () => {
         const elId = h.dataset.element;
-        
         // In Stage 1, can always click (to change decision)
         // In Stages 2-5, can only click if not completed (decisions are final)
         if (STATE.stage > 1 && STATE.completed[STATE.stage]?.[elId]) {
             return; // Decision already made, can't change
         }
-        
         openElementModal(elId);
     };
 });
-
 // ============================================
 // HOTSPOT SQUARE UPDATE
 // ============================================
 function updateHotspotSquares() {
     const elements = ['pumpAccess', 'weldClearance', 'controlPanel', 'pipeConnections', 'pipeRouting', 'materialSpec'];
-    
     elements.forEach(elId => {
         const square = document.getElementById(`square-${elId}`);
         if (!square) return;
-        
         const label = square.querySelector('.hotspot-square-label');
         const choice = STATE.designChoices[elId];
-        
         if (choice) {
             const element = GAME_DATA.elements[elId];
             const opt = element.stage1.options.find(o => o.id === choice);
-            
             square.classList.add('selected');
-            
             // Show image if available
             if (opt.image) {
                 // Remove existing image if any
                 const existingImg = square.querySelector('img');
                 if (existingImg) existingImg.remove();
-                
                 const img = document.createElement('img');
                 img.src = opt.image;
                 img.alt = opt.name;
                 square.insertBefore(img, label);
             }
-            
             // Update label
             if (label) label.textContent = opt.name;
         } else {
             square.classList.remove('selected');
             const existingImg = square.querySelector('img');
             if (existingImg) existingImg.remove();
-            
             const element = GAME_DATA.elements[elId];
             if (label) label.textContent = element.title;
         }
     });
 }
-
 // ============================================
 // MODAL SYSTEM
 // ============================================
@@ -5294,41 +5029,33 @@ function closeModal() {
         }
     }
 }
-
 document.getElementById('modalClose').onclick = closeModal;
 document.getElementById('modalOverlay').onclick = (e) => {
     if (e.target.id === 'modalOverlay') closeModal();
 };
-
 function openElementModal(elId) {
     const element = GAME_DATA.elements[elId];
     document.getElementById('modalTitle').textContent = element.title;
-    
     if (STATE.stage === 1) {
         renderDesignModal(elId, element);
     } else {
         renderDecisionModal(elId, element);
     }
-    
     openModal();
 }
-
 // ============================================
 // STAGE 1: DESIGN
 // ============================================
 function renderDesignModal(elId, element) {
     const data = element.stage1;
     const remaining = getRemainingBudget();
-    
     // Calculate what we'd have if we refund current choice
     let availableBudget = remaining;
     if (STATE.designChoices[elId]) {
         const currentChoice = data.options.find(o => o.id === STATE.designChoices[elId]);
         availableBudget += currentChoice.cost;
     }
-    
     let html = '';
-    
     // Context bar with budget
     html += `
         <div class="context-bar">
@@ -5336,7 +5063,6 @@ function renderDesignModal(elId, element) {
             <span class="context-cost">💰 Budget: ${formatMoney(availableBudget)}</span>
         </div>
     `;
-    
     // Situation panel - the question
     html += `
         <div class="situation-panel">
@@ -5344,7 +5070,6 @@ function renderDesignModal(elId, element) {
             <div class="situation-text">${data.description}</div>
         </div>
     `;
-    
     // Decision section header
     html += `
         <div class="decision-section">
@@ -5354,20 +5079,16 @@ function renderDesignModal(elId, element) {
             </div>
             <div class="design-cards-grid">
     `;
-    
     // Sort options by cost (cheapest first)
     const sortedOptions = [...data.options].sort((a, b) => a.cost - b.cost);
-    
     sortedOptions.forEach(opt => {
         const sel = STATE.designChoices[elId] === opt.id ? 'selected' : '';
         const affordable = opt.cost <= availableBudget;
         const disabledClass = affordable ? '' : 'disabled';
-        
         // Use actual image if available, otherwise show placeholder
         const imageContent = opt.image 
             ? `<img src="${opt.image}" alt="${opt.name}" onerror="this.parentElement.innerHTML='[${opt.name}]'">`
             : `[${opt.name}]`;
-        
         html += `
             <div class="design-card ${sel} ${disabledClass}" data-id="${opt.id}" data-cost="${opt.cost}">
                 <div class="design-card-image">${imageContent}</div>
@@ -5380,23 +5101,17 @@ function renderDesignModal(elId, element) {
             </div>
         `;
     });
-    
     html += '</div></div>';
-    
     document.getElementById('modalBody').innerHTML = html;
-    
     const hasExistingChoice = !!STATE.designChoices[elId];
     const btnText = hasExistingChoice ? 'Update Selection' : 'Confirm Selection';
     const btnDisabled = hasExistingChoice ? '' : 'disabled';
     document.getElementById('modalFooter').innerHTML = `<button class="btn btn-primary" id="btnConfirmDesign" ${btnDisabled}>${hasExistingChoice ? btnText : 'Select an Option'}</button>`;
-    
     // Store options for lookup
     const designOptionsArray = sortedOptions;
     let selectedDesignId = STATE.designChoices[elId] || null;
-    
     const designCards = document.querySelectorAll('.design-card:not(.disabled)');
     const designBtn = document.getElementById('btnConfirmDesign');
-    
     for (let i = 0; i < designCards.length; i++) {
         designCards[i].onclick = function() {
             for (let j = 0; j < designCards.length; j++) {
@@ -5408,10 +5123,8 @@ function renderDesignModal(elId, element) {
             designBtn.textContent = 'Confirm Selection';
         };
     }
-    
     designBtn.onclick = function() {
         if (!selectedDesignId) return;
-        
         let opt = null;
         for (let i = 0; i < designOptionsArray.length; i++) {
             if (designOptionsArray[i].id === selectedDesignId) {
@@ -5419,12 +5132,10 @@ function renderDesignModal(elId, element) {
                 break;
             }
         }
-        
         if (!opt) {
             console.error('Design option not found:', selectedDesignId);
             return;
         }
-        
         // Refund old if changing
         if (STATE.designChoices[elId]) {
             let oldOpt = null;
@@ -5436,18 +5147,15 @@ function renderDesignModal(elId, element) {
             }
             if (oldOpt) STATE.totals.cost -= oldOpt.cost;
         }
-        
         STATE.designChoices[elId] = selectedDesignId;
         STATE.completed[1][elId] = true;
         STATE.totals.cost += opt.cost;
-        
         updateHotspotSquares();
         updateStatsDisplay();
         updateProgressLabel();
         closeModal();
     };
 }
-
 // ============================================
 // PIPE ROUTING MINI-GAME (Stage 2+ Consequence Illustration)
 // ============================================
@@ -5468,21 +5176,17 @@ let pipeGameState = {
     currentElId: null,
     currentElement: null
 };
-
 function renderPipeRoutingDecision(elId, element) {
     const stageKey = `stage${STATE.stage}`;
     const designChoice = STATE.designChoices[elId];
     const designOpt = element.stage1.options.find(o => o.id === designChoice);
     const stage = GAME_DATA.stages[STATE.stage];
-    
     let stageData = element[stageKey]?.[designChoice];
-    
     if (!stageData) {
         document.getElementById('modalBody').innerHTML = '<p>No data for this element at this stage.</p>';
         document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" onclick="closeModal()">Close</button>';
         return;
     }
-    
     // Handle element state-based scenarios
     if (stageData.checkElementState && stageData.scenarios) {
         const elState = STATE.elementState[elId] || {};
@@ -5495,7 +5199,6 @@ function renderPipeRoutingDecision(elId, element) {
             'shieldingAdded', 'remoteTooling', 'accessCreated', 'flangingAdded',
             'airlockBypassed', 'airlockMaintained', 'weldCutMade', 'leakHistory'
         ];
-        
         let matchedScenario = null;
         for (const state of statePriority) {
             if (elState[state] && stageData.scenarios[state]) {
@@ -5508,27 +5211,22 @@ function renderPipeRoutingDecision(elId, element) {
         }
         stageData = matchedScenario;
     }
-    
     // Store for later use when game completes
     pipeGameState.currentStageData = stageData;
     pipeGameState.currentElId = elId;
     pipeGameState.currentElement = element;
     pipeGameState.gameCompleted = false;
-    
     const char = GAME_DATA.characters[stage.char];
     const stageCost = STATE.stageTotals[STATE.stage]?.cost || 0;
-    
     let html = `
         <div class="context-bar">
             <span class="context-design">📅 Year ${stage.year} · 2025 Design: <strong>${designOpt.name}</strong></span>
             <span class="context-cost">💰 Stage Cost: ${formatMoney(stageCost)}</span>
         </div>
-        
         <div class="situation-panel">
             <div class="situation-label">Current Situation</div>
             <div class="situation-text">${stageData.situation}</div>
         </div>
-        
         <div class="pipe-game-container">
             <div class="pipe-game-header">
                 <span class="pipe-game-title">📐 Experience the Consequence</span>
@@ -5550,19 +5248,15 @@ function renderPipeRoutingDecision(elId, element) {
             </div>
             <div class="pipe-game-message" id="pipeGameMessage"></div>
         </div>
-        
         <div class="speech-bubble">
             <div class="speech-portrait">${char.image ? `<img src="${char.image}" alt="${char.name}">` : char.emoji}</div>
             <div class="speech-name">${char.name}, ${char.role}</div>
             <div class="speech-text">"${stageData.quote}"</div>
         </div>
-        
         <div id="pipeDecisionArea" style="display: none;"></div>
     `;
-    
     document.getElementById('modalBody').innerHTML = html;
     document.getElementById('modalFooter').innerHTML = '<div id="pipeGameFooter"></div>';
-    
     // Start the appropriate game based on design choice
     if (designChoice === 'embedded') {
         startEmbeddedGame();
@@ -5572,17 +5266,13 @@ function renderPipeRoutingDecision(elId, element) {
         startTunnelGame();
     }
 }
-
 function showPipeDecisionOptions() {
     const stageData = pipeGameState.currentStageData;
     const elId = pipeGameState.currentElId;
-    
     const numOptions = stageData.options.length;
     const gridClass = numOptions === 2 ? 'two-options' : (numOptions === 3 ? 'three-options' : '');
-    
     // Sort options by cost (cheapest first)
     const sortedPipeOpts = [...stageData.options].sort((a, b) => (a.cost || 0) - (b.cost || 0));
-    
     let html = `
         <div class="decision-section">
             <div class="decision-header">
@@ -5591,11 +5281,9 @@ function showPipeDecisionOptions() {
             </div>
             <div class="options-list ${gridClass}">
     `;
-    
     sortedPipeOpts.forEach(opt => {
         const cost = opt.cost || 0;
         const hasImpacts = opt.time || opt.dose || opt.healthImpact || opt.risk;
-        
         html += `
             <div class="option-card" data-id="${opt.id}">
                 <div class="option-header">
@@ -5614,20 +5302,15 @@ function showPipeDecisionOptions() {
             </div>
         `;
     });
-    
     html += '</div></div>';
-    
     document.getElementById('pipeDecisionArea').innerHTML = html;
     document.getElementById('pipeDecisionArea').style.display = 'block';
     document.getElementById('pipeGameFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirmPipeDecision" disabled>Select an Option</button>';
-    
     // Store options for lookup
     const pipeOptionsArray = sortedPipeOpts;
     let selectedPipeOptId = null;
-    
     const pipeCards = document.querySelectorAll('#pipeDecisionArea .option-card');
     const pipeBtn = document.getElementById('btnConfirmPipeDecision');
-    
     for (let i = 0; i < pipeCards.length; i++) {
         pipeCards[i].onclick = function() {
             for (let j = 0; j < pipeCards.length; j++) {
@@ -5639,10 +5322,8 @@ function showPipeDecisionOptions() {
             pipeBtn.textContent = 'Confirm Decision';
         };
     }
-    
     pipeBtn.onclick = function() {
         if (!selectedPipeOptId) return;
-        
         let opt = null;
         for (let i = 0; i < pipeOptionsArray.length; i++) {
             if (pipeOptionsArray[i].id === selectedPipeOptId) {
@@ -5650,23 +5331,19 @@ function showPipeDecisionOptions() {
                 break;
             }
         }
-        
         if (!opt) {
             console.error('Pipe option not found:', selectedPipeOptId);
             return;
         }
-        
         applyDecision(elId, opt, stageData);
     };
 }
-
 // EMBEDDED GAME - Find the leak
 function startEmbeddedGame() {
     pipeGameState.embeddedCost = 0;
     pipeGameState.embeddedFound = 0;
     pipeGameState.embeddedGameOver = false;
     pipeGameState.embeddedPipeRow = 1 + Math.floor(Math.random() * 2);
-    
     const gameArea = document.getElementById('pipeGameArea');
     let gridHTML = `
         <div class="embedded-stats">
@@ -5675,56 +5352,43 @@ function startEmbeddedGame() {
         </div>
         <div class="concrete-grid">
     `;
-    
     for (let r = 0; r < 4; r++) {
         for (let c = 0; c < 8; c++) {
             const hasPipe = (r === pipeGameState.embeddedPipeRow);
             gridHTML += `<div class="concrete-block${hasPipe ? ' has-pipe' : ''}" onclick="breakConcreteBlock(this)"></div>`;
         }
     }
-    
     gridHTML += '</div>';
     gameArea.innerHTML = gridHTML;
-    
     document.getElementById('pipeGameMessage').innerHTML = `
         <div class="pipe-game-message-title">🔨 Find the Leak</div>
         <div>The pipe is embedded in concrete. Click to excavate blocks (£10k each) and locate the leak source.</div>
     `;
-    
     document.getElementById('pipeGameFooter').innerHTML = '';
 }
-
 function breakConcreteBlock(element) {
     if (element.classList.contains('broken') || pipeGameState.embeddedGameOver) return;
-    
     element.classList.add('hit');
     setTimeout(() => element.classList.remove('hit'), 150);
-    
     element.classList.add('broken');
     pipeGameState.embeddedCost += 10;
     document.getElementById('embeddedCost').textContent = pipeGameState.embeddedCost;
-    
     if (element.classList.contains('has-pipe')) {
         pipeGameState.embeddedFound++;
         document.getElementById('embeddedFound').textContent = pipeGameState.embeddedFound;
-        
         if (pipeGameState.embeddedFound === 8) {
             completeEmbeddedGame(true);
         }
     }
-    
     if (pipeGameState.embeddedCost >= 80 && pipeGameState.embeddedFound < 8) {
         completeEmbeddedGame(false);
     }
 }
-
 function completeEmbeddedGame(success) {
     pipeGameState.embeddedGameOver = true;
     pipeGameState.gameCompleted = true;
-    
     const msgArea = document.getElementById('pipeGameMessage');
     msgArea.className = 'pipe-game-message warning';
-    
     if (success) {
         msgArea.innerHTML = `
             <div class="pipe-game-message-title">🔍 Leak Located — At Great Cost</div>
@@ -5736,17 +5400,13 @@ function completeEmbeddedGame(success) {
             <div>£${pipeGameState.embeddedCost},000 spent, only ${pipeGameState.embeddedFound}/8 sections found. The pipe location remains uncertain.</div>
         `;
     }
-    
     showPipeDecisionOptions();
 }
-
 // DUCTED GAME - Easy inspection
 function startDuctedGame() {
     pipeGameState.ductsOpened = 0;
-    
     const gameArea = document.getElementById('pipeGameArea');
     let html = '<div class="ducts-container">';
-    
     for (let i = 0; i < 5; i++) {
         html += `
             <div class="duct-section" onclick="openDuctSection(this, ${i})">
@@ -5757,7 +5417,6 @@ function startDuctedGame() {
             </div>
         `;
     }
-    
     html += `
         </div>
         <div class="duct-progress">
@@ -5765,44 +5424,33 @@ function startDuctedGame() {
             <span class="duct-progress-text"><span id="ductProgressText">0</span>/5</span>
         </div>
     `;
-    
     gameArea.innerHTML = html;
-    
     document.getElementById('pipeGameMessage').innerHTML = `
         <div class="pipe-game-message-title">🔍 Inspect the Accessible Ducts</div>
         <div>Click each duct cover to open it and locate the leak. Quick and straightforward.</div>
     `;
-    
     document.getElementById('pipeGameFooter').innerHTML = '';
 }
-
 function openDuctSection(element, index) {
     if (element.classList.contains('open')) return;
-    
     element.classList.add('open');
     pipeGameState.ductsOpened++;
-    
     document.getElementById('ductProgressFill').style.width = (pipeGameState.ductsOpened / 5 * 100) + '%';
     document.getElementById('ductProgressText').textContent = pipeGameState.ductsOpened;
-    
     if (pipeGameState.ductsOpened === 5) {
         completeDuctedGame();
     }
 }
-
 function completeDuctedGame() {
     pipeGameState.gameCompleted = true;
-    
     const msgArea = document.getElementById('pipeGameMessage');
     msgArea.className = 'pipe-game-message success';
     msgArea.innerHTML = `
         <div class="pipe-game-message-title">✅ Leak Located Quickly</div>
         <div>Full visibility, easy access. The 2025 design choice pays off — simple inspection, minimal cost.</div>
     `;
-    
     showPipeDecisionOptions();
 }
-
 // TUNNEL GAME - Navigate radiation
 function startTunnelGame() {
     pipeGameState.tunnelWorkerX = 15;
@@ -5810,7 +5458,6 @@ function startTunnelGame() {
     pipeGameState.tunnelDose = 0;
     pipeGameState.tunnelActive = true;
     pipeGameState.tunnelCooldown = false;
-    
     const gameArea = document.getElementById('pipeGameArea');
     gameArea.innerHTML = `
         <div class="tunnel-interior">
@@ -5835,7 +5482,6 @@ function startTunnelGame() {
             <div class="radiation-cloud pulsing" id="tcloud4" style="width: 55px; height: 60px; bottom: 22px; left: 340px;"></div>
         </div>
     `;
-    
     document.getElementById('pipeGameMessage').innerHTML = `
         <div class="pipe-game-message-title">🎮 Navigate to the Leak</div>
         <div>Use arrow keys to move the worker through the tunnel. Avoid the radiation clouds!</div>
@@ -5844,25 +5490,18 @@ function startTunnelGame() {
             <span class="tunnel-controls-text">Move worker</span>
         </div>
     `;
-    
     document.getElementById('pipeGameFooter').innerHTML = '';
-    
     document.addEventListener('keydown', handleTunnelKeyPress);
-    
     if (pipeGameState.tunnelInterval) clearInterval(pipeGameState.tunnelInterval);
     pipeGameState.tunnelInterval = setInterval(checkTunnelCollisions, 50);
 }
-
 function handleTunnelKeyPress(e) {
     if (!pipeGameState.tunnelActive) return;
-    
     const step = 8;
     const gameArea = document.getElementById('pipeGameArea');
     if (!gameArea) return;
-    
     const maxX = gameArea.offsetWidth - 70;
     const maxY = 90;
-    
     switch(e.key) {
         case 'ArrowLeft':
             pipeGameState.tunnelWorkerX = Math.max(10, pipeGameState.tunnelWorkerX - step);
@@ -5881,64 +5520,50 @@ function handleTunnelKeyPress(e) {
             e.preventDefault();
             break;
     }
-    
     const worker = document.getElementById('tunnelWorker');
     if (worker) {
         worker.style.left = pipeGameState.tunnelWorkerX + 'px';
         worker.style.bottom = pipeGameState.tunnelWorkerY + 'px';
     }
-    
     // Check if reached goal
     const gameWidth = gameArea.offsetWidth || 400;
     if (pipeGameState.tunnelWorkerX > gameWidth - 80) {
         completeTunnelGame();
     }
 }
-
 function checkTunnelCollisions() {
     if (!pipeGameState.tunnelActive || pipeGameState.tunnelCooldown) return;
-    
     const worker = document.getElementById('tunnelWorker');
     if (!worker) return;
-    
     const workerRect = worker.getBoundingClientRect();
-    
     for (let i = 1; i <= 4; i++) {
         const cloud = document.getElementById(`tcloud${i}`);
         if (!cloud) continue;
-        
         const cloudRect = cloud.getBoundingClientRect();
         const padding = 8;
-        
         const overlap = !(
             workerRect.right < cloudRect.left + padding ||
             workerRect.left > cloudRect.right - padding ||
             workerRect.bottom < cloudRect.top + padding ||
             workerRect.top > cloudRect.bottom - padding
         );
-        
         if (overlap) {
             triggerTunnelContamination();
             break;
         }
     }
 }
-
 function triggerTunnelContamination() {
     if (pipeGameState.tunnelCooldown) return;
-    
     pipeGameState.tunnelCooldown = true;
     pipeGameState.tunnelDose += 1.0;
-    
     const counter = document.getElementById('tunnelDose');
     if (counter) {
         counter.textContent = `Dose: ${pipeGameState.tunnelDose.toFixed(1)} mSv`;
         counter.classList.add('warning');
     }
-    
     const worker = document.getElementById('tunnelWorker');
     if (worker) worker.classList.add('contaminated');
-    
     const msgArea = document.getElementById('pipeGameMessage');
     msgArea.className = 'pipe-game-message warning';
     msgArea.innerHTML = `
@@ -5949,42 +5574,33 @@ function triggerTunnelContamination() {
             <span class="tunnel-controls-text">Move worker</span>
         </div>
     `;
-    
     setTimeout(() => {
         pipeGameState.tunnelCooldown = false;
         if (worker) worker.classList.remove('contaminated');
-        
         if (pipeGameState.tunnelDose >= 2) {
             completeTunnelGame();
         }
     }, 500);
 }
-
 function completeTunnelGame() {
     pipeGameState.tunnelActive = false;
     pipeGameState.gameCompleted = true;
-    
     if (pipeGameState.tunnelInterval) {
         clearInterval(pipeGameState.tunnelInterval);
         pipeGameState.tunnelInterval = null;
     }
     document.removeEventListener('keydown', handleTunnelKeyPress);
-    
     const msgArea = document.getElementById('pipeGameMessage');
     msgArea.className = 'pipe-game-message warning';
-    
     const doseMsg = pipeGameState.tunnelDose > 0 
         ? `Worker accumulated <strong>${pipeGameState.tunnelDose.toFixed(1)} mSv</strong> crossing once.`
         : `Easy access, but contamination covers every surface.`;
-    
     msgArea.innerHTML = `
         <div class="pipe-game-message-title">☢️ The Tunnel Problem</div>
         <div>${doseMsg} Over 60 years, contamination builds everywhere. The entire tunnel becomes <strong>ILW</strong> at decommissioning.</div>
     `;
-    
     showPipeDecisionOptions();
 }
-
 // ============================================
 // STAGES 2-5: DECISIONS (No budget, decisions are final)
 // ============================================
@@ -5994,24 +5610,19 @@ function renderDecisionModal(elId, element) {
         renderPipeRoutingDecision(elId, element);
         return;
     }
-    
     const stageKey = `stage${STATE.stage}`;
     const designChoice = STATE.designChoices[elId];
     const designOpt = element.stage1.options.find(o => o.id === designChoice);
     const stage = GAME_DATA.stages[STATE.stage];
-    
     let stageData = element[stageKey]?.[designChoice];
-    
     if (!stageData) {
         document.getElementById('modalBody').innerHTML = '<p>No data for this element.</p>';
         document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" onclick="closeModal()">Close</button>';
         return;
     }
-    
     // Handle element state-based scenarios (compounding consequences system)
     if (stageData.checkElementState && stageData.scenarios) {
         const elState = STATE.elementState[elId] || {};
-        
         // Priority order for state checks - most severe/specific first
         const statePriority = [
             // Crisis states (highest priority)
@@ -6028,9 +5639,7 @@ function renderDecisionModal(elId, element) {
             // Specific equipment states
             'airlockBypassed', 'airlockMaintained', 'weldCutMade', 'leakHistory'
         ];
-        
         let matchedScenario = null;
-        
         // Check states in priority order
         for (const state of statePriority) {
             if (elState[state] && stageData.scenarios[state]) {
@@ -6038,12 +5647,10 @@ function renderDecisionModal(elId, element) {
                 break;
             }
         }
-        
         // Fall back to default or first available scenario
         if (!matchedScenario) {
             matchedScenario = stageData.scenarios.default || stageData.scenarios[Object.keys(stageData.scenarios)[0]];
         }
-        
         stageData = matchedScenario;
     }
     // Handle old trigger-based system (for backwards compatibility)
@@ -6052,12 +5659,9 @@ function renderDecisionModal(elId, element) {
     } else if (stageData.checkFlag) {
         stageData = STATE.flags[stageData.checkFlag] ? stageData.hasFlag : stageData.noFlag;
     }
-    
     const char = GAME_DATA.characters[stage.char];
     const stageCost = STATE.stageTotals[STATE.stage]?.cost || 0;
-    
     let html = '';
-    
     // Context bar - year, design choice, stage cost
     html += `
         <div class="context-bar">
@@ -6065,7 +5669,6 @@ function renderDecisionModal(elId, element) {
             <span class="context-cost">💰 Stage Cost: ${formatMoney(stageCost)}</span>
         </div>
     `;
-    
     // Situation panel - the main story
     html += `
         <div class="situation-panel">
@@ -6073,7 +5676,6 @@ function renderDecisionModal(elId, element) {
             <div class="situation-text">${stageData.situation}</div>
         </div>
     `;
-    
     // Character speech bubble
     html += `
         <div class="speech-bubble">
@@ -6082,14 +5684,11 @@ function renderDecisionModal(elId, element) {
             <div class="speech-text">"${stageData.quote}"</div>
         </div>
     `;
-    
     // Decision section
     const numOptions = stageData.options.length;
     const gridClass = numOptions === 2 ? 'two-options' : (numOptions === 3 ? 'three-options' : '');
-    
     // Sort options by cost (cheapest first)
     const sortedDecisionOpts = [...stageData.options].sort((a, b) => (a.cost || 0) - (b.cost || 0));
-    
     html += `
         <div class="decision-section">
             <div class="decision-header">
@@ -6098,11 +5697,9 @@ function renderDecisionModal(elId, element) {
             </div>
             <div class="options-list ${gridClass}">
     `;
-    
     sortedDecisionOpts.forEach(opt => {
         const cost = opt.cost || 0;
         const hasImpacts = opt.time || opt.dose || opt.healthImpact || opt.risk;
-        
         html += `
             <div class="option-card" data-id="${opt.id}">
                 <div class="option-header">
@@ -6121,30 +5718,18 @@ function renderDecisionModal(elId, element) {
             </div>
         `;
     });
-    
     html += '</div></div>';
-    
     document.getElementById('modalBody').innerHTML = html;
     document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirmDecision" disabled>Select an Option</button>';
-    
-    console.log('Stage 2 decision modal rendered');
-    console.log('Options array:', sortedDecisionOpts);
-    
     // Store the options array for lookup
     const optionsArray = sortedDecisionOpts;
     let selectedOptId = null;
-    
     // Get fresh references after DOM update
     const allCards = document.querySelectorAll('#modalBody .option-card');
     const btn = document.getElementById('btnConfirmDecision');
-    
-    console.log('Found cards:', allCards.length);
-    console.log('Found button:', btn);
-    
     // Card click handlers
     for (let i = 0; i < allCards.length; i++) {
         allCards[i].onclick = function() {
-            console.log('Card clicked:', this.getAttribute('data-id'));
             // Remove selected from all
             for (let j = 0; j < allCards.length; j++) {
                 allCards[j].classList.remove('selected');
@@ -6154,20 +5739,13 @@ function renderDecisionModal(elId, element) {
             selectedOptId = this.getAttribute('data-id');
             btn.disabled = false;
             btn.textContent = 'Confirm Decision';
-            console.log('Selected option ID:', selectedOptId);
         };
     }
-    
     // Confirm button handler
     btn.onclick = function() {
-        console.log('Confirm button clicked!');
-        console.log('selectedOptId:', selectedOptId);
-        
         if (!selectedOptId) {
-            console.log('No selection, returning');
             return;
         }
-        
         // Find in the options array
         let opt = null;
         for (let i = 0; i < optionsArray.length; i++) {
@@ -6176,33 +5754,22 @@ function renderDecisionModal(elId, element) {
                 break;
             }
         }
-        
-        console.log('Found option:', opt);
-        
         if (!opt) {
             console.error('Option not found:', selectedOptId);
             return;
         }
-        
         // Handle risk
         if (opt.risk && Math.random() * 100 < opt.risk) {
-            console.log('Risk triggered, showing failure');
             showFailure(elId, opt, stageData);
             return;
         }
-        
-        console.log('Calling applyDecision');
         applyDecision(elId, opt, stageData, null);
     };
-    
-    console.log('Button onclick assigned');
 }
-
 function showFailure(elId, opt, stageData) {
     const extraCost = opt.cost || 0;
     const extraDose = (opt.dose || 0) + 2;
     const extraTime = (opt.time || 0) + 5;
-    
     let html = `
         <div class="failure-panel">
             <div class="failure-icon">⚠️</div>
@@ -6232,10 +5799,8 @@ function showFailure(elId, opt, stageData) {
             </div>
         </div>
     `;
-    
     document.getElementById('modalBody').innerHTML = html;
     document.getElementById('modalFooter').innerHTML = '<button class="btn btn-danger" id="btnConfirm">Accept Consequences</button>';
-    
     document.getElementById('btnConfirm').onclick = () => {
         // Apply failure costs
         STATE.stageTotals[STATE.stage].cost += extraCost + 50000;
@@ -6245,17 +5810,13 @@ function showFailure(elId, opt, stageData) {
         STATE.totals.dose += extraDose;
         STATE.totals.time += extraTime;
         STATE.plantHealth = Math.max(0, STATE.plantHealth - 10);
-        
         // Apply failState if specified, otherwise use setState
         if (!STATE.elementState[elId]) STATE.elementState[elId] = {};
         const stateToApply = opt.failState || opt.setState || { failureOccurred: true };
         Object.keys(stateToApply).forEach(key => {
             STATE.elementState[elId][key] = stateToApply[key];
         });
-        console.log(`Failure state for ${elId}:`, STATE.elementState[elId]);
-        
         STATE.completed[STATE.stage][elId] = true;
-        
         // Mark hotspot square as done for Stage 2+
         if (STATE.stage > 1) {
             const square = document.getElementById(`square-${elId}`);
@@ -6263,21 +5824,16 @@ function showFailure(elId, opt, stageData) {
                 square.classList.add('done');
             }
         }
-        
         updateStatsDisplay();
         updateProgressLabel();
         closeModal();
     };
 }
-
 function applyDecision(elId, opt, stageData, previousChoice = null) {
-    console.log('applyDecision called with:', elId, opt, stageData);
-    
     const cost = opt.cost || 0;
     const dose = opt.dose || 0;
     const time = opt.time || 0;
     const healthImpact = opt.healthImpact || 0;
-    
     // Additional costs from triggered scenarios (e.g., environmental cleanup)
     if (stageData.additionalCosts) {
         STATE.stageTotals[STATE.stage].cost += (stageData.additionalCosts.regulatory || 0) + (stageData.additionalCosts.environmental || 0);
@@ -6286,34 +5842,27 @@ function applyDecision(elId, opt, stageData, previousChoice = null) {
             STATE.plantHealth = Math.max(0, STATE.plantHealth + stageData.additionalCosts.healthImpact);
         }
     }
-    
     STATE.stageTotals[STATE.stage].cost += cost;
     STATE.stageTotals[STATE.stage].dose += dose;
     STATE.stageTotals[STATE.stage].time += time;
     STATE.totals.cost += cost;
     STATE.totals.dose += dose;
     STATE.totals.time += time;
-    
     if (healthImpact) {
         STATE.plantHealth = Math.max(0, Math.min(100, STATE.plantHealth + healthImpact));
     }
-    
     // Handle old trigger/flag system
     if (opt.trigger) STATE.triggers[opt.trigger] = true;
     if (opt.setFlag) STATE.flags[opt.setFlag] = true;
-    
     // Handle new element state system for compounding consequences
     if (opt.setState) {
         if (!STATE.elementState[elId]) STATE.elementState[elId] = {};
         Object.keys(opt.setState).forEach(key => {
             STATE.elementState[elId][key] = opt.setState[key];
         });
-        console.log(`State updated for ${elId}:`, STATE.elementState[elId]);
     }
-    
     STATE.completed[STATE.stage][elId] = true;
     STATE.stageChoices[`${STATE.stage}_${elId}`] = opt.id;
-    
     // Mark hotspot square as done for Stage 2+
     if (STATE.stage > 1) {
         const square = document.getElementById(`square-${elId}`);
@@ -6321,17 +5870,14 @@ function applyDecision(elId, opt, stageData, previousChoice = null) {
             square.classList.add('done');
         }
     }
-    
     updateStatsDisplay();
     updateProgressLabel();
     closeModal();
 }
-
 // ============================================
 // STAGE COMPLETION
 // ============================================
 document.getElementById('btnNextStage').onclick = showStageSummary;
-
 // Insights for each stage
 const STAGE_INSIGHTS = {
     1: "Your design is now locked in. Over the next 60 years, every maintenance worker, inspector, and operator will work with the consequences of today's decisions. <strong>Construction is cheap compared to retrofitting.</strong>",
@@ -6340,14 +5886,11 @@ const STAGE_INSIGHTS = {
     4: "45 years of operation tests every design decision. Control room layout matters when alarms are screaming at 3am. <strong>Good design becomes invisible; bad design becomes crisis.</strong>",
     5: "Decommissioning reveals the true lifecycle cost. What seemed like savings in 2025 may have cost millions more across 60 years. <strong>The plant's final lesson is written in the total cost.</strong>"
 };
-
 function showStageSummary() {
     const stage = GAME_DATA.stages[STATE.stage];
     const st = STATE.stageTotals[STATE.stage];
-    
     document.getElementById('sumTitle').textContent = `${stage.name}`;
     document.getElementById('sumSubtitle').textContent = `Year ${stage.year} Complete`;
-    
     let statsHtml = '';
     if (STATE.stage === 1) {
         const spent = STATE.totals.cost;
@@ -6400,10 +5943,8 @@ function showStageSummary() {
         `;
     }
     document.getElementById('sumStats').innerHTML = statsHtml;
-    
     // Decisions - show as grid cards
     let decHtml = '<div class="decisions-grid">';
-    
     if (STATE.stage === 1) {
         // Stage 1: Show design choices
         Object.keys(GAME_DATA.elements).forEach(elId => {
@@ -6426,16 +5967,13 @@ function showStageSummary() {
             const el = GAME_DATA.elements[elId];
             const choiceId = STATE.stageChoices[`${STATE.stage}_${elId}`];
             const designChoice = STATE.designChoices[elId];
-            
             if (choiceId) {
                 // Find the option that was chosen
                 const stageData = el[`stage${STATE.stage}`];
                 let chosenOption = null;
                 let optionCost = 0;
-                
                 if (stageData && stageData[designChoice]) {
                     let sd = stageData[designChoice];
-                    
                     if (sd.scenarios) {
                         Object.values(sd.scenarios).forEach(scenario => {
                             if (scenario.options) {
@@ -6450,7 +5988,6 @@ function showStageSummary() {
                         chosenOption = opts.find(o => o.id === choiceId);
                     }
                 }
-                
                 if (chosenOption) {
                     decHtml += `
                         <div class="decision-card this-stage">
@@ -6465,64 +6002,72 @@ function showStageSummary() {
             }
         });
     }
-    
     decHtml += '</div>';
     document.getElementById('sumDecisions').innerHTML = decHtml;
-    
     // Insight for this stage
     document.getElementById('insightText').innerHTML = STAGE_INSIGHTS[STATE.stage];
-    
     // Button text
     if (STATE.stage >= 5) {
         document.getElementById('btnNextPhase').textContent = 'View Final Report →';
     } else {
         document.getElementById('btnNextPhase').textContent = 'Continue →';
     }
-    
     document.getElementById('summaryScreen').classList.add('active');
 }
-
 document.getElementById('btnNextPhase').onclick = () => {
     document.getElementById('summaryScreen').classList.remove('active');
     showStoryTransition();
 };
-
 function showStoryTransition() {
     const currentStage = STATE.stage;
     const story = GAME_DATA.storyTransitions[currentStage];
-    
-    // Header
-    document.getElementById('storyYears').textContent = story.yearsLabel;
+    const currentStageData = GAME_DATA.stages[currentStage];
+    // Hero section
+    document.getElementById('storyPhaseLabel').textContent = `${currentStageData.name} Phase Complete`;
     document.getElementById('storyTitle').textContent = story.title;
-    
+    document.getElementById('storyYearFrom').textContent = currentStageData.year;
+    const nextStage = currentStage < 5 ? GAME_DATA.stages[currentStage + 1] : null;
+    document.getElementById('storyYearTo').textContent = nextStage ? nextStage.year : '2085+';
     // Narrative paragraphs
     document.getElementById('storyNarrative').innerHTML = story.narrative.map(p => `<p>${p}</p>`).join('');
-    
-    // Lessons
-    document.getElementById('storyLessons').innerHTML = '<ul>' + story.lessons.map(l => `<li>${l}</li>`).join('') + '</ul>';
-    
-    // Regulatory references
-    document.getElementById('storyRegulatory').innerHTML = story.regulatory.map(r => `
-        <div class="reg-reference">
-            <span class="reg-code">${r.code}</span>
-            <span class="reg-text">${r.text}</span>
+    // Lessons as cards with icons
+    const lessonIcons = ['💡', '⚙️', '🔧', '📊', '🎯', '⚠️', '✅', '📐'];
+    document.getElementById('storyLessons').innerHTML = story.lessons.map((l, i) => `
+        <div class="lesson-card">
+            <div class="lesson-icon">${lessonIcons[i % lessonIcons.length]}</div>
+            <div class="lesson-text">${l}</div>
         </div>
     `).join('');
-    
+    // Regulatory references as cards
+    document.getElementById('storyRegulatory').innerHTML = story.regulatory.map(r => {
+        // Extract title from text if it follows "Title - Description" pattern
+        let title = r.title || '';
+        let desc = r.text;
+        if (!title && r.text.includes(' - ')) {
+            const parts = r.text.split(' - ');
+            title = parts[0];
+            desc = parts.slice(1).join(' - ');
+        }
+        return `
+            <div class="reg-card">
+                <div class="reg-badge">${r.code}</div>
+                <div class="reg-content">
+                    ${title ? `<div class="reg-title">${title}</div>` : ''}
+                    <div class="reg-desc">${desc}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
     // Foreshadow
     document.getElementById('storyForeshadow').innerHTML = story.foreshadow;
-    
     // Button text
     if (currentStage >= 5) {
         document.getElementById('btnStoryNext').textContent = 'View Final Results →';
     } else {
-        const nextStage = GAME_DATA.stages[currentStage + 1];
         document.getElementById('btnStoryNext').textContent = `Begin ${nextStage.year}: ${nextStage.name} →`;
     }
-    
     document.getElementById('storyTransition').classList.add('visible');
 }
-
 document.getElementById('btnStoryNext').onclick = () => {
     document.getElementById('storyTransition').classList.remove('visible');
     if (STATE.stage >= 5) {
@@ -6531,19 +6076,16 @@ document.getElementById('btnStoryNext').onclick = () => {
         showTransition();
     }
 };
-
 function showTransition() {
     const nextStage = STATE.stage + 1;
     const trans = GAME_DATA.transitions[nextStage];
     const nextStageData = GAME_DATA.stages[nextStage];
-    
     document.getElementById('transYears').textContent = trans.years;
     document.getElementById('transYear').textContent = trans.year;
     document.getElementById('transVisual').innerHTML = `<span class="phase-visual-icon">${trans.icon}</span>`;
     document.getElementById('transPhaseName').textContent = trans.phaseName;
     document.getElementById('transText').innerHTML = trans.text.map(t => `<p class="phase-context-line">${t}</p>`).join('');
     document.getElementById('btnTransContinue').textContent = `Begin ${trans.phaseName} →`;
-    
     // Set background image for the stage
     const transScreen = document.getElementById('transitionScreen');
     if (nextStageData.bg) {
@@ -6551,20 +6093,16 @@ function showTransition() {
         transScreen.style.backgroundSize = 'cover';
         transScreen.style.backgroundPosition = 'center';
     }
-    
     transScreen.classList.add('active');
 }
-
 document.getElementById('btnTransContinue').onclick = () => {
     document.getElementById('transitionScreen').classList.remove('active');
     startStage(STATE.stage + 1);
 };
-
 function showFinalResults() {
     // Calculate grades and totals
     let good = 0;
     let elementReports = [];
-    
     // Optimal costs - if you made all good choices
     const OPTIMAL_COSTS = {
         pumpAccess: { design: 120000, lifecycle: 65000 },      // Open Bay + standard ops
@@ -6574,7 +6112,6 @@ function showFinalResults() {
         pipeRouting: { design: 100000, lifecycle: 50000 },     // Ducted + standard
         materialSpec: { design: 140000, lifecycle: 50000 }     // Duplex + standard
     };
-    
     const ELEMENT_ICONS = {
         pumpAccess: '⚙️',
         weldClearance: '🔧',
@@ -6583,7 +6120,6 @@ function showFinalResults() {
         pipeRouting: '📐',
         materialSpec: '🧪'
     };
-    
     const ELEMENT_LESSONS = {
         pumpAccess: {
             good: "The open bay design demonstrates the value of considering the full lifecycle. Spending £40k extra upfront saved hundreds of thousands in maintenance and gave certainty at every stage.",
@@ -6616,15 +6152,12 @@ function showFinalResults() {
             poor: "Type 304 seemed adequate but sensitization and IGSCC are known issues in nuclear environments. Intergranular corrosion appeared exactly as the literature predicted. Co-60 activation constrained dose budgets for decades."
         }
     };
-    
     // Calculate per-element costs and build reports
     Object.keys(GAME_DATA.elements).forEach(elId => {
         const el = GAME_DATA.elements[elId];
         const designChoice = STATE.designChoices[elId];
         const designOpt = el.stage1.options.find(o => o.id === designChoice);
-        
         if (designOpt.quality === 'good') good++;
-        
         // Calculate this element's total cost across all stages
         let elementCost = designOpt.cost;
         for (let s = 2; s <= 5; s++) {
@@ -6654,9 +6187,7 @@ function showFinalResults() {
                 }
             }
         }
-        
         const optimalCost = OPTIMAL_COSTS[elId].design + OPTIMAL_COSTS[elId].lifecycle;
-        
         elementReports.push({
             id: elId,
             title: el.title,
@@ -6668,11 +6199,9 @@ function showFinalResults() {
             lesson: ELEMENT_LESSONS[elId][designOpt.quality]
         });
     });
-    
     // Calculate totals
     const totalOptimal = Object.values(OPTIMAL_COSTS).reduce((sum, el) => sum + el.design + el.lifecycle, 0);
     const costDiff = STATE.totals.cost - totalOptimal;
-    
     // Determine grade
     let grade, verdict, gradeExplanation;
     if (good >= 5 && STATE.plantHealth >= 80 && STATE.totals.dose < 30) {
@@ -6692,10 +6221,8 @@ function showFinalResults() {
         verdict = 'Lessons Learned';
         gradeExplanation = 'Your design created ongoing challenges throughout the plant\'s life. Future generations paid for initial savings.';
     }
-    
     // Build the HTML
     let html = '';
-    
     // Header with grade
     html += `
         <div class="report-header">
@@ -6704,7 +6231,6 @@ function showFinalResults() {
             <p class="results-verdict">${verdict} — ${gradeExplanation}</p>
         </div>
     `;
-    
     // Cost comparison
     html += `
         <div class="report-comparison">
@@ -6723,15 +6249,12 @@ function showFinalResults() {
             </div>
         </div>
     `;
-    
     // Element journeys
     html += `<div class="report-section-title">Your 60-Year Journey by Element</div>`;
     html += `<div class="element-journeys">`;
-    
     elementReports.forEach(report => {
         const verdictText = report.quality === 'good' ? 'Good Design' : 
                            (report.quality === 'wasteful' ? 'Over-specified' : 'Problematic');
-        
         html += `
             <div class="journey-card ${report.quality}" data-element="${report.id}">
                 <div class="journey-header" onclick="toggleJourney('${report.id}')">
@@ -6763,20 +6286,16 @@ function showFinalResults() {
             </div>
         `;
     });
-    
     html += `</div>`;
-    
     // Key takeaways
     html += `<div class="report-section-title">Key Takeaways</div>`;
     html += `<div class="takeaways">`;
-    
     const takeaways = [
         { icon: '💡', text: `<strong>Design decisions echo for decades.</strong> What seems like a small saving in 2025 can multiply into major costs across maintenance, inspection, operations, and decommissioning.` },
         { icon: '🔄', text: `<strong>Access drives everything.</strong> If you can't reach it, you can't inspect it. If you can't inspect it, you can't prove it's safe. If you can't prove it's safe, the regulator won't let you operate.` },
         { icon: '📊', text: `<strong>The cheapest option is rarely the best.</strong> But the most expensive isn't either. The "good" choice balances initial cost against 60 years of consequences.` },
         { icon: '⚠️', text: `<strong>Problems compound.</strong> A workaround in 2040 becomes a constraint in 2055 becomes a crisis in 2070. Each deferred fix makes the next intervention harder.` }
     ];
-    
     takeaways.forEach(t => {
         html += `
             <div class="takeaway-item">
@@ -6785,27 +6304,20 @@ function showFinalResults() {
             </div>
         `;
     });
-    
     html += `</div>`;
-    
     document.getElementById('finalReportContent').innerHTML = html;
-    
     // Set results background
     const resultsScreen = document.getElementById('resultsScreen');
     resultsScreen.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('images/bg_results.png')`;
     resultsScreen.style.backgroundSize = 'cover';
     resultsScreen.style.backgroundPosition = 'center';
-    
     resultsScreen.classList.add('active');
 }
-
 function buildTimelineHTML(elId) {
     const el = GAME_DATA.elements[elId];
     const designChoice = STATE.designChoices[elId];
     const designOpt = el.stage1.options.find(o => o.id === designChoice);
-    
     let html = '';
-    
     // Stage 1 - Design
     html += `
         <div class="journey-stage">
@@ -6820,7 +6332,6 @@ function buildTimelineHTML(elId) {
             <div class="journey-stage-cost">${formatMoney(designOpt.cost)}</div>
         </div>
     `;
-    
     // Stages 2-5
     const stageInfo = [
         { num: 2, year: 2040, phase: 'Maintenance' },
@@ -6828,7 +6339,6 @@ function buildTimelineHTML(elId) {
         { num: 4, year: 2070, phase: 'Operations' },
         { num: 5, year: 2085, phase: 'Decommission' }
     ];
-    
     stageInfo.forEach(stage => {
         const choiceId = STATE.stageChoices[`${stage.num}_${elId}`];
         if (choiceId) {
@@ -6837,7 +6347,6 @@ function buildTimelineHTML(elId) {
                 let sd = stageData[designChoice];
                 let chosenOption = null;
                 let situation = '';
-                
                 // Navigate the data structure to find the chosen option
                 if (sd.scenarios) {
                     Object.values(sd.scenarios).forEach(scenario => {
@@ -6858,14 +6367,12 @@ function buildTimelineHTML(elId) {
                     chosenOption = triggeredOpt || notTriggeredOpt;
                     situation = triggeredOpt ? sd.triggered.situation : sd.notTriggered?.situation || '';
                 }
-                
                 if (chosenOption) {
                     // Create a brief consequence description
                     let consequence = chosenOption.desc;
                     if (consequence.length > 100) {
                         consequence = consequence.substring(0, 100) + '...';
                     }
-                    
                     html += `
                         <div class="journey-stage">
                             <div class="journey-stage-year">
@@ -6883,10 +6390,8 @@ function buildTimelineHTML(elId) {
             }
         }
     });
-    
     return html;
 }
-
 function toggleJourney(elId) {
     const card = document.querySelector(`.journey-card[data-element="${elId}"]`);
     card.classList.toggle('expanded');
