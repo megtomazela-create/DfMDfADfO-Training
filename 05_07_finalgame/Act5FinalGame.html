@@ -3169,7 +3169,7 @@
 </head>
 <body>
 <!-- VERSION TAG -->
-<div class="version-tag">v0.47</div>
+<div class="version-tag">v0.49</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -3491,9 +3491,10 @@ const GAME_DATA = {
             lessons: [
                 'Design decisions made today will affect workers for 60+ years',
                 'Saving money during design often creates larger costs during operation',
-                'Access for maintenance and inspection must be considered from day one',
+                'Access for maintenance and inspection must be considered from day one — Davis-Besse (2002) showed how inspection access limitations allowed undetected corrosion to nearly breach the reactor vessel head',
                 'Human factors in control room design can mean the difference between safe response and disaster',
-                'Material specifications affect dose rates for the entire plant lifetime'
+                'Material specifications affect dose rates for the entire plant lifetime',
+                'Radiological zoning decisions at design stage affect dose uptake, PPE requirements, and waste classification for the entire plant lifecycle — separating clean and controlled areas is far cheaper during design than retrofit'
             ],
             regulatory: [
                 { code: 'LC 14', text: 'Safety Case - The design must demonstrate that risks are reduced As Low As Reasonably Practicable (ALARP). Your design choices form the basis of the safety case.' },
@@ -3520,7 +3521,7 @@ const GAME_DATA = {
                 'Good design enables standard procedures; poor design forces expensive workarounds'
             ],
             regulatory: [
-                { code: 'LC 28', text: 'Examination, Inspection, Maintenance & Testing - The licensee must make adequate arrangements. Your design choices directly affect what "adequate" means in practice.' },
+                { code: 'LC 28', text: 'Examination, Inspection, Maintenance & Testing - The licensee must make adequate arrangements for regular and systematic examination, inspection, maintenance and testing of all plant. Your design choices directly affect what "adequate" means in practice.' },
                 { code: 'LC 25', text: 'Operational Records - All maintenance work, dose uptake, and defects discovered must be recorded. These records inform future safety cases.' },
                 { code: 'SAP EMT.1', text: 'Maintenance Strategy - Facilities should be designed so that structures, systems and components can be maintained to preserve their safety functions.' },
                 { code: 'IRR17 Reg.9', text: 'Restriction of Exposure - Employers must ensure doses are kept As Low As Reasonably Practicable. Poor access = higher doses.' }
@@ -3538,15 +3539,16 @@ const GAME_DATA = {
             ],
             lessons: [
                 'In-Service Inspection requirements are defined by design codes and regulatory expectations',
-                'Inspection gaps create uncertainty in safety cases and regulatory concern',
+                'Inspection gaps create uncertainty in safety cases and regulatory concern — regulators require positive evidence of safety, not absence of observed failure',
                 'The Periodic Safety Review at 10-year intervals assesses continued safe operation',
                 'Materials that cannot be inspected create ongoing liability',
-                'Retrofitting access is extremely expensive compared to designing it correctly'
+                'Retrofitting access is extremely expensive compared to designing it correctly',
+                'Sellafield legacy facilities demonstrate how embedded services and inaccessible areas create decommissioning challenges lasting decades beyond operational life'
             ],
             regulatory: [
-                { code: 'LC 28', text: 'ONR expects in-service inspection programmes to demonstrate continued structural integrity. Gaps in coverage must be justified.' },
+                { code: 'LC 28', text: 'ONR expects in-service inspection programmes to demonstrate continued structural integrity through regular and systematic examination. Gaps in coverage must be justified in the safety case.' },
                 { code: 'SAP EAD.1', text: 'Ageing and Degradation - Structures, systems and components important to safety should be designed to minimise the effects of ageing and to facilitate inspection.' },
-                { code: 'SAP EMT.6', text: 'Inspectability - All structures, systems and components important to safety should be designed and located so they can be adequately inspected.' },
+                { code: 'SAP EMT.6', text: 'Inspectability - All structures, systems and components important to safety should be designed and located so they can be adequately inspected throughout operational life and during decommissioning.' },
                 { code: 'NS-TAST-GD-026', text: 'ONR Technical Assessment Guide on In-Service Inspection - The design should ensure that ISI can be performed to relevant codes and standards.' }
             ],
             foreshadow: 'It is now 2070. Mike Brennan is the night Shift Operations Manager. At 3am, the alarms begin. Everything depends on whether operators can find the right controls, fast.'
@@ -3562,7 +3564,7 @@ const GAME_DATA = {
             ],
             lessons: [
                 'Human factors engineering in control rooms directly affects emergency response',
-                'Operator confusion during emergencies can be fatal - design must support rapid, correct action',
+                'Operator confusion during emergencies can be fatal — TMI-2 (1979) demonstrated how ambiguous valve status indication and poor panel layout contributed to operators misdiagnosing plant conditions for hours',
                 'Material activation affects operational flexibility for the entire plant life',
                 'Deferred maintenance and inspection gaps can culminate in operational emergencies',
                 'Long-term operation requires continuous demonstration that ageing is being managed'
@@ -3609,9 +3611,9 @@ const GAME_DATA = {
             stage1: {
                 description: 'How should the primary coolant pump be positioned?',
                 options: [
-                    { id: 'corner', name: 'Corner Position', desc: 'Tucked in corner to maximise floor space. 1.8m clearance.', cost: 80000, quality: 'poor', image: 'images/01_Pump_01.png' },
-                    { id: 'openBay', name: 'Open Bay', desc: '2m clearance all sides, under crane rails.', cost: 120000, quality: 'good', image: 'images/01_Pump_02.png' },
-                    { id: 'dedicated', name: 'Dedicated Shielded Room', desc: 'Separate room with airlock. Maximum protection.', cost: 200000, quality: 'wasteful', image: 'images/01_Pump_03.png' }
+                    { id: 'corner', name: 'Corner Position', desc: 'Tucked in corner to maximise floor space. 1.8m clearance — insufficient for pump plus rigging tackle and lifting equipment.', cost: 80000, quality: 'poor', image: 'images/01_Pump_01.png' },
+                    { id: 'openBay', name: 'Open Bay', desc: 'Industry standard: 2m clearance all sides accounts for rigging equipment and lifting tackle, not just pump dimensions. Under crane rails.', cost: 120000, quality: 'good', image: 'images/01_Pump_02.png' },
+                    { id: 'dedicated', name: 'Dedicated Shielded Room', desc: 'Separate room with airlock. Extra structure must also be decommissioned later.', cost: 200000, quality: 'wasteful', image: 'images/01_Pump_03.png' }
                 ]
             },
             // =====================================
@@ -3706,14 +3708,14 @@ const GAME_DATA = {
                                 { 
                                     id: 'partial', 
                                     name: 'Scaffold and use angled probes', 
-                                    desc: 'Achieves ~60% coverage. Uninspected areas will need to be documented.', 
+                                    desc: 'Achieves ~60% coverage. Uninspected areas must be justified in the safety case — regulators require positive evidence of safety.', 
                                     cost: 45000, time: 5, dose: 3,
                                     setState: { inspectionGap: true }
                                 },
                                 { 
                                     id: 'accept', 
                                     name: 'Accept inspection limitation', 
-                                    desc: 'Mark areas as "inaccessible" in report. Regulator will note this. Cheapest but riskiest.', 
+                                    desc: 'Mark areas as "inaccessible" in report. Inspection gaps must be justified in safety case — absence of observed failure is not evidence of safety.', 
                                     cost: 5000, time: 1, dose: 0.5, healthImpact: -10,
                                     setState: { inspectionGap: true }
                                 }
@@ -3935,9 +3937,9 @@ const GAME_DATA = {
                             situation: 'Pump removal for decommissioning. The corner position was never fixed - same problem as 2040, sixty years later.',
                             quote: "Sixty years and we're back to the same problem. Corner position, pump doesn't fit. We got away with it operationally, but now we have to get this thing out somehow.",
                             options: [
-                                { id: 'demolish', name: 'Demolish wall section', desc: 'Remove the concrete to create access.', cost: 80000, time: 15, dose: 4 },
-                                { id: 'cut', name: 'Cut pump in-situ', desc: 'Segment the pump in the confined space.', cost: 60000, time: 20, dose: 8 },
-                                { id: 'robot', name: 'Robotic cutting system', desc: 'Remote cutting minimises dose but expensive.', cost: 200000, time: 10, dose: 1 }
+                                { id: 'demolish', name: 'Demolish wall section', desc: 'Remove the concrete to create access.', cost: 115000, time: 18, dose: 5 },
+                                { id: 'cut', name: 'Cut pump in-situ', desc: 'Segment the pump in the confined space.', cost: 90000, time: 25, dose: 10 },
+                                { id: 'robot', name: 'Robotic cutting system', desc: 'Remote cutting minimises dose but expensive.', cost: 280000, time: 12, dose: 1.5 }
                             ]
                         },
                         // Had an emergency - pump may already be damaged/isolated
@@ -3949,9 +3951,9 @@ const GAME_DATA = {
                                     id: 'careful', 
                                     name: 'Careful characterisation first', 
                                     desc: 'Full assessment before removal. Slower but safer.', 
-                                    cost: 100000, time: 18, dose: 3 
+                                    cost: 145000, time: 22, dose: 4 
                                 },
-                                { id: 'remote', name: 'Full remote handling', desc: 'Assume worst case, use robotics throughout.', cost: 250000, time: 12, dose: 0.5 }
+                                { id: 'remote', name: 'Full remote handling', desc: 'Assume worst case, use robotics throughout.', cost: 360000, time: 15, dose: 0.5 }
                             ]
                         },
                         // Catastrophic - major contamination
@@ -3959,25 +3961,25 @@ const GAME_DATA = {
                             situation: 'Pump decommissioning following catastrophic failure. Major contamination in the area. Remote handling mandatory.',
                             quote: "That pump failure contaminated the whole area. We're in full remote handling territory. This is going to take years and cost a fortune. The 2025 corner position plus the 2040 damage plus 2070... it all adds up.",
                             options: [
-                                { id: 'remote', name: 'Full remote decommissioning', desc: 'Robotics only. No personnel entry possible.', cost: 400000, time: 30, dose: 2, healthImpact: -10 },
-                                { id: 'encapsulate', name: 'Encapsulate and defer', desc: 'Seal the area for future generations to deal with.', cost: 150000, time: 10, dose: 1, healthImpact: -20 }
+                                { id: 'remote', name: 'Full remote decommissioning', desc: 'Robotics only. No personnel entry possible.', cost: 580000, time: 36, dose: 2, healthImpact: -10 },
+                                { id: 'encapsulate', name: 'Encapsulate and defer', desc: 'Seal the area for future generations to deal with.', cost: 220000, time: 12, dose: 1, healthImpact: -20 }
                             ]
                         },
                         default: {
-                            situation: 'Pump removal for decommissioning. Corner access remains a challenge.',
-                            quote: "That corner position from 2025 - still causing problems even at decommissioning. Pump doesn't fit through.",
+                            situation: 'Pump removal for decommissioning. Corner access remains a challenge - inadequate clearance for lift-out.',
+                            quote: "Industry guidance is clear: provide adequate clearance and crane access for component removal. That corner position from 2025 ignored it. Now we're paying - literally - for that decision.",
                             options: [
-                                { id: 'demolish', name: 'Demolish wall', desc: 'Create access by removing structure.', cost: 80000, time: 15, dose: 4 },
-                                { id: 'cut', name: 'Cut in-situ', desc: 'Segment the pump in place.', cost: 60000, time: 20, dose: 8 }
+                                { id: 'demolish', name: 'Demolish wall', desc: 'Create access by removing structure.', cost: 115000, time: 18, dose: 5 },
+                                { id: 'cut', name: 'Cut in-situ', desc: 'Segment the pump in confined space.', cost: 90000, time: 25, dose: 10 }
                             ]
                         }
                     }
                 },
                 openBay: {
-                    situation: 'Pump removal for decommissioning. Full crane access available - reverse of original installation.',
-                    quote: "This is how decommissioning should work. That open bay from 2025 - crane hooks on, pump lifts out. Exactly like the installation but in reverse. Clean and simple. Sixty years of good design paying off one final time.",
+                    situation: 'Pump removal for decommissioning. Full crane access available - exactly as industry guidance recommends.',
+                    quote: "This is textbook decommissioning. Open bay layout, crane rails overhead, adequate clearance - the 2025 design followed OECD best practice. Crane hooks on, pump lifts out. Sixty years later, it works exactly as intended.",
                     options: [
-                        { id: 'standard', name: 'Standard crane removal', desc: 'Lift and containerise in one operation.', cost: 20000, time: 3, dose: 1 },
+                        { id: 'standard', name: 'Standard crane removal', desc: 'Lift and containerise in one operation. Industry standard approach.', cost: 20000, time: 3, dose: 1 },
                         { id: 'segmented', name: 'Segmented removal for recycling', desc: 'Additional cutting to enable material segregation.', cost: 35000, time: 5, dose: 1.5 }
                     ]
                 },
@@ -3985,26 +3987,26 @@ const GAME_DATA = {
                     checkElementState: true,
                     scenarios: {
                         airlockMaintained: {
-                            situation: 'Pump removal straightforward, but the entire dedicated room must also be decommissioned. Airlock is in good condition.',
-                            quote: "Pump comes out easily - that's not the issue. But that entire shielded room from 2025? The walls, the airlock - all unnecessary and all has to come out. At least it's clean.",
+                            situation: 'Pump removal is straightforward, but the entire dedicated room structure must also be decommissioned - walls, airlock, shielding.',
+                            quote: "The pump? Easy - lifts right out. But look at all this extra structure from 2025. Shielded walls, airlock, the lot. Industry guidance says minimise waste quantities - this room IS waste now. All of it has to come out, be characterised, disposed of. The pump didn't need this level of containment.",
                             options: [
-                                { id: 'full', name: 'Full room decommissioning', desc: 'Remove pump and all room structures.', cost: 120000, time: 10, dose: 2 },
+                                { id: 'full', name: 'Full room decommissioning', desc: 'Remove pump and all unnecessary room structures.', cost: 120000, time: 10, dose: 2 },
                                 { id: 'phased', name: 'Phased approach', desc: 'Pump first, room structure later.', cost: 140000, time: 14, dose: 2.5 }
                             ]
                         },
                         airlockBypassed: {
                             situation: 'Pump and room decommissioning complicated by contamination spread from the 2040 airlock bypass.',
-                            quote: "That 2040 bypass decision - it's made this whole room a contamination problem. Pump removal is secondary to cleaning up the mess that's spread over 45 years. This is expensive.",
+                            quote: "That 2040 bypass spread contamination through the whole room. Now we're decommissioning contaminated structure that shouldn't have been there in the first place. Over-engineering created extra surfaces to contaminate.",
                             options: [
                                 { id: 'full', name: 'Full decontamination and removal', desc: 'Clean everything, then remove.', cost: 200000, time: 18, dose: 4 },
                                 { id: 'remote', name: 'Remote handling throughout', desc: 'Treat as high-contamination from the start.', cost: 280000, time: 15, dose: 1 }
                             ]
                         },
                         default: {
-                            situation: 'Pump and dedicated room decommissioning.',
-                            quote: "Pump room decommissioning. Standard approach.",
+                            situation: 'Pump and dedicated room decommissioning. Extra structure creates additional waste.',
+                            quote: "The pump is fine, but we've got all this unnecessary structure to deal with. That's the problem with over-engineering - it all becomes waste eventually.",
                             options: [
-                                { id: 'full', name: 'Full decommissioning', desc: 'Remove everything.', cost: 150000, time: 12, dose: 2 }
+                                { id: 'full', name: 'Full decommissioning', desc: 'Remove pump and all room structures.', cost: 150000, time: 12, dose: 2 }
                             ]
                         }
                     }
@@ -4136,7 +4138,7 @@ const GAME_DATA = {
                             situation: 'In-Service Inspection required. The 50mm clearance from 2025 limits UT probe positioning per ASME Section XI requirements.',
                             quote: "Standard probe needs 80mm minimum clearance for proper beam angles. We've got 50mm. I can try miniature equipment or we excavate for proper access.",
                             options: [
-                                { id: 'miniprobe', name: 'Use miniature probes', desc: 'Limited coverage but achievable.', cost: 40000, time: 5, dose: 3, setState: { inspectionLimited: true } },
+                                { id: 'miniprobe', name: 'Use miniature probes', desc: 'Limited coverage but achievable. Gaps must be justified in safety case.', cost: 40000, time: 5, dose: 3, setState: { inspectionLimited: true } },
                                 { id: 'excavate', name: 'Create permanent access', desc: 'Fix the problem properly.', cost: 90000, time: 10, dose: 3, setState: { clearanceImproved: true } }
                             ]
                         }
@@ -4366,7 +4368,7 @@ const GAME_DATA = {
                         { 
                             id: 'backup', 
                             name: 'Install hardwired backup panel', 
-                            desc: 'Physical buttons for safety-critical functions. Defence in depth.', 
+                            desc: 'Physical buttons for safety-critical functions. This Diverse Actuation System (DAS) approach is now standard practice for software-based control systems.', 
                             cost: 90000, time: 0, dose: 0,
                             setState: { backupInstalled: true }
                         },
@@ -5244,24 +5246,24 @@ const GAME_DATA = {
                             situation: 'Catastrophic contamination situation. The embedded pipe leaks have contaminated a large volume of concrete and soil over decades.',
                             quote: "That embedded pipe design from 2025 combined with all those years of uncontrolled leakage - we're looking at hundreds of cubic metres of contaminated concrete and soil. The regulatory implications are severe. This is a major remediation project.",
                             options: [
-                                { id: 'full', name: 'Full remediation programme', desc: 'Remove all contaminated material. Massive project.', cost: 600000, time: 60, dose: 25, healthImpact: -10 },
-                                { id: 'contain', name: 'Engineered containment', desc: 'Barrier system and long-term monitoring. Cheaper but institutionally controlled.', cost: 350000, time: 30, dose: 10, healthImpact: -15 }
+                                { id: 'full', name: 'Full remediation programme', desc: 'Remove all contaminated material. Massive project.', cost: 850000, time: 72, dose: 30, healthImpact: -10 },
+                                { id: 'contain', name: 'Engineered containment', desc: 'Barrier system and long-term monitoring. Cheaper but institutionally controlled.', cost: 500000, time: 36, dose: 12, healthImpact: -15 }
                             ]
                         },
                         accessCreated: {
                             situation: 'Mixed situation. Some access points were created, but significant concrete excavation still required.',
                             quote: "Those access points we created over the years help a bit - at least we know what we're dealing with in some sections. But most of the embedded pipes from 2025 are still buried. Major excavation still required, just with better knowledge.",
                             options: [
-                                { id: 'targeted', name: 'Targeted excavation programme', desc: 'Focus on known problem areas first.', cost: 280000, time: 30, dose: 12 },
-                                { id: 'specialist', name: 'Full specialist demolition', desc: 'Bring in experts for complete removal.', cost: 380000, time: 22, dose: 7 }
+                                { id: 'targeted', name: 'Targeted excavation programme', desc: 'Focus on known problem areas first.', cost: 400000, time: 36, dose: 15 },
+                                { id: 'specialist', name: 'Full specialist demolition', desc: 'Bring in experts for complete removal.', cost: 540000, time: 26, dose: 8 }
                             ]
                         },
                         default: {
                             situation: 'Pipes cast into concrete from 2025 require major excavation. Contamination has migrated into the concrete matrix itself.',
                             quote: "The embedded pipes from 2025 - now the contamination has soaked into the surrounding concrete over 60 years. We're not just removing pipes, we're removing contaminated structural concrete. Huge job. In-house or specialists?",
                             options: [
-                                { id: 'excavate', name: 'Full in-house excavation', desc: 'Our teams break out all the concrete.', cost: 350000, time: 40, dose: 20 },
-                                { id: 'specialist', name: 'Specialist demolition contractor', desc: 'Controlled demolition with contamination management.', cost: 400000, time: 25, dose: 8 }
+                                { id: 'excavate', name: 'Full in-house excavation', desc: 'Our teams break out all the concrete.', cost: 500000, time: 48, dose: 25 },
+                                { id: 'specialist', name: 'Specialist demolition contractor', desc: 'Controlled demolition with contamination management.', cost: 570000, time: 30, dose: 10 }
                             ]
                         }
                     }
@@ -5355,7 +5357,7 @@ const GAME_DATA = {
                     ]
                 },
                 exotic: {
-                    situation: 'Dose rates significantly higher than predicted. The exotic nickel alloy from 2025 contains Ni-59 and Co-59 isotopes creating unexpected activation products.',
+                    situation: 'Dose rates significantly higher than predicted. The exotic nickel alloy from 2025 contains Ni-58 and Co-59 which activate under neutron flux to produce Ni-59 (76,000-year half-life), Ni-63 (100-year half-life), and Co-60 — activation products underestimated at design stage.',
                     quote: "Major problem. That exotic alloy looked great for corrosion resistance, but it's activating badly under neutron flux. Ni-59 has a 76,000 year half-life and we're making it by the gram. Plus the cobalt impurities are creating Co-60. Dose rates are double prediction.",
                     isModifier: true,
                     options: [
@@ -5593,9 +5595,9 @@ const GAME_DATA = {
                     situation: 'The exotic nickel alloy from 2025 contains Ni-63 with a 100-year half-life. These components will remain highly active for centuries.',
                     quote: "That exotic alloy from 2025 - the Nickel-63 has a 100-year half-life. Five years of decay makes essentially no difference. This material will be highly active long after we're all dead. Century-scale storage required.",
                     options: [
-                        { id: 'extended', name: 'Extended remote decommissioning', desc: 'Very slow, very careful, very expensive. Minimise secondary waste.', cost: 280000, time: 35, dose: 15 },
-                        { id: 'storage', name: 'Long-term interim storage', desc: 'Store for decades, let decay reduce activity. Pass the problem to the future.', cost: 220000, time: 12, dose: 4 },
-                        { id: 'specialist', name: 'Specialist handling plus GDF disposal', desc: 'Expert removal, direct to geological disposal. Expensive but final.', cost: 350000, time: 25, dose: 6 }
+                        { id: 'extended', name: 'Extended remote decommissioning', desc: 'Very slow, very careful, very expensive. Minimise secondary waste.', cost: 400000, time: 45, dose: 18 },
+                        { id: 'storage', name: 'Long-term interim storage', desc: 'Store for decades, let decay reduce activity. Pass the problem to the future.', cost: 320000, time: 15, dose: 5 },
+                        { id: 'specialist', name: 'Specialist handling plus GDF disposal', desc: 'Expert removal, direct to geological disposal. Expensive but final.', cost: 500000, time: 30, dose: 7 }
                     ]
                 }
             }
@@ -7957,12 +7959,12 @@ function showFinalResults() {
         pipeRouting: {
             good: "Ducted routing with removable covers provided easy access while controlling contamination spread. Clean decommissioning - ducts remained as clean concrete.",
             wasteful: "The walk-in tunnel provided excellent access but accumulated contamination over 60 years, becoming ILW and a major disposal volume.",
-            poor: "Embedded pipes saved construction cost but created inspection gaps and made leak location impossible. What you can't inspect, you can't prove is safe."
+            poor: "Embedded pipes created inspection gaps that regulators could not accept — you cannot claim safety without evidence. Leaks migrated contamination into concrete matrix over decades, turning routine decommissioning into £500k+ remediation projects extending timelines by years."
         },
         materialSpec: {
-            good: "Duplex stainless provided the right balance - no IGSCC susceptibility, low cobalt activation, good weldability. Predictable performance through 60 years.",
-            wasteful: "Super duplex/exotic nickel alloy had excellent corrosion resistance but created extreme activation problems. Ni-63 with 100-year half-life complicated decommissioning for centuries.",
-            poor: "Type 304 seemed adequate but sensitization and IGSCC are known issues in nuclear environments. Intergranular corrosion appeared exactly as the literature predicted. Co-60 activation constrained dose budgets for decades."
+            good: "Duplex stainless (~300ppm cobalt) provided the right balance - no IGSCC susceptibility, low cobalt activation producing manageable Co-60 levels. Predictable performance and hands-on decommissioning achievable after 5-year decay.",
+            wasteful: "Super duplex/exotic nickel alloy had excellent corrosion resistance but contained Ni-58 and Co-59 which activated to produce Ni-59 (76,000-year half-life), Ni-63 (100-year half-life), and high Co-60 — decommissioning timelines extended by decades.",
+            poor: "Type 304 (~2,500ppm cobalt) sensitizes at 450-850°C creating chromium-depleted grain boundaries. IGSCC then propagates along these boundaries in BWR environments. The mechanism was well-documented since the 1970s. High cobalt content meant Co-60 dominated dose rates for 60 years, constraining all work planning."
         }
     };
     // Calculate per-element costs and build reports
