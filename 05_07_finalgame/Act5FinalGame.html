@@ -4068,7 +4068,7 @@
 </head>
 <body>
 <!-- VERSION TAG -->
-<div class="version-tag">v0.60</div>
+<div class="version-tag">v0.61</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -8570,16 +8570,26 @@ function updateCraneMessage(type, title, text) {
 }
 
 function completeCraneGame() {
+    const elId = craneGameState.currentElId;
+    
     // Apply costs to game state
-    applyChoice(craneGameState.currentElId, {
-        cost: craneGameState.cost,
-        time: craneGameState.time,
-        dose: craneGameState.dose
-    });
+    STATE.totals.cost += craneGameState.cost;
+    STATE.totals.dose += craneGameState.dose;
+    STATE.stageTotals[STATE.stage].cost += craneGameState.cost;
+    STATE.stageTotals[STATE.stage].dose += craneGameState.dose;
     
     // Mark element as complete
-    STATE.elementCompleted[craneGameState.currentElId] = true;
-    updateElementSquare(craneGameState.currentElId);
+    STATE.elementCompleted[elId] = true;
+    STATE.completed[STATE.stage][elId] = true;
+    
+    // Update hotspot square
+    const square = document.getElementById('square-' + elId);
+    if (square) {
+        square.classList.add('done');
+    }
+    
+    updateElementSquare(elId);
+    updateStatsDisplay();
     closeModal();
     checkStageComplete();
 }
