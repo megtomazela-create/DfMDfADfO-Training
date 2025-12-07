@@ -2534,7 +2534,7 @@
 <body>
 
 <!-- VERSION TAG -->
-<div class="version-tag">v0.40</div>
+<div class="version-tag">v0.41-debug</div>
 
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
@@ -6100,6 +6100,9 @@ function renderDecisionModal(elId, element) {
     document.getElementById('modalBody').innerHTML = html;
     document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="btnConfirmDecision" disabled>Select an Option</button>';
     
+    console.log('Stage 2 decision modal rendered');
+    console.log('Options array:', sortedDecisionOpts);
+    
     // Store the options array for lookup
     const optionsArray = sortedDecisionOpts;
     let selectedOptId = null;
@@ -6108,9 +6111,13 @@ function renderDecisionModal(elId, element) {
     const allCards = document.querySelectorAll('#modalBody .option-card');
     const btn = document.getElementById('btnConfirmDecision');
     
+    console.log('Found cards:', allCards.length);
+    console.log('Found button:', btn);
+    
     // Card click handlers
     for (let i = 0; i < allCards.length; i++) {
         allCards[i].onclick = function() {
+            console.log('Card clicked:', this.getAttribute('data-id'));
             // Remove selected from all
             for (let j = 0; j < allCards.length; j++) {
                 allCards[j].classList.remove('selected');
@@ -6120,12 +6127,19 @@ function renderDecisionModal(elId, element) {
             selectedOptId = this.getAttribute('data-id');
             btn.disabled = false;
             btn.textContent = 'Confirm Decision';
+            console.log('Selected option ID:', selectedOptId);
         };
     }
     
     // Confirm button handler
     btn.onclick = function() {
-        if (!selectedOptId) return;
+        console.log('Confirm button clicked!');
+        console.log('selectedOptId:', selectedOptId);
+        
+        if (!selectedOptId) {
+            console.log('No selection, returning');
+            return;
+        }
         
         // Find in the options array
         let opt = null;
@@ -6136,6 +6150,8 @@ function renderDecisionModal(elId, element) {
             }
         }
         
+        console.log('Found option:', opt);
+        
         if (!opt) {
             console.error('Option not found:', selectedOptId);
             return;
@@ -6143,12 +6159,16 @@ function renderDecisionModal(elId, element) {
         
         // Handle risk
         if (opt.risk && Math.random() * 100 < opt.risk) {
+            console.log('Risk triggered, showing failure');
             showFailure(elId, opt, stageData);
             return;
         }
         
+        console.log('Calling applyDecision');
         applyDecision(elId, opt, stageData, null);
     };
+    
+    console.log('Button onclick assigned');
 }
 
 function showFailure(elId, opt, stageData) {
@@ -6217,6 +6237,8 @@ function showFailure(elId, opt, stageData) {
 }
 
 function applyDecision(elId, opt, stageData, previousChoice = null) {
+    console.log('applyDecision called with:', elId, opt, stageData);
+    
     const cost = opt.cost || 0;
     const dose = opt.dose || 0;
     const time = opt.time || 0;
