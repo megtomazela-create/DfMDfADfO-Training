@@ -4071,7 +4071,7 @@
 </head>
 <body>
 <!-- VERSION TAG -->
-<div class="version-tag">v0.64</div>
+<div class="version-tag">v0.66</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -8573,41 +8573,34 @@ function updateCraneMessage(type, title, text) {
 }
 
 function completeCraneGame() {
-    try {
-        const elId = craneGameState.currentElId;
-        
-        // Ensure state objects exist for this stage
-        if (!STATE.stageTotals[STATE.stage]) {
-            STATE.stageTotals[STATE.stage] = { cost: 0, dose: 0, time: 0 };
-        }
-        if (!STATE.completed[STATE.stage]) {
-            STATE.completed[STATE.stage] = {};
-        }
-        
-        // Apply costs to game state
-        STATE.totals.cost += craneGameState.cost;
-        STATE.totals.dose += craneGameState.dose;
-        STATE.stageTotals[STATE.stage].cost += craneGameState.cost;
-        STATE.stageTotals[STATE.stage].dose += craneGameState.dose;
-        
-        // Mark element as complete
-        STATE.elementCompleted[elId] = true;
-        STATE.completed[STATE.stage][elId] = true;
-        
-        // Update hotspot square
-        const square = document.getElementById('square-' + elId);
-        if (square) {
-            square.classList.add('done');
-        }
-        
-        updateElementSquare(elId);
-        updateStatsDisplay();
-        closeModal();
-        checkStageComplete();
-    } catch (err) {
-        alert('Error in completeCraneGame: ' + err.message);
-        console.error('completeCraneGame error:', err);
+    const elId = craneGameState.currentElId;
+    
+    // Ensure state objects exist
+    if (!STATE.stageTotals[STATE.stage]) {
+        STATE.stageTotals[STATE.stage] = { cost: 0, dose: 0, time: 0 };
     }
+    if (!STATE.completed[STATE.stage]) {
+        STATE.completed[STATE.stage] = {};
+    }
+    
+    // Apply costs
+    STATE.totals.cost += craneGameState.cost;
+    STATE.totals.dose += craneGameState.dose;
+    STATE.stageTotals[STATE.stage].cost += craneGameState.cost;
+    STATE.stageTotals[STATE.stage].dose += craneGameState.dose;
+    
+    // Mark complete
+    STATE.completed[STATE.stage][elId] = true;
+    
+    // Update UI
+    const square = document.getElementById('square-' + elId);
+    if (square) {
+        square.classList.add('done');
+    }
+    
+    updateStatsDisplay();
+    updateProgressLabel();
+    closeModal();
 }
 
 function renderPipeRoutingDecision(elId, element) {
