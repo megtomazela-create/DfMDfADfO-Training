@@ -2585,6 +2585,7 @@
         .weld-probe img {
             width: 100%;
             filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));
+            transform: scaleX(-1);
         }
         .weld-probe.blocked {
             animation: weldProbeBlocked 0.4s ease;
@@ -2689,11 +2690,486 @@
             background: rgba(146, 208, 80, 0.1);
             border-color: rgba(146, 208, 80, 0.3);
         }
+        
+        /* ============================================
+           EMERGENCY TRIP GAME STYLES
+           ============================================ */
+        .trip-game-container {
+            padding: 0;
+        }
+        .trip-emergency-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: linear-gradient(90deg, rgba(100, 100, 100, 0.2), transparent);
+            border-left: 4px solid var(--mid-grey);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        .trip-emergency-header.active {
+            background: linear-gradient(90deg, rgba(220, 53, 69, 0.3), transparent);
+            border-left-color: var(--red);
+            animation: tripEmergencyPulse 0.5s ease infinite;
+        }
+        @keyframes tripEmergencyPulse {
+            0%, 100% { background: linear-gradient(90deg, rgba(220, 53, 69, 0.2), transparent); }
+            50% { background: linear-gradient(90deg, rgba(220, 53, 69, 0.4), rgba(220, 53, 69, 0.1)); }
+        }
+        .trip-emergency-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--mid-grey);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s;
+        }
+        .trip-emergency-header.active .trip-emergency-title {
+            color: var(--red);
+        }
+        .trip-emergency-title .trip-icon {
+            font-size: 1.2rem;
+        }
+        .trip-emergency-header.active .trip-icon {
+            animation: tripAlarmBlink 0.3s ease infinite;
+        }
+        @keyframes tripAlarmBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .trip-timer-display {
+            font-size: 1.6rem;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            color: var(--mid-grey);
+            background: #000;
+            padding: 6px 16px;
+            border-radius: 6px;
+            border: 2px solid #333;
+            transition: all 0.3s;
+        }
+        .trip-timer-display.active {
+            color: var(--white);
+            border-color: var(--amber);
+        }
+        .trip-timer-display.slow { color: var(--amber); }
+        .trip-timer-display.veryslow { color: var(--red); }
+        
+        .trip-panel-viewport {
+            position: relative;
+            background: #1a1a1a;
+            border-radius: 10px;
+            height: 320px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 3px solid #333;
+        }
+        .trip-panel-viewport.alarm {
+            animation: tripViewportAlarm 0.5s ease infinite;
+        }
+        @keyframes tripViewportAlarm {
+            0%, 100% { border-color: #333; }
+            50% { border-color: var(--red); }
+        }
+        .trip-panel-header {
+            background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+            padding: 6px 12px;
+            border-bottom: 2px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .trip-panel-label {
+            font-size: 0.65rem;
+            color: var(--mid-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .trip-status-lights {
+            display: flex;
+            gap: 6px;
+        }
+        .trip-status-light {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #333;
+            transition: all 0.3s;
+        }
+        .trip-status-light.red { background: var(--red); box-shadow: 0 0 6px var(--red); }
+        .trip-status-light.amber { background: var(--amber); box-shadow: 0 0 5px var(--amber); }
+        .trip-status-light.green { background: var(--green); box-shadow: 0 0 5px var(--green); }
+        
+        /* Compact Panel - Circular Buttons */
+        .trip-compact-panel {
+            padding: 12px 8px;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 6px 4px;
+            height: calc(100% - 32px);
+            align-content: start;
+            background: linear-gradient(180deg, #2a2a2a, #1f1f1f);
+        }
+        .trip-compact-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            justify-self: center;
+            font-size: 0.35rem;
+            font-weight: 700;
+            color: transparent;
+            text-align: center;
+            line-height: 1.1;
+            padding: 2px;
+            text-transform: uppercase;
+        }
+        .trip-compact-btn:active { transform: translateY(2px); }
+        .trip-compact-btn.btn-red {
+            background: linear-gradient(180deg, #8b3a3a, #5a2020);
+            border: 2px solid #aa4444;
+            box-shadow: 0 2px 0 #2a1010, 0 3px 6px rgba(0,0,0,0.4), inset 0 -2px 4px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,100,100,0.2);
+        }
+        .trip-compact-btn.btn-green {
+            background: linear-gradient(180deg, #3a6b3a, #205020);
+            border: 2px solid #4a8b4a;
+            box-shadow: 0 2px 0 #102a10, 0 3px 6px rgba(0,0,0,0.4), inset 0 -2px 4px rgba(0,0,0,0.3), inset 0 2px 4px rgba(100,255,100,0.2);
+        }
+        .trip-compact-btn.btn-yellow {
+            background: linear-gradient(180deg, #7b6b2a, #504510);
+            border: 2px solid #9b8b3a;
+            box-shadow: 0 2px 0 #2a2510, 0 3px 6px rgba(0,0,0,0.4), inset 0 -2px 4px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,100,0.2);
+        }
+        .trip-compact-btn.btn-blue {
+            background: linear-gradient(180deg, #3a4a6b, #202a50);
+            border: 2px solid #4a5a8b;
+            box-shadow: 0 2px 0 #101a2a, 0 3px 6px rgba(0,0,0,0.4), inset 0 -2px 4px rgba(0,0,0,0.3), inset 0 2px 4px rgba(100,150,255,0.2);
+        }
+        .trip-compact-panel.revealed .trip-compact-btn {
+            color: rgba(255,255,255,0.9);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        /* Ergonomic Panel - Task Based */
+        .trip-ergo-panel {
+            padding: 12px;
+            display: grid;
+            grid-template-columns: 1fr 140px 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 10px;
+            height: calc(100% - 32px);
+            background: linear-gradient(180deg, #252525, #1a1a1a);
+        }
+        .trip-ergo-section {
+            background: #1a1a1a;
+            border-radius: 6px;
+            padding: 8px;
+            border: 1px solid #333;
+        }
+        .trip-ergo-label {
+            font-size: 0.5rem;
+            color: var(--mid-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .trip-ergo-panel.revealed .trip-ergo-label { opacity: 1; }
+        .trip-ergo-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            justify-items: center;
+        }
+        .trip-ergo-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.35rem;
+            font-weight: 700;
+            color: transparent;
+            text-transform: uppercase;
+        }
+        .trip-ergo-btn:active { transform: translateY(2px); }
+        .trip-ergo-btn.ind-green {
+            background: linear-gradient(180deg, #2d5a3d, #1a3a25);
+            border: 2px solid #3d7a4d;
+            box-shadow: 0 2px 0 #0a1a10, 0 3px 6px rgba(0,0,0,0.4), inset 0 2px 6px rgba(80,200,100,0.15);
+        }
+        .trip-ergo-btn.ind-amber {
+            background: linear-gradient(180deg, #6a5a2a, #4a3a15);
+            border: 2px solid #8a7a3a;
+            box-shadow: 0 2px 0 #2a2010, 0 3px 6px rgba(0,0,0,0.4), inset 0 2px 6px rgba(255,200,80,0.15);
+        }
+        .trip-ergo-btn.ind-blue {
+            background: linear-gradient(180deg, #2a3a5a, #15253a);
+            border: 2px solid #3a4a7a;
+            box-shadow: 0 2px 0 #0a1020, 0 3px 6px rgba(0,0,0,0.4), inset 0 2px 6px rgba(80,150,255,0.15);
+        }
+        .trip-ergo-btn.ind-red {
+            background: linear-gradient(180deg, #5a2a2a, #3a1515);
+            border: 2px solid #7a3a3a;
+            box-shadow: 0 2px 0 #200a0a, 0 3px 6px rgba(0,0,0,0.4), inset 0 2px 6px rgba(255,80,80,0.15);
+        }
+        .trip-ergo-panel.revealed .trip-ergo-btn {
+            color: rgba(255,255,255,0.85);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        .trip-trip-section {
+            grid-column: 2;
+            grid-row: 1 / 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #111;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        .trip-cover-plate {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, #3a3a3a, #2a2a2a);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            z-index: 10;
+        }
+        .trip-cover-plate .cover-icon { font-size: 1.5rem; color: #555; }
+        .trip-cover-plate .cover-text { font-size: 0.55rem; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+        .trip-ergo-panel.revealed .trip-cover-plate {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        .trip-ergo-panel.revealed .trip-trip-section {
+            border-color: var(--red);
+            background: linear-gradient(180deg, #1a0a0a, #0a0505);
+        }
+        .trip-trip-label {
+            font-size: 0.6rem;
+            color: var(--red);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 0.5s ease 0.2s;
+        }
+        .trip-ergo-panel.revealed .trip-trip-label { opacity: 1; }
+        .trip-big-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(180deg, #ff4444, #cc0000);
+            border: 4px solid #990000;
+            box-shadow: 0 4px 0 #660000, 0 6px 15px rgba(0,0,0,0.5), inset 0 -4px 15px rgba(0,0,0,0.3), inset 0 4px 15px rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 2px 3px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        .trip-ergo-panel.revealed .trip-big-btn {
+            opacity: 1;
+            transform: scale(1);
+            transition: all 0.4s ease 0.3s;
+        }
+        .trip-big-btn:hover { background: linear-gradient(180deg, #ff5555, #dd1111); transform: scale(1.05) !important; }
+        .trip-big-btn:active { transform: scale(0.95) translateY(3px) !important; }
+        .trip-trip-sublabel {
+            margin-top: 8px;
+            font-size: 0.45rem;
+            color: var(--mid-grey);
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease 0.4s;
+        }
+        .trip-ergo-panel.revealed .trip-trip-sublabel { opacity: 1; }
+        
+        /* LCD Touch Panel */
+        .trip-lcd-panel {
+            padding: 8px;
+            height: calc(100% - 32px);
+            display: flex;
+            flex-direction: column;
+            background: #050505;
+        }
+        .trip-lcd-screen {
+            flex: 1;
+            background: linear-gradient(180deg, #0a1820, #051015);
+            border: 3px solid #1a3040;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: inset 0 0 20px rgba(0, 100, 150, 0.1);
+        }
+        .trip-lcd-title-bar {
+            background: linear-gradient(180deg, #1a3040, #0f2027);
+            padding: 5px 10px;
+            border-bottom: 1px solid #2a4050;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .trip-lcd-title {
+            font-size: 0.6rem;
+            color: var(--blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .trip-lcd-panel.revealed .trip-lcd-title { opacity: 1; }
+        .trip-lcd-breadcrumb {
+            font-size: 0.5rem;
+            color: #4a6a7a;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .trip-lcd-panel.revealed .trip-lcd-breadcrumb { opacity: 1; }
+        .trip-lcd-content {
+            flex: 1;
+            padding: 8px;
+            position: relative;
+            min-height: 0;
+        }
+        .trip-lcd-layer {
+            position: absolute;
+            top: 8px; left: 8px; right: 8px; bottom: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .trip-lcd-layer.active { display: flex; }
+        .trip-lcd-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            flex: 1;
+        }
+        .trip-lcd-btn {
+            background: linear-gradient(180deg, #1a3040, #0f2030);
+            border: 1px solid #2a4050;
+            border-radius: 4px;
+            padding: 8px 4px;
+            font-size: 0.55rem;
+            color: transparent;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .trip-lcd-btn:hover {
+            background: linear-gradient(180deg, #2a4050, #1a3040);
+            border-color: var(--blue);
+            box-shadow: 0 0 8px rgba(0, 176, 240, 0.3);
+        }
+        .trip-lcd-btn:active { transform: scale(0.97); }
+        .trip-lcd-panel.revealed .trip-lcd-btn { color: var(--light-grey); }
+        .trip-lcd-back-btn {
+            background: linear-gradient(180deg, #1a2030, #0f1520);
+            border: 1px solid #2a3040;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 0.5rem;
+            color: transparent;
+            cursor: pointer;
+            transition: all 0.15s;
+            align-self: flex-start;
+            flex-shrink: 0;
+        }
+        .trip-lcd-back-btn:hover { border-color: #4a5060; }
+        .trip-lcd-panel.revealed .trip-lcd-back-btn { color: #6a7a8a; }
+        
+        /* Trip Result Overlay */
+        .trip-result-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.92);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+        }
+        .trip-result-overlay.visible { display: flex; }
+        .trip-result-icon { font-size: 3rem; }
+        .trip-result-title { font-size: 1.3rem; font-weight: 700; }
+        .trip-result-title.success { color: var(--green); }
+        .trip-result-title.slow { color: var(--amber); }
+        .trip-result-title.veryslow { color: var(--red); }
+        .trip-result-time { font-size: 1rem; color: var(--light-grey); }
+        .trip-result-message {
+            max-width: 280px;
+            text-align: center;
+            color: var(--mid-grey);
+            line-height: 1.4;
+            font-size: 0.8rem;
+        }
+        
+        /* Trip consequence display */
+        .trip-consequence {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            border-radius: 6px;
+            text-align: center;
+        }
+        .trip-consequence.good {
+            background: rgba(146, 208, 80, 0.1);
+            border-color: rgba(146, 208, 80, 0.3);
+        }
+        .trip-consequence-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--red);
+            margin-bottom: 5px;
+        }
+        .trip-consequence.good .trip-consequence-title { color: var(--green); }
+        .trip-consequence-stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 0.7rem;
+            color: var(--light-grey);
+        }
+        .trip-consequence-stat span { font-weight: 600; }
     </style>
 </head>
 <body>
 <!-- VERSION TAG -->
-<div class="version-tag">v0.45</div>
+<div class="version-tag">v0.46</div>
 <!-- CINEMATIC INTRO -->
 <div id="cinematicIntro">
     <div class="intro-slide active" data-slide="1">
@@ -5944,6 +6420,541 @@ function updateWeldStatus(message, type) {
 }
 
 // ============================================
+// EMERGENCY TRIP GAME (Stage 4 Operations)
+// ============================================
+let tripGameState = {
+    variant: null,
+    phase: 'waiting',
+    startTime: null,
+    timerInterval: null,
+    elapsed: 0,
+    clickCount: 0,
+    lcdLayer: 0,
+    lcdMaxDepth: 0,
+    currentStageData: null,
+    currentElId: null,
+    currentElement: null
+};
+
+const TRIP_COMPACT_BUTTONS = [
+    { label: 'AUX 1', color: 'green' }, { label: 'AUX 2', color: 'green' },
+    { label: 'PUMP A', color: 'blue' }, { label: 'PUMP B', color: 'blue' },
+    { label: 'VALVE 1', color: 'yellow' }, { label: 'VALVE 2', color: 'yellow' },
+    { label: 'COOL A', color: 'blue' }, { label: 'COOL B', color: 'blue' },
+    { label: 'FAN 1', color: 'green' }, { label: 'FAN 2', color: 'green' },
+    { label: 'HTR 1', color: 'red' }, { label: 'HTR 2', color: 'red' },
+    { label: 'PRESS', color: 'yellow' }, { label: 'TEMP', color: 'red' },
+    { label: 'FLOW A', color: 'blue' }, { label: 'FLOW B', color: 'blue' },
+    { label: 'TRIP', color: 'red', isTrip: true }, { label: 'RESET', color: 'red' },
+    { label: 'ACK', color: 'yellow' }, { label: 'SILENCE', color: 'yellow' },
+    { label: 'TEST', color: 'green' }, { label: 'LAMP', color: 'yellow' },
+    { label: 'AUTO', color: 'green' }, { label: 'MAN', color: 'red' },
+    { label: 'START', color: 'green' }, { label: 'STOP', color: 'red' },
+    { label: 'EMRG', color: 'red' }, { label: 'NORM', color: 'green' },
+    { label: 'HIGH', color: 'red' }, { label: 'LOW', color: 'yellow' },
+    { label: 'OPEN', color: 'green' }, { label: 'CLOSE', color: 'red' },
+    { label: 'ISO 1', color: 'yellow' }, { label: 'ISO 2', color: 'yellow' },
+    { label: 'VENT', color: 'blue' }, { label: 'DRAIN', color: 'blue' },
+    { label: 'FILL', color: 'blue' }, { label: 'LEVEL', color: 'green' },
+    { label: 'CHEM', color: 'yellow' }, { label: 'RAD', color: 'red' }
+];
+
+function renderTripGame(elId, element) {
+    const stageKey = 'stage' + STATE.stage;
+    const designChoice = STATE.designChoices[elId];
+    const designOpt = element.stage1.options.find(function(o) { return o.id === designChoice; });
+    const stage = GAME_DATA.stages[STATE.stage];
+    let stageData = element[stageKey] ? element[stageKey][designChoice] : null;
+    
+    if (!stageData) {
+        document.getElementById('modalBody').innerHTML = '<p>No data for this element at this stage.</p>';
+        document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" onclick="closeModal()">Close</button>';
+        return;
+    }
+    
+    // Handle checkElementState scenarios
+    if (stageData.checkElementState && stageData.scenarios) {
+        const elState = STATE.elementState[elId] || {};
+        let matchedScenario = null;
+        const states = ['layoutModified', 'backupInstalled', 'trainingEnhanced', 'operatorError'];
+        for (let i = 0; i < states.length; i++) {
+            if (elState[states[i]] && stageData.scenarios[states[i]]) {
+                matchedScenario = stageData.scenarios[states[i]];
+                break;
+            }
+        }
+        if (!matchedScenario) {
+            matchedScenario = stageData.scenarios.default || stageData.scenarios[Object.keys(stageData.scenarios)[0]];
+        }
+        stageData = matchedScenario;
+    }
+    
+    tripGameState.currentStageData = stageData;
+    tripGameState.currentElId = elId;
+    tripGameState.currentElement = element;
+    tripGameState.variant = designChoice;
+    tripGameState.phase = 'ready';
+    tripGameState.elapsed = 0;
+    tripGameState.clickCount = 0;
+    tripGameState.lcdLayer = 0;
+    tripGameState.lcdMaxDepth = 0;
+    
+    // Map design choice to panel type
+    let panelType = 'system'; // default
+    if (designChoice === 'task') panelType = 'task';
+    else if (designChoice === 'digital') panelType = 'digital';
+    
+    const panelLabels = {
+        task: 'Task-Based Panel',
+        system: 'System-Based Panel',
+        digital: 'LCD Touch Panel'
+    };
+    
+    const char = GAME_DATA.characters[stage.char];
+    
+    let html = '<div class="trip-game-container">';
+    
+    // Emergency header
+    html += '<div class="trip-emergency-header" id="tripEmergencyHeader">';
+    html += '<div class="trip-emergency-title"><span class="trip-icon">🔔</span><span id="tripEmergencyText">READY — Press Start when prepared</span></div>';
+    html += '<div class="trip-timer-display" id="tripTimerDisplay">0.0</div>';
+    html += '</div>';
+    
+    // Situation text
+    html += '<div class="situation-panel"><div class="situation-text">' + stageData.situation + '</div></div>';
+    
+    // Panel viewport
+    html += '<div class="trip-panel-viewport" id="tripPanelViewport">';
+    html += '<div class="trip-panel-header">';
+    html += '<span class="trip-panel-label">' + panelLabels[panelType] + '</span>';
+    html += '<div class="trip-status-lights"><div class="trip-status-light" id="tripLightRed"></div><div class="trip-status-light" id="tripLightAmber"></div><div class="trip-status-light green" id="tripLightGreen"></div></div>';
+    html += '</div>';
+    html += '<div id="tripPanelContent"></div>';
+    html += '<div class="trip-result-overlay" id="tripResultOverlay">';
+    html += '<div class="trip-result-icon" id="tripResultIcon">✅</div>';
+    html += '<div class="trip-result-title" id="tripResultTitle">TRIP SUCCESSFUL</div>';
+    html += '<div class="trip-result-time" id="tripResultTime">Response time: 0.0 seconds</div>';
+    html += '<div class="trip-result-message" id="tripResultMessage"></div>';
+    html += '</div>';
+    html += '</div>';
+    
+    // Consequence area (shown after completion)
+    html += '<div id="tripConsequenceArea"></div>';
+    
+    // Character speech
+    html += '<div class="modal-speech"><div class="speech-portrait">';
+    if (char && char.image) {
+        html += '<img src="' + char.image + '" alt="' + char.name + '">';
+    } else if (char) {
+        html += '<span class="portrait-emoji">' + char.emoji + '</span>';
+    }
+    html += '</div><div class="speech-bubble"><div class="speech-text">"' + stageData.quote + '"</div></div></div>';
+    
+    html += '</div>';
+    
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" id="tripStartBtn" onclick="startTripEmergency()">🚨 Start Emergency Drill</button>';
+    
+    // Render the appropriate panel
+    renderTripPanel(panelType);
+}
+
+function renderTripPanel(panelType) {
+    const content = document.getElementById('tripPanelContent');
+    if (panelType === 'task') {
+        renderTripErgoPanel(content);
+    } else if (panelType === 'system') {
+        renderTripCompactPanel(content);
+    } else if (panelType === 'digital') {
+        renderTripLCDPanel(content);
+    }
+}
+
+function renderTripCompactPanel(container) {
+    const shuffled = TRIP_COMPACT_BUTTONS.slice().sort(function() { return Math.random() - 0.5; });
+    let html = '<div class="trip-compact-panel" id="tripCompactPanel">';
+    for (let i = 0; i < shuffled.length; i++) {
+        const btn = shuffled[i];
+        const action = btn.isTrip ? 'trip' : 'wrong';
+        html += '<button class="trip-compact-btn btn-' + btn.color + '" data-action="' + action + '">' + btn.label + '</button>';
+    }
+    html += '</div>';
+    container.innerHTML = html;
+    
+    const buttons = container.querySelectorAll('.trip-compact-btn');
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener('click', function() {
+            if (tripGameState.phase !== 'active') return;
+            tripGameState.clickCount++;
+            if (this.getAttribute('data-action') === 'trip') {
+                endTripGame();
+            }
+        });
+    }
+}
+
+function renderTripErgoPanel(container) {
+    let html = '<div class="trip-ergo-panel" id="tripErgoPanel">';
+    html += '<div class="trip-ergo-section"><div class="trip-ergo-label">Cooling</div><div class="trip-ergo-buttons">';
+    html += '<button class="trip-ergo-btn ind-blue" data-action="wrong">PUMP A</button>';
+    html += '<button class="trip-ergo-btn ind-blue" data-action="wrong">PUMP B</button>';
+    html += '<button class="trip-ergo-btn ind-green" data-action="wrong">FAN 1</button>';
+    html += '<button class="trip-ergo-btn ind-green" data-action="wrong">FAN 2</button>';
+    html += '</div></div>';
+    
+    html += '<div class="trip-trip-section">';
+    html += '<div class="trip-cover-plate"><div class="cover-icon">🔒</div><div class="cover-text">Emergency</div><div class="cover-text" style="font-size:0.45rem;color:#555;">Opens on alarm</div></div>';
+    html += '<div class="trip-trip-label">⚠️ TRIP ⚠️</div>';
+    html += '<button class="trip-big-btn" id="tripBigBtn">TRIP</button>';
+    html += '<div class="trip-trip-sublabel">Emergency<br>Shutdown</div>';
+    html += '</div>';
+    
+    html += '<div class="trip-ergo-section"><div class="trip-ergo-label">Auxiliary</div><div class="trip-ergo-buttons">';
+    html += '<button class="trip-ergo-btn ind-green" data-action="wrong">AUX 1</button>';
+    html += '<button class="trip-ergo-btn ind-green" data-action="wrong">AUX 2</button>';
+    html += '<button class="trip-ergo-btn ind-amber" data-action="wrong">VENT</button>';
+    html += '<button class="trip-ergo-btn ind-blue" data-action="wrong">DRAIN</button>';
+    html += '</div></div>';
+    
+    html += '<div class="trip-ergo-section"><div class="trip-ergo-label">Monitor</div><div class="trip-ergo-buttons">';
+    html += '<button class="trip-ergo-btn ind-red" data-action="wrong">TEMP</button>';
+    html += '<button class="trip-ergo-btn ind-amber" data-action="wrong">PRESS</button>';
+    html += '<button class="trip-ergo-btn ind-blue" data-action="wrong">FLOW</button>';
+    html += '<button class="trip-ergo-btn ind-green" data-action="wrong">LEVEL</button>';
+    html += '</div></div>';
+    
+    html += '<div class="trip-ergo-section"><div class="trip-ergo-label">Alarms</div><div class="trip-ergo-buttons">';
+    html += '<button class="trip-ergo-btn ind-amber" data-action="wrong">ACK</button>';
+    html += '<button class="trip-ergo-btn ind-red" data-action="wrong">RESET</button>';
+    html += '<button class="trip-ergo-btn ind-amber" data-action="wrong">SILENCE</button>';
+    html += '<button class="trip-ergo-btn ind-green" data-action="wrong">TEST</button>';
+    html += '</div></div>';
+    html += '</div>';
+    
+    container.innerHTML = html;
+    
+    const buttons = container.querySelectorAll('.trip-ergo-btn');
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener('click', function() {
+            if (tripGameState.phase !== 'active') return;
+            tripGameState.clickCount++;
+        });
+    }
+    
+    document.getElementById('tripBigBtn').addEventListener('click', function() {
+        if (tripGameState.phase !== 'active') return;
+        tripGameState.clickCount++;
+        endTripGame();
+    });
+}
+
+function renderTripLCDPanel(container) {
+    let html = '<div class="trip-lcd-panel" id="tripLCDPanel">';
+    html += '<div class="trip-lcd-screen">';
+    html += '<div class="trip-lcd-title-bar"><span class="trip-lcd-title" id="tripLCDTitle">MAIN MENU</span><span class="trip-lcd-breadcrumb" id="tripLCDBreadcrumb">Home</span></div>';
+    html += '<div class="trip-lcd-content">';
+    
+    // Layer 0: Main Menu
+    html += '<div class="trip-lcd-layer active" id="tripLCDLayer0"><div class="trip-lcd-grid">';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="1" data-title="MONITOR" data-crumb="Monitor">MONITOR</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="2" data-title="ALARMS" data-crumb="Alarms">ALARMS</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="3" data-title="SYSTEMS" data-crumb="Systems">SYSTEMS</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="4" data-title="REPORTS" data-crumb="Reports">REPORTS</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="5" data-title="CONFIG" data-crumb="Config">CONFIG</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="6" data-title="HELP" data-crumb="Help">HELP</button>';
+    html += '</div></div>';
+    
+    // Layer 1: Monitor (dead end)
+    html += '<div class="trip-lcd-layer" id="tripLCDLayer1"><button class="trip-lcd-back-btn" data-action="back" data-target="0">← BACK</button><div class="trip-lcd-grid">';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="TEMPS" data-crumb="Monitor→Temps">TEMPS</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="PRESSURE" data-crumb="Monitor→Press">PRESSURE</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="FLOW" data-crumb="Monitor→Flow">FLOW</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="LEVELS" data-crumb="Monitor→Levels">LEVELS</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="POWER" data-crumb="Monitor→Power">POWER</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="RADS" data-crumb="Monitor→Rads">RADS</button>';
+    html += '</div></div>';
+    
+    // Layer 2: Alarms (dead end)
+    html += '<div class="trip-lcd-layer" id="tripLCDLayer2"><button class="trip-lcd-back-btn" data-action="back" data-target="0">← BACK</button><div class="trip-lcd-grid">';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="ACTIVE" data-crumb="Alarms→Active">ACTIVE</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="HISTORY" data-crumb="Alarms→History">HISTORY</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="SILENCE" data-crumb="Alarms→Silence">SILENCE</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="ACK ALL" data-crumb="Alarms→Ack">ACK ALL</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="PRIORITY" data-crumb="Alarms→Priority">PRIORITY</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="SETTINGS" data-crumb="Alarms→Settings">SETTINGS</button>';
+    html += '</div></div>';
+    
+    // Layer 3: Systems (correct path)
+    html += '<div class="trip-lcd-layer" id="tripLCDLayer3"><button class="trip-lcd-back-btn" data-action="back" data-target="0">← BACK</button><div class="trip-lcd-grid">';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="COOLING" data-crumb="Systems→Cooling">COOLING</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="POWER" data-crumb="Systems→Power">POWER</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="7" data-title="SAFETY" data-crumb="Systems→Safety">SAFETY</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="FUEL" data-crumb="Systems→Fuel">FUEL</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="WASTE" data-crumb="Systems→Waste">WASTE</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="HVAC" data-crumb="Systems→HVAC">HVAC</button>';
+    html += '</div></div>';
+    
+    // Layer 4: Reports (dead end)
+    html += '<div class="trip-lcd-layer" id="tripLCDLayer4"><button class="trip-lcd-back-btn" data-action="back" data-target="0">← BACK</button><div class="trip-lcd-grid">';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="DAILY" data-crumb="Reports→Daily">DAILY</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="WEEKLY" data-crumb="Reports→Weekly">WEEKLY</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="EVENTS" data-crumb="Reports→Events">EVENTS</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="EXPORT" data-crumb="Reports→Export">EXPORT</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="PRINT" data-crumb="Reports→Print">PRINT</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="ARCHIVE" data-crumb="Reports→Archive">ARCHIVE</button>';
+    html += '</div></div>';
+    
+    // Layer 5: Config (dead end)
+    html += '<div class="trip-lcd-layer" id="tripLCDLayer5"><button class="trip-lcd-back-btn" data-action="back" data-target="0">← BACK</button><div class="trip-lcd-grid">';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="DISPLAY" data-crumb="Config→Display">DISPLAY</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="NETWORK" data-crumb="Config→Network">NETWORK</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="USERS" data-crumb="Config→Users">USERS</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="BACKUP" data-crumb="Config→Backup">BACKUP</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="TIME" data-crumb="Config→Time">TIME</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="ABOUT" data-crumb="Config→About">ABOUT</button>';
+    html += '</div></div>';
+    
+    // Layer 6: Help (dead end)
+    html += '<div class="trip-lcd-layer" id="tripLCDLayer6"><button class="trip-lcd-back-btn" data-action="back" data-target="0">← BACK</button><div class="trip-lcd-grid">';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="MANUAL" data-crumb="Help→Manual">MANUAL</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="TRAINING" data-crumb="Help→Training">TRAINING</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="CONTACT" data-crumb="Help→Contact">CONTACT</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="FAQ" data-crumb="Help→FAQ">FAQ</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="UPDATES" data-crumb="Help→Updates">UPDATES</button>';
+    html += '<button class="trip-lcd-btn" data-action="nav" data-target="10" data-title="LICENSE" data-crumb="Help→License">LICENSE</button>';
+    html += '</div></div>';
+    
+    // Layer 7: Safety (correct - has TRIP)
+    html += '<div class="trip-lcd-layer" id="tripLCDLayer7"><button class="trip-lcd-back-btn" data-action="back" data-target="3">← BACK</button><div class="trip-lcd-grid">';
+    html += '<button class="trip-lcd-btn" data-action="wrong">ISOLATE</button>';
+    html += '<button class="trip-lcd-btn" data-action="wrong">VENT</button>';
+    html += '<button class="trip-lcd-btn" data-action="trip">TRIP</button>';
+    html += '<button class="trip-lcd-btn" data-action="wrong">SCRAM</button>';
+    html += '<button class="trip-lcd-btn" data-action="wrong">CONTAIN</button>';
+    html += '<button class="trip-lcd-btn" data-action="wrong">PURGE</button>';
+    html += '</div></div>';
+    
+    // Layer 10: Dead end
+    html += '<div class="trip-lcd-layer" id="tripLCDLayer10"><button class="trip-lcd-back-btn" data-action="back" data-target="0">← BACK TO MAIN</button><div class="trip-lcd-grid">';
+    html += '<button class="trip-lcd-btn" data-action="wrong">VIEW</button>';
+    html += '<button class="trip-lcd-btn" data-action="wrong">EXPORT</button>';
+    html += '<button class="trip-lcd-btn" data-action="wrong">PRINT</button>';
+    html += '<button class="trip-lcd-btn" data-action="wrong">GRAPH</button>';
+    html += '<button class="trip-lcd-btn" data-action="wrong">FILTER</button>';
+    html += '<button class="trip-lcd-btn" data-action="wrong">SEARCH</button>';
+    html += '</div></div>';
+    
+    html += '</div></div></div>';
+    container.innerHTML = html;
+    
+    // Attach event listeners
+    const buttons = container.querySelectorAll('.trip-lcd-btn, .trip-lcd-back-btn');
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener('click', function() {
+            if (tripGameState.phase !== 'active') return;
+            
+            const action = this.getAttribute('data-action');
+            const target = this.getAttribute('data-target');
+            const title = this.getAttribute('data-title') || '';
+            const crumb = this.getAttribute('data-crumb') || '';
+            
+            tripGameState.clickCount++;
+            
+            if (action === 'nav' || action === 'back') {
+                const layers = document.querySelectorAll('.trip-lcd-layer');
+                for (let j = 0; j < layers.length; j++) {
+                    layers[j].classList.remove('active');
+                }
+                document.getElementById('tripLCDLayer' + target).classList.add('active');
+                tripGameState.lcdLayer = parseInt(target);
+                
+                if (action === 'nav') {
+                    document.getElementById('tripLCDTitle').textContent = title;
+                    document.getElementById('tripLCDBreadcrumb').textContent = crumb;
+                } else {
+                    const titles = { 0: 'MAIN MENU', 1: 'MONITOR', 2: 'ALARMS', 3: 'SYSTEMS', 4: 'REPORTS', 5: 'CONFIG', 6: 'HELP', 7: 'SAFETY' };
+                    const crumbs = { 0: 'Home', 1: 'Monitor', 2: 'Alarms', 3: 'Systems', 4: 'Reports', 5: 'Config', 6: 'Help', 7: 'Systems→Safety' };
+                    document.getElementById('tripLCDTitle').textContent = titles[target] || 'MENU';
+                    document.getElementById('tripLCDBreadcrumb').textContent = crumbs[target] || 'Home';
+                }
+            } else if (action === 'trip') {
+                endTripGame();
+            }
+        });
+    }
+}
+
+function startTripEmergency() {
+    if (tripGameState.phase !== 'ready') return;
+    
+    tripGameState.phase = 'active';
+    tripGameState.startTime = Date.now();
+    tripGameState.elapsed = 0;
+    tripGameState.clickCount = 0;
+    
+    document.getElementById('tripEmergencyHeader').classList.add('active');
+    document.getElementById('tripPanelViewport').classList.add('alarm');
+    document.getElementById('tripEmergencyText').innerHTML = '<strong>⚠️ EMERGENCY — TRIP THE REACTOR!</strong>';
+    document.getElementById('tripTimerDisplay').classList.add('active');
+    document.getElementById('tripLightRed').classList.add('red');
+    document.getElementById('tripLightAmber').classList.add('amber');
+    document.getElementById('tripLightGreen').classList.remove('green');
+    
+    document.getElementById('tripStartBtn').style.display = 'none';
+    
+    // Reveal button labels
+    const compact = document.getElementById('tripCompactPanel');
+    const ergo = document.getElementById('tripErgoPanel');
+    const lcd = document.getElementById('tripLCDPanel');
+    if (compact) compact.classList.add('revealed');
+    if (ergo) ergo.classList.add('revealed');
+    if (lcd) lcd.classList.add('revealed');
+    
+    tripGameState.timerInterval = setInterval(updateTripTimer, 100);
+}
+
+function updateTripTimer() {
+    tripGameState.elapsed = (Date.now() - tripGameState.startTime) / 1000;
+    
+    const display = document.getElementById('tripTimerDisplay');
+    display.textContent = tripGameState.elapsed.toFixed(1);
+    
+    if (tripGameState.elapsed >= 8) {
+        display.classList.add('veryslow');
+        display.classList.remove('slow');
+    } else if (tripGameState.elapsed >= 4) {
+        display.classList.add('slow');
+        display.classList.remove('veryslow');
+    }
+}
+
+function endTripGame() {
+    tripGameState.phase = 'complete';
+    
+    clearInterval(tripGameState.timerInterval);
+    
+    const elapsed = tripGameState.elapsed;
+    const elapsedStr = elapsed.toFixed(1);
+    
+    document.getElementById('tripEmergencyHeader').classList.remove('active');
+    document.getElementById('tripPanelViewport').classList.remove('alarm');
+    
+    // Determine result
+    let resultClass = 'success';
+    let resultText = 'EXCELLENT!';
+    let resultIcon = '✅';
+    
+    if (elapsed >= 8) {
+        resultClass = 'veryslow';
+        resultText = 'TOO SLOW!';
+        resultIcon = '⚠️';
+    } else if (elapsed >= 4) {
+        resultClass = 'slow';
+        resultText = 'TRIP ACTIVATED';
+        resultIcon = '⏱️';
+    }
+    
+    document.getElementById('tripResultIcon').textContent = resultIcon;
+    document.getElementById('tripResultTitle').textContent = resultText;
+    document.getElementById('tripResultTitle').className = 'trip-result-title ' + resultClass;
+    document.getElementById('tripResultTime').textContent = 'Response time: ' + elapsedStr + ' seconds';
+    
+    let message = '';
+    const variant = tripGameState.variant;
+    if (variant === 'task') {
+        message = 'The prominent trip button made this instant. Good ergonomic design saves lives in emergencies.';
+    } else if (variant === 'system') {
+        if (elapsed < 4) {
+            message = 'You found TRIP quickly among ' + TRIP_COMPACT_BUTTONS.length + ' buttons. But under real stress, operators often take longer.';
+        } else {
+            message = 'It took ' + elapsedStr + 's to find TRIP among identical buttons. Those seconds of delay increase radiation exposure.';
+        }
+    } else if (variant === 'digital') {
+        if (tripGameState.clickCount > 5) {
+            message = 'It took ' + tripGameState.clickCount + ' taps navigating menus. The "premium" touchscreen is dangerous in emergencies.';
+        } else {
+            message = 'You found it in ' + tripGameState.clickCount + ' taps. But most operators go down wrong paths under stress.';
+        }
+    }
+    document.getElementById('tripResultMessage').textContent = message;
+    document.getElementById('tripResultOverlay').classList.add('visible');
+    
+    // Calculate consequences based on response time
+    let extraDose = 0;
+    let extraCost = 0;
+    let healthImpact = 0;
+    
+    if (elapsed < 3) {
+        extraDose = 0.5;
+        extraCost = 5000;
+        healthImpact = 0;
+    } else if (elapsed < 6) {
+        extraDose = 1.5;
+        extraCost = 25000;
+        healthImpact = -5;
+    } else if (elapsed < 10) {
+        extraDose = 3;
+        extraCost = 60000;
+        healthImpact = -10;
+    } else {
+        extraDose = 5;
+        extraCost = 100000;
+        healthImpact = -15;
+    }
+    
+    // Show consequences
+    const consArea = document.getElementById('tripConsequenceArea');
+    const isGood = elapsed < 4;
+    consArea.innerHTML = '<div class="trip-consequence ' + (isGood ? 'good' : '') + '">' +
+        '<div class="trip-consequence-title">' + (isGood ? 'Minimal Impact' : 'Delayed Response Consequences') + '</div>' +
+        '<div class="trip-consequence-stats">' +
+        '<div>Dose: <span>' + extraDose.toFixed(1) + ' mSv</span></div>' +
+        '<div>Cost: <span>£' + extraCost.toLocaleString() + '</span></div>' +
+        (healthImpact < 0 ? '<div>Safety: <span>' + healthImpact + '</span></div>' : '') +
+        '</div></div>';
+    
+    // Store consequences for when player confirms
+    tripGameState.consequences = {
+        dose: extraDose,
+        cost: extraCost,
+        healthImpact: healthImpact,
+        time: elapsed
+    };
+    
+    // Show confirm button
+    document.getElementById('modalFooter').innerHTML = '<button class="btn btn-primary" onclick="confirmTripResult()">Continue</button>';
+}
+
+function confirmTripResult() {
+    const cons = tripGameState.consequences;
+    const elId = tripGameState.currentElId;
+    
+    // Apply consequences to game state
+    STATE.totals.dose += cons.dose;
+    STATE.totals.cost += cons.cost;
+    STATE.stageTotals[STATE.stage].dose += cons.dose;
+    STATE.stageTotals[STATE.stage].cost += cons.cost;
+    
+    if (cons.healthImpact < 0) {
+        STATE.healthScore = Math.max(0, STATE.healthScore + cons.healthImpact);
+    }
+    
+    // Mark as complete
+    STATE.completed[STATE.stage][elId] = true;
+    
+    // Set operator error state if slow
+    if (cons.time >= 6) {
+        if (!STATE.elementState[elId]) STATE.elementState[elId] = {};
+        STATE.elementState[elId].operatorError = true;
+    }
+    
+    updateStatsDisplay();
+    updateHotspotSquares();
+    closeModal();
+    checkStageCompletion();
+}
+
+// ============================================
 // PIPE ROUTING MINI-GAME (Stage 2+ Consequence Illustration)
 // ============================================
 let pipeGameState = {
@@ -6400,6 +7411,11 @@ function renderDecisionModal(elId, element) {
     // Stage 3 + weldClearance = show weld inspection game
     if (STATE.stage === 3 && elId === 'weldClearance') {
         renderWeldInspectionGame(elId, element);
+        return;
+    }
+    // Stage 4 + controlPanel = show emergency trip game
+    if (STATE.stage === 4 && elId === 'controlPanel') {
+        renderTripGame(elId, element);
         return;
     }
     const stageKey = `stage${STATE.stage}`;
