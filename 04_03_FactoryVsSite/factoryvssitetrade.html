@@ -846,45 +846,6 @@
             display: block;
         }
 
-        /* Section Navigation */
-        .section-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            background: var(--medium-dark);
-            color: var(--light);
-            text-decoration: none;
-            border-radius: 4px;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-        }
-
-        .nav-btn:hover {
-            border-color: var(--warm-gold);
-            color: var(--warm-gold);
-        }
-
-        .nav-btn.primary {
-            background: var(--warm-gold);
-            color: var(--darkest);
-        }
-
-        .nav-btn.primary:hover {
-            background: var(--gold-light);
-        }
-
         /* Responsive */
         @media (max-width: 900px) {
             .image-comparison {
@@ -943,7 +904,7 @@
 <body>
     <!-- Fixed Header -->
     <header class="fixed-header">
-        <img src="https://raw.githubusercontent.com/megtomazela-create/DfMDfADfO-Training/main/00_images/Logo_White_Nobackground.png" alt="The Nuclear House" class="header-logo">
+        <img src="../00_images/Logo_white.png" alt="The Nuclear House" class="header-logo">
         <span class="header-title">Module 4.3: Factory vs Site Trade-offs</span>
         <div class="header-progress">
             <div class="progress-track">
@@ -1136,10 +1097,6 @@
                 <p>Every weld you place on a site interface is a weld you're betting will be done right under field conditions. You choose where those interfaces go. Choose wisely.</p>
             </div>
 
-            <div class="section-nav">
-                <a href="#hero" class="nav-btn">← Introduction</a>
-                <a href="#section3" class="nav-btn primary">Transport Constraints →</a>
-            </div>
         </div>
     </section>
 
@@ -1293,10 +1250,6 @@
                 <p>Your transport route determines your maximum module size. Know your route constraints before you finalise module boundaries — not after.</p>
             </div>
 
-            <div class="section-nav">
-                <a href="#section2" class="nav-btn">← Factory Quality</a>
-                <a href="#section4" class="nav-btn primary">Interface Problem →</a>
-            </div>
         </div>
     </section>
 
@@ -1451,10 +1404,6 @@
                 <p>Every module boundary you create adds tolerance stack-up risk. The more critical the system, the more you should minimise interfaces — even if it means larger, harder-to-transport modules.</p>
             </div>
 
-            <div class="section-nav">
-                <a href="#section3" class="nav-btn">← Transport Constraints</a>
-                <a href="#section5" class="nav-btn primary">Interactive Exercise →</a>
-            </div>
         </div>
     </section>
 
@@ -1657,10 +1606,6 @@
                 <p>There is no single "right" answer. The optimal approach depends on: <strong>site location</strong> (coastal vs inland), <strong>crane capacity</strong>, <strong>factory capability</strong>, <strong>schedule priority</strong>, and <strong>risk appetite</strong>.</p>
             </div>
 
-            <div class="section-nav">
-                <a href="#section5" class="nav-btn">← Interactive Exercise</a>
-                <a href="#section7" class="nav-btn primary">Knowledge Check →</a>
-            </div>
         </div>
     </section>
 
@@ -1823,7 +1768,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <img src="https://raw.githubusercontent.com/megtomazela-create/DfMDfADfO-Training/main/00_images/Logo_White_Nobackground.png" alt="The Nuclear House" class="footer-logo">
+            <img src="../00_images/Logo_white.png" alt="The Nuclear House" class="footer-logo">
             <div class="footer-text">
                 <p>Module 4.3 — Factory vs Site Trade-offs</p>
                 <p class="copyright">© 2025 The Nuclear House. All rights reserved.</p>
